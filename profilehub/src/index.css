@@ -1,0 +1,235 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --heading: 'Inter', system-ui, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  font-family: var(--sans);
+  color-scheme: light;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100dvh;
+  background-color: #f8fafc;
+  color: #0f172a;
+  font-family: var(--sans);
+}
+
+#root {
+  width: 100%;
+  min-height: 100dvh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Custom Scrollbar for sleek look */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* ==========================================================================
+   A4 PRINT MEDIA & PDF EXPORT STYLESHEET
+   - Strict A4 dimensions (210mm x 297mm)
+   - Seamless Multi-page pagination
+   - Zero item slicing (break-inside: avoid on individual cards/items)
+   - Orphan-free section titles (break-after: avoid on section headers)
+   ========================================================================== */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 8mm 10mm;
+  }
+
+  *, *::before, *::after {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  html, body {
+    width: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    overflow: visible !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  /* Hide app navigation, sidebars, buttons, modals, and toasts */
+  .main-layout-container > aside,
+  .main-layout-container > main > div:first-child,
+  nav,
+  button,
+  .print\:hidden,
+  [role="dialog"],
+  .toast,
+  .sonner-toaster {
+    display: none !important;
+  }
+
+  /* Reset layout flex/overflow to normal document flow for print pagination */
+  .main-layout-container,
+  .main-layout-container > main,
+  #root {
+    display: block !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    position: static !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* CV Preview A4 Container & Multi-page Sheets */
+  #cv-preview-a4,
+  .cv-page-sheet {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: auto !important;
+    height: auto !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    overflow: visible !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .cv-page-sheet {
+    page-break-after: always !important;
+    break-after: page !important;
+  }
+
+  .cv-page-sheet:last-of-type {
+    page-break-after: auto !important;
+    break-after: auto !important;
+  }
+
+  /* CV Header Block (Personal Info): Never cut header */
+  .cv-header-block {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    break-after: avoid !important;
+    page-break-after: avoid !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Section Block: Allows natural multi-page flow across items */
+  .cv-section-block {
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Section Header: Never leave title orphaned at the bottom of a page */
+  .cv-section-header {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    break-after: avoid !important;
+    page-break-after: avoid !important;
+  }
+
+  /* Section Content */
+  .section-content {
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Atomic Items: Never slice a project, education card, work exp, cert, or skill group in half! */
+  .cv-item-block {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    display: block !important;
+    height: auto !important;
+    overflow: visible !important;
+    margin-bottom: 6px !important;
+  }
+
+  /* Form elements / textareas in print mode: transparent and pristine */
+  input, textarea {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    resize: none !important;
+    color: inherit !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: transparent !important;
+  }
+}
+
+/* Responsive Global Rules for Mobile & Small Screens (< 768px & < 360px) */
+@media (max-width: 768px) {
+  .responsive-container {
+    padding: 16px !important;
+  }
+  .responsive-card {
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+  .responsive-card-actions {
+    width: 100% !important;
+  }
+  .responsive-filter-bar {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  .responsive-header {
+    padding: 0 16px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .responsive-container {
+    padding: 10px !important;
+  }
+  .mobile-hide-subtext {
+    display: none !important;
+  }
+}

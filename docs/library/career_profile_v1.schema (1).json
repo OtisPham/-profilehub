@@ -1,0 +1,2640 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://profilehub.example/schemas/career-profile-v1.json",
+  "title": "ProfileHub Career Profile v1",
+  "description": "Mô hình dữ liệu dùng chung cho Career Discovery, CV Builder, Interview Coach, Career Card và Career Intelligence Engine.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "profile_id",
+    "user",
+    "profile",
+    "consents"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "profile_id": {
+      "$ref": "#/$defs/Id"
+    },
+    "user": {
+      "type": "object",
+      "required": [
+        "display_name"
+      ],
+      "properties": {
+        "display_name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "locale": {
+          "type": "string",
+          "examples": [
+            "vi-VN",
+            "en-US"
+          ]
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "type",
+              "url"
+            ],
+            "properties": {
+              "type": {
+                "enum": [
+                  "linkedin",
+                  "github",
+                  "portfolio",
+                  "website",
+                  "other"
+                ]
+              },
+              "url": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "profile": {
+      "type": "object",
+      "required": [
+        "industries",
+        "level",
+        "persona"
+      ],
+      "properties": {
+        "industries": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 2,
+          "items": {
+            "$ref": "#/$defs/IndustryCode"
+          },
+          "description": "Phần tử đầu là ngành chính."
+        },
+        "level": {
+          "enum": [
+            "student",
+            "fresher",
+            "junior",
+            "mid",
+            "senior",
+            "manager",
+            "director_plus"
+          ]
+        },
+        "persona": {
+          "enum": [
+            "P1_fresher",
+            "P2_junior_mid",
+            "P3_senior_manager",
+            "P4_career_changer"
+          ]
+        },
+        "headline": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "languages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "language"
+            ],
+            "properties": {
+              "language": {
+                "type": "string"
+              },
+              "proficiency": {
+                "enum": [
+                  "basic",
+                  "conversational",
+                  "professional",
+                  "native"
+                ]
+              },
+              "certificate": {
+                "type": "string",
+                "description": "Ví dụ: IELTS 7.0"
+              }
+            }
+          }
+        }
+      }
+    },
+    "discovery": {
+      "type": "object",
+      "description": "Trạng thái Career Discovery Flow v1.",
+      "properties": {
+        "purpose": {
+          "enum": [
+            "cv",
+            "interview",
+            "both"
+          ]
+        },
+        "output_language": {
+          "enum": [
+            "vi",
+            "en",
+            "bilingual"
+          ]
+        },
+        "current_stage": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 7
+        },
+        "completed_stages": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 7
+          }
+        },
+        "deep_dive_queue": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EntityRef"
+          },
+          "description": "Các đơn vị cần deep-dive: experience, project, activity, education (fresher)."
+        },
+        "sessions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "started_at"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/Id"
+              },
+              "started_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "ended_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "stage_reached": {
+                "type": "integer"
+              },
+              "questions_asked": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        "gaps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "entity_type",
+              "reason"
+            ],
+            "properties": {
+              "entity_type": {
+                "type": "string"
+              },
+              "entity_id": {
+                "$ref": "#/$defs/Id"
+              },
+              "reason": {
+                "enum": [
+                  "missing_metric",
+                  "missing_role",
+                  "missing_result",
+                  "missing_evidence",
+                  "too_generic",
+                  "user_skipped",
+                  "other"
+                ]
+              },
+              "suggested_question_id": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "coverage": {
+          "type": "object",
+          "description": "Bản đồ độ phủ của Discovery. Khóa là slot, ví dụ 'ACH-01@ach_01', 'SKL-01', 'GOAL-04'.",
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "status"
+            ],
+            "properties": {
+              "status": {
+                "enum": [
+                  "empty",
+                  "partial",
+                  "complete",
+                  "skipped",
+                  "not_applicable"
+                ]
+              },
+              "updated_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        },
+        "focus": {
+          "$ref": "#/$defs/EntityRef",
+          "description": "Thực thể đang được nói tới trong hội thoại."
+        }
+      }
+    },
+    "raw_answers": {
+      "type": "array",
+      "description": "Nhật ký tin nhắn gốc của người dùng, để truy vết mọi dữ liệu có cấu trúc về nguồn. Trong chat tự do, một tin nhắn có thể trả lời nhiều câu hỏi (covers_question_ids) hoặc không gắn với câu hỏi nào.",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "text",
+          "answered_at"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/Id"
+          },
+          "session_id": {
+            "$ref": "#/$defs/Id"
+          },
+          "question_id": {
+            "type": "string",
+            "description": "Câu hỏi AI vừa đặt (nếu có). Tùy chọn trong chat tự do.",
+            "examples": [
+              "ACH-01"
+            ]
+          },
+          "text": {
+            "type": "string"
+          },
+          "answered_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "skipped": {
+            "type": "boolean"
+          },
+          "message_id": {
+            "type": "string",
+            "description": "ID tin nhắn trong hội thoại."
+          },
+          "covers_question_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Các câu hỏi trong Question Bank mà tin nhắn này đã trả lời (do AI xác định)."
+          }
+        }
+      }
+    },
+    "experiences": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Experience"
+      }
+    },
+    "education": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Education"
+      }
+    },
+    "achievements": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Achievement"
+      }
+    },
+    "problems": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/ProblemStory"
+      }
+    },
+    "leadership": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/LeadershipStory"
+      }
+    },
+    "failures": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/FailureStory"
+      }
+    },
+    "learning": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/LearningItem"
+      }
+    },
+    "skills": {
+      "type": "object",
+      "properties": {
+        "hard": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HardSkill"
+          }
+        },
+        "soft": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SoftSkill"
+          }
+        },
+        "transferable": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SoftSkill"
+          }
+        }
+      }
+    },
+    "certifications": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Certification"
+      }
+    },
+    "projects": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Project"
+      }
+    },
+    "activities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Activity"
+      }
+    },
+    "awards": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Award"
+      }
+    },
+    "industry_data": {
+      "type": "object",
+      "description": "Dữ liệu đặc thù theo ngành (Industry Modules). Khóa là mã ngành.",
+      "patternProperties": {
+        "^(IT|MKT|SAL|FIN|HR|EDU|MED|DES|OPS|FRS)$": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "goals": {
+      "$ref": "#/$defs/Goals"
+    },
+    "story": {
+      "type": "object",
+      "properties": {
+        "timeline": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "period",
+              "label"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/Id"
+              },
+              "period": {
+                "$ref": "#/$defs/DateRange"
+              },
+              "label": {
+                "type": "string"
+              },
+              "ref": {
+                "$ref": "#/$defs/EntityRef"
+              },
+              "motivation": {
+                "type": "string"
+              },
+              "transition": {
+                "type": "string"
+              },
+              "learned": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "turning_points": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "title"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/Id"
+              },
+              "title": {
+                "type": "string"
+              },
+              "when": {
+                "$ref": "#/$defs/PartialDate"
+              },
+              "description": {
+                "type": "string"
+              },
+              "before": {
+                "type": "string"
+              },
+              "after": {
+                "type": "string"
+              },
+              "meta": {
+                "$ref": "#/$defs/Meta"
+              }
+            }
+          }
+        },
+        "strengths": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "name",
+              "origin",
+              "confirmed_by_user"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/Id"
+              },
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "origin": {
+                "enum": [
+                  "user_stated",
+                  "ai_suggested"
+                ]
+              },
+              "confirmed_by_user": {
+                "type": "boolean"
+              },
+              "evidence_refs": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/EntityRef"
+                }
+              }
+            }
+          }
+        },
+        "narrative": {
+          "type": "object",
+          "properties": {
+            "hook": {
+              "type": "string",
+              "description": "STORY-05"
+            },
+            "theme": {
+              "type": "string",
+              "description": "STORY-06"
+            },
+            "summary_30s": {
+              "type": "string"
+            },
+            "full": {
+              "type": "string"
+            },
+            "source_refs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/EntityRef"
+              },
+              "description": "Mọi câu trong narrative phải truy ngược được về dữ liệu nguồn."
+            },
+            "confirmed_by_user": {
+              "type": "boolean"
+            },
+            "language": {
+              "type": "string"
+            },
+            "generated_at": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Evidence"
+      }
+    },
+    "job_descriptions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/JobDescription"
+      }
+    },
+    "documents": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/GeneratedResume"
+      }
+    },
+    "interviews": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/InterviewSession"
+      }
+    },
+    "scores": {
+      "$ref": "#/$defs/Scores"
+    },
+    "career_card": {
+      "$ref": "#/$defs/CareerCard"
+    },
+    "consents": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "type",
+          "granted",
+          "at"
+        ],
+        "properties": {
+          "type": {
+            "enum": [
+              "data_processing",
+              "ai_analysis",
+              "public_profile",
+              "recruiter_visibility",
+              "analytics_tracking",
+              "reference_contact",
+              "marketing"
+            ]
+          },
+          "granted": {
+            "type": "boolean"
+          },
+          "at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "policy_version": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "Id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 64,
+      "description": "ID có tiền tố, ví dụ ach_01, exp_03."
+    },
+    "PartialDate": {
+      "type": "string",
+      "pattern": "^\\d{4}(-\\d{2}(-\\d{2})?)?$",
+      "description": "YYYY, YYYY-MM hoặc YYYY-MM-DD"
+    },
+    "DateRange": {
+      "type": "object",
+      "required": [
+        "start"
+      ],
+      "properties": {
+        "start": {
+          "$ref": "#/$defs/PartialDate"
+        },
+        "end": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/PartialDate"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "is_current": {
+          "type": "boolean"
+        }
+      }
+    },
+    "IndustryCode": {
+      "enum": [
+        "IT",
+        "MKT",
+        "SAL",
+        "FIN",
+        "HR",
+        "EDU",
+        "MED",
+        "DES",
+        "OPS",
+        "FRS"
+      ]
+    },
+    "Visibility": {
+      "enum": [
+        "private",
+        "recruiter",
+        "link",
+        "public"
+      ],
+      "description": "private: chỉ chủ hồ sơ; recruiter: nhà tuyển dụng được cấp quyền; link: ai có link/QR; public: công khai."
+    },
+    "EntityRef": {
+      "type": "object",
+      "required": [
+        "type",
+        "id"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "experience",
+            "achievement",
+            "problem",
+            "leadership",
+            "failure",
+            "learning",
+            "skill",
+            "certification",
+            "project",
+            "activity",
+            "award",
+            "evidence",
+            "raw_answer",
+            "interview_answer",
+            "education"
+          ]
+        },
+        "id": {
+          "$ref": "#/$defs/Id"
+        }
+      }
+    },
+    "Meta": {
+      "type": "object",
+      "description": "Metadata nguồn gốc và xác minh, gắn vào mọi thực thể quan trọng.",
+      "required": [
+        "source_type",
+        "created_at",
+        "updated_at"
+      ],
+      "properties": {
+        "source_type": {
+          "enum": [
+            "user_stated",
+            "ai_inferred",
+            "imported_cv",
+            "imported_linkedin",
+            "third_party"
+          ]
+        },
+        "source_question_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "raw_answer_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          }
+        },
+        "estimated": {
+          "type": "boolean",
+          "default": false
+        },
+        "confidence": {
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "verification": {
+          "type": "object",
+          "required": [
+            "status"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "self_reported",
+                "evidence_attached",
+                "third_party_verified",
+                "disputed"
+              ],
+              "default": "self_reported"
+            },
+            "method": {
+              "enum": [
+                "credential_check",
+                "link_check",
+                "referee_confirmation",
+                "document_review",
+                "system_integration"
+              ]
+            },
+            "verified_by": {
+              "type": "string"
+            },
+            "verified_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "notes": {
+              "type": "string"
+            }
+          }
+        },
+        "visibility": {
+          "$ref": "#/$defs/Visibility"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "Metric": {
+      "type": "object",
+      "required": [
+        "name",
+        "value"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "examples": [
+            "ROAS",
+            "Doanh số",
+            "Time-to-hire",
+            "Chi phí vận hành"
+          ]
+        },
+        "value": {
+          "type": "number"
+        },
+        "unit": {
+          "type": "string",
+          "examples": [
+            "%",
+            "VND",
+            "USD",
+            "ngày",
+            "user",
+            "đơn"
+          ]
+        },
+        "baseline": {
+          "type": "number"
+        },
+        "direction": {
+          "enum": [
+            "increase",
+            "decrease",
+            "maintain"
+          ]
+        },
+        "period": {
+          "type": "string",
+          "examples": [
+            "quý 3/2025",
+            "6 tháng"
+          ]
+        },
+        "estimated": {
+          "type": "boolean",
+          "default": false
+        },
+        "display": {
+          "type": "string",
+          "description": "Chuỗi hiển thị, ví dụ: ROAS 2.1 lên 4.5"
+        }
+      }
+    },
+    "Quality": {
+      "type": "object",
+      "required": [
+        "score",
+        "rubric_version"
+      ],
+      "properties": {
+        "score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "label": {
+          "enum": [
+            "strong",
+            "acceptable",
+            "needs_work",
+            "weak"
+          ]
+        },
+        "breakdown": {
+          "type": "object",
+          "properties": {
+            "context": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 15
+            },
+            "personal_role": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 20
+            },
+            "actions": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 20
+            },
+            "quantified_result": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 30
+            },
+            "evidence": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 10
+            },
+            "target_relevance": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 5
+            },
+            "learning_growth": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 10,
+              "description": "Chỉ dùng ở rubric fresher: bài học, sự trưởng thành, điều học được."
+            }
+          }
+        },
+        "rubric_version": {
+          "type": "string"
+        },
+        "computed_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "STAR": {
+      "type": "object",
+      "properties": {
+        "situation": {
+          "type": "string"
+        },
+        "task": {
+          "type": "string"
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "result": {
+          "type": "string"
+        },
+        "metrics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Metric"
+          }
+        }
+      }
+    },
+    "Experience": {
+      "type": "object",
+      "required": [
+        "id",
+        "organization",
+        "title",
+        "period",
+        "meta"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "organization": {
+          "type": "object",
+          "required": [
+            "name"
+          ],
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "industry": {
+              "type": "string"
+            },
+            "size": {
+              "type": "string",
+              "examples": [
+                "50-200 nhân sự"
+              ]
+            }
+          }
+        },
+        "title": {
+          "type": "string"
+        },
+        "employment_type": {
+          "enum": [
+            "full_time",
+            "part_time",
+            "internship",
+            "freelance",
+            "contract",
+            "volunteer"
+          ]
+        },
+        "period": {
+          "$ref": "#/$defs/DateRange"
+        },
+        "location": {
+          "type": "string"
+        },
+        "team_size": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "responsibilities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "highlight": {
+          "type": "string"
+        },
+        "achievement_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          }
+        },
+        "skills_used": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "deep_dive_done": {
+          "type": "boolean"
+        },
+        "meta": {
+          "$ref": "#/$defs/Meta"
+        }
+      }
+    },
+    "Education": {
+      "type": "object",
+      "required": [
+        "id",
+        "institution",
+        "period",
+        "meta"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "institution": {
+          "type": "string"
+        },
+        "degree": {
+          "type": "string"
+        },
+        "major": {
+          "type": "string"
+        },
+        "period": {
+          "$ref": "#/$defs/DateRange"
+        },
+        "gpa": {
+          "type": "string"
+        },
+        "honors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "meta": {
+          "$ref": "#/$defs/Meta"
+        }
+      }
+    },
+    "Achievement": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "meta"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "experience_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "context_ref": {
+          "$ref": "#/$defs/EntityRef",
+          "description": "Thay cho experience_id khi thành tích thuộc project/activity."
+        },
+        "title": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "star": {
+          "$ref": "#/$defs/STAR"
+        },
+        "result": {
+          "type": "object",
+          "properties": {
+            "metrics": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Metric"
+              }
+            },
+            "before_after": {
+              "type": "string"
+            },
+            "scale": {
+              "type": "string"
+            },
+            "qualitative": {
+              "type": "string"
+            },
+            "sustainability": {
+              "type": "string"
+            }
+          }
+        },
+        "beyond_scope": {
+          "type": "string"
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "revenue",
+              "cost_saving",
+              "efficiency",
+              "quality",
+              "growth",
+              "customer",
+              "innovation",
+              "leadership",
+              "learning",
+              "compliance_risk"
+            ]
+          }
+        },
+        "dna_signals": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "builder",
+              "leader",
+              "operator",
+              "strategist",
+              "analyst",
+              "creator"
+            ]
+          }
+        },
+        "competencies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "skills_used": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          }
+        },
+        "quality": {
+          "$ref": "#/$defs/Quality"
+        },
+        "resume_bullets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "text",
+              "language",
+              "user_approved"
+            ],
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "language": {
+                "type": "string"
+              },
+              "user_approved": {
+                "type": "boolean",
+                "description": "Chỉ bullet đã được người dùng duyệt mới đưa vào CV."
+              },
+              "contains_estimated_figures": {
+                "type": "boolean"
+              },
+              "generated_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        },
+        "meta": {
+          "$ref": "#/$defs/Meta"
+        }
+      }
+    },
+    "ProblemStory": {
+      "type": "object",
+      "required": [
+        "id",
+        "meta"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "experience_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "title": {
+          "type": "string"
+        },
+        "star": {
+          "$ref": "#/$defs/STAR"
+        },
+        "analysis": {
+          "type": "string"
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "option"
+            ],
+            "properties": {
+              "option": {
+                "type": "string"
+              },
+              "trade_off": {
+                "type": "string"
+              },
+              "chosen": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "decision_rationale": {
+          "type": "string"
+        },
+        "reflection": {
+          "type": "string"
+        },
+        "prevention": {
+          "type": "string"
+        },
+        "involved_ambiguity": {
+          "type": "boolean"
+        },
+        "quality": {
+          "$ref": "#/$defs/Quality"
+        },
+        "meta": {
+          "$ref": "#/$defs/Meta"
+        }
+      }
+    },
+    "LeadershipStory": {
+      "type": "object",
+      "required": [
+        "id",
+        "formal",
+        "meta"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "context_ref": {
+          "$ref": "#/$defs/EntityRef"
+        },
+        "formal": {
+          "type": "boolean",
+          "description": "false = tự đứng ra dẫn dắt (LEAD-05)."
+        },
+        "scope": {
+          "type": "object",
+          "properties": {
+            "team_size": {
+              "type": "integer"
+            },
+            "budget": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
+          }
+        },
+        "method": {
+          "type": "string"
+        },
+        "conflict_story": {
+          "$ref": "#/$defs/STAR"
+        },
+        "mentoring": {
+          "type": "object",
+          "properties": {
+            "mentees": {
+              "type": "integer"
+            },
+            "outcome": {
+              "type": "string"
+            }
+          }
+        },
+        "results": {
+          "type": "string"
+        },
+        "quality": {
+          "$ref": "#/$defs/Quality"
+        },
+        "meta": {
+          "$ref": "#/$defs/Meta"
+        }
+      }
+    },
+    "FailureStory": {
+      "type": "object",
+      "required": [
+        "id",
+        "story",
+        "lesson",
+        "meta"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "context_ref": {
+          "$ref": "#/$defs/EntityRef"
+        },
+        "story": {
+          "$ref": "#/$defs/STAR"
+        },
+        "lesson": {
+          "type": "string"
+        },
+        "applied_afterwards": {
+          "type": "string"
+        },
+        "quality": {
+          "$ref": "#/$defs/Quality"
+        },
+        "meta": {
+          "$ref": "#/$defs/Meta"
+        }
+      }
+    },
+    "LearningItem": {
+      "type": "object",
+      "required": [
+        "id",
+        "kind",
+        "meta"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "enum": [
+            "self_taught",
+            "feedback_handling",
+            "current_goal"
+          ]
+        },
+        "skill": {
+          "type": "string"
+        },
+        "method": {
+          "type": "string"
+        },
+        "duration_months": {
+          "type": "number"
+        },
+        "description": {
+          "type": "string"
+        },
+        "meta": {
+          "$ref": "#/$defs/Meta"
+        }
+      }
+    },
+    "HardSkill": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "proficiency",
+        "meta"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "name": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "proficiency": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "proficiency_basis": {
+          "enum": [
+            "self_rated",
+            "demonstrated_in_achievement",
+            "assessed",
+            "certified"
+          ],
+          "default": "self_rated"
+        },
+        "years": {
+          "type": "number"
+        },
+        "last_used": {
+          "$ref": "#/$defs/PartialDate"
+        },
+        "examples": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "text"
+            ],
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "ref": {
+                "$ref": "#/$defs/EntityRef"
+              }
+            }
+          }
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          }
+        },
+        "meta": {
+          "$ref": "#/$defs/Meta"
+        }
+      }
+    },
+    "SoftSkill": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "meta"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "name": {
+          "type": "string"
+        },
+        "evidence_situation": {
+          "type": "string"
+        },
+        "origin": {
+          "enum": [
+            "self",
+            "peer_feedback",
+            "ai_inferred_from_story"
+          ]
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EntityRef"
+          }
+        },
+        "meta": {
+          "$ref": "#/$defs/Meta"
+        }
+      }
+    },
+    "Certification": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "status",
+        "meta"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "name": {
+          "type": "string"
+        },
+        "issuer": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "in_progress",
+            "obtained",
+            "expired"
+          ]
+        },
+        "credential_id": {
+          "type": "string"
+        },
+        "verification_url": {
+          "type": "string"
+        },
+        "issued": {
+          "$ref": "#/$defs/PartialDate"
+        },
+        "expires": {
+          "$ref": "#/$defs/PartialDate"
+        },
+        "applied_in": {
+          "type": "string",
+          "description": "LRN-06: đã dùng vào việc gì."
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          }
+        },
+        "meta": {
+          "$ref": "#/$defs/Meta"
+        }
+      }
+    },
+    "Project": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "meta"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "motivation": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "period": {
+          "$ref": "#/$defs/DateRange"
+        },
+        "stack_or_methods": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "outcome": {
+          "type": "string"
+        },
+        "achievement_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          }
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          }
+        },
+        "meta": {
+          "$ref": "#/$defs/Meta"
+        },
+        "deep_dive_done": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Activity": {
+      "type": "object",
+      "required": [
+        "id",
+        "organization",
+        "role",
+        "meta"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "type": {
+          "enum": [
+            "club",
+            "volunteer",
+            "competition",
+            "event",
+            "community",
+            "other"
+          ]
+        },
+        "organization": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "period": {
+          "$ref": "#/$defs/DateRange"
+        },
+        "result": {
+          "type": "string"
+        },
+        "achievement_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          }
+        },
+        "meta": {
+          "$ref": "#/$defs/Meta"
+        },
+        "deep_dive_done": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Award": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "meta"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "title": {
+          "type": "string"
+        },
+        "issuer": {
+          "type": "string"
+        },
+        "date": {
+          "$ref": "#/$defs/PartialDate"
+        },
+        "level": {
+          "enum": [
+            "school",
+            "company",
+            "city_or_province",
+            "national",
+            "international"
+          ]
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          }
+        },
+        "meta": {
+          "$ref": "#/$defs/Meta"
+        }
+      }
+    },
+    "Goals": {
+      "type": "object",
+      "properties": {
+        "short_term": {
+          "type": "string"
+        },
+        "long_term": {
+          "type": "string"
+        },
+        "motivation": {
+          "type": "string"
+        },
+        "target_roles": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "title"
+            ],
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "level": {
+                "type": "string"
+              },
+              "industry": {
+                "$ref": "#/$defs/IndustryCode"
+              },
+              "priority": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          }
+        },
+        "priorities": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "skills",
+              "income",
+              "environment",
+              "impact",
+              "stability",
+              "leadership_path",
+              "work_life_balance"
+            ]
+          }
+        },
+        "culture_fit": {
+          "type": "object",
+          "properties": {
+            "prefer": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "avoid": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "gaps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "constraints": {
+          "type": "object",
+          "properties": {
+            "locations": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "salary": {
+              "type": "object",
+              "properties": {
+                "min": {
+                  "type": "number"
+                },
+                "max": {
+                  "type": "number"
+                },
+                "currency": {
+                  "type": "string"
+                },
+                "period": {
+                  "enum": [
+                    "month",
+                    "year"
+                  ]
+                }
+              }
+            },
+            "availability": {
+              "type": "string"
+            }
+          }
+        },
+        "meta": {
+          "$ref": "#/$defs/Meta"
+        }
+      }
+    },
+    "Evidence": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "title",
+        "supports",
+        "meta"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "type": {
+          "enum": [
+            "certificate",
+            "document",
+            "link",
+            "portfolio",
+            "award_letter",
+            "metric_screenshot",
+            "system_record",
+            "testimonial",
+            "other"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "file_ref": {
+          "type": "string"
+        },
+        "issuer": {
+          "type": "string"
+        },
+        "credential_id": {
+          "type": "string"
+        },
+        "testimonial": {
+          "type": "object",
+          "properties": {
+            "from_name": {
+              "type": "string"
+            },
+            "from_role": {
+              "type": "string"
+            },
+            "relationship": {
+              "enum": [
+                "manager",
+                "peer",
+                "client",
+                "mentor",
+                "recruiter",
+                "teacher"
+              ]
+            },
+            "summary": {
+              "type": "string"
+            },
+            "contact_confirmed": {
+              "type": "boolean"
+            }
+          }
+        },
+        "supports": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/EntityRef"
+          }
+        },
+        "sensitive_data_redacted": {
+          "type": "boolean"
+        },
+        "meta": {
+          "$ref": "#/$defs/Meta"
+        }
+      }
+    },
+    "JobDescription": {
+      "type": "object",
+      "required": [
+        "id",
+        "title"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "title": {
+          "type": "string"
+        },
+        "company": {
+          "type": "string"
+        },
+        "source_url": {
+          "type": "string"
+        },
+        "raw_text": {
+          "type": "string"
+        },
+        "parsed": {
+          "type": "object",
+          "properties": {
+            "level": {
+              "type": "string"
+            },
+            "must_have": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "nice_to_have": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "keywords": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "responsibilities": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "match": {
+          "type": "object",
+          "properties": {
+            "score": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "matched_skills": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "missing_skills": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "missing_achievements": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "missing_experience": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "supporting_refs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/EntityRef"
+              }
+            },
+            "computed_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "model_version": {
+              "type": "string"
+            }
+          }
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "GeneratedResume": {
+      "type": "object",
+      "required": [
+        "id",
+        "variant",
+        "language",
+        "blocks",
+        "generated_at"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "variant": {
+          "enum": [
+            "ats",
+            "recruiter",
+            "manager",
+            "executive"
+          ]
+        },
+        "language": {
+          "type": "string"
+        },
+        "jd_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "template": {
+          "type": "string"
+        },
+        "blocks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "section",
+              "text",
+              "source_refs"
+            ],
+            "properties": {
+              "section": {
+                "enum": [
+                  "summary",
+                  "experience",
+                  "education",
+                  "skills",
+                  "projects",
+                  "certifications",
+                  "awards",
+                  "activities",
+                  "other"
+                ]
+              },
+              "text": {
+                "type": "string"
+              },
+              "source_refs": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "$ref": "#/$defs/EntityRef"
+                },
+                "description": "Bắt buộc: mỗi đoạn trong CV truy về được dữ liệu nguồn."
+              }
+            }
+          }
+        },
+        "audit": {
+          "type": "object",
+          "properties": {
+            "content_quality_score": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "issues": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "type",
+                  "message"
+                ],
+                "properties": {
+                  "type": {
+                    "enum": [
+                      "missing_metric",
+                      "missing_impact",
+                      "too_generic",
+                      "inconsistent_timeline",
+                      "keyword_gap",
+                      "unverified_claim",
+                      "estimated_figure"
+                    ]
+                  },
+                  "message": {
+                    "type": "string"
+                  },
+                  "block_index": {
+                    "type": "integer"
+                  }
+                }
+              }
+            },
+            "recruiter_simulation": {
+              "type": "object",
+              "properties": {
+                "shortlist_reasons": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "rejection_reasons": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "generated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "InterviewSession": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "mode",
+        "started_at",
+        "answers"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/Id"
+        },
+        "type": {
+          "enum": [
+            "by_level",
+            "industry",
+            "behavioral",
+            "leadership",
+            "executive",
+            "jd_based"
+          ]
+        },
+        "level_focus": {
+          "type": "string"
+        },
+        "industry": {
+          "$ref": "#/$defs/IndustryCode"
+        },
+        "jd_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "mode": {
+          "enum": [
+            "text",
+            "voice"
+          ]
+        },
+        "started_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ended_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "answers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "question",
+              "competency"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/Id"
+              },
+              "question": {
+                "type": "string"
+              },
+              "competency": {
+                "enum": [
+                  "achievement",
+                  "problem_solving",
+                  "leadership",
+                  "conflict",
+                  "failure_learning",
+                  "communication",
+                  "ownership",
+                  "decision_making",
+                  "technical",
+                  "domain_knowledge",
+                  "motivation",
+                  "strategy"
+                ]
+              },
+              "story_ref": {
+                "$ref": "#/$defs/EntityRef",
+                "description": "Câu chuyện trong hồ sơ mà người dùng đã dùng để trả lời."
+              },
+              "transcript": {
+                "type": "string"
+              },
+              "score": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "rubric": {
+                "type": "object",
+                "properties": {
+                  "structure": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 5
+                  },
+                  "specificity": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 5
+                  },
+                  "personal_role": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 5
+                  },
+                  "impact": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 5
+                  },
+                  "relevance": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 5
+                  }
+                }
+              },
+              "voice_metrics": {
+                "type": "object",
+                "properties": {
+                  "confidence": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100
+                  },
+                  "clarity": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100
+                  },
+                  "pace_wpm": {
+                    "type": "number"
+                  },
+                  "filler_rate": {
+                    "type": "number"
+                  },
+                  "tone": {
+                    "type": "string"
+                  }
+                }
+              },
+              "feedback": {
+                "type": "string"
+              },
+              "suggested_improvement": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "overall_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "rubric_version": {
+          "type": "string"
+        }
+      }
+    },
+    "ScoreComponent": {
+      "type": "object",
+      "required": [
+        "name",
+        "weight"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "weight": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "value": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 100
+        }
+      }
+    },
+    "Score": {
+      "type": "object",
+      "required": [
+        "value",
+        "formula_version",
+        "computed_at"
+      ],
+      "properties": {
+        "value": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 100,
+          "description": "null nếu chưa đủ dữ liệu."
+        },
+        "band": {
+          "enum": [
+            "insufficient_data",
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "status": {
+          "enum": [
+            "active",
+            "experimental"
+          ],
+          "default": "active",
+          "description": "experimental = chưa hiệu chuẩn, không hiển thị cho recruiter."
+        },
+        "components": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ScoreComponent"
+          }
+        },
+        "explanation": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Lý do con số, hiển thị cho người dùng."
+        },
+        "formula_version": {
+          "type": "string"
+        },
+        "computed_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "Scores": {
+      "type": "object",
+      "properties": {
+        "data_quality": {
+          "type": "object",
+          "properties": {
+            "overall": {
+              "$ref": "#/$defs/Score"
+            },
+            "by_group": {
+              "type": "object",
+              "properties": {
+                "achievements_impact": {
+                  "type": "number"
+                },
+                "experience": {
+                  "type": "number"
+                },
+                "skills": {
+                  "type": "number"
+                },
+                "problem_solving": {
+                  "type": "number"
+                },
+                "leadership": {
+                  "type": "number"
+                },
+                "learning_failure": {
+                  "type": "number"
+                },
+                "projects_activities_certs": {
+                  "type": "number"
+                },
+                "career_goal": {
+                  "type": "number"
+                },
+                "career_story": {
+                  "type": "number"
+                }
+              }
+            },
+            "readiness": {
+              "type": "object",
+              "properties": {
+                "cv": {
+                  "$ref": "#/$defs/Readiness"
+                },
+                "interview": {
+                  "$ref": "#/$defs/Readiness"
+                }
+              }
+            }
+          }
+        },
+        "employability": {
+          "$ref": "#/$defs/Score"
+        },
+        "trust": {
+          "$ref": "#/$defs/Score"
+        },
+        "hiring_potential": {
+          "$ref": "#/$defs/Score"
+        },
+        "interview": {
+          "type": "object",
+          "properties": {
+            "overall": {
+              "$ref": "#/$defs/Score"
+            },
+            "by_competency": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100
+              }
+            },
+            "trend": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "session_id",
+                  "score"
+                ],
+                "properties": {
+                  "session_id": {
+                    "$ref": "#/$defs/Id"
+                  },
+                  "score": {
+                    "type": "number"
+                  },
+                  "at": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              }
+            },
+            "blind_spots": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "competency",
+                  "avg_score",
+                  "sessions_count"
+                ],
+                "properties": {
+                  "competency": {
+                    "type": "string"
+                  },
+                  "avg_score": {
+                    "type": "number"
+                  },
+                  "sessions_count": {
+                    "type": "integer"
+                  },
+                  "recommended_action": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "career_dna": {
+          "type": "object",
+          "properties": {
+            "primary": {
+              "enum": [
+                "builder",
+                "leader",
+                "operator",
+                "strategist",
+                "analyst",
+                "creator",
+                null
+              ]
+            },
+            "secondary": {
+              "enum": [
+                "builder",
+                "leader",
+                "operator",
+                "strategist",
+                "analyst",
+                "creator",
+                null
+              ]
+            },
+            "distribution": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            },
+            "supporting_refs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/EntityRef"
+              }
+            },
+            "rule_version": {
+              "type": "string"
+            },
+            "computed_at": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      }
+    },
+    "Readiness": {
+      "type": "object",
+      "required": [
+        "status",
+        "gate_threshold"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "ready",
+            "almost",
+            "not_ready"
+          ]
+        },
+        "gate_threshold": {
+          "type": "number"
+        },
+        "missing": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "CareerCard": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "qr_url": {
+          "type": "string"
+        },
+        "section_visibility": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/Visibility"
+          },
+          "description": "Khóa là tên phần: summary, experience, achievements, skills, certifications, timeline, insights, evidence, interview_score, scores."
+        },
+        "recruiter_view": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "show_scores": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "employability",
+                  "trust",
+                  "interview"
+                ]
+              }
+            }
+          }
+        },
+        "analytics_enabled": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

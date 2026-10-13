@@ -1,0 +1,5 @@
+# Thêm vào supabase/config.toml
+[functions.api]
+enabled = true
+verify_jwt = true      # gateway chặn request không có JWT hợp lệ (function vẫn tự xác thực lại)
+import_map = "./functions/api/deno.json"

@@ -1,0 +1,160 @@
+{
+  "schema_version": "1.0.0",
+  "profile_id": "prof_002",
+  "user": { "display_name": "Trần Quốc Bảo", "locale": "vi-VN", "created_at": "2026-09-28T10:00:00Z" },
+  "profile": {
+    "industries": ["IT", "FRS"],
+    "level": "student",
+    "persona": "P1_fresher",
+    "headline": "Sinh viên năm 4 CNTT, quan tâm Backend",
+    "location": "Hà Nội",
+    "languages": [{ "language": "Tiếng Anh", "proficiency": "professional", "certificate": "TOEIC 750" }]
+  },
+  "discovery": {
+    "purpose": "cv",
+    "output_language": "vi",
+    "current_stage": 2,
+    "completed_stages": [0, 1],
+    "deep_dive_queue": [
+      { "type": "project", "id": "prj_01" },
+      { "type": "activity", "id": "act_01" }
+    ],
+    "focus": { "type": "project", "id": "prj_01" },
+    "coverage": {
+      "ACH-01@ach_01": { "status": "complete" },
+      "IMP-01@ach_01": { "status": "partial" },
+      "ACH-03@ach_01": { "status": "empty" },
+      "LEAD-05": { "status": "partial" },
+      "SKL-01": { "status": "partial" },
+      "GOAL-04": { "status": "skipped" }
+    },
+    "gaps": [{ "entity_type": "achievement", "entity_id": "ach_01", "reason": "missing_evidence", "suggested_question_id": "ACH-03" }]
+  },
+  "raw_answers": [
+    {
+      "id": "raw_01",
+      "message_id": "msg_004",
+      "question_id": "STORY-01",
+      "covers_question_ids": ["STORY-01", "EXP-01", "PRJ-01", "ACT-01"],
+      "text": "Mình năm 4 CNTT. Năm ngoái làm đồ án web đặt sân bóng với 3 bạn, mình làm backend. Mình cũng là phó ban kỹ thuật CLB Lập trình, tổ chức workshop Git khoảng 40 bạn tham dự.",
+      "answered_at": "2026-09-28T10:05:00Z"
+    },
+    {
+      "id": "raw_02",
+      "message_id": "msg_007",
+      "question_id": "IMP-01",
+      "text": "Nhóm cho khoảng 30 bạn trong CLB bóng đá dùng thử, thấy đặt sân nhanh hơn hẳn nhưng mình chưa đo cụ thể.",
+      "answered_at": "2026-09-28T10:09:00Z"
+    }
+  ],
+  "education": [
+    {
+      "id": "edu_01",
+      "institution": "Trường Đại học ABC",
+      "degree": "Kỹ sư",
+      "major": "Công nghệ thông tin",
+      "period": { "start": "2022-09", "end": "2026-06" },
+      "gpa": "3.2/4.0",
+      "meta": { "source_type": "user_stated", "confidence": "high", "created_at": "2026-09-28T10:03:00Z", "updated_at": "2026-09-28T10:03:00Z" }
+    }
+  ],
+  "projects": [
+    {
+      "id": "prj_01",
+      "title": "Web đặt sân bóng (đồ án môn Công nghệ phần mềm)",
+      "description": "Ứng dụng web cho phép đặt và quản lý lịch sân bóng mini.",
+      "role": "Backend developer trong nhóm 4 người",
+      "period": { "start": "2025-02", "end": "2025-06" },
+      "stack_or_methods": ["Node.js", "PostgreSQL", "REST API", "Git"],
+      "outcome": "Bảo vệ đồ án đạt loại tốt; khoảng 30 người dùng thử",
+      "achievement_ids": ["ach_01"],
+      "deep_dive_done": false,
+      "meta": { "source_type": "user_stated", "source_question_ids": ["PRJ-01", "PRJ-02"], "raw_answer_ids": ["raw_01"], "confidence": "high", "created_at": "2026-09-28T10:05:00Z", "updated_at": "2026-09-28T10:05:00Z" }
+    }
+  ],
+  "activities": [
+    {
+      "id": "act_01",
+      "type": "club",
+      "organization": "CLB Lập trình",
+      "role": "Phó ban Kỹ thuật",
+      "period": { "start": "2024-09", "end": null, "is_current": true },
+      "result": "Tổ chức workshop Git, khoảng 40 người tham dự",
+      "meta": { "source_type": "user_stated", "estimated": true, "confidence": "medium", "created_at": "2026-09-28T10:05:00Z", "updated_at": "2026-09-28T10:05:00Z" }
+    }
+  ],
+  "achievements": [
+    {
+      "id": "ach_01",
+      "context_ref": { "type": "project", "id": "prj_01" },
+      "title": "Xây dựng backend cho hệ thống đặt sân bóng",
+      "role": "Backend developer",
+      "star": {
+        "situation": "Đồ án nhóm 4 người, môn Công nghệ phần mềm",
+        "task": "Thiết kế và xây dựng API và cơ sở dữ liệu đặt sân",
+        "actions": ["Thiết kế schema PostgreSQL", "Xây dựng REST API bằng Node.js", "Triển khai cho người dùng thử"],
+        "metrics": [
+          { "name": "Người dùng thử", "value": 30, "unit": "người", "estimated": true, "display": "~30 người dùng thử" }
+        ]
+      },
+      "result": {
+        "metrics": [{ "name": "Người dùng thử", "value": 30, "unit": "người", "estimated": true }],
+        "qualitative": "Người dùng thử phản hồi đặt sân nhanh hơn, chưa đo cụ thể"
+      },
+      "categories": ["innovation", "learning"],
+      "dna_signals": ["builder"],
+      "skills_used": ["Node.js", "PostgreSQL", "REST API"],
+      "quality": {
+        "score": 62,
+        "label": "acceptable",
+        "breakdown": { "context": 12, "personal_role": 18, "actions": 15, "quantified_result": 10, "learning_growth": 4, "evidence": 0, "target_relevance": 3 },
+        "rubric_version": "ach-1.1-fresher"
+      },
+      "meta": {
+        "source_type": "user_stated",
+        "source_question_ids": ["ACH-01", "ACH-02", "IMP-01"],
+        "raw_answer_ids": ["raw_01", "raw_02"],
+        "estimated": true,
+        "confidence": "medium",
+        "verification": { "status": "self_reported" },
+        "visibility": "private",
+        "created_at": "2026-09-28T10:09:00Z",
+        "updated_at": "2026-09-28T10:10:00Z"
+      }
+    }
+  ],
+  "leadership": [
+    {
+      "id": "lead_01",
+      "context_ref": { "type": "activity", "id": "act_01" },
+      "formal": true,
+      "scope": { "description": "Phụ trách mảng kỹ thuật của CLB" },
+      "meta": { "source_type": "user_stated", "created_at": "2026-09-28T10:06:00Z", "updated_at": "2026-09-28T10:06:00Z" }
+    }
+  ],
+  "skills": {
+    "hard": [
+      { "id": "sk_01", "name": "Node.js", "proficiency": 3, "proficiency_basis": "demonstrated_in_achievement", "examples": [{ "text": "Backend đồ án đặt sân", "ref": { "type": "achievement", "id": "ach_01" } }], "meta": { "source_type": "user_stated", "created_at": "2026-09-28T10:12:00Z", "updated_at": "2026-09-28T10:12:00Z" } },
+      { "id": "sk_02", "name": "PostgreSQL", "proficiency": 3, "meta": { "source_type": "user_stated", "created_at": "2026-09-28T10:12:00Z", "updated_at": "2026-09-28T10:12:00Z" } }
+    ]
+  },
+  "certifications": [
+    { "id": "cert_01", "name": "TOEIC", "issuer": "IIG Việt Nam", "status": "obtained", "meta": { "source_type": "user_stated", "created_at": "2026-09-28T10:04:00Z", "updated_at": "2026-09-28T10:04:00Z" } }
+  ],
+  "goals": {
+    "target_roles": [{ "title": "Thực tập sinh / Junior Backend Developer", "industry": "IT", "priority": 1 }],
+    "meta": { "source_type": "user_stated", "created_at": "2026-09-28T10:02:00Z", "updated_at": "2026-09-28T10:02:00Z" }
+  },
+  "scores": {
+    "data_quality": {
+      "overall": { "value": 45, "band": "low", "formula_version": "dq-1.0", "computed_at": "2026-09-28T10:15:00Z", "explanation": ["Có 1 dự án và 1 hoạt động, chưa có bằng chứng, chưa có mục tiêu chi tiết"] },
+      "readiness": {
+        "cv": { "status": "not_ready", "gate_threshold": 65, "missing": ["Cần ≥ 3 mục trong dự án/hoạt động/thực tập", "Chưa có vị trí đích chi tiết"] }
+      }
+    }
+  },
+  "consents": [
+    { "type": "data_processing", "granted": true, "at": "2026-09-28T10:00:00Z", "policy_version": "2026-09" },
+    { "type": "ai_analysis", "granted": true, "at": "2026-09-28T10:00:00Z" }
+  ]
+}

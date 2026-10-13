@@ -1,0 +1,1026 @@
+# Profile Hub — AI Recruitment Feature
+
+## 1. Feature Overview
+
+**Feature name:** AI Recruitment Assistant
+
+### Purpose
+Giúp recruiter rút ngắn thời gian tuyển dụng bằng cách:
+
+1. Nhập nhu cầu tuyển dụng bằng ngôn ngữ tự nhiên.
+2. AI phân tích nhu cầu và tạo Hiring Brief.
+3. AI tự động tạo Job Description (JD).
+4. Recruiter chỉnh sửa và xác nhận JD.
+5. Hệ thống tìm và đề xuất ứng viên phù hợp.
+6. Recruiter lọc, xem profile/project, shortlist và liên hệ ứng viên.
+
+### Product principle
+
+> **AI hỗ trợ quyết định, không thay recruiter quyết định.**
+
+AI chỉ đưa ra đề xuất dựa trên thông tin có trong profile, project và yêu cầu tuyển dụng. Recruiter luôn là người review, shortlist, contact và quyết định tuyển dụng.
+
+---
+
+## 2. User Problem
+
+Recruiter thường phải:
+
+- Viết JD từ đầu.
+- Xác định skill cần thiết.
+- Tìm kiếm nhiều candidate.
+- Đọc từng profile.
+- Kiểm tra project và experience.
+- So sánh candidate.
+- Lọc những người phù hợp.
+
+Quá trình này mất nhiều thời gian, đặc biệt khi tuyển sinh viên hoặc junior có nhiều profile nhưng ít kinh nghiệm làm việc chính thức.
+
+### Solution
+
+Profile Hub sử dụng AI để biến một yêu cầu tuyển dụng đơn giản thành:
+
+**Hiring Requirement → JD → Candidate Matching → Shortlist**
+
+---
+
+## 3. Core User Flow
+
+```text
+RECRUITER
+    ↓
+AI RECRUITMENT
+    ↓
+Describe Hiring Need
+    ↓
+AI analyzes requirement
+    ↓
+Hiring Brief
+    ↓
+Generate Job Description
+    ↓
+Recruiter Review / Edit
+    ↓
+Publish Job
+    ↓
+AI Candidate Matching
+    ↓
+Recommended Candidates
+    ↓
+Filter / Compare / View Profile
+    ↓
+Shortlist
+    ↓
+Contact Candidate
+    ↓
+Interview
+    ↓
+Hire
+```
+
+---
+
+## 4. Information Architecture
+
+```text
+RECRUITER
+├── Dashboard
+│
+├── AI Recruitment
+│   ├── Create Hiring Request
+│   ├── Hiring Brief
+│   ├── AI Job Description
+│   ├── Candidate Matching
+│   └── Recommended Candidates
+│
+├── Discover
+│   ├── Search Candidates
+│   ├── Filters
+│   └── Saved Searches
+│
+├── Candidates
+│   ├── All Candidates
+│   ├── Shortlisted
+│   ├── Interview
+│   └── Hired
+│
+├── Jobs
+│   ├── Active Jobs
+│   ├── Drafts
+│   └── Closed Jobs
+│
+├── Saved
+│   ├── Saved Candidates
+│   └── Candidate Folders
+│
+├── Messages
+│   ├── Conversations
+│   └── Invitations
+│
+└── Settings
+    ├── Company Profile
+    ├── Account
+    ├── Notifications
+    └── Privacy
+```
+
+---
+
+## 5. Screen 01 — AI Recruitment Landing
+
+### Goal
+Cho recruiter bắt đầu tạo một hiring request nhanh chóng.
+
+**Heading**
+
+> Who are you looking for?
+
+**Supporting text**
+
+> Tell us about the role and we'll help you create the job and find matching candidates.
+
+### Input
+
+Large text area:
+
+> Example: "I need a UI/UX intern who knows Figma, has at least 2 projects, is available full-time and can work in Ho Chi Minh City."
+
+### Actions
+
+- `Generate Hiring Brief`
+- `Use Job Template`
+
+### Optional quick templates
+
+- UI/UX Intern
+- Frontend Developer
+- Marketing Intern
+- Graphic Designer
+- Data Analyst
+
+---
+
+## 6. Screen 02 — AI Requirement Analysis
+
+Sau khi recruiter nhập yêu cầu, AI phân tích nội dung.
+
+### Example input
+
+> I need a UI/UX intern who knows Figma, has at least 2 projects, is available full-time and can work in Ho Chi Minh City.
+
+### AI extracted requirements
+
+```text
+Position
+UI/UX Intern
+
+Experience
+Student / Fresh Graduate
+
+Must-have skills
+✓ Figma
+✓ UI/UX Fundamentals
+✓ Project Experience
+
+Project requirement
+✓ At least 2 projects
+
+Location
+Ho Chi Minh City
+
+Availability
+Full-time
+
+Duration
+6 months
+```
+
+### AI should separate
+
+**Must-have**
+
+Những điều kiện bắt buộc.
+
+**Nice-to-have**
+
+Những tiêu chí có lợi nhưng không bắt buộc.
+
+```text
+MUST-HAVE
+✓ Figma
+✓ UI/UX fundamentals
+✓ 2+ projects
+✓ Full-time availability
+
+NICE-TO-HAVE
+○ UX Research
+○ Photoshop
+○ English
+○ Design system experience
+```
+
+### Actions
+
+- `Edit Requirements`
+- `Continue`
+- `Start Over`
+
+---
+
+## 7. Screen 03 — Hiring Brief
+
+Hiring Brief là lớp trung gian giữa input của recruiter và AI matching.
+
+```text
+HIRING BRIEF
+
+Position
+UI/UX Intern
+
+Experience
+Student / Fresh Graduate
+
+Skills
+Must-have
+✓ Figma
+✓ UI Design
+✓ UX Fundamentals
+
+Nice-to-have
+○ UX Research
+○ Photoshop
+○ English
+
+Projects
+Minimum 2 relevant projects
+
+Location
+Ho Chi Minh City
+
+Work type
+Full-time
+
+Duration
+6 months
+```
+
+### Candidate Matching Priority
+
+Recruiter có thể điều chỉnh mức độ ưu tiên:
+
+```text
+Projects       HIGH
+Skills         HIGH
+Experience     MEDIUM
+Location       HIGH
+Availability   HIGH
+GPA            LOW
+```
+
+Không nên bắt recruiter cấu hình quá nhiều tiêu chí ở MVP. Có thể sử dụng:
+
+- High
+- Medium
+- Low
+
+### Actions
+
+- `Edit`
+- `Generate Job Description`
+
+---
+
+## 8. Screen 04 — AI Job Description
+
+AI tạo JD dựa trên Hiring Brief.
+
+### Structure
+
+**Job Title**
+
+UI/UX Design Intern
+
+**About the Role**
+
+Short description generated by AI.
+
+**Responsibilities**
+
+- Support UI/UX design tasks.
+- Create wireframes and prototypes.
+- Work with designers and product team.
+- Participate in design reviews.
+
+**Requirements**
+
+- Basic UI/UX knowledge.
+- Experience with Figma.
+- At least 2 relevant projects.
+- Good communication skills.
+
+**Nice to Have**
+
+- UX Research
+- Design system
+- English communication
+
+**Work Information**
+
+```text
+Location: Ho Chi Minh City
+Type: Full-time
+Duration: 6 months
+```
+
+### Actions
+
+- `Edit`
+- `Regenerate`
+- `Preview`
+- `Save Draft`
+- `Publish Job`
+
+AI-generated content must always be editable.
+
+---
+
+## 9. Screen 05 — Job Published / Candidate Matching
+
+Sau khi recruiter publish JD:
+
+```text
+Job Published
+       ↓
+AI is finding matching candidates...
+       ↓
+Recommended Candidates
+```
+
+### Loading state
+
+```text
+Finding candidates
+
+✓ Analyzing job requirements
+✓ Searching verified profiles
+✓ Checking skills and projects
+○ Ranking relevant matches
+```
+
+Không nên chỉ hiển thị loading spinner. Cho recruiter biết hệ thống đang làm gì giúp tăng trust.
+
+---
+
+## 10. Screen 06 — AI Recommended Candidates
+
+```text
+UI/UX Design Intern
+
+42 candidates found
+18 strong matches
+
+[Filters] [Sort] [Compare] [Shortlist]
+```
+
+### Candidate card
+
+```text
+┌─────────────────────────────────────┐
+│ Nguyễn Văn A                        │
+│ UI/UX Designer / Student            │
+│                                     │
+│ Figma   UI Design   UX Research     │
+│                                     │
+│ 5 Projects                          │
+│ Ho Chi Minh City                    │
+│ Available Full-time                 │
+│                                     │
+│ Matching requirements               │
+│ ✓ Figma                             │
+│ ✓ 5 relevant projects               │
+│ ✓ HCMC                              │
+│ ✓ Available                         │
+│ △ No professional experience        │
+│                                     │
+│ [View Profile] [Shortlist]          │
+└─────────────────────────────────────┘
+```
+
+---
+
+## 11. Candidate Matching
+
+AI matching nên dựa trên các dữ liệu có trong Profile Hub:
+
+```text
+JOB REQUIREMENTS
+       ↓
+┌─────────────────────────────┐
+│ Skills                      │
+│ Projects                    │
+│ Education                   │
+│ Experience                  │
+│ Location                    │
+│ Availability                │
+│ Certificates                │
+│ Lecturer Verification       │
+└─────────────────────────────┘
+       ↓
+Candidate Matching
+       ↓
+Recommended Candidates
+```
+
+### Matching factors
+
+1. **Skills Match** — Figma, UI Design, UX Research.
+2. **Project Match** — project có liên quan đến role.
+3. **Experience Match** — student, fresh graduate hoặc số năm kinh nghiệm.
+4. **Location Match** — địa điểm phù hợp với job.
+5. **Availability Match** — full-time, part-time, internship.
+6. **Verification** — project/skill được lecturer xác minh.
+
+Ví dụ:
+
+> ✓ Project verified by Lecturer
+
+---
+
+## 12. Match Explanation
+
+Không nên chỉ hiển thị một con số như:
+
+> 92% Match
+
+Thay vào đó, cần giải thích tại sao candidate được đề xuất.
+
+```text
+Why this candidate?
+
+✓ Figma experience
+✓ 5 relevant projects
+✓ UI/UX fundamentals
+✓ Located in Ho Chi Minh City
+✓ Available full-time
+✓ 2 projects verified by lecturer
+
+△ No professional UX experience
+```
+
+Nếu sử dụng Match Score, nên hiển thị kèm explanation.
+
+```text
+92% Match
+
+Skills        ██████████ 100%
+Projects      █████████░  90%
+Experience    ████████░░  80%
+Location      ██████████ 100%
+Availability  ██████████ 100%
+```
+
+---
+
+## 13. Filters
+
+AI recommendation không thay thế search/filter truyền thống.
+
+```text
+SKILLS
+□ Figma
+□ Photoshop
+□ Illustrator
+□ HTML/CSS
+□ UX Research
+
+EXPERIENCE
+□ Student
+□ Fresh Graduate
+□ 1+ year
+□ 2+ years
+
+PROJECTS
+□ 1+
+□ 2+
+□ 5+
+
+LOCATION
+□ Ho Chi Minh City
+□ Hanoi
+□ Remote
+
+AVAILABILITY
+□ Full-time
+□ Part-time
+□ Internship
+
+VERIFICATION
+□ Verified projects
+□ Verified skills
+
+EDUCATION
+□ University
+□ Major
+
+SORT BY
+- Best match
+- Recently updated
+- Most relevant projects
+```
+
+---
+
+## 14. Candidate Comparison
+
+Recruiter có thể chọn nhiều candidates:
+
+```text
+☑ Candidate A
+☑ Candidate B
+☑ Candidate C
+
+[Compare Candidates]
+```
+
+### Comparison table
+
+```text
+                    Candidate A   Candidate B   Candidate C
+
+Figma                    ✓             ✓             ✓
+UX Research              ✓             ✕             ✓
+Projects                 5             3             7
+Verified Projects        2             3             5
+Experience               0             1 year        0
+Location                 HCMC          HCMC          Hanoi
+Availability             Full-time     Full-time     Part-time
+```
+
+Comparison should show factual profile information rather than an AI-generated "winner".
+
+---
+
+## 15. Quick Shortlist
+
+Recruiter có thể chọn nhiều candidates:
+
+```text
+☑ Candidate A
+☑ Candidate B
+☑ Candidate C
+
+[Quick Shortlist]
+[Contact]
+[Add to Folder]
+```
+
+### Shortlist confirmation
+
+```text
+3 candidates added to:
+
+UI/UX Intern — 2026
+
+Next steps:
+○ Contact candidates
+○ Schedule interviews
+○ Add private notes
+```
+
+---
+
+## 16. Candidate Profile
+
+AI recruitment phải kết nối trực tiếp với profile hiện tại.
+
+```text
+Candidate Profile
+
+├── About
+├── Education
+├── Skills
+├── Projects
+├── Experience
+├── Certificates
+├── Achievements
+└── Lecturer Verification
+```
+
+### Project-first design
+
+```text
+PROJECTS
+────────────────────────
+
+Mobile Banking App
+UI/UX Design
+Figma · User Research · Prototype
+
+✓ Verified by Lecturer
+
+[View Project]
+```
+
+Projects nên được đặt nổi bật vì recruiter có thể chưa có nhiều kinh nghiệm làm việc thực tế.
+
+---
+
+## 17. Contact Flow
+
+```text
+Candidate Profile
+       ↓
+Contact
+       ↓
+Select Job
+       ↓
+Write Message
+       ↓
+Send
+       ↓
+Candidate Notification
+       ↓
+Conversation
+```
+
+Recruiter có thể sử dụng template nhưng phải chỉnh sửa message trước khi gửi.
+
+---
+
+## 18. AI Recruitment Dashboard
+
+```text
+AI RECRUITMENT
+
+Active Jobs                 4
+Recommended Candidates      86
+Shortlisted                 18
+Interviews                  7
+Hired                       2
+```
+
+### Recent AI activity
+
+```text
+UI/UX Intern
+18 new candidates matched
+
+Frontend Intern
+9 new candidates matched
+
+Marketing Intern
+12 new candidates matched
+```
+
+---
+
+## 19. Notification
+
+Recruiter:
+
+```text
+New candidate matches your job
+
+18 candidates match your
+UI/UX Intern requirements.
+
+[View Candidates]
+```
+
+Candidate:
+
+```text
+A recruiter is interested in your profile.
+
+[View Opportunity]
+```
+
+---
+
+## 20. AI Trust & Control
+
+AI không nên tự động:
+
+- Reject candidate.
+- Hire candidate.
+- Contact candidate.
+- Đưa ra kết luận về năng lực dựa trên thông tin không có trong profile.
+- Suy luận các đặc điểm cá nhân nhạy cảm.
+
+AI nên:
+
+- Giải thích tiêu chí matching.
+- Hiển thị dữ liệu dùng để matching.
+- Cho phép recruiter chỉnh requirements.
+- Cho phép recruiter chỉnh JD.
+- Cho phép recruiter bỏ qua recommendation.
+- Cho phép recruiter review profile trước khi shortlist.
+
+### Principle
+
+```text
+AI recommends
+      ↓
+Recruiter reviews
+      ↓
+Recruiter decides
+```
+
+---
+
+## 21. Edge Cases
+
+### Case 01 — Không tìm thấy candidate
+
+```text
+No strong matches found.
+
+Try:
+- Remove a must-have requirement
+- Add more locations
+- Consider nice-to-have skills as optional
+- Search all candidates
+```
+
+Action:
+
+`Edit Hiring Brief`
+
+### Case 02 — Quá nhiều candidates
+
+```text
+248 candidates found
+
+Use filters to narrow your search.
+```
+
+Suggested filters:
+
+- Must-have skills
+- Verified projects
+- Availability
+- Location
+
+### Case 03 — Candidate thiếu dữ liệu
+
+Nếu profile không có availability:
+
+```text
+Availability
+Not provided
+```
+
+Không được tự động giả định candidate available.
+
+### Case 04 — AI không chắc chắn
+
+```text
+Limited information available
+
+This candidate may match your requirements,
+but their project experience is not fully documented.
+```
+
+Action:
+
+`View Profile`
+
+---
+
+## 22. MVP
+
+Phiên bản đầu tiên nên tập trung vào:
+
+1. Natural-language hiring request
+2. AI Requirement Extraction
+3. Hiring Brief
+4. AI-generated JD
+5. Candidate Matching
+6. Recommended Candidates
+7. Filters
+8. View Candidate Profile
+9. Shortlist
+10. Contact
+
+---
+
+## 23. Future Features
+
+### AI Interview Assistant
+
+AI hỗ trợ tạo:
+
+- Interview questions
+- Technical questions
+- Behavioral questions
+- Project-based questions
+
+### AI Candidate Summary
+
+```text
+Candidate Summary
+
+Strong UI/UX project portfolio with 5 projects.
+Most relevant experience is mobile application design.
+Has verified project evidence from lecturer.
+
+Potential gap:
+No professional UX experience.
+```
+
+### AI JD Optimization
+
+AI kiểm tra JD:
+
+- Missing requirements
+- Ambiguous wording
+- Duplicate requirements
+- Too many requirements
+- Inconsistent information
+
+### Talent Pool
+
+```text
+Potential Talent Pool
+
+UI/UX
+Frontend
+Backend
+Marketing
+Graphic Design
+```
+
+---
+
+## 24. Complete User Journey
+
+```text
+                    RECRUITER
+                        │
+                        ▼
+              ┌───────────────────┐
+              │ AI Recruitment    │
+              └─────────┬─────────┘
+                        │
+                        ▼
+             Describe Hiring Need
+                        │
+                        ▼
+             AI Requirement Analysis
+                        │
+                        ▼
+                Hiring Brief
+                        │
+                        ▼
+              Generate Job Description
+                        │
+                        ▼
+              Recruiter Review / Edit
+                        │
+                        ▼
+                  Publish Job
+                        │
+                        ▼
+              AI Candidate Matching
+                        │
+                        ▼
+             Recommended Candidates
+                        │
+              ┌─────────┴─────────┐
+              ▼                   ▼
+           Filters             Compare
+              │                   │
+              └─────────┬─────────┘
+                        ▼
+                 View Profile
+                        │
+                        ▼
+                   Shortlist
+                        │
+                        ▼
+                    Contact
+                        │
+                        ▼
+                   Interview
+                        │
+                        ▼
+                      Hire
+```
+
+---
+
+## 25. Relationship With Lecturer Verification
+
+AI Recruitment trở nên mạnh hơn khi kết hợp với lecturer verification.
+
+```text
+STUDENT
+   ↓
+Create Profile
+   ↓
+Create Project
+   ↓
+Submit Project
+   ↓
+LECTURER REVIEW
+   ↓
+✓ Verified Project
+   ↓
+PUBLIC PROFILE
+   ↓
+AI MATCHING
+   ↓
+RECRUITER
+```
+
+Recruiter không chỉ nhìn thấy:
+
+> "Student knows Figma."
+
+Mà có thể thấy:
+
+> "Student has 4 Figma projects, including 2 lecturer-verified projects."
+
+Điều này tạo sự khác biệt so với nền tảng chỉ dựa trên CV.
+
+---
+
+## 26. Product USP
+
+### Core value proposition
+
+> **From verified student profiles to AI-powered talent discovery.**
+
+Hoặc:
+
+> **Create the job. Discover the talent. Hire faster.**
+
+### Product loop
+
+```text
+Verified Student Profiles
+          ↓
+      Better Data
+          ↓
+    Better Matching
+          ↓
+Better Recruiter Discovery
+          ↓
+      Faster Hiring
+```
+
+---
+
+## 27. Suggested Figma Screens
+
+Nếu thiết kế prototype, nên ưu tiên:
+
+```text
+01. Recruiter Dashboard
+
+02. AI Recruitment — Start
+03. Enter Hiring Requirement
+04. AI Requirement Analysis
+05. Hiring Brief
+
+06. AI Job Description
+07. Edit / Preview JD
+08. Publish Job
+
+09. Candidate Matching Loading
+10. Recommended Candidates
+11. Candidate Filters
+12. Candidate Comparison
+
+13. Candidate Profile
+14. Project Detail
+15. Shortlist Confirmation
+16. Contact Candidate
+
+17. Job Pipeline
+18. Messages
+```
+
+### Prototype Priority
+
+Nếu thời gian hạn chế, chỉ cần prototype:
+
+```text
+Start AI Recruitment
+        ↓
+Hiring Requirement
+        ↓
+Hiring Brief
+        ↓
+AI Job Description
+        ↓
+Recommended Candidates
+        ↓
+Candidate Profile
+        ↓
+Shortlist
+        ↓
+Contact
+```
+
+Đây là flow quan trọng nhất để demonstrate USP của Profile Hub.

@@ -1,0 +1,98 @@
+{
+  "schema_version": "1.0.0",
+  "profile_id": "prof_001",
+  "user": { "display_name": "Nguyễn Minh Anh", "locale": "vi-VN", "created_at": "2026-09-28T09:00:00Z" },
+  "profile": {
+    "industries": ["MKT"],
+    "level": "mid",
+    "persona": "P2_junior_mid",
+    "headline": "Performance Marketer",
+    "location": "Hà Nội"
+  },
+  "discovery": {
+    "purpose": "both",
+    "output_language": "vi",
+    "current_stage": 2,
+    "completed_stages": [0, 1],
+    "deep_dive_queue": ["exp_01"],
+    "sessions": [{ "id": "ses_01", "started_at": "2026-09-28T09:05:00Z", "stage_reached": 2, "questions_asked": 9 }],
+    "gaps": [{ "entity_type": "achievement", "entity_id": "ach_01", "reason": "missing_evidence", "suggested_question_id": "ACH-03" }]
+  },
+  "raw_answers": [
+    { "id": "raw_01", "session_id": "ses_01", "question_id": "ACH-01", "text": "Chiến dịch ra mắt sản phẩm mới, khá thành công.", "answered_at": "2026-09-28T09:10:00Z" },
+    { "id": "raw_02", "session_id": "ses_01", "question_id": "MKT-IMP-02", "text": "Bán được khoảng 2000 đơn trong tháng đầu, ngân sách 150 triệu.", "answered_at": "2026-09-28T09:12:00Z" }
+  ],
+  "experiences": [
+    {
+      "id": "exp_01",
+      "organization": { "name": "Công ty ABC", "industry": "Bán lẻ" },
+      "title": "Marketing Executive",
+      "employment_type": "full_time",
+      "period": { "start": "2023-03", "end": null, "is_current": true },
+      "responsibilities": ["Lên kế hoạch nội dung", "Chạy Facebook Ads", "Báo cáo hiệu quả chiến dịch"],
+      "achievement_ids": ["ach_01"],
+      "deep_dive_done": false,
+      "meta": { "source_type": "user_stated", "confidence": "high", "created_at": "2026-09-28T09:08:00Z", "updated_at": "2026-09-28T09:08:00Z" }
+    }
+  ],
+  "achievements": [
+    {
+      "id": "ach_01",
+      "experience_id": "exp_01",
+      "title": "Chiến dịch ra mắt sản phẩm mới",
+      "role": "Phụ trách nội dung và Facebook Ads",
+      "star": {
+        "situation": "Công ty ra mắt sản phẩm mới",
+        "actions": ["Lên kế hoạch nội dung", "Chạy Facebook Ads"],
+        "metrics": [
+          { "name": "Số đơn tháng đầu", "value": 2000, "unit": "đơn", "period": "tháng đầu", "estimated": true, "display": "~2.000 đơn (ước lượng)" },
+          { "name": "Ngân sách", "value": 150000000, "unit": "VND" }
+        ]
+      },
+      "result": { "metrics": [{ "name": "Số đơn tháng đầu", "value": 2000, "unit": "đơn", "estimated": true }] },
+      "categories": ["revenue", "growth"],
+      "dna_signals": ["builder", "analyst"],
+      "skills_used": ["Facebook Ads", "Content planning"],
+      "quality": {
+        "score": 65,
+        "label": "acceptable",
+        "breakdown": { "context": 10, "personal_role": 20, "actions": 15, "quantified_result": 20, "evidence": 0, "target_relevance": 0 },
+        "rubric_version": "ach-1.0"
+      },
+      "resume_bullets": [
+        { "text": "Phụ trách nội dung và Facebook Ads cho chiến dịch ra mắt sản phẩm mới (ngân sách 150 triệu), đạt khoảng 2.000 đơn trong tháng đầu.", "language": "vi", "user_approved": false, "contains_estimated_figures": true }
+      ],
+      "meta": {
+        "source_type": "user_stated",
+        "source_question_ids": ["ACH-01", "ACH-02", "MKT-IMP-02"],
+        "raw_answer_ids": ["raw_01", "raw_02"],
+        "estimated": true,
+        "confidence": "medium",
+        "verification": { "status": "self_reported" },
+        "visibility": "private",
+        "created_at": "2026-09-28T09:12:00Z",
+        "updated_at": "2026-09-28T09:14:00Z"
+      }
+    }
+  ],
+  "skills": {
+    "hard": [
+      { "id": "sk_01", "name": "Facebook Ads", "proficiency": 4, "proficiency_basis": "demonstrated_in_achievement", "examples": [{ "text": "Chiến dịch ra mắt sản phẩm mới", "ref": { "type": "achievement", "id": "ach_01" } }], "meta": { "source_type": "user_stated", "created_at": "2026-09-28T09:20:00Z", "updated_at": "2026-09-28T09:20:00Z" } }
+    ]
+  },
+  "goals": { "target_roles": [{ "title": "Marketing Manager", "industry": "MKT", "priority": 1 }], "short_term": "Lên Senior Marketing" },
+  "scores": {
+    "data_quality": {
+      "overall": { "value": 38, "band": "low", "formula_version": "dq-1.0", "computed_at": "2026-09-28T09:30:00Z", "explanation": ["Mới có 1 thành tích, chưa có bằng chứng"] },
+      "readiness": {
+        "cv": { "status": "not_ready", "gate_threshold": 65, "missing": ["Cần ≥ 3 thành tích", "Cần ≥ 5 kỹ năng"] },
+        "interview": { "status": "not_ready", "gate_threshold": 70, "missing": ["Chưa có câu chuyện thất bại"] }
+      }
+    },
+    "hiring_potential": { "value": null, "band": "insufficient_data", "status": "experimental", "formula_version": "hp-0.0", "computed_at": "2026-09-28T09:30:00Z" }
+  },
+  "consents": [
+    { "type": "data_processing", "granted": true, "at": "2026-09-28T09:00:00Z", "policy_version": "2026-09" },
+    { "type": "ai_analysis", "granted": true, "at": "2026-09-28T09:00:00Z" }
+  ]
+}
