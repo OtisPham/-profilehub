@@ -606,7 +606,7 @@ def create_bm01b_document():
             )
         },
         {
-            "week_header": "TUẦN 5: CONTEXTUAL APPLICATION PITCH & PROJECT DEFENSE BRIEFING (20/10/2026)",
+            "week_header": "TUẦN 5: CONTEXTUAL APPLICATION PITCH & PROJECT DEFENSE BRIEFING (20/10/2026 - 21/10/2026)",
             "day_title": "Tuần: 5   Thứ: 3   Ngày: 20/10/2026",
             "morning": (
                 "Phản biện Cover Letter ngành IT, ban hành ADR 0002 Contextual Application Pitch",
@@ -617,6 +617,20 @@ def create_bm01b_document():
                 "Xây dựng ApplicationPitchModal & Trụ Cột 3: Project Technical Defense Briefing",
                 "Xây dựng applicationPitchService.ts, ApplicationPitchModal.tsx (đếm từ thời gian thực, 1-Click Copy). Xây dựng projectDefenseService.ts và ProjectDefenseModal.tsx huấn luyện ứng viên phòng thủ trước Tech Lead (Top 3 câu hỏi xoáy, Trade-off, Debugging Scaffold). Tích hợp Sidebar. Chạy 13 test suites (46 tests) pass 100%.",
                 "Trang bị bản lĩnh phòng thủ đồ án trước Tech Lead giúp ứng viên tự tin vượt qua cả vòng lọc CV lẫn vòng phỏng vấn kỹ thuật chuyên sâu."
+            )
+        },
+        {
+            "week_header": None,
+            "day_title": "Tuần: 5   Thứ: 4   Ngày: 21/10/2026",
+            "morning": (
+                "Nghiên cứu bản chất số liệu đo lường kỹ thuật, lập kế hoạch Star CV Diagnostic",
+                "Phân tích nguồn gốc số liệu đo lường trong đồ án sinh viên/Junior: Khẳng định nguyên tắc không bịa số liệu kinh doanh viển vông để tránh rủi ro khi Tech Lead hỏi. Xác lập 4 nguồn số đo kỹ thuật tái hiện được (EXPLAIN ANALYZE, k6 load test, Lighthouse, Vitest coverage). Ban hành kế hoạch triển khai.",
+                "Số liệu đo lường trong CV công nghệ phải có căn cứ kỹ thuật và công cụ đo rõ ràng để ứng viên tự tin chứng minh khi phỏng vấn."
+            ),
+            "afternoon": (
+                "Xây dựng starDiagnosticService & StarCvDiagnosticModal (Trợ lý Soi & Khai thác STAR)",
+                "Xây dựng starDiagnosticService.ts chẩn đoán câu chữ, phát hiện từ mơ hồ, tính điểm STAR Score và sinh bộ 3 câu hỏi gợi mở thực tế. Xây dựng StarCvDiagnosticModal.tsx (hỗ trợ Soi CV có sẵn và Wizard từ trang giấy trắng). Tích hợp CVBuilder.tsx với 1-Click đưa vào CV Canvas. Nâng tổng số test lên 14 suites (51 tests) pass 100%.",
+                "Trợ lý AI xuất sắc là công cụ đặt đúng câu hỏi gợi mở để ứng viên tự tin kể lại thành tựu kỹ thuật có thật thay vì tự tiện bịa số liệu ảo."
             )
         }
     ]

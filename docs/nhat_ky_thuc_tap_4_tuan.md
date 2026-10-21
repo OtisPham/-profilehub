@@ -298,7 +298,27 @@ Trong 4 tuần phát triển dự án tính đến ngày **19/10/2026**, **Profi
 
 ---
 
-## 📊 BẢNG TỔNG KẾT ĐỐI CHIẾU TRƯỚC VÀ SAU KHI TINH GỌN (Tính đến ngày 20/10/2026)
+### 🔴 Thứ 4 (21/10/2026)
+* **Thời gian:** 08:30 – 17:00
+* **Công việc được giao:** Nghiên cứu bản chất số liệu đo lường kỹ thuật trong CV công nghệ; thiết kế và triển khai tính năng **"Soi CV & Khai Thác Dự Án Chuẩn STAR"** (Hỗ trợ viết CV từ trang giấy trắng và bóc tách CV sẵn có để khơi gợi số liệu kỹ thuật thực tế).
+* **Kết quả thực hiện:**
+  * Sáng (08:30 - 12:00):
+    * Nghiên cứu phản biện về nguồn gốc và tính xác thực của số liệu đo lường trong đồ án của sinh viên/Junior: Khẳng định nguyên tắc **không bịa số liệu kinh doanh viển vông** (doanh thu, triệu users ảo) để tránh bị Tech Lead đánh trượt vì Dishonesty khi phỏng vấn.
+    * Xác lập 4 nguồn số liệu kỹ thuật tái hiện được (Reproducible Technical Metrics): `EXPLAIN ANALYZE` query execution cost, k6 / Apache Bench load testing throughput (req/s), Chrome Lighthouse performance & bundle size, Vitest test suite code coverage.
+    * Ban hành kế hoạch thực thi kỹ thuật `docs/superpowers/plans/2026-10-21-star-cv-diagnostic.md`.
+  * Chiều (13:00 - 17:00):
+    * Xây dựng `src/services/starDiagnosticService.ts`: Bóc tách và chẩn đoán câu chữ mô tả dự án theo chuẩn STAR; phát hiện động từ bị động/mơ hồ ("tham gia", "hỗ trợ", "được giao"); nhận diện chỉ số kỹ thuật thực tế; chấm điểm STAR Score (0-100); tự động sinh bộ 3 câu hỏi gợi mở khơi sâu trải nghiệm thực tế và tổng hợp thành bullet point chuẩn STAR kèm "Bí kíp bảo vệ trước Tech Lead".
+    * Xây dựng component giao diện `src/components/cv/StarCvDiagnosticModal.tsx` hỗ trợ 2 chế độ:
+      * Chế độ 1: **"Soi CV Sẵn Có / Dán Văn Bản Thô"**: Phân tích sức khỏe từng đồ án, hiển thị danh sách điểm yếu kỹ thuật cần khắc phục và nút kích hoạt phỏng vấn nhanh.
+      * Chế độ 2: **"Bắt Đầu Từ Trang Giấy Trắng (STAR Wizard)"**: Dẫn dắt ứng viên qua 3 bước (Bối cảnh/Thách thức -> Hành động/Tech Stack -> Đo lường/Kết quả) với các chip gợi ý kỹ thuật thực tế.
+    * Tích hợp nút tác vụ **"Soi & Khai Thác STAR"** trên thanh công cụ `CVBuilder.tsx`, hỗ trợ **1-Click Đưa vào CV Canvas**.
+    * Bổ sung 5 bài kiểm thử tự động TDD trong `starDiagnosticService.test.ts`.
+    * **Kiểm thử & Đóng gói:** Toàn bộ **14/14 Test Suites (51/51 Tests) Pass 100%**, lệnh `npm run build` (`tsc && vite build`) thành công 100%, 0 lỗi TypeScript.
+* **Kinh nghiệm rút ra:** Một công cụ tạo CV xuất sắc không phải là công cụ bịa ra những con số ảo diệu cho người dùng, mà là người trợ lý tận tâm giúp ứng viên nhìn thấy điểm yếu trong câu chữ của mình, đặt đúng câu hỏi gợi mở để họ tự tin kể lại những thành tựu kỹ thuật có thật mà chính họ đã dày công xây dựng.
+
+---
+
+## 📊 BẢNG TỔNG KẾT ĐỐI CHIẾU TRƯỚC VÀ SAU KHI TINH GỌN (Tính đến ngày 21/10/2026)
 
 | Hạng mục so sánh | Kiến trúc ban đầu (Trước khi Tinh gọn) | Kiến trúc hiện tại (Đã tinh gọn đến 23/10/2026) |
 |---|---|---|

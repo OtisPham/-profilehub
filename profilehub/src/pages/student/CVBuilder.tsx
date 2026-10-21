@@ -14,6 +14,7 @@ import CVManagerModal from '../../components/cv/CVManagerModal';
 import ProfileDataPickerModal from '../../components/cv/ProfileDataPickerModal';
 import ProjectFitExplainerModal from '../../components/cv/ProjectFitExplainerModal';
 import ApplicationPitchModal from '../../components/cv/ApplicationPitchModal';
+import StarCvDiagnosticModal from '../../components/cv/StarCvDiagnosticModal';
 import { pageBudgetService } from '../../services/pageBudgetService';
 import {
   convertImportedCvToCvBuilderState,
@@ -209,6 +210,38 @@ export default function CVBuilder() {
   const [isPitchModalOpen, setIsPitchModalOpen] = useState(false);
   const [applicationPitch, setApplicationPitch] = useState<string>('');
   const [currentJdText, setCurrentJdText] = useState<string>('');
+
+  // STAR Diagnostic & Guided Elicitation Modal State
+  const [isStarDiagnosticModalOpen, setIsStarDiagnosticModalOpen] = useState(false);
+
+  const handleApplyProjectFromDiagnostic = (project: ProjectItem) => {
+    setSections(prev => {
+      let updated = [...prev];
+      const projIdx = updated.findIndex(s => s.type === 'projects');
+      if (projIdx >= 0) {
+        const existingItems = (updated[projIdx].items as ProjectItem[]) || [];
+        updated[projIdx] = {
+          ...updated[projIdx],
+          items: [project, ...existingItems]
+        };
+      } else {
+        updated.push({
+          id: `sec_projects_${Date.now()}`,
+          type: 'projects',
+          title: 'DỰ ÁN & ĐỒ ÁN NỔI BẬT',
+          order_index: updated.length,
+          is_visible: true,
+          settings: { showTitle: true, showDivider: true, spacing: 'normal', titleStyle: 'bold', titleCase: 'uppercase' },
+          items: [project]
+        });
+      }
+      return updated;
+    });
+
+    setSaveToastSubtitle(`Đã thêm đồ án "${project.projectName}" chuẩn STAR vào CV!`);
+    setShowSaveSuccessToast(true);
+    setTimeout(() => setShowSaveSuccessToast(false), 3500);
+  };
 
   // Real-time Page Budget Guard (Ticket 05)
   const pageBudget = useMemo(() => {
@@ -1406,6 +1439,16 @@ export default function CVBuilder() {
 
             {/* Các nút tùy chỉnh: Giao diện & Font, Tối ưu STAR, Kéo từ hồ sơ, Tuyển chọn JD */}
             <div className="flex items-center gap-1.5 flex-wrap">
+              {/* Nút Soi CV & Khai Thác STAR */}
+              <button
+                onClick={() => setIsStarDiagnosticModalOpen(true)}
+                className="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-50 hover:bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200 dark:border-amber-800/80 flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer"
+                title="Chẩn đoán câu chữ mơ hồ, soi lỗi thiếu STAR hoặc tạo mới từ trang giấy trắng"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                <span>Soi & Khai Thác STAR</span>
+              </button>
+
               {/* Nút Tuyển Chọn Theo JD (Fit Explainer - Ticket 03) */}
               <button
                 onClick={() => setIsProjectFitModalOpen(true)}
@@ -1854,6 +1897,13 @@ export default function CVBuilder() {
         }
         savedPitch={applicationPitch}
         onSavePitch={handleSavePitchFromModal}
+      />
+
+      {/* STAR Diagnostic & Guided Elicitation Modal */}
+      <StarCvDiagnosticModal
+        isOpen={isStarDiagnosticModalOpen}
+        onClose={() => setIsStarDiagnosticModalOpen(false)}
+        onApplyProjectBullets={handleApplyProjectFromDiagnostic}
       />
 
     </div>
