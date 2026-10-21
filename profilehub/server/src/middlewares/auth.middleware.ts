@@ -35,3 +35,25 @@ export async function requireAuth(req: AuthenticatedRequest, res: Response, next
     res.status(500).json({ success: false, message: 'Internal Server Error in Auth Middleware', error });
   }
 }
+
+/**
+ * Optional Auth: Xác thực nếu có token, nếu không có token thì vẫn tiếp tục với vai trò guest
+ */
+export async function optionalAuth(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.split(' ')[1];
+      const { data: { user } } = await supabase.auth.getUser(token);
+      if (user) {
+        req.user = {
+          id: user.id,
+          email: user.email,
+        };
+      }
+    }
+  } catch {
+    // Không ném lỗi, tiếp tục với vai trò guest
+  }
+  next();
+}

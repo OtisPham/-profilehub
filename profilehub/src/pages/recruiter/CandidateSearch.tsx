@@ -1,9 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthProvider';
 import { supabase } from '../../services/supabase';
 import VerifiedBadge from '../../components/common/VerifiedBadge';
-import { Search, ShieldCheck, Mail, FileText, ExternalLink, Code2, FileSpreadsheet, Target, FolderOpen } from 'lucide-react';
+import { Search, ShieldCheck, Mail, FileText, ExternalLink, Code2, FileSpreadsheet, FolderOpen } from 'lucide-react';
 import VSCodeViewerModal from '../../components/common/VSCodeViewerModal';
 import { addToSharedPipeline } from '../../utils/pipelineSync';
 import BulkCvImportModal from '../../components/recruiter/BulkCvImportModal';
@@ -42,7 +41,6 @@ interface VerifiedStudentCandidate {
 
 export default function CandidateSearch() {
   const { user } = useAuth();
-  const navigate = useNavigate();
   const [candidates, setCandidates] = useState<VerifiedStudentCandidate[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -489,7 +487,7 @@ export default function CandidateSearch() {
                     <div key={p.id} style={{ backgroundColor: '#ffffff', padding: '16px', borderRadius: '10px', border: '1px solid #cbd5e1', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                         <span style={{ fontSize: '16px', fontWeight: 'bold', color: '#0f172a' }}>{p.title}</span>
-                        {p.is_verified && <VerifiedBadge teacherName={p.instructor} size="md" />}
+                        {p.is_verified && <VerifiedBadge size="md" />}
                       </div>
 
                       {p.role && <div style={{ fontSize: '12px', color: '#64748b', fontWeight: 'bold', marginBottom: '6px' }}>Vai trò: {p.role}</div>}
@@ -519,25 +517,6 @@ export default function CandidateSearch() {
                 style={{ padding: '10px 20px', backgroundColor: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', fontSize: '13px' }}
               >
                 Đóng
-              </button>
-
-              <button
-                onClick={() => {
-                  navigate('/portfolio-match', {
-                    state: {
-                      activeCvData: {
-                        id: selectedCvCandidate.id,
-                        name: selectedCvCandidate.full_name,
-                        targetRole: selectedCvCandidate.major || 'Software Developer',
-                        skills: selectedCvCandidate.skills || [],
-                        projects: selectedCvCandidate.projects || [],
-                      }
-                    }
-                  });
-                }}
-                style={{ padding: '10px 18px', backgroundColor: '#059669', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '6px' }}
-              >
-                <Target size={16} /> Chấm Điểm AI Khớp JD
               </button>
 
               <a

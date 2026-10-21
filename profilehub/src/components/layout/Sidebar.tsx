@@ -1,43 +1,110 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthProvider';
 import type { UserRole } from '../../types/database';
 import { 
-  Menu, X, LogOut, Shield, Award, FileText, LayoutDashboard, UserCheck, 
-  Briefcase, Trophy, FolderKanban, FolderOpen, Star, Kanban, Sparkles, 
-  Building2, GraduationCap, Target, Brain, Layers, Send, FileSignature, 
-  ChevronDown, ChevronRight, User
+  Menu, X, LogOut, FileText, LayoutDashboard, UserCheck, 
+  Briefcase, Star, Kanban, Sparkles, 
+  Building2, Layers, ChevronDown, ChevronRight, User, LayoutTemplate,
+  PanelLeftClose, PanelLeftOpen, ShieldAlert
 } from 'lucide-react';
+import GenerateCvFromJdModal from '../cv/GenerateCvFromJdModal';
+import CreateCvFlowModal from '../cv/CreateCvFlowModal';
+import ProjectDefenseModal from '../cv/ProjectDefenseModal';
+import type { ProjectItem } from '../../types/cvSection';
+import { cvService } from '../../services/cvService';
 
 export default function Sidebar() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { user, userRole } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const cvPaths = ['/cv-manager', '/cv-builder', '/cover-letter', '/portfolio-match'];
+  // Trạng thái thu gọn Sidebar (Collapsible) được lưu vào localStorage
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('profilehub_sidebar_collapsed') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const toggleCollapse = () => {
+    setIsCollapsed(prev => {
+      const next = !prev;
+      try {
+        localStorage.setItem('profilehub_sidebar_collapsed', String(next));
+      } catch {}
+      return next;
+    });
+  };
+
+  // Phím tắt Ctrl + B / Cmd + B để bật/tắt sidebar tương tự VS Code / Linear
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b') {
+        const activeEl = document.activeElement;
+        const isInput = activeEl && (
+          activeEl.tagName === 'INPUT' || 
+          activeEl.tagName === 'TEXTAREA' || 
+          activeEl.getAttribute('contenteditable') === 'true'
+        );
+        if (!isInput) {
+          e.preventDefault();
+          toggleCollapse();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const cvPaths = ['/cv-manager', '/cv-builder'];
   const isCvSectionActive = cvPaths.some(path => location.pathname.includes(path));
   const [cvMenuOpen, setCvMenuOpen] = useState(true);
+  const [isGenerateCvModalOpen, setIsGenerateCvModalOpen] = useState(false);
+  const [isCreateCvFlowModalOpen, setIsCreateCvFlowModalOpen] = useState(false);
+  const [createFlowStep, setCreateFlowStep] = useState<'choose_flow' | 'manual_studio'>('choose_flow');
+  const [isDefenseModalOpen, setIsDefenseModalOpen] = useState(false);
+  const [defenseProjects, setDefenseProjects] = useState<ProjectItem[]>([]);
+  const [loadingDefense, setLoadingDefense] = useState(false);
 
-  // Tự động mở menu CV khi người dùng truy cập bất kỳ trang nào thuộc nhóm CV
+  const handleOpenDefenseModal = async () => {
+    setLoadingDefense(true);
+    try {
+      const sourceData = await cvService.fetchStudentCVSourceData(user?.id);
+      const projs: ProjectItem[] = (sourceData.projects || []).map((p: any) => ({
+        id: p.id || `proj_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+        projectName: p.projectName || p.title || 'Dự án không tên',
+        role: p.role || 'Lập trình viên',
+        startDate: p.startDate || '2025-01',
+        endDate: p.endDate || '2025-06',
+        technologies: p.technologies || p.tags || ['React', 'Node.js', 'PostgreSQL'],
+        description: p.description || '',
+        bullets: p.bullets || [],
+        projectUrl: p.projectUrl || p.demo_url,
+        githubUrl: p.githubUrl || p.github_url
+      }));
+      setDefenseProjects(projs);
+      setIsDefenseModalOpen(true);
+    } catch (err) {
+      console.error('Lỗi khi nạp dữ liệu phòng thủ đồ án:', err);
+    } finally {
+      setLoadingDefense(false);
+    }
+  };
+
+
+  // Tự động mở menu CV khi truy cập nhóm CV
   useEffect(() => {
     if (isCvSectionActive) {
       setCvMenuOpen(true);
     }
   }, [location.pathname, isCvSectionActive]);
 
-  // Bảng màu theo role (SaaS Palette tinh chỉnh theo chuẩn Linear/Notion)
+  // Bảng màu theo role (SaaS Palette tinh tế chuẩn Linear / Stripe)
   const getRoleTheme = (role: UserRole) => {
     switch (role) {
-      case 'teacher':
-        return {
-          activeBg: '#ecfdf5',
-          activeText: '#065f46',
-          activeIcon: '#059669',
-          badgeBg: '#ecfdf5',
-          badgeText: '#047857',
-          badgeLabel: 'GIẢNG VIÊN',
-          accent: '#10b981',
-        };
       case 'recruiter':
         return {
           activeBg: '#f5f3ff',
@@ -46,7 +113,7 @@ export default function Sidebar() {
           badgeBg: '#f5f3ff',
           badgeText: '#6d28d9',
           badgeLabel: 'NHÀ TUYỂN DỤNG',
-          accent: '#8b5cf6',
+          accent: '#7c3aed',
         };
       default:
         return {
@@ -56,21 +123,39 @@ export default function Sidebar() {
           badgeBg: '#eff6ff',
           badgeText: '#1d4ed8',
           badgeLabel: 'ỨNG VIÊN',
-          accent: '#3b82f6',
+          accent: '#2563eb',
         };
     }
   };
 
   const theme = getRoleTheme(userRole);
 
-  const getMenuStyles = (path: string) => {
+  const getMenuStyles = (path: string, collapsed: boolean) => {
     const isActive = location.pathname.includes(path);
+    if (collapsed) {
+      return {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '40px',
+        height: '40px',
+        margin: '4px auto',
+        borderRadius: '8px',
+        backgroundColor: isActive ? theme.activeBg : 'transparent',
+        color: isActive ? theme.activeText : '#64748b',
+        textDecoration: 'none',
+        transition: 'all 0.15s ease',
+        borderLeft: isActive ? `3px solid ${theme.accent}` : '3px solid transparent',
+        boxShadow: isActive ? '0 1px 2px rgba(0,0,0,0.03)' : 'none',
+        position: 'relative' as const,
+      };
+    }
     return {
       display: 'flex',
       alignItems: 'center',
       gap: '10px',
-      padding: '7px 12px',
-      margin: '2px 10px',
+      padding: '7.5px 12px',
+      margin: '2px 8px',
       borderRadius: '8px',
       backgroundColor: isActive ? theme.activeBg : 'transparent',
       color: isActive ? theme.activeText : '#475569',
@@ -78,11 +163,27 @@ export default function Sidebar() {
       fontWeight: isActive ? '600' : '500',
       fontSize: '13px',
       transition: 'all 0.15s ease',
+      borderLeft: isActive ? `3px solid ${theme.accent}` : '3px solid transparent',
     };
   };
 
-  const getSubMenuStyles = (path: string) => {
-    const isActive = location.pathname.includes(path);
+  const getSubMenuStyles = (path: string, collapsed: boolean) => {
+    const isActive = path ? location.pathname.includes(path) : false;
+    if (collapsed) {
+      return {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '38px',
+        height: '38px',
+        margin: '3px auto',
+        borderRadius: '7px',
+        backgroundColor: isActive ? theme.activeBg : 'transparent',
+        color: isActive ? theme.activeText : '#64748b',
+        textDecoration: 'none',
+        transition: 'all 0.15s ease',
+      };
+    }
     return {
       display: 'flex',
       alignItems: 'center',
@@ -99,269 +200,717 @@ export default function Sidebar() {
     };
   };
 
-  const navContent = (
+  const renderNavContent = (collapsed: boolean) => (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', backgroundColor: '#ffffff' }}>
       {/* Brand Header */}
-      <div style={{ padding: '16px 18px', borderBottom: '1px solid #f1f5f9' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
-            <div style={{
-              width: '30px',
-              height: '30px',
-              borderRadius: '8px',
-              background: 'linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#ffffff',
-              boxShadow: '0 2px 6px rgba(37, 99, 235, 0.25)',
-            }}>
+      <div style={{
+        padding: collapsed ? '14px 10px' : '14px 14px',
+        borderBottom: '1px solid #f1f5f9',
+        display: 'flex',
+        flexDirection: collapsed ? 'column' : 'row',
+        alignItems: 'center',
+        justifyContent: collapsed ? 'center' : 'space-between',
+        gap: collapsed ? '8px' : '0',
+        minHeight: '62px',
+        boxSizing: 'border-box'
+      }}>
+        {!collapsed ? (
+          <>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
+              <div style={{
+                width: '30px',
+                height: '30px',
+                borderRadius: '8px',
+                background: 'linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#ffffff',
+                boxShadow: '0 2px 6px rgba(37, 99, 235, 0.25)',
+                flexShrink: 0
+              }}>
+                <Briefcase size={15} strokeWidth={2.2} />
+              </div>
+              <div>
+                <div style={{ fontSize: '15px', fontWeight: '700', color: '#0f172a', letterSpacing: '-0.02em', lineHeight: 1.2 }}>
+                  ProfileHub
+                </div>
+                <div style={{ fontSize: '9.5px', color: '#94a3b8', fontWeight: '500' }}>
+                  Career Ecosystem
+                </div>
+              </div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{
+                fontSize: '9px',
+                fontWeight: '700',
+                backgroundColor: theme.badgeBg,
+                color: theme.badgeText,
+                padding: '2.5px 6px',
+                borderRadius: '5px',
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase',
+              }}>
+                {theme.badgeLabel}
+              </span>
+              <button
+                type="button"
+                onClick={toggleCollapse}
+                title="Thu gọn sidebar (Ctrl + B)"
+                className="ph-collapse-btn"
+                style={{
+                  border: 'none',
+                  background: 'transparent',
+                  color: '#94a3b8',
+                  cursor: 'pointer',
+                  padding: '4px',
+                  borderRadius: '6px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.15s ease'
+                }}
+              >
+                <PanelLeftClose size={16} />
+              </button>
+            </div>
+          </>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+            <div
+              title="ProfileHub (Bấm để mở rộng menu)"
+              onClick={toggleCollapse}
+              style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '8px',
+                background: 'linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#ffffff',
+                boxShadow: '0 2px 6px rgba(37, 99, 235, 0.25)',
+                cursor: 'pointer',
+                transition: 'transform 0.15s ease'
+              }}
+            >
               <Briefcase size={16} strokeWidth={2.2} />
             </div>
-            <div>
-              <div style={{ fontSize: '15.5px', fontWeight: '700', color: '#0f172a', letterSpacing: '-0.02em', lineHeight: 1.2 }}>
-                ProfileHub
-              </div>
-              <div style={{ fontSize: '10px', color: '#94a3b8', fontWeight: '500' }}>
-                Career Ecosystem
-              </div>
-            </div>
+            <button
+              type="button"
+              onClick={toggleCollapse}
+              title="Mở rộng sidebar (Ctrl + B)"
+              className="ph-collapse-btn"
+              style={{
+                border: 'none',
+                background: '#f8fafc',
+                color: '#64748b',
+                cursor: 'pointer',
+                padding: '4px',
+                borderRadius: '6px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.15s ease'
+              }}
+            >
+              <PanelLeftOpen size={15} />
+            </button>
           </div>
-          <span style={{
-            fontSize: '9.5px',
-            fontWeight: '700',
-            backgroundColor: theme.badgeBg,
-            color: theme.badgeText,
-            padding: '3px 7px',
-            borderRadius: '6px',
-            letterSpacing: '0.04em',
-            textTransform: 'uppercase',
-          }}>
-            {theme.badgeLabel}
-          </span>
-        </div>
+        )}
       </div>
 
       {/* Navigation Links */}
-      <nav style={{ padding: '8px 0', flex: 1, overflowY: 'auto' }}>
+      <nav style={{ padding: '8px 0', flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>
         {userRole === 'student' && (
           <>
-            <div className="ph-section-title" style={{ padding: '8px 18px 4px 18px', fontSize: '10.5px', color: '#94a3b8', fontWeight: '700', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-              Portfolio
-            </div>
-            <Link to="/dashboard" onClick={() => setMobileOpen(false)} className="ph-nav-link" style={getMenuStyles('/dashboard')}>
-              <LayoutDashboard size={16} color={location.pathname.includes('/dashboard') ? theme.activeIcon : '#64748b'} />
-              <span>Dashboard</span>
-            </Link>
-            <Link to="/profile" onClick={() => setMobileOpen(false)} className="ph-nav-link" style={getMenuStyles('/profile')}>
-              <UserCheck size={16} color={location.pathname.includes('/profile') ? theme.activeIcon : '#64748b'} />
-              <span>Hồ Sơ Cá Nhân</span>
-            </Link>
-            <Link to="/projects" onClick={() => setMobileOpen(false)} className="ph-nav-link" style={getMenuStyles('/projects')}>
-              <FolderKanban size={16} color={location.pathname.includes('/projects') ? theme.activeIcon : '#64748b'} />
-              <span>Quản Lý Dự Án</span>
-            </Link>
-            <Link to="/certificates" onClick={() => setMobileOpen(false)} className="ph-nav-link" style={getMenuStyles('/certificates')}>
-              <Award size={16} color={location.pathname.includes('/certificates') ? theme.activeIcon : '#64748b'} />
-              <span>Chứng Chỉ & Bằng Cấp</span>
-            </Link>
-            <Link to="/achievements" onClick={() => setMobileOpen(false)} className="ph-nav-link" style={getMenuStyles('/achievements')}>
-              <Trophy size={16} color={location.pathname.includes('/achievements') ? theme.activeIcon : '#64748b'} />
-              <span>Thành Tích & Khen Thưởng</span>
+            {!collapsed ? (
+              <div className="ph-section-title" style={{ padding: '8px 16px 4px 16px', fontSize: '10px', color: '#94a3b8', fontWeight: '700', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                Portfolio
+              </div>
+            ) : (
+              <div style={{ margin: '6px 12px', borderTop: '1px solid #f1f5f9' }} />
+            )}
+
+            <Link
+              to="/dashboard"
+              onClick={() => setMobileOpen(false)}
+              className="ph-nav-link"
+              title={collapsed ? 'Dashboard' : undefined}
+              style={getMenuStyles('/dashboard', collapsed)}
+            >
+              <LayoutDashboard size={17} color={location.pathname.includes('/dashboard') ? theme.activeIcon : '#64748b'} />
+              {!collapsed && <span>Dashboard</span>}
             </Link>
 
-            {/* Nhóm Quản Lý Hồ Sơ & CV - Collapsible Submenu tinh giản, bỏ tag 4 mục */}
-            <div className="ph-section-title" style={{ padding: '14px 18px 4px 18px', fontSize: '10.5px', color: '#94a3b8', fontWeight: '700', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-              Hồ Sơ & CV
-            </div>
-            <div style={{ margin: '2px 0' }}>
-              <button
-                type="button"
-                onClick={() => setCvMenuOpen(!cvMenuOpen)}
-                className="ph-nav-link"
-                style={{
-                  width: 'calc(100% - 20px)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '8px 12px',
-                  margin: '2px 10px',
-                  borderRadius: '8px',
-                  backgroundColor: isCvSectionActive && !cvMenuOpen ? theme.activeBg : 'transparent',
-                  color: isCvSectionActive ? theme.activeText : '#475569',
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontSize: '13.5px',
-                  fontWeight: isCvSectionActive ? '600' : '500',
-                  textAlign: 'left',
-                  transition: 'all 0.15s ease',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <Layers size={17} color={isCvSectionActive ? theme.activeIcon : '#6366f1'} />
-                  <span>Quản Lý Hồ Sơ & CV</span>
+            <Link
+              to="/profile"
+              onClick={() => setMobileOpen(false)}
+              className="ph-nav-link"
+              title={collapsed ? 'Hồ Sơ Cá Nhân' : undefined}
+              style={getMenuStyles('/profile', collapsed)}
+            >
+              <UserCheck size={17} color={location.pathname.includes('/profile') ? theme.activeIcon : '#64748b'} />
+              {!collapsed && <span>Hồ Sơ Cá Nhân</span>}
+            </Link>
+
+            {/* Nhóm Quản Lý Hồ Sơ & CV */}
+            {!collapsed ? (
+              <>
+                <div className="ph-section-title" style={{ padding: '14px 16px 4px 16px', fontSize: '10px', color: '#94a3b8', fontWeight: '700', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                  Hồ Sơ & CV
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', color: '#94a3b8' }}>
-                  {cvMenuOpen ? (
-                    <ChevronDown size={15} style={{ transition: 'transform 0.2s ease' }} />
-                  ) : (
-                    <ChevronRight size={15} style={{ transition: 'transform 0.2s ease' }} />
+                <div style={{ margin: '2px 0' }}>
+                  <button
+                    type="button"
+                    onClick={() => setCvMenuOpen(!cvMenuOpen)}
+                    className="ph-nav-link"
+                    style={{
+                      width: 'calc(100% - 16px)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      padding: '7.5px 12px',
+                      margin: '2px 8px',
+                      borderRadius: '8px',
+                      backgroundColor: isCvSectionActive && !cvMenuOpen ? theme.activeBg : 'transparent',
+                      color: isCvSectionActive ? theme.activeText : '#475569',
+                      border: 'none',
+                      cursor: 'pointer',
+                      fontSize: '13px',
+                      fontWeight: isCvSectionActive ? '600' : '500',
+                      textAlign: 'left',
+                      transition: 'all 0.15s ease',
+                      borderLeft: isCvSectionActive ? `3px solid ${theme.accent}` : '3px solid transparent',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <Layers size={17} color={isCvSectionActive ? theme.activeIcon : '#6366f1'} />
+                      <span>Quản Lý Hồ Sơ & CV</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', color: '#94a3b8' }}>
+                      {cvMenuOpen ? (
+                        <ChevronDown size={14} style={{ transition: 'transform 0.2s ease' }} />
+                      ) : (
+                        <ChevronRight size={14} style={{ transition: 'transform 0.2s ease' }} />
+                      )}
+                    </div>
+                  </button>
+
+                  {/* Submenu xổ xuống với đường dẫn trực quan */}
+                  {cvMenuOpen && (
+                    <div style={{
+                      marginLeft: '24px',
+                      marginRight: '8px',
+                      paddingLeft: '4px',
+                      borderLeft: '1.5px solid #e2e8f0',
+                      marginTop: '2px',
+                      marginBottom: '4px'
+                    }}>
+                      <Link to="/cv-manager" onClick={() => setMobileOpen(false)} className="ph-subnav-link" style={getSubMenuStyles('/cv-manager', false)}>
+                        <Layers size={14} color={location.pathname.includes('/cv-manager') ? theme.activeIcon : '#6366f1'} />
+                        <span>Danh Sách & Quản Lý CV</span>
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setMobileOpen(false);
+                          setIsGenerateCvModalOpen(true);
+                        }}
+                        className="ph-subnav-link"
+                        style={{
+                          ...getSubMenuStyles('', false),
+                          width: '100%',
+                          border: 'none',
+                          background: 'transparent',
+                          cursor: 'pointer',
+                          textAlign: 'left',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <Sparkles size={14} color="#7c3aed" className="animate-pulse" />
+                          <span style={{ color: '#6d28d9', fontWeight: '600' }}>AI Tạo CV Khớp JD</span>
+                        </div>
+                        <span style={{
+                          fontSize: '9px',
+                          fontWeight: '800',
+                          background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
+                          color: '#ffffff',
+                          padding: '1.5px 5px',
+                          borderRadius: '4px',
+                          letterSpacing: '0.04em'
+                        }}>
+                          AI
+                        </span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setMobileOpen(false);
+                          setCreateFlowStep('manual_studio');
+                          setIsCreateCvFlowModalOpen(true);
+                        }}
+                        className="ph-subnav-link"
+                        style={{
+                          ...getSubMenuStyles('', false),
+                          width: '100%',
+                          border: 'none',
+                          background: 'transparent',
+                          cursor: 'pointer',
+                          textAlign: 'left',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <LayoutTemplate size={14} color="#2563eb" />
+                          <span style={{ color: '#1d4ed8', fontWeight: '600' }}>Tự Chọn Mẫu & Viết CV</span>
+                        </div>
+                        <span style={{
+                          fontSize: '9px',
+                          fontWeight: '700',
+                          backgroundColor: '#eff6ff',
+                          color: '#2563eb',
+                          padding: '1.5px 5px',
+                          borderRadius: '4px',
+                          border: '1px solid #bfdbfe'
+                        }}>
+                          Mẫu A4
+                        </span>
+                      </button>
+                      <Link to="/cv-builder" onClick={() => setMobileOpen(false)} className="ph-subnav-link" style={getSubMenuStyles('/cv-builder', false)}>
+                        <FileText size={14} color={location.pathname.includes('/cv-builder') ? theme.activeIcon : '#2563eb'} />
+                        <span>AI CV Builder & Coach</span>
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setMobileOpen(false);
+                          handleOpenDefenseModal();
+                        }}
+                        className="ph-subnav-link"
+                        style={{
+                          ...getSubMenuStyles('', false),
+                          width: '100%',
+                          border: 'none',
+                          background: 'transparent',
+                          cursor: 'pointer',
+                          textAlign: 'left',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <ShieldAlert size={14} color="#4f46e5" />
+                          <span style={{ color: '#4338ca', fontWeight: '600' }}>Phòng Thủ Đồ Án (Tech Lead)</span>
+                        </div>
+                        <span style={{
+                          fontSize: '9px',
+                          fontWeight: '800',
+                          backgroundColor: '#eef2ff',
+                          color: '#4f46e5',
+                          padding: '1.5px 5px',
+                          borderRadius: '4px',
+                          border: '1px solid #c7d2fe',
+                          letterSpacing: '0.04em'
+                        }}>
+                          🛡️ MỚI
+                        </span>
+                      </button>
+                    </div>
                   )}
                 </div>
-              </button>
 
-              {/* Submenu xổ xuống với thanh ray dọc tinh tế */}
-              {cvMenuOpen && (
-                <div style={{
-                  marginLeft: '26px',
-                  marginRight: '10px',
-                  paddingLeft: '4px',
-                  borderLeft: '1.5px solid #e2e8f0',
-                  marginTop: '2px',
-                  marginBottom: '4px'
-                }}>
-                  <Link to="/cv-manager" onClick={() => setMobileOpen(false)} className="ph-subnav-link" style={getSubMenuStyles('/cv-manager')}>
-                    <Layers size={14} color={location.pathname.includes('/cv-manager') ? theme.activeIcon : '#6366f1'} />
-                    <span>Danh Sách & Quản Lý CV</span>
-                  </Link>
-                  <Link to="/cv-builder" onClick={() => setMobileOpen(false)} className="ph-subnav-link" style={getSubMenuStyles('/cv-builder')}>
-                    <FileText size={14} color={location.pathname.includes('/cv-builder') ? theme.activeIcon : '#2563eb'} />
-                    <span>AI CV Builder & Coach</span>
-                  </Link>
-                  <Link to="/cover-letter" onClick={() => setMobileOpen(false)} className="ph-subnav-link" style={getSubMenuStyles('/cover-letter')}>
-                    <Send size={14} color={location.pathname.includes('/cover-letter') ? theme.activeIcon : '#0284c7'} />
-                    <span>Thư Giới Thiệu (Cover Letter)</span>
-                  </Link>
-                  <Link to="/portfolio-match" onClick={() => setMobileOpen(false)} className="ph-subnav-link" style={getSubMenuStyles('/portfolio-match')}>
-                    <Target size={14} color={location.pathname.includes('/portfolio-match') ? theme.activeIcon : '#10b981'} />
-                    <span>Đánh Giá AI vs JD</span>
-                  </Link>
+                {/* Quick Action Button for CV Creation */}
+                <div style={{ margin: '6px 8px 10px 8px' }}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMobileOpen(false);
+                      setCreateFlowStep('choose_flow');
+                      setIsCreateCvFlowModalOpen(true);
+                    }}
+                    className="ph-ai-quick-btn"
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px',
+                      borderRadius: '8px',
+                      background: 'linear-gradient(135deg, #2563eb 0%, #4f46e5 50%, #7c3aed 100%)',
+                      color: '#ffffff',
+                      border: 'none',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '7px',
+                      fontSize: '12px',
+                      fontWeight: '700',
+                      boxShadow: '0 2px 8px rgba(79, 70, 229, 0.25)',
+                      transition: 'all 0.15s ease',
+                    }}
+                  >
+                    <Sparkles size={14} color="#fde047" />
+                    <span>+ Tạo CV (AI hoặc Tự Viết)</span>
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div style={{ margin: '6px 12px', borderTop: '1px solid #f1f5f9' }} />
+                
+                <Link
+                  to="/cv-manager"
+                  className="ph-nav-link"
+                  title="Danh Sách & Quản Lý CV"
+                  style={getMenuStyles('/cv-manager', true)}
+                >
+                  <Layers size={17} color={location.pathname.includes('/cv-manager') ? theme.activeIcon : '#6366f1'} />
+                </Link>
+
+                <button
+                  type="button"
+                  onClick={() => setIsGenerateCvModalOpen(true)}
+                  className="ph-subnav-link"
+                  title="AI Tạo CV Khớp JD"
+                  style={{
+                    ...getSubMenuStyles('', true),
+                    border: 'none',
+                    background: 'transparent',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <Sparkles size={16} color="#7c3aed" className="animate-pulse" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCreateFlowStep('manual_studio');
+                    setIsCreateCvFlowModalOpen(true);
+                  }}
+                  className="ph-subnav-link"
+                  title="Tự Chọn Mẫu & Viết CV (Mẫu A4)"
+                  style={{
+                    ...getSubMenuStyles('', true),
+                    border: 'none',
+                    background: 'transparent',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <LayoutTemplate size={16} color="#2563eb" />
+                </button>
+
+                <Link
+                  to="/cv-builder"
+                  className="ph-subnav-link"
+                  title="AI CV Builder & Coach"
+                  style={getSubMenuStyles('/cv-builder', true)}
+                >
+                  <FileText size={16} color={location.pathname.includes('/cv-builder') ? theme.activeIcon : '#2563eb'} />
+                </Link>
+
+                <button
+                  type="button"
+                  onClick={() => handleOpenDefenseModal()}
+                  className="ph-subnav-link"
+                  title="Bản Lĩnh Phòng Thủ Đồ Án Trước Tech Lead [🛡️ MỚI]"
+                  style={{
+                    ...getSubMenuStyles('', true),
+                    border: 'none',
+                    background: 'transparent',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <ShieldAlert size={16} color="#4f46e5" />
+                </button>
+
+                {/* Collapsed Quick Action Button */}
+                <div style={{ display: 'flex', justifyContent: 'center', margin: '6px 0' }}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCreateFlowStep('choose_flow');
+                      setIsCreateCvFlowModalOpen(true);
+                    }}
+                    className="ph-ai-quick-btn"
+                    title="+ Tạo CV Mới"
+                    style={{
+                      width: '38px',
+                      height: '38px',
+                      borderRadius: '8px',
+                      background: 'linear-gradient(135deg, #2563eb 0%, #4f46e5 50%, #7c3aed 100%)',
+                      color: '#ffffff',
+                      border: 'none',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0 2px 6px rgba(79, 70, 229, 0.3)',
+                      transition: 'all 0.15s ease',
+                    }}
+                  >
+                    <Sparkles size={16} color="#fde047" />
+                  </button>
+                </div>
+              </>
+            )}
+
+            {!collapsed ? (
+              <div className="ph-section-title" style={{ padding: '14px 16px 4px 16px', fontSize: '10px', color: '#94a3b8', fontWeight: '700', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                Cơ Hội Việc Làm
+              </div>
+            ) : (
+              <div style={{ margin: '6px 12px', borderTop: '1px solid #f1f5f9' }} />
+            )}
+
+            <Link
+              to="/student/jobs"
+              onClick={() => setMobileOpen(false)}
+              className="ph-nav-link"
+              title={collapsed ? 'Việc Làm & Ứng Tuyển' : undefined}
+              style={getMenuStyles('/student/jobs', collapsed)}
+            >
+              <Briefcase size={17} color={location.pathname.includes('/student/jobs') ? theme.activeIcon : '#3b82f6'} />
+              {!collapsed && <span>Việc Làm & Tuyển Dụng</span>}
+            </Link>
+
+            <Link
+              to="/student/applications"
+              onClick={() => setMobileOpen(false)}
+              className="ph-nav-link"
+              title={collapsed ? 'Tiến Trình Ứng Tuyển (Application Hub)' : undefined}
+              style={getMenuStyles('/student/applications', collapsed)}
+            >
+              <Kanban size={17} color={location.pathname.includes('/student/applications') ? theme.activeIcon : '#2563eb'} />
+              {!collapsed && (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                  <span>Tiến Trình Ứng Tuyển</span>
+                  <span style={{
+                    fontSize: '9px',
+                    fontWeight: '800',
+                    backgroundColor: '#eff6ff',
+                    color: '#2563eb',
+                    padding: '1.5px 5px',
+                    borderRadius: '4px',
+                    border: '1px solid #bfdbfe'
+                  }}>
+                    HUB
+                  </span>
                 </div>
               )}
-            </div>
-
-            <div className="ph-section-title" style={{ padding: '14px 18px 4px 18px', fontSize: '10.5px', color: '#94a3b8', fontWeight: '700', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-              Định Hướng Nghề Nghiệp
-            </div>
-            <Link to="/mbti-test" onClick={() => setMobileOpen(false)} className="ph-nav-link" style={getMenuStyles('/mbti-test')}>
-              <Brain size={17} color={location.pathname.includes('/mbti-test') ? theme.activeIcon : '#8b5cf6'} />
-              <span>Trắc Nghiệm MBTI</span>
-            </Link>
-            <Link to="/student/jobs" onClick={() => setMobileOpen(false)} className="ph-nav-link" style={getMenuStyles('/student/jobs')}>
-              <Briefcase size={17} color={location.pathname.includes('/student/jobs') ? theme.activeIcon : '#3b82f6'} />
-              <span>Bài Đăng Tuyển Dụng</span>
-            </Link>
-            <Link to="/interview-prep" onClick={() => setMobileOpen(false)} className="ph-nav-link" style={getMenuStyles('/interview-prep')}>
-              <Sparkles size={17} color={location.pathname.includes('/interview-prep') ? theme.activeIcon : '#f59e0b'} />
-              <span>Luyện Phỏng Vấn AI</span>
             </Link>
           </>
         )}
 
         {userRole === 'recruiter' && (
           <>
-            <div className="ph-section-title" style={{ padding: '8px 18px 4px 18px', fontSize: '10.5px', color: '#8b5cf6', fontWeight: '700', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-              Portal Nhà Tuyển Dụng
-            </div>
-            <Link to="/dashboard" onClick={() => setMobileOpen(false)} className="ph-nav-link" style={getMenuStyles('/dashboard')}>
+            {!collapsed ? (
+              <div className="ph-section-title" style={{ padding: '8px 16px 4px 16px', fontSize: '10px', color: '#8b5cf6', fontWeight: '700', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                Portal Nhà Tuyển Dụng
+              </div>
+            ) : (
+              <div style={{ margin: '6px 12px', borderTop: '1px solid #f1f5f9' }} />
+            )}
+
+            <Link
+              to="/dashboard"
+              onClick={() => setMobileOpen(false)}
+              className="ph-nav-link"
+              title={collapsed ? 'Bảng Điều Khiển' : undefined}
+              style={getMenuStyles('/dashboard', collapsed)}
+            >
               <LayoutDashboard size={17} color={location.pathname.includes('/dashboard') ? theme.activeIcon : '#7c3aed'} />
-              <span>Bảng Điều Khiển</span>
+              {!collapsed && <span>Bảng Điều Khiển</span>}
             </Link>
-            <Link to="/recruiter/profile" onClick={() => setMobileOpen(false)} className="ph-nav-link" style={getMenuStyles('/recruiter/profile')}>
+
+            <Link
+              to="/recruiter/profile"
+              onClick={() => setMobileOpen(false)}
+              className="ph-nav-link"
+              title={collapsed ? 'Hồ Sơ Doanh Nghiệp (MST)' : undefined}
+              style={getMenuStyles('/recruiter/profile', collapsed)}
+            >
               <Building2 size={17} color={location.pathname.includes('/recruiter/profile') ? theme.activeIcon : '#7c3aed'} />
-              <span>Hồ Sơ Doanh Nghiệp</span>
+              {!collapsed && <span>Hồ Sơ Doanh Nghiệp (MST)</span>}
             </Link>
-            <Link to="/recruiter/ai-assistant" onClick={() => setMobileOpen(false)} className="ph-nav-link" style={getMenuStyles('/recruiter/ai-assistant')}>
-              <Sparkles size={17} color={location.pathname.includes('/recruiter/ai-assistant') ? theme.activeIcon : '#7c3aed'} />
-              <span>AI Tuyển Dụng (AI Match)</span>
-            </Link>
-            <Link to="/recruiter/dossiers" onClick={() => setMobileOpen(false)} className="ph-nav-link" style={getMenuStyles('/recruiter/dossiers')}>
-              <FolderOpen size={17} color={location.pathname.includes('/recruiter/dossiers') ? theme.activeIcon : '#f59e0b'} />
-              <span>Cặp Hồ Sơ Ứng Tuyển</span>
-            </Link>
-            <Link to="/recruiter/offer-letter" onClick={() => setMobileOpen(false)} className="ph-nav-link" style={getMenuStyles('/recruiter/offer-letter')}>
-              <FileSignature size={17} color={location.pathname.includes('/recruiter/offer-letter') ? theme.activeIcon : '#7c3aed'} />
-              <span>Thư Mời Nhận Việc</span>
-            </Link>
-            <Link to="/recruiter/search" onClick={() => setMobileOpen(false)} className="ph-nav-link" style={getMenuStyles('/recruiter/search')}>
-              <Briefcase size={17} color={location.pathname.includes('/recruiter/search') ? theme.activeIcon : '#7c3aed'} />
-              <span>Tìm Ứng Viên (Verified)</span>
-            </Link>
-            <Link to="/recruiter/pipeline" onClick={() => setMobileOpen(false)} className="ph-nav-link" style={getMenuStyles('/recruiter/pipeline')}>
-              <Kanban size={17} color={location.pathname.includes('/recruiter/pipeline') ? theme.activeIcon : '#7c3aed'} />
-              <span>Luồng Tuyển Dụng</span>
-            </Link>
-            <Link to="/recruiter/saved" onClick={() => setMobileOpen(false)} className="ph-nav-link" style={getMenuStyles('/recruiter/saved')}>
-              <Star size={17} color={location.pathname.includes('/recruiter/saved') ? theme.activeIcon : '#f59e0b'} />
-              <span>Ứng Viên Đã Lưu</span>
-            </Link>
-            <Link to="/recruiter/jobs" onClick={() => setMobileOpen(false)} className="ph-nav-link" style={getMenuStyles('/recruiter/jobs')}>
+
+            <Link
+              to="/recruiter/jobs"
+              onClick={() => setMobileOpen(false)}
+              className="ph-nav-link"
+              title={collapsed ? 'Quản Lý Tin Tuyển Dụng' : undefined}
+              style={getMenuStyles('/recruiter/jobs', collapsed)}
+            >
               <Briefcase size={17} color={location.pathname.includes('/recruiter/jobs') ? theme.activeIcon : '#7c3aed'} />
-              <span>Quản Lý Bài Đăng</span>
+              {!collapsed && <span>Quản Lý Tin Tuyển Dụng</span>}
+            </Link>
+
+            <Link
+              to="/recruiter/search"
+              onClick={() => setMobileOpen(false)}
+              className="ph-nav-link"
+              title={collapsed ? 'Tìm Kiếm Ứng Viên' : undefined}
+              style={getMenuStyles('/recruiter/search', collapsed)}
+            >
+              <UserCheck size={17} color={location.pathname.includes('/recruiter/search') ? theme.activeIcon : '#7c3aed'} />
+              {!collapsed && <span>Tìm Kiếm Ứng Viên</span>}
+            </Link>
+
+            <Link
+              to="/recruiter/pipeline"
+              onClick={() => setMobileOpen(false)}
+              className="ph-nav-link"
+              title={collapsed ? 'Luồng Tuyển Dụng (Pipeline)' : undefined}
+              style={getMenuStyles('/recruiter/pipeline', collapsed)}
+            >
+              <Kanban size={17} color={location.pathname.includes('/recruiter/pipeline') ? theme.activeIcon : '#7c3aed'} />
+              {!collapsed && <span>Luồng Tuyển Dụng</span>}
+            </Link>
+
+            <Link
+              to="/recruiter/saved"
+              onClick={() => setMobileOpen(false)}
+              className="ph-nav-link"
+              title={collapsed ? 'Ứng Viên Đã Lưu' : undefined}
+              style={getMenuStyles('/recruiter/saved', collapsed)}
+            >
+              <Star size={17} color={location.pathname.includes('/recruiter/saved') ? theme.activeIcon : '#f59e0b'} />
+              {!collapsed && <span>Ứng Viên Đã Lưu</span>}
+            </Link>
+
+            <Link
+              to="/recruiter/ai-assistant"
+              onClick={() => setMobileOpen(false)}
+              className="ph-nav-link"
+              title={collapsed ? 'AI Hỗ Trợ Tuyển Dụng' : undefined}
+              style={getMenuStyles('/recruiter/ai-assistant', collapsed)}
+            >
+              <Sparkles size={17} color={location.pathname.includes('/recruiter/ai-assistant') ? theme.activeIcon : '#7c3aed'} />
+              {!collapsed && <span>AI Tuyển Dụng</span>}
             </Link>
           </>
         )}
       </nav>
 
       {/* Footer Account & Logout */}
-      <div style={{ padding: '12px 14px', borderTop: '1px solid #f1f5f9', backgroundColor: '#fcfcfd' }}>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          padding: '6px 8px',
-          borderRadius: '6px',
-          marginBottom: '8px',
-          backgroundColor: '#f8fafc',
-        }}>
-          <div style={{
-            width: '26px',
-            height: '26px',
-            borderRadius: '50%',
-            backgroundColor: '#e2e8f0',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#64748b',
-            fontSize: '11px',
-            fontWeight: '600',
-            flexShrink: 0
-          }}>
-            {user?.email ? user.email.charAt(0).toUpperCase() : <User size={13} />}
-          </div>
-          <div style={{ fontSize: '12px', color: '#475569', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: '500' }}>
-            {user?.email || 'user@profilehub.vn'}
-          </div>
-        </div>
-        <button
-          onClick={() => window.location.href = '/logout'}
-          className="ph-logout-btn"
-          style={{
-            width: '100%',
-            padding: '7px 10px',
-            backgroundColor: '#fff1f2',
-            color: '#e11d48',
-            border: '1px solid #ffe4e6',
-            borderRadius: '6px',
-            cursor: 'pointer',
-            fontWeight: '600',
-            fontSize: '12px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '6px',
-            transition: 'all 0.15s ease'
-          }}
-        >
-          <LogOut size={13} /> Đăng xuất
-        </button>
+      <div style={{
+        padding: collapsed ? '10px 8px' : '10px 12px',
+        borderTop: '1px solid #f1f5f9',
+        backgroundColor: '#fcfcfd',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '6px'
+      }}>
+        {!collapsed ? (
+          <>
+            <div style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '6px 8px',
+              borderRadius: '6px',
+              backgroundColor: '#f8fafc',
+              boxSizing: 'border-box'
+            }}>
+              <div style={{
+                width: '24px',
+                height: '24px',
+                borderRadius: '50%',
+                backgroundColor: '#e2e8f0',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#64748b',
+                fontSize: '11px',
+                fontWeight: '600',
+                flexShrink: 0
+              }}>
+                {user?.email ? user.email.charAt(0).toUpperCase() : <User size={12} />}
+              </div>
+              <div style={{ fontSize: '11.5px', color: '#475569', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: '500' }}>
+                {user?.email || 'user@profilehub.vn'}
+              </div>
+            </div>
+            <button
+              onClick={() => window.location.href = '/logout'}
+              className="ph-logout-btn"
+              style={{
+                width: '100%',
+                padding: '6.5px 10px',
+                backgroundColor: '#fff1f2',
+                color: '#e11d48',
+                border: '1px solid #ffe4e6',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontWeight: '600',
+                fontSize: '11.5px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '6px',
+                transition: 'all 0.15s ease'
+              }}
+            >
+              <LogOut size={13} /> Đăng xuất
+            </button>
+          </>
+        ) : (
+          <>
+            <div
+              title={user?.email || 'Tài khoản ProfileHub'}
+              style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                backgroundColor: '#f1f5f9',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#475569',
+                fontSize: '12px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                border: '1px solid #e2e8f0'
+              }}
+            >
+              {user?.email ? user.email.charAt(0).toUpperCase() : <User size={13} />}
+            </div>
+            <button
+              onClick={() => window.location.href = '/logout'}
+              className="ph-logout-btn"
+              title="Đăng xuất"
+              style={{
+                width: '32px',
+                height: '32px',
+                backgroundColor: '#fff1f2',
+                color: '#e11d48',
+                border: '1px solid #ffe4e6',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.15s ease'
+              }}
+            >
+              <LogOut size={13} />
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
 
   return (
     <>
-      {/* MOBILE BAR (Hiển thị trên Màn hình < 1024px) */}
+      {/* MOBILE TOP BAR (Hiển thị trên Màn hình < 1024px) */}
       <div className="mobile-top-bar" style={{
         display: 'none',
         position: 'sticky',
@@ -369,12 +918,13 @@ export default function Sidebar() {
         zIndex: 900,
         backgroundColor: 'white',
         borderBottom: '1px solid #f1f5f9',
-        padding: '12px 20px',
+        padding: '12px 18px',
         justifyContent: 'space-between',
         alignItems: 'center',
         width: '100%',
+        boxSizing: 'border-box'
       }}>
-        <div style={{ fontSize: '16.5px', fontWeight: 'bold', color: '#0f172a', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#0f172a', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div style={{
             width: '26px',
             height: '26px',
@@ -391,14 +941,14 @@ export default function Sidebar() {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span style={{ fontSize: '10px', fontWeight: 'bold', backgroundColor: theme.badgeBg, color: theme.badgeText, padding: '3px 8px', borderRadius: '6px' }}>
+          <span style={{ fontSize: '9.5px', fontWeight: 'bold', backgroundColor: theme.badgeBg, color: theme.badgeText, padding: '3px 7px', borderRadius: '5px' }}>
             {theme.badgeLabel}
           </span>
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
             style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#0f172a', padding: '4px' }}
           >
-            {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+            {mobileOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
       </div>
@@ -427,14 +977,31 @@ export default function Sidebar() {
               boxShadow: '4px 0 20px rgba(0,0,0,0.1)',
             }}
           >
-            {navContent}
+            {renderNavContent(false)}
           </div>
         </div>
       )}
 
-      {/* DESKTOP SIDEBAR (Cố định ở Màn hình >= 1024px) */}
-      <aside className="desktop-sidebar" style={{ width: '252px', backgroundColor: '#ffffff', borderRight: '1px solid #f1f5f9', display: 'flex', flexDirection: 'column', flexShrink: 0, height: '100vh', position: 'sticky', top: 0, overflowY: 'auto' }}>
-        {navContent}
+      {/* DESKTOP SIDEBAR (Cố định ở Màn hình >= 1024px, hỗ trợ thu gọn mượt mà) */}
+      <aside
+        className={`desktop-sidebar ${isCollapsed ? 'is-collapsed' : ''}`}
+        style={{
+          width: isCollapsed ? '64px' : '246px',
+          backgroundColor: '#ffffff',
+          borderRight: '1px solid #f1f5f9',
+          display: 'flex',
+          flexDirection: 'column',
+          flexShrink: 0,
+          height: '100vh',
+          position: 'sticky',
+          top: 0,
+          overflowY: isCollapsed ? 'visible' : 'auto',
+          overflowX: 'hidden',
+          transition: 'width 0.2s cubic-bezier(0.2, 0, 0, 1)',
+          zIndex: 30,
+        }}
+      >
+        {renderNavContent(isCollapsed)}
       </aside>
 
       {/* Responsive & Hover Interactive CSS */}
@@ -455,10 +1022,49 @@ export default function Sidebar() {
           background-color: #f1f5f9 !important;
           color: #0f172a !important;
         }
+        .ph-collapse-btn:hover {
+          background-color: #f1f5f9 !important;
+          color: #0f172a !important;
+        }
+        .ph-ai-quick-btn:hover {
+          filter: brightness(1.06);
+          transform: translateY(-1px);
+        }
         .ph-logout-btn:hover {
           background-color: #ffe4e6 !important;
         }
       `}</style>
+
+      {/* Modal AI Tạo CV Khớp JD */}
+      {isGenerateCvModalOpen && (
+        <GenerateCvFromJdModal
+          isOpen={isGenerateCvModalOpen}
+          onClose={() => setIsGenerateCvModalOpen(false)}
+        />
+      )}
+
+      {/* Modal Tạo CV Mới (AI hoặc Tự Chọn Mẫu Viết Tay) */}
+      {isCreateCvFlowModalOpen && (
+        <CreateCvFlowModal
+          isOpen={isCreateCvFlowModalOpen}
+          initialStep={createFlowStep}
+          onClose={() => setIsCreateCvFlowModalOpen(false)}
+          userId={user?.id}
+          userEmail={user?.email}
+          profileSourceData={null}
+        />
+      )}
+
+      {/* Modal Phòng Thủ Đồ Án Trước Tech Lead (Trụ Cột 3) */}
+      {isDefenseModalOpen && (
+        <ProjectDefenseModal
+          isOpen={isDefenseModalOpen}
+          onClose={() => setIsDefenseModalOpen(false)}
+          project={defenseProjects[0] || null}
+          projects={defenseProjects}
+        />
+      )}
+
     </>
   );
 }

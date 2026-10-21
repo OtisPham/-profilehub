@@ -4,7 +4,6 @@ import {
   Trash2,
   ArrowUp,
   ArrowDown,
-  Shield,
   Sparkles,
   Award,
   Layers,
@@ -32,9 +31,16 @@ import {
   Languages as LanguagesIcon,
   UserCheck,
   PlusCircle,
-  AlertCircle
+  AlertCircle,
+  FolderKanban,
+  Edit3,
+  ShieldAlert
 } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
+import StarDiffReviewModal from './StarDiffReviewModal';
+import ProjectDefenseModal from './ProjectDefenseModal';
 import type { CVTemplateType } from './CVTemplates';
+import InlineEditPopover from './InlineEditPopover';
 import type {
   CVSection,
   CVSectionType,
@@ -98,6 +104,13 @@ interface InteractiveCVCanvasProps {
   onDeleteItemFromSection: (sectionId: string, itemId: string) => void;
   onUpdateItemInSection: (sectionId: string, itemId: string, updated: any) => void;
   onDuplicateItemInSection?: (sectionId: string, itemId: string) => void;
+  // Contextual AI & Undo props (Spec v0.4)
+  targetRole?: string;
+  jdContext?: string;
+  remainingCredits?: number;
+  onRecordUndo?: (record: any) => void;
+  onDeductAiCredit?: () => void;
+  onOpenProfilePicker?: (initialTab?: 'projects' | 'certificates') => void;
 }
 
 /**
@@ -175,12 +188,54 @@ export default function InteractiveCVCanvas({
   onAddItemToSection,
   onDeleteItemFromSection,
   onUpdateItemInSection,
-  onDuplicateItemInSection
+  onDuplicateItemInSection,
+  targetRole = 'Chuyên viên kỹ thuật',
+  jdContext = '',
+  remainingCredits = 20,
+  onRecordUndo,
+  onDeductAiCredit,
+  onOpenProfilePicker
 }: InteractiveCVCanvasProps) {
   const [draggedSectionId, setDraggedSectionId] = useState<string | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const measureContainerRef = useRef<HTMLDivElement>(null);
   const [pages, setPages] = useState<CVPage[]>([{ pageNumber: 1, hasHeader: true, sections: [] }]);
+
+  // Inline Edit Popover State (Spec v0.4 - UC-CAN-009 & UC-CAN-010)
+  const [inlineEditState, setInlineEditState] = useState<{
+    isOpen: boolean;
+    initialText: string;
+    fieldLabel: string;
+    onSave: (text: string) => void;
+    onApplyAi: (text: string) => void;
+  }>({
+    isOpen: false,
+    initialText: '',
+    fieldLabel: '',
+    onSave: () => {},
+    onApplyAi: () => {},
+  });
+
+  const openInlineEditor = (options: {
+    initialText: string;
+    fieldLabel: string;
+    onSave: (text: string) => void;
+    onApplyAi: (text: string) => void;
+  }) => {
+    setInlineEditState({
+      isOpen: true,
+      initialText: options.initialText,
+      fieldLabel: options.fieldLabel,
+      onSave: options.onSave,
+      onApplyAi: options.onApplyAi,
+    });
+  };
+
+  // STAR Diff Review Modal State (Ticket 04)
+  const [starProjectToReview, setStarProjectToReview] = useState<(ProjectItem & { _sectionId: string }) | null>(null);
+
+  // Project Technical Defense Modal State (Trụ Cột 3)
+  const [defenseProjectToReview, setDefenseProjectToReview] = useState<ProjectItem | null>(null);
 
   // Spacing presets
   const paddingMap = {
@@ -421,7 +476,7 @@ export default function InteractiveCVCanvas({
 
   // 1. OBJECTIVE SECTION (Shrinks strictly to text height)
   const renderObjectiveContent = (section: CVSection) => (
-    <div style={{ height: 'auto' }}>
+    <div style={{ height: 'auto' }} className="relative group/obj">
       <AutoExpandingTextarea
         value={section.content || ''}
         onChange={(val) => onUpdateSection(section.id, { content: val })}
@@ -430,6 +485,45 @@ export default function InteractiveCVCanvas({
         style={{ fontFamily }}
         readOnly={!isEditorMode}
       />
+      {isEditorMode && (
+        <button
+          type="button"
+          onClick={() => openInlineEditor({
+            initialText: section.content || '',
+            fieldLabel: 'mục tiêu nghề nghiệp',
+            onSave: (val) => {
+              if (onRecordUndo) {
+                onRecordUndo({
+                  type: 'SECTION_CONTENT',
+                  sectionId: section.id,
+                  oldValue: section.content || '',
+                  newValue: val,
+                  description: 'Sửa mục tiêu nghề nghiệp'
+                });
+              }
+              onUpdateSection(section.id, { content: val });
+            },
+            onApplyAi: (val) => {
+              if (onRecordUndo) {
+                onRecordUndo({
+                  type: 'SECTION_CONTENT',
+                  sectionId: section.id,
+                  oldValue: section.content || '',
+                  newValue: val,
+                  description: 'Áp dụng gợi ý AI mục tiêu nghề nghiệp'
+                });
+              }
+              onUpdateSection(section.id, { content: val });
+              if (onDeductAiCredit) onDeductAiCredit();
+            }
+          })}
+          className="absolute -top-1 right-0 hidden group-hover/obj:flex items-center gap-1 px-2 py-0.5 bg-blue-50 dark:bg-slate-800 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-slate-700 rounded text-[10px] font-bold shadow-xs hover:bg-blue-100 transition print:hidden z-10"
+          title="Chỉnh sửa & Tác vụ AI [✏️]"
+        >
+          <Edit3 className="w-2.5 h-2.5 text-blue-600" />
+          <span>Sửa / AI [✏️]</span>
+        </button>
+      )}
     </div>
   );
 
@@ -447,7 +541,48 @@ export default function InteractiveCVCanvas({
           >
             {/* Item Controls */}
             {isEditorMode && (
-              <div className="absolute top-0 right-0 hidden group-hover/item:flex print:hidden items-center gap-1 bg-slate-800 text-white rounded px-1.5 py-0.5 text-[10px] z-10 shadow-xs">
+              <div className="absolute top-0 right-0 hidden group-hover/item:flex print:hidden items-center gap-1 bg-slate-900 text-white rounded px-1.5 py-0.5 text-[10px] z-10 shadow-xs">
+                <button
+                  type="button"
+                  onClick={() => openInlineEditor({
+                    initialText: item.description || '',
+                    fieldLabel: 'mô tả học vấn',
+                    onSave: (val) => {
+                      if (onRecordUndo) {
+                        onRecordUndo({
+                          type: 'ITEM_FIELD',
+                          sectionId: section.id,
+                          itemId: item.id,
+                          field: 'description',
+                          oldValue: item.description || '',
+                          newValue: val,
+                          description: 'Sửa mô tả học vấn'
+                        });
+                      }
+                      onUpdateItemInSection(section.id, item.id, { description: val });
+                    },
+                    onApplyAi: (val) => {
+                      if (onRecordUndo) {
+                        onRecordUndo({
+                          type: 'ITEM_FIELD',
+                          sectionId: section.id,
+                          itemId: item.id,
+                          field: 'description',
+                          oldValue: item.description || '',
+                          newValue: val,
+                          description: 'Áp dụng AI mô tả học vấn'
+                        });
+                      }
+                      onUpdateItemInSection(section.id, item.id, { description: val });
+                      if (onDeductAiCredit) onDeductAiCredit();
+                    }
+                  })}
+                  className="px-1.5 py-0.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded flex items-center gap-1 transition"
+                  title="Chỉnh sửa & Tác vụ AI [✏️]"
+                >
+                  <Edit3 className="w-2.5 h-2.5" />
+                  <span>Sửa / AI [✏️]</span>
+                </button>
                 {onDuplicateItemInSection && (
                   <button onClick={() => onDuplicateItemInSection(section.id, item.id)} title="Nhân bản" className="p-0.5 hover:text-blue-300">
                     <Copy className="w-2.5 h-2.5" />
@@ -491,7 +626,7 @@ export default function InteractiveCVCanvas({
               </div>
             </div>
 
-            {/* Major & GPA */}
+            {/* Major */}
             <div className="flex items-center justify-between text-[11px] text-slate-600 dark:text-slate-400 mb-0.5">
               <input
                 type="text"
@@ -501,18 +636,6 @@ export default function InteractiveCVCanvas({
                 readOnly={!isEditorMode}
                 className="font-semibold text-slate-700 dark:text-slate-300 bg-transparent border-none outline-none px-0.5 flex-1"
               />
-              {item.gpa && (
-                <div className="flex items-center gap-1 shrink-0">
-                  <span className="text-slate-400 text-[10px]">GPA:</span>
-                  <input
-                    type="text"
-                    value={item.gpa}
-                    onChange={(e) => onUpdateItemInSection(section.id, item.id, { gpa: e.target.value })}
-                    readOnly={!isEditorMode}
-                    className="font-medium text-slate-700 dark:text-slate-300 bg-transparent border-none outline-none w-14 text-right"
-                  />
-                </div>
-              )}
             </div>
 
             {/* Highlights */}
@@ -552,15 +675,48 @@ export default function InteractiveCVCanvas({
             style={{ height: 'auto', breakInside: 'avoid', pageBreakInside: 'avoid' }}
           >
             {isEditorMode && (
-              <div className="absolute top-0 right-0 hidden group-hover/item:flex print:hidden items-center gap-1 bg-slate-800 text-white rounded px-1.5 py-0.5 text-[10px] z-10 shadow-xs">
-                {onAiOptimizeItem && (
-                  <button
-                    onClick={() => onAiOptimizeItem(section.id, item.id, item.description || '')}
-                    className="px-1 hover:text-indigo-300 text-indigo-400 font-semibold flex items-center gap-0.5"
-                  >
-                    <Sparkles className="w-2.5 h-2.5" /> AI Sửa
-                  </button>
-                )}
+              <div className="absolute top-0 right-0 hidden group-hover/item:flex print:hidden items-center gap-1 bg-slate-900 text-white rounded px-1.5 py-0.5 text-[10px] z-10 shadow-xs">
+                <button
+                  type="button"
+                  onClick={() => openInlineEditor({
+                    initialText: item.description || '',
+                    fieldLabel: 'mô tả kinh nghiệm',
+                    onSave: (val) => {
+                      if (onRecordUndo) {
+                        onRecordUndo({
+                          type: 'ITEM_FIELD',
+                          sectionId: section.id,
+                          itemId: item.id,
+                          field: 'description',
+                          oldValue: item.description || '',
+                          newValue: val,
+                          description: 'Sửa mô tả kinh nghiệm'
+                        });
+                      }
+                      onUpdateItemInSection(section.id, item.id, { description: val });
+                    },
+                    onApplyAi: (val) => {
+                      if (onRecordUndo) {
+                        onRecordUndo({
+                          type: 'ITEM_FIELD',
+                          sectionId: section.id,
+                          itemId: item.id,
+                          field: 'description',
+                          oldValue: item.description || '',
+                          newValue: val,
+                          description: 'Áp dụng AI mô tả kinh nghiệm'
+                        });
+                      }
+                      onUpdateItemInSection(section.id, item.id, { description: val });
+                      if (onDeductAiCredit) onDeductAiCredit();
+                    }
+                  })}
+                  className="px-1.5 py-0.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded flex items-center gap-1 transition"
+                  title="Chỉnh sửa & Tác vụ AI [✏️]"
+                >
+                  <Edit3 className="w-2.5 h-2.5" />
+                  <span>Sửa / AI [✏️]</span>
+                </button>
                 <button onClick={() => onDeleteItemFromSection(section.id, item.id)} title="Xóa" className="p-0.5 hover:text-rose-400">
                   <Trash2 className="w-2.5 h-2.5" />
                 </button>
@@ -643,15 +799,66 @@ export default function InteractiveCVCanvas({
             style={{ height: 'auto', breakInside: 'avoid', pageBreakInside: 'avoid' }}
           >
             {isEditorMode && (
-              <div className="absolute top-0 right-0 hidden group-hover/item:flex print:hidden items-center gap-1 bg-slate-800 text-white rounded px-1.5 py-0.5 text-[10px] z-10 shadow-xs">
-                {onAiOptimizeItem && (
-                  <button
-                    onClick={() => onAiOptimizeItem(section.id, item.id, item.description || '')}
-                    className="px-1 hover:text-indigo-300 text-indigo-400 font-semibold flex items-center gap-0.5"
-                  >
-                    <Sparkles className="w-2.5 h-2.5" /> AI Sửa
-                  </button>
-                )}
+              <div className="absolute top-0 right-0 hidden group-hover/item:flex print:hidden items-center gap-1 bg-slate-900 text-white rounded px-1.5 py-0.5 text-[10px] z-10 shadow-xs">
+                <button
+                  type="button"
+                  onClick={() => openInlineEditor({
+                    initialText: item.description || '',
+                    fieldLabel: 'mô tả đồ án / dự án',
+                    onSave: (val) => {
+                      if (onRecordUndo) {
+                        onRecordUndo({
+                          type: 'ITEM_FIELD',
+                          sectionId: section.id,
+                          itemId: item.id,
+                          field: 'description',
+                          oldValue: item.description || '',
+                          newValue: val,
+                          description: 'Sửa mô tả dự án'
+                        });
+                      }
+                      onUpdateItemInSection(section.id, item.id, { description: val });
+                    },
+                    onApplyAi: (val) => {
+                      if (onRecordUndo) {
+                        onRecordUndo({
+                          type: 'ITEM_FIELD',
+                          sectionId: section.id,
+                          itemId: item.id,
+                          field: 'description',
+                          oldValue: item.description || '',
+                          newValue: val,
+                          description: 'Áp dụng AI mô tả dự án'
+                        });
+                      }
+                      onUpdateItemInSection(section.id, item.id, { description: val });
+                      if (onDeductAiCredit) onDeductAiCredit();
+                    }
+                  })}
+                  className="px-1.5 py-0.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded flex items-center gap-1 transition"
+                  title="Chỉnh sửa & Tác vụ AI [✏️]"
+                >
+                  <Edit3 className="w-2.5 h-2.5" />
+                  <span>Sửa / AI [✏️]</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setStarProjectToReview({ ...item, _sectionId: section.id })}
+                  className="px-1.5 py-0.5 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded flex items-center gap-1 transition"
+                  title="Chuẩn hóa STAR & Anti-Hallucination Guard [⭐]"
+                >
+                  <Sparkles className="w-2.5 h-2.5" />
+                  <span>STAR [⭐]</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setDefenseProjectToReview(item)}
+                  className="px-1.5 py-0.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded flex items-center gap-1 transition"
+                  title="Diễn tập câu hỏi xoáy & Phòng thủ trước Tech Lead [🛡️]"
+                >
+                  <ShieldAlert className="w-2.5 h-2.5" />
+                  <span>Phòng thủ [🛡️]</span>
+                </button>
                 {onDuplicateItemInSection && (
                   <button onClick={() => onDuplicateItemInSection(section.id, item.id)} title="Nhân bản" className="p-0.5 hover:text-blue-300">
                     <Copy className="w-2.5 h-2.5" />
@@ -674,11 +881,6 @@ export default function InteractiveCVCanvas({
                   readOnly={!isEditorMode}
                   className="font-bold text-slate-900 dark:text-slate-100 bg-transparent border-none outline-none focus:bg-blue-50/40 rounded px-0.5 flex-1 text-xs"
                 />
-                {item.is_verified && (
-                  <span className="shrink-0 px-1 py-0.2 rounded bg-emerald-100 text-emerald-800 text-[8.5px] font-bold flex items-center gap-0.5">
-                    <Shield className="w-2.5 h-2.5" /> Verified
-                  </span>
-                )}
               </div>
 
               <div className="text-[11px] font-medium text-slate-500 shrink-0">
@@ -728,6 +930,107 @@ export default function InteractiveCVCanvas({
               </div>
             </div>
 
+            {/* Scoped Contribution & System Context (Ticket 02) */}
+            <div className="flex flex-wrap items-center gap-1.5 mb-1 text-[11px]">
+              {item.scopeType === 'team' ? (
+                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 shrink-0">
+                  👥 Đồ án nhóm{item.teamSize ? ` (${item.teamSize} TV)` : ''}
+                </span>
+              ) : item.scopeType === 'solo' ? (
+                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 shrink-0">
+                  👤 Đồ án cá nhân
+                </span>
+              ) : null}
+
+              {item.systemContext && (
+                <span className="text-[10.5px] text-slate-500 dark:text-slate-400 italic">
+                  <span className="font-semibold text-slate-600 dark:text-slate-300 not-italic">Hệ thống:</span> {item.systemContext}
+                </span>
+              )}
+            </div>
+
+            {/* Editor mode configuration bar: Scope Selector, System Scope, Reverse Sync (Print hidden) */}
+            {isEditorMode && (
+              <div className="print:hidden my-1 p-1.5 rounded-md bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2 text-[11px]">
+                {/* Scope selection */}
+                <div className="flex items-center gap-1.5">
+                  <span className="text-slate-500 font-medium">Quy mô:</span>
+                  <select
+                    value={item.scopeType || 'team'}
+                    onChange={(e) => onUpdateItemInSection(section.id, item.id, { scopeType: e.target.value as 'solo' | 'team' })}
+                    className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-1.5 py-0.5 text-[11px] font-semibold text-slate-700 dark:text-slate-200"
+                  >
+                    <option value="team">👥 Đồ án nhóm</option>
+                    <option value="solo">👤 Đồ án cá nhân</option>
+                  </select>
+
+                  {(item.scopeType || 'team') === 'team' && (
+                    <div className="flex items-center gap-1">
+                      <span className="text-slate-500">Số TV:</span>
+                      <input
+                        type="number"
+                        min="1"
+                        max="50"
+                        value={item.teamSize || 4}
+                        onChange={(e) => onUpdateItemInSection(section.id, item.id, { teamSize: parseInt(e.target.value, 10) || 1 })}
+                        className="w-12 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-1 py-0.5 text-[11px] text-center"
+                        placeholder="4"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* System context input */}
+                {(item.scopeType || 'team') === 'team' && (
+                  <div className="flex items-center gap-1 flex-1 min-w-[180px]">
+                    <span className="text-slate-500 shrink-0">Bối cảnh:</span>
+                    <input
+                      type="text"
+                      value={item.systemContext || ''}
+                      onChange={(e) => onUpdateItemInSection(section.id, item.id, { systemContext: e.target.value })}
+                      placeholder="Hệ thống chung..."
+                      className="flex-1 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-1.5 py-0.5 text-[11px]"
+                    />
+                  </div>
+                )}
+
+                {/* URLs input (Ticket 06) */}
+                <div className="flex items-center gap-2 w-full pt-1 border-t border-slate-200 dark:border-slate-800">
+                  <div className="flex items-center gap-1 flex-1">
+                    <span className="text-slate-400 text-[10px]">Demo:</span>
+                    <input
+                      type="url"
+                      value={item.projectUrl || ''}
+                      onChange={(e) => onUpdateItemInSection(section.id, item.id, { projectUrl: e.target.value })}
+                      placeholder="https://demo.app"
+                      className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-1.5 py-0.5 text-[10.5px]"
+                    />
+                  </div>
+                  <div className="flex items-center gap-1 flex-1">
+                    <span className="text-slate-400 text-[10px]">GitHub:</span>
+                    <input
+                      type="url"
+                      value={item.githubUrl || ''}
+                      onChange={(e) => onUpdateItemInSection(section.id, item.id, { githubUrl: e.target.value })}
+                      placeholder="https://github.com/..."
+                      className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-1.5 py-0.5 text-[10.5px]"
+                    />
+                  </div>
+                </div>
+
+                {/* Ticket 01: Reverse Sync Toggle */}
+                <label className="inline-flex items-center gap-1.5 text-slate-600 dark:text-slate-300 cursor-pointer select-none hover:text-blue-600 transition-colors ml-auto">
+                  <input
+                    type="checkbox"
+                    checked={item.syncToMasterProfile !== false}
+                    onChange={(e) => onUpdateItemInSection(section.id, item.id, { syncToMasterProfile: e.target.checked })}
+                    className="rounded text-blue-600 focus:ring-blue-500 w-3.5 h-3.5 cursor-pointer"
+                  />
+                  <span className="font-medium text-[10.5px]">Lưu vào Kho Quản lý dự án</span>
+                </label>
+              </div>
+            )}
+
             {/* Description (Grows naturally) */}
             <AutoExpandingTextarea
               value={item.description}
@@ -736,16 +1039,63 @@ export default function InteractiveCVCanvas({
               className={`${baseTextSize} text-slate-600 dark:text-slate-300`}
               readOnly={!isEditorMode}
             />
+
+            {/* Evidence Showcase Pills & Print-Only Smart Quick-Verify QR (Ticket 06) */}
+            {(item.projectUrl || item.githubUrl) && (
+              <div className="flex items-center justify-between gap-2 mt-1">
+                <div className="flex flex-wrap items-center gap-1.5 text-[10px]">
+                  {item.projectUrl && (
+                    <a
+                      href={item.projectUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded font-medium bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 hover:underline"
+                    >
+                      🌐 Live Demo ↗
+                    </a>
+                  )}
+                  {item.githubUrl && (
+                    <a
+                      href={item.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 hover:underline"
+                    >
+                      📦 GitHub Repo ↗
+                    </a>
+                  )}
+                </div>
+
+                {/* Print-Only Smart Quick-Verify Mini QR */}
+                <div className="hidden print:flex items-center gap-1 border border-slate-300 p-0.5 rounded bg-white shrink-0">
+                  <QRCodeSVG value={item.projectUrl || item.githubUrl || ''} size={28} />
+                  <div className="text-[7px] leading-none text-slate-600 font-semibold">Quét xem<br/>Demo</div>
+                </div>
+              </div>
+            )}
           </div>
         ))}
 
         {isEditorMode && showAddBtn && (
-          <button
-            onClick={() => onAddItemToSection(section.id)}
-            className="print:hidden w-full py-1 border border-dashed border-slate-300 hover:border-blue-400 text-slate-500 hover:text-blue-600 rounded text-[11px] font-semibold flex items-center justify-center gap-1 transition-all"
-          >
-            <Plus className="w-3 h-3" /> + Thêm Dự Án
-          </button>
+          <div className="print:hidden flex items-center gap-2">
+            <button
+              onClick={() => onAddItemToSection(section.id)}
+              className="flex-1 py-1 border border-dashed border-slate-300 hover:border-blue-400 text-slate-500 hover:text-blue-600 rounded text-[11px] font-semibold flex items-center justify-center gap-1 transition-all"
+            >
+              <Plus className="w-3 h-3" /> + Thêm Dự Án
+            </button>
+            {onOpenProfilePicker && (
+              <button
+                type="button"
+                onClick={() => onOpenProfilePicker('projects')}
+                className="py-1 px-3 border border-dashed border-blue-300 bg-blue-50/60 hover:bg-blue-100 text-blue-700 rounded text-[11px] font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                title="Kéo dự án từ Hồ sơ cá nhân bằng checkbox"
+              >
+                <FolderKanban className="w-3.5 h-3.5 text-blue-600" />
+                <span>📥 Kéo Từ Hồ Sơ</span>
+              </button>
+            )}
+          </div>
         )}
       </div>
     );
@@ -905,12 +1255,25 @@ export default function InteractiveCVCanvas({
         ))}
 
         {isEditorMode && showAddBtn && (
-          <button
-            onClick={() => onAddItemToSection(section.id)}
-            className="print:hidden w-full py-0.5 border border-dashed border-slate-300 hover:border-blue-400 text-slate-500 hover:text-blue-600 rounded text-[10.5px] font-semibold flex items-center justify-center gap-1 transition-all"
-          >
-            <Plus className="w-2.5 h-2.5" /> + Thêm Chứng Chỉ
-          </button>
+          <div className="print:hidden flex items-center gap-2">
+            <button
+              onClick={() => onAddItemToSection(section.id)}
+              className="flex-1 py-0.5 border border-dashed border-slate-300 hover:border-blue-400 text-slate-500 hover:text-blue-600 rounded text-[10.5px] font-semibold flex items-center justify-center gap-1 transition-all"
+            >
+              <Plus className="w-2.5 h-2.5" /> + Thêm Chứng Chỉ
+            </button>
+            {onOpenProfilePicker && (
+              <button
+                type="button"
+                onClick={() => onOpenProfilePicker('certificates')}
+                className="py-0.5 px-3 border border-dashed border-blue-300 bg-blue-50/60 hover:bg-blue-100 text-blue-700 rounded text-[10.5px] font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                title="Kéo chứng chỉ từ Hồ sơ cá nhân bằng checkbox"
+              >
+                <Award className="w-3 h-3 text-blue-600" />
+                <span>📥 Kéo Từ Hồ Sơ</span>
+              </button>
+            )}
+          </div>
         )}
       </div>
     );
@@ -1251,12 +1614,6 @@ export default function InteractiveCVCanvas({
                 </span>
               )}
             </div>
-
-            {section.type === 'projects' && (
-              <span className="text-[9px] text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded font-semibold border border-emerald-200 print:border-none flex items-center gap-0.5">
-                <Shield className="w-2.5 h-2.5" /> Verified
-              </span>
-            )}
           </div>
         )}
 
@@ -1748,6 +2105,51 @@ export default function InteractiveCVCanvas({
         ))}
       </div>
 
+      {/* Inline Edit & Contextual AI Popover (Spec v0.4 - UC-CAN-009 & UC-CAN-010) */}
+      <InlineEditPopover
+        isOpen={inlineEditState.isOpen}
+        initialText={inlineEditState.initialText}
+        fieldLabel={inlineEditState.fieldLabel}
+        targetRole={targetRole}
+        jdContext={jdContext}
+        remainingCredits={remainingCredits}
+        onSaveManual={(newText) => {
+          inlineEditState.onSave(newText);
+        }}
+        onApplyAi={(newText) => {
+          inlineEditState.onApplyAi(newText);
+        }}
+        onClose={() => {
+          setInlineEditState(prev => ({ ...prev, isOpen: false }));
+        }}
+      />
+
+      {/* STAR Diff Review Modal (Ticket 04) */}
+      {starProjectToReview && (
+        <StarDiffReviewModal
+          isOpen={Boolean(starProjectToReview)}
+          onClose={() => setStarProjectToReview(null)}
+          project={starProjectToReview}
+          onApplyFinalBullets={(_projId, newBullets) => {
+            const desc = newBullets.map(b => `• ${b}`).join('\n');
+            onUpdateItemInSection(starProjectToReview._sectionId, starProjectToReview.id, {
+              description: desc,
+              bullets: newBullets
+            });
+            setStarProjectToReview(null);
+          }}
+        />
+      )}
+
+      {/* Project Defense Briefing Modal (Trụ Cột 3) */}
+      {defenseProjectToReview && (
+        <ProjectDefenseModal
+          isOpen={Boolean(defenseProjectToReview)}
+          onClose={() => setDefenseProjectToReview(null)}
+          project={defenseProjectToReview}
+          targetRole={personalInfo?.jobTitle}
+        />
+      )}
     </div>
   );
 }

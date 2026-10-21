@@ -1,7 +1,7 @@
 import { ShieldCheck } from 'lucide-react';
 
 interface VerifiedBadgeProps {
-  teacherName?: string;
+  evidenceName?: string;
   verifiedAt?: string;
   size?: 'sm' | 'md' | 'lg';
 }

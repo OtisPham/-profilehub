@@ -1,7 +1,10 @@
 import * as XLSX from 'xlsx';
-import type { MBTIType } from '../types/mbti';
-import { MBTI_PROFILES } from './mbtiService';
 import type { PersonalInfoData, CVSection } from '../types/cvSection';
+
+export type MBTIType = string;
+const MBTI_PROFILES: Record<string, any> = {
+  INTJ: { name: 'Nhà chiến lược', badgeColor: '#4f46e5', badgeBg: '#eef2ff' },
+};
 
 export interface ImportedCandidateCv {
   id: string;
@@ -660,13 +663,13 @@ export function convertImportedCvToCvBuilderState(imported: ImportedCandidateCv)
   if (!objectiveContent) {
     const skillsSummary = imported.skills.slice(0, 4).join(', ');
     if (profession === 'medical') {
-      objectiveContent = `Chuyên viên ${imported.target_role} tốt nghiệp từ ${imported.university} với GPA ${imported.gpa} / 4.0. Nắm vững quy trình chuyên môn, kỹ thuật chăm sóc và y đức chuẩn mực. Có kinh nghiệm thực hành với: ${skillsSummary}. Định hướng rèn luyện chuyên sâu và cống hiến lâu dài trong công tác chăm sóc sức khỏe người bệnh.`;
+      objectiveContent = `Chuyên viên ${imported.target_role} tốt nghiệp từ ${imported.university}. Nắm vững quy trình chuyên môn, kỹ thuật chăm sóc và y đức chuẩn mực. Có kinh nghiệm thực hành với: ${skillsSummary}. Định hướng rèn luyện chuyên sâu và cống hiến lâu dài trong công tác chăm sóc sức khỏe người bệnh.`;
     } else if (profession === 'design') {
-      objectiveContent = `Nhà thiết kế ${imported.target_role} tốt nghiệp ${imported.university} (GPA: ${imported.gpa}/4.0). Thành thạo tư duy thiết kế trải nghiệm và các công cụ: ${skillsSummary}. Mong muốn sáng tạo các giải pháp sản phẩm số chất lượng cao và tối ưu sự hài lòng của người dùng.`;
+      objectiveContent = `Nhà thiết kế ${imported.target_role} tốt nghiệp ${imported.university}. Thành thạo tư duy thiết kế trải nghiệm và các công cụ: ${skillsSummary}. Mong muốn sáng tạo các giải pháp sản phẩm số chất lượng cao và tối ưu sự hài lòng của người dùng.`;
     } else if (profession === 'business') {
-      objectiveContent = `Chuyên viên ${imported.target_role} tốt nghiệp ${imported.university} (GPA: ${imported.gpa}/4.0). Nắm vững tư duy phân tích, quản lý mục tiêu và thành thạo: ${skillsSummary}. Sẵn sàng học hỏi và đóng góp vào sự tăng trưởng của tổ chức.`;
+      objectiveContent = `Chuyên viên ${imported.target_role} tốt nghiệp ${imported.university}. Nắm vững tư duy phân tích, quản lý mục tiêu và thành thạo: ${skillsSummary}. Sẵn sàng học hỏi và đóng góp vào sự tăng trưởng của tổ chức.`;
     } else {
-      objectiveContent = `Kỹ sư ${imported.target_role} tốt nghiệp từ ${imported.university} (GPA: ${imported.gpa}/4.0). Nắm vững nền tảng kiến trúc và các công nghệ: ${skillsSummary}. Giàu kinh nghiệm triển khai các dự án thực tế và cam kết tạo ra giá trị bền vững cho doanh nghiệp.`;
+      objectiveContent = `Kỹ sư ${imported.target_role} tốt nghiệp từ ${imported.university}. Nắm vững nền tảng kiến trúc và các công nghệ: ${skillsSummary}. Giàu kinh nghiệm triển khai các dự án thực tế và cam kết tạo ra giá trị bền vững cho doanh nghiệp.`;
     }
   }
 
@@ -787,8 +790,7 @@ export function convertImportedCvToCvBuilderState(imported: ImportedCandidateCv)
           degree: profession === 'medical' ? `Cử nhân Điều dưỡng / Y khoa ${imported.major}` : `Cử nhân / Kỹ sư ${imported.major}`,
           startDate: '2021',
           endDate: '2025',
-          gpa: `${imported.gpa} / 4.0`,
-          description: `• Tốt nghiệp chuyên ngành ${imported.major} tại ${imported.university}.\n• Hoàn thành các học phần thực hành chuyên sâu và đạt thành tích học tập xuất sắc.`,
+          description: `• Tốt nghiệp chuyên ngành ${imported.major} tại ${imported.university}.\n• Hoàn thành các học phần thực hành chuyên sâu và hoàn thành xuất sắc các đồ án thực tế.`,
         },
       ],
     },

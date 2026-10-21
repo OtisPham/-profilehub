@@ -228,7 +228,7 @@ export default function ProjectFilePreviewHeader({ project, onOpenPreview }: Pro
                   </div>
 
                   {(project.is_verified || project.verification_status === 'verified') && (
-                    <VerifiedBadge teacherName={project.instructor} size="md" />
+                    <VerifiedBadge size="md" />
                   )}
                 </div>
 
@@ -239,7 +239,7 @@ export default function ProjectFilePreviewHeader({ project, onOpenPreview }: Pro
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', fontSize: '12px', backgroundColor: '#f1f5f9', padding: '10px', borderRadius: '6px' }}>
                   <div><strong>Vai trò:</strong> {project.role || 'Thành viên'}</div>
                   <div><strong>Quy mô nhóm:</strong> {project.team_size || '1 thành viên'}</div>
-                  <div><strong>Giảng viên HĐ:</strong> {project.instructor || 'Chưa ghi nhận'}</div>
+                  <div><strong>Người hướng dẫn / Mentor:</strong> {project.instructor || 'Tự thực hiện'}</div>
                 </div>
               </div>
 

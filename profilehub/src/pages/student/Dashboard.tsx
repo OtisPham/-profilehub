@@ -17,8 +17,7 @@ import {
   Video,
   CheckCircle2,
   Briefcase,
-  Brain,
-  Target
+  FileText
 } from 'lucide-react';
 import type { VerificationStatus } from '../../types/database';
 import { getSharedPipeline, updateInterviewStatusByStudent } from '../../utils/pipelineSync';
@@ -160,10 +159,9 @@ export default function Dashboard() {
 
   // Calculate Profile Completion %
   let completion = 0;
-  if (profile?.full_name) completion += 15;
-  if (profile?.major) completion += 15;
-  if (profile?.university) completion += 15;
-  if (profile?.gpa) completion += 15;
+  if (profile?.full_name) completion += 20;
+  if (profile?.major) completion += 20;
+  if (profile?.university) completion += 20;
   if (profile?.skills && profile.skills.length > 0) completion += 15;
   if (profile?.bio) completion += 15;
   if (totalProjects > 0) completion += 10;
@@ -218,7 +216,7 @@ export default function Dashboard() {
                 ✨ AI CV Builder & Coach (Chuẩn ATS Quốc Tế)
               </div>
               <div style={{ fontSize: '13px', color: '#e0e7ff', marginTop: '2px' }}>
-                Soạn thảo CV tương tác 2 cột chuẩn ATS, chấm điểm trực tiếp, AI cố vấn tối ưu STAR và xuất PDF A4 sắc nét.
+                Soạn thảo CV tương tác 2 cột chuẩn ATS, gợi ý tiêu chí trực tiếp, AI cố vấn tối ưu STAR và xuất PDF A4 sắc nét.
               </div>
             </div>
           </div>
@@ -230,63 +228,63 @@ export default function Dashboard() {
           </a>
         </div>
 
-        {/* 2-Column AI Career Tools: AI Matching & MBTI Test */}
+        {/* 2-Column Career Tools: Master Profile & Multi-version CV Manager */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '16px', marginBottom: '25px' }}>
-          {/* AI Match Card */}
-          <div style={{ backgroundColor: '#ffffff', border: '1px solid #d1fae5', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 2px 8px rgba(16, 185, 129, 0.06)' }}>
+          {/* Candidate Master Profile Card */}
+          <div style={{ backgroundColor: '#ffffff', border: '1px solid #dbeafe', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 2px 8px rgba(37, 99, 235, 0.06)' }}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ width: '40px', height: '40px', borderRadius: '10px', backgroundColor: '#ecfdf5', color: '#059669', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Target size={22} />
+                  <div style={{ width: '40px', height: '40px', borderRadius: '10px', backgroundColor: '#eff6ff', color: '#1d4ed8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <UserCheck size={22} />
                   </div>
                   <div>
-                    <h4 style={{ margin: 0, fontSize: '15px', fontWeight: 'bold', color: '#065f46' }}>Đánh Giá Khớp CV & JD</h4>
-                    <span style={{ fontSize: '11px', color: '#059669', fontWeight: '500' }}>AI Matching Engine v2.0</span>
+                    <h4 style={{ margin: 0, fontSize: '15px', fontWeight: 'bold', color: '#1e3a8a' }}>Hồ Sơ Năng Lực Toàn Diện</h4>
+                    <span style={{ fontSize: '11px', color: '#2563eb', fontWeight: '500' }}>Dự án • Chứng chỉ • Thành tích</span>
                   </div>
                 </div>
-                <span style={{ fontSize: '10px', fontWeight: 'bold', backgroundColor: '#ecfdf5', color: '#059669', padding: '2px 8px', borderRadius: '8px' }}>
-                  AI MATCH
+                <span style={{ fontSize: '10px', fontWeight: 'bold', backgroundColor: '#eff6ff', color: '#1d4ed8', padding: '2px 8px', borderRadius: '8px' }}>
+                  HỒ SƠ GỐC
                 </span>
               </div>
               <p style={{ margin: '0 0 16px 0', fontSize: '12.5px', color: '#4b5563', lineHeight: '1.5' }}>
-                So sánh hồ sơ CV & Đồ án thực tế với mô tả công việc (JD), phân tích 4 trụ cột kỹ thuật và nhận lời khuyên tối ưu.
+                Quản lý tập trung các dự án thực tế, bằng cấp chứng chỉ và giải thưởng học thuật đã được đồng bộ vào hồ sơ cá nhân.
               </p>
             </div>
             <a
-              href="/portfolio-match"
-              style={{ padding: '9px 14px', backgroundColor: '#059669', color: 'white', borderRadius: '8px', fontSize: '12.5px', fontWeight: 'bold', textDecoration: 'none', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
+              href="/profile"
+              style={{ padding: '9px 14px', backgroundColor: '#1d4ed8', color: 'white', borderRadius: '8px', fontSize: '12.5px', fontWeight: 'bold', textDecoration: 'none', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
             >
-              Thử Đánh Giá Độ Khớp JD <ArrowRight size={14} />
+              Cập Nhật Hồ Sơ Năng Lực <ArrowRight size={14} />
             </a>
           </div>
 
-          {/* MBTI Assessment Card */}
-          <div style={{ backgroundColor: '#ffffff', border: '1px solid #e9d5ff', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 2px 8px rgba(139, 92, 246, 0.06)' }}>
+          {/* Multi-version CV Manager Card */}
+          <div style={{ backgroundColor: '#ffffff', border: '1px solid #e0e7ff', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 2px 8px rgba(99, 102, 241, 0.06)' }}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ width: '40px', height: '40px', borderRadius: '10px', backgroundColor: '#f5f3ff', color: '#7c3aed', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Brain size={22} />
+                  <div style={{ width: '40px', height: '40px', borderRadius: '10px', backgroundColor: '#eef2ff', color: '#4f46e5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <FileText size={22} />
                   </div>
                   <div>
-                    <h4 style={{ margin: 0, fontSize: '15px', fontWeight: 'bold', color: '#581c87' }}>Trắc Nghiệm Tính Cách MBTI</h4>
-                    <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: '500' }}>16 Nhóm Tính Cách & Phong Cách Làm Việc</span>
+                    <h4 style={{ margin: 0, fontSize: '15px', fontWeight: 'bold', color: '#312e81' }}>Quản Lý Đa Phiên Bản CV</h4>
+                    <span style={{ fontSize: '11px', color: '#4f46e5', fontWeight: '500' }}>Tùy chỉnh CV cho từng cơ hội việc làm</span>
                   </div>
                 </div>
-                <span style={{ fontSize: '10px', fontWeight: 'bold', backgroundColor: '#f5f3ff', color: '#7c3aed', padding: '2px 8px', borderRadius: '8px' }}>
-                  HOT
+                <span style={{ fontSize: '10px', fontWeight: 'bold', backgroundColor: '#eef2ff', color: '#4f46e5', padding: '2px 8px', borderRadius: '8px' }}>
+                  CV HUB
                 </span>
               </div>
               <p style={{ margin: '0 0 16px 0', fontSize: '12.5px', color: '#4b5563', lineHeight: '1.5' }}>
-                Khám phá phong cách làm việc, điểm mạnh văn hóa doanh nghiệp và bí quyết trả lời câu hỏi phỏng vấn hành vi.
+                Tạo và lưu trữ nhiều phiên bản CV theo từng vị trí ứng tuyển mục tiêu, xuất file PDF chuẩn chuyên nghiệp kèm mã QR minh chứng.
               </p>
             </div>
             <a
-              href="/mbti-test"
-              style={{ padding: '9px 14px', backgroundColor: '#7c3aed', color: 'white', borderRadius: '8px', fontSize: '12.5px', fontWeight: 'bold', textDecoration: 'none', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
+              href="/cv-manager"
+              style={{ padding: '9px 14px', backgroundColor: '#4f46e5', color: 'white', borderRadius: '8px', fontSize: '12.5px', fontWeight: 'bold', textDecoration: 'none', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
             >
-              Làm Trắc Nghiệm MBTI Ngay <ArrowRight size={14} />
+              Quản Lý Kho CV Của Bạn <ArrowRight size={14} />
             </a>
           </div>
         </div>
@@ -450,7 +448,7 @@ export default function Dashboard() {
             </div>
             <div style={{ fontSize: '28px', fontWeight: 'bold', color: '#0f172a' }}>{totalFeedbacksCount}</div>
             <div style={{ fontSize: '12px', color: '#d97706', marginTop: '6px', fontWeight: '500' }}>
-              Điểm TB: {avgTechScore}/10
+              Phản hồi từ Nhà tuyển dụng
             </div>
           </div>
 
@@ -487,7 +485,7 @@ export default function Dashboard() {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
                       <h4 style={{ margin: 0, fontSize: '15px', color: '#0f172a' }}>{project.title}</h4>
                       {project.is_verified || project.verification_status === 'verified' ? (
-                        <VerifiedBadge teacherName={project.instructor} size="sm" />
+                        <VerifiedBadge size="sm" />
                       ) : (
                         <span style={{ fontSize: '10px', backgroundColor: '#fef3c7', color: '#d97706', padding: '2px 8px', borderRadius: '10px', fontWeight: 'bold' }}>
                           ⏳ Chờ duyệt

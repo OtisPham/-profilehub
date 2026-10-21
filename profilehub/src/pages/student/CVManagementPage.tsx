@@ -14,17 +14,20 @@ import {
   Zap,
   ShieldCheck,
   Clock,
-  Target,
   FileSpreadsheet,
   Search,
   Filter,
   Check,
   RefreshCw,
-  AlertCircle
+  AlertCircle,
+  Eye
 } from 'lucide-react';
 import { cvService, type ManagedCVItem, type StudentProfileData } from '../../services/cvService';
 import CVManagerModal from '../../components/cv/CVManagerModal';
 import BulkCvImportModal from '../../components/recruiter/BulkCvImportModal';
+import GenerateCvFromJdModal from '../../components/cv/GenerateCvFromJdModal';
+import CvQuickViewModal from '../../components/cv/CvQuickViewModal';
+import CreateCvFlowModal from '../../components/cv/CreateCvFlowModal';
 import { 
   convertImportedCvToCvBuilderState, 
   generate100SampleCandidates, 
@@ -49,8 +52,11 @@ export default function CVManagementPage() {
   const pageSize = 12;
 
   // Modals & Notifications
+  const [isCreateFlowModalOpen, setIsCreateFlowModalOpen] = useState(false);
   const [isManagerModalOpen, setIsManagerModalOpen] = useState(false);
   const [isBulkImportOpen, setIsBulkImportOpen] = useState(false);
+  const [isGenerateJdModalOpen, setIsGenerateJdModalOpen] = useState(false);
+  const [selectedCvForView, setSelectedCvForView] = useState<ManagedCVItem | null>(null);
   const [quickRenameId, setQuickRenameId] = useState<string | null>(null);
   const [renameTitle, setRenameTitle] = useState('');
   const [renameRole, setRenameRole] = useState('');
@@ -67,11 +73,21 @@ export default function CVManagementPage() {
   // Load Data
   const loadData = useCallback(async () => {
     setLoading(true);
-    const sourceData = await cvService.fetchStudentCVSourceData(user?.id);
-    setProfileData(sourceData);
+    
+    // 1. Tải nhanh từ Local Cache trước để giao diện không bị giật lag
+    const localList = cvService.getAllCVs(user?.id);
+    if (localList.length > 0) {
+      setCvList(localList);
+      setActiveCvId(cvService.getActiveCVId(user?.id));
+    }
 
-    const list = cvService.getAllCVs(user?.id);
-    setCvList(list);
+    const [sourceData, cloudList] = await Promise.all([
+      cvService.fetchStudentCVSourceData(user?.id),
+      cvService.fetchAndSyncCVs(user?.id)
+    ]);
+
+    setProfileData(sourceData);
+    setCvList(cloudList);
 
     const activeId = cvService.getActiveCVId(user?.id);
     setActiveCvId(activeId);
@@ -86,22 +102,6 @@ export default function CVManagementPage() {
   const handleOpenCvInBuilder = (cv: ManagedCVItem) => {
     cvService.setActiveCVId(cv.id, user?.id);
     navigate('/cv-builder');
-  };
-
-  const handleOpenAiMatch = (cv: ManagedCVItem) => {
-    cvService.setActiveCVId(cv.id, user?.id);
-    navigate('/portfolio-match', {
-      state: {
-        fromCvBuilder: true,
-        activeCvData: {
-          id: cv.id,
-          name: cv.data?.personalInfo?.fullName || 'Ứng Viên',
-          targetRole: cv.targetRole,
-          skills: cv.data?.sections?.find(s => s.type === 'skills')?.items?.flatMap((g: any) => g.skills || []) || [],
-          projects: cv.data?.sections?.find(s => s.type === 'projects')?.items || []
-        }
-      }
-    });
   };
 
   const handleDuplicate = (cv: ManagedCVItem) => {
@@ -254,7 +254,7 @@ export default function CVManagementPage() {
               Quản Lý Phiên Bản & Hồ Sơ CV
             </h1>
             <p className="text-slate-300 text-xs sm:text-sm max-w-2xl">
-              Tạo và quản lý hàng loạt bản CV chuyên biệt cho từng vị trí tuyển dụng. Tích hợp nạp 100 CV mẫu tức thì để trải nghiệm chấm điểm ATS & AI Matching.
+              Tạo và quản lý hàng loạt bản CV chuyên biệt cho từng vị trí tuyển dụng. Tích hợp nạp 100 CV mẫu tức thì để trải nghiệm chuẩn hóa ATS & AI Matching đối chiếu.
             </p>
           </div>
 
@@ -277,7 +277,15 @@ export default function CVManagementPage() {
             </button>
 
             <button
-              onClick={() => setIsManagerModalOpen(true)}
+              onClick={() => setIsGenerateJdModalOpen(true)}
+              className="px-4 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs sm:text-sm font-bold rounded-xl shadow-lg shadow-purple-500/30 flex items-center gap-2 transition active:scale-95 border border-purple-400/30"
+            >
+              <Sparkles size={16} className="text-yellow-300 animate-pulse" />
+              AI Tạo CV Khớp JD
+            </button>
+
+            <button
+              onClick={() => setIsCreateFlowModalOpen(true)}
               className="px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs sm:text-sm font-bold rounded-xl shadow-lg shadow-blue-500/30 flex items-center gap-2 transition active:scale-95"
             >
               <Plus size={16} />
@@ -305,9 +313,9 @@ export default function CVManagementPage() {
             </span>
           </div>
           <div>
-            <span className="text-slate-400 block text-[11px]">Đồ án được xác thực:</span>
+            <span className="text-slate-400 block text-[11px]">Đồ án trong hồ sơ:</span>
             <span className="text-lg sm:text-xl font-black text-emerald-400">
-              {profileData?.projects.filter(p => p.is_verified).length || 0} đồ án ★
+              {profileData?.projects.length || 0} đồ án
             </span>
           </div>
         </div>
@@ -566,21 +574,22 @@ export default function CVManagementPage() {
                     </div>
 
                     {/* Card Actions */}
-                    <div className="space-y-2 pt-3 border-t border-slate-100">
+                    <div className="pt-3 border-t border-slate-100 flex items-center gap-2">
                       <button
-                        onClick={() => handleOpenCvInBuilder(cv)}
-                        className="w-full py-2.5 px-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm active:scale-98"
+                        onClick={() => setSelectedCvForView(cv)}
+                        className="py-2.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 active:scale-98"
+                        title="Xem và đọc nhanh nội dung bản CV này"
                       >
-                        <FileText size={14} />
-                        {isActive ? 'Tiếp Tục Soạn Thảo' : 'Mở Chỉnh Sửa CV Này'}
+                        <Eye size={14} />
+                        <span>Xem</span>
                       </button>
 
                       <button
-                        onClick={() => handleOpenAiMatch(cv)}
-                        className="w-full py-2 px-3 bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 text-slate-700 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-2"
+                        onClick={() => handleOpenCvInBuilder(cv)}
+                        className="flex-1 py-2.5 px-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm active:scale-98"
                       >
-                        <Target size={14} className="text-emerald-600" />
-                        Đánh Giá Khớp Với JD Tuyển Dụng
+                        <FileText size={14} />
+                        {isActive ? 'Tiếp Tục Soạn Thảo' : 'Mở Chỉnh Sửa'}
                       </button>
                     </div>
                   </div>
@@ -640,6 +649,15 @@ export default function CVManagementPage() {
       </div>
 
       {/* Modals */}
+      <CreateCvFlowModal
+        isOpen={isCreateFlowModalOpen}
+        onClose={() => setIsCreateFlowModalOpen(false)}
+        userId={user?.id}
+        userEmail={user?.email}
+        profileSourceData={profileData}
+        onCvCreated={loadData}
+      />
+
       <CVManagerModal
         isOpen={isManagerModalOpen}
         onClose={() => setIsManagerModalOpen(false)}
@@ -662,6 +680,27 @@ export default function CVManagementPage() {
         subtitle="Chọn từ danh sách 100 CV mẫu chuẩn ATS hoặc tải lên file Excel để nạp trực tiếp toàn bộ 100 CV vào hệ thống."
         onSelectCandidate={handleImportSingleCandidate}
         onBatchPushAll={handleBatchPushFromModal}
+      />
+
+      <GenerateCvFromJdModal
+        isOpen={isGenerateJdModalOpen}
+        onClose={() => setIsGenerateJdModalOpen(false)}
+        onSuccess={() => {
+          loadData();
+        }}
+      />
+
+      {/* Popup Xem Nhanh & Đọc Chi Tiết CV */}
+      <CvQuickViewModal
+        isOpen={!!selectedCvForView}
+        cv={selectedCvForView}
+        onClose={() => setSelectedCvForView(null)}
+        onOpenInBuilder={() => {
+          if (selectedCvForView) {
+            handleOpenCvInBuilder(selectedCvForView);
+          }
+          setSelectedCvForView(null);
+        }}
       />
     </div>
   );

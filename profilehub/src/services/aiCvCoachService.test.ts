@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import {
   evaluateCvSection,
   CV_STEP_GUIDANCES,
@@ -7,68 +8,51 @@ import {
   optimizeCvContentWithAi
 } from './aiCvCoachService';
 
-export function runCvCoachTests(): boolean {
-  console.log('[TDD TEST] Running aiCvCoachService evaluation & Multi-Industry tests...');
-
-  // 1. Test Summary Evaluation (Bad input)
-  const badSummary = 'Em là sinh viên chăm chỉ, ham học hỏi muốn tìm việc.';
-  const evalBadSummary = evaluateCvSection('summary', badSummary);
-  if (evalBadSummary.status !== 'needs_improvement') {
-    throw new Error('TDD Failed: Cliché summary should fail.');
-  }
-
-  // 2. Test Summary Evaluation (Good input IT)
-  const goodSummary = CV_STEP_GUIDANCES.summary.sampleGood;
-  const evalGoodSummary = evaluateCvSection('summary', goodSummary);
-  if (evalGoodSummary.status !== 'pass' || evalGoodSummary.score < 75) {
-    throw new Error(`TDD Failed: Good summary should pass. Got score: ${evalGoodSummary.score}`);
-  }
-
-  // 3. Test Multi-Industry Auto-detection (Marketing)
-  const detectedMarketing = detectIndustryDomain('Chuyên viên Digital Marketing / Content Creator');
-  if (detectedMarketing.id !== 'marketing') {
-    throw new Error(`TDD Failed: Expected marketing domain, got ${detectedMarketing.id}`);
-  }
-
-  // 4. Test Multi-Industry Auto-detection (Finance)
-  const detectedFinance = detectIndustryDomain('Kế toán viên tổng hợp / Kiểm toán');
-  if (detectedFinance.id !== 'finance_accounting') {
-    throw new Error(`TDD Failed: Expected finance_accounting domain, got ${detectedFinance.id}`);
-  }
-
-  // 5. Test Marketing Summary Evaluation
-  const mktGuidance = getStepGuidance('summary', 'marketing');
-  const evalMktSummary = evaluateCvSection('summary', mktGuidance.sampleGood, {
-    domainId: 'marketing'
+describe('Tầng 4 (Content Evaluation & Coach Optimizer Seam)', () => {
+  it('TC-COACH-01: Đánh giá Summary sáo rỗng phải trả về needs_improvement', () => {
+    const badSummary = 'Em là sinh viên chăm chỉ, ham học hỏi muốn tìm việc.';
+    const evalBadSummary = evaluateCvSection('summary', badSummary);
+    expect(evalBadSummary.status).toBe('needs_improvement');
   });
-  if (evalMktSummary.status !== 'pass') {
-    throw new Error(`TDD Failed: Marketing sample summary should pass.`);
-  }
 
-  // 6. Test Marketing Project STAR Evaluation
-  const mktProject = INDUSTRY_DOMAINS.marketing.sampleProject;
-  const evalMktProject = evaluateCvSection('project', mktProject, {
-    domainId: 'marketing'
+  it('TC-COACH-02: Đánh giá Summary chuẩn IT có số liệu phải đạt pass và điểm >= 75', () => {
+    const goodSummary = CV_STEP_GUIDANCES.summary.sampleGood;
+    const evalGoodSummary = evaluateCvSection('summary', goodSummary);
+    expect(evalGoodSummary.status).toBe('pass');
+    expect(evalGoodSummary.score).toBeGreaterThanOrEqual(75);
   });
-  if (evalMktProject.status !== 'pass') {
-    throw new Error(`TDD Failed: Marketing project with ROAS & CPA metrics should pass.`);
-  }
 
-  // 7. Test AI STAR Bullet Optimizer for Marketing
-  const optimizedMkt = optimizeCvContentWithAi('project', 'Làm marketing facebook ads', 'Digital Marketing');
-  if (!optimizedMkt.improvedText.includes('ROAS') && !optimizedMkt.improvedText.includes('CPA')) {
-    throw new Error('TDD Failed: AI optimizer should generate domain-specific metrics for Marketing.');
-  }
+  it('TC-COACH-03: Nhận diện tự động đa ngành nghề (Marketing & Finance)', () => {
+    const detectedMarketing = detectIndustryDomain('Chuyên viên Digital Marketing / Content Creator');
+    expect(detectedMarketing.id).toBe('marketing');
 
-  // 8. Test Contact Evaluation
-  const goodContact = CV_STEP_GUIDANCES.contact.sampleGood;
-  const evalGoodContact = evaluateCvSection('contact', goodContact);
-  if (evalGoodContact.status !== 'pass') {
-    throw new Error('TDD Failed: Good contact should pass.');
-  }
+    const detectedFinance = detectIndustryDomain('Kế toán viên tổng hợp / Kiểm toán');
+    expect(detectedFinance.id).toBe('finance_accounting');
+  });
 
-  console.log('[TDD TEST] All aiCvCoachService multi-industry tests PASSED cleanly! 🟢');
-  return true;
-}
+  it('TC-COACH-04: Đánh giá Summary & Đồ án chuẩn STAR cho ngành Marketing', () => {
+    const mktGuidance = getStepGuidance('summary', 'marketing');
+    const evalMktSummary = evaluateCvSection('summary', mktGuidance.sampleGood, {
+      domainId: 'marketing'
+    });
+    expect(evalMktSummary.status).toBe('pass');
 
-runCvCoachTests();
+    const mktProject = INDUSTRY_DOMAINS.marketing.sampleProject;
+    const evalMktProject = evaluateCvSection('project', mktProject, {
+      domainId: 'marketing'
+    });
+    expect(evalMktProject.status).toBe('pass');
+  });
+
+  it('TC-COACH-05: AI STAR Bullet Optimizer sinh chỉ số định lượng theo đúng ngành (ROAS, CPA)', () => {
+    const optimizedMkt = optimizeCvContentWithAi('project', 'Làm marketing facebook ads', 'Digital Marketing');
+    expect(optimizedMkt.improvedText).toMatch(/ROAS|CPA/);
+  });
+
+  it('TC-COACH-06: Đánh giá thông tin liên hệ (Contact Evaluation)', () => {
+    const goodContact = CV_STEP_GUIDANCES.contact.sampleGood;
+    const evalGoodContact = evaluateCvSection('contact', goodContact);
+    expect(evalGoodContact.status).toBe('pass');
+  });
+});
+

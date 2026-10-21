@@ -9,7 +9,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState('student'); // student, teacher, business
+  const [activeTab, setActiveTab] = useState('student'); // student, business
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -97,11 +97,10 @@ export default function Login() {
 
         {/* Footer cột trái */}
         <div>
-          <p style={{ fontSize: '12px', color: '#64748b', marginBottom: '10px' }}>Connecting Students, Faculty and Industry:</p>
+          <p style={{ fontSize: '12px', color: '#64748b', marginBottom: '10px' }}>Connecting Candidates and Employers:</p>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <span style={{ padding: '6px 12px', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: '4px', fontSize: '11px' }}>🎓 Sinh viên</span>
-            <span style={{ padding: '6px 12px', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: '4px', fontSize: '11px' }}>👨‍🏫 Giảng viên</span>
-            <span style={{ padding: '6px 12px', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: '4px', fontSize: '11px' }}>🏢 Doanh nghiệp đối tác</span>
+            <span style={{ padding: '6px 12px', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: '4px', fontSize: '11px' }}>🎓 Ứng viên / Sinh viên</span>
+            <span style={{ padding: '6px 12px', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: '4px', fontSize: '11px' }}>🏢 Doanh nghiệp tuyển dụng</span>
           </div>
         </div>
 
@@ -196,9 +195,9 @@ export default function Login() {
           <div style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '6px', padding: '15px', display: 'flex', gap: '10px' }}>
             <span style={{ color: '#3b82f6' }}>ℹ️</span>
             <div>
-              <h5 style={{ margin: '0 0 5px 0', fontSize: '13px', color: '#0f172a' }}>Chưa kích hoạt tài khoản?</h5>
+              <h5 style={{ margin: '0 0 5px 0', fontSize: '13px', color: '#0f172a' }}>Chưa có tài khoản?</h5>
               <p style={{ margin: 0, fontSize: '12px', color: '#64748b' }}>
-                Sinh viên và Giảng viên liên hệ Phòng Đào tạo & CTSV để nhận mã định danh xác thực hồ sơ điện tử. 
+                Đăng ký tài khoản Ứng viên hoặc Nhà tuyển dụng để bắt đầu trải nghiệm hệ thống. 
                 <Link to="/register" style={{ color: '#3b82f6', textDecoration: 'none', marginLeft: '5px' }}>Đăng ký ngay</Link>
               </p>
             </div>

@@ -21,6 +21,7 @@ import {
 import { cvService, type ManagedCVItem, type StudentProfileData, type SavedCVData } from '../../services/cvService';
 import type { CVTemplateType } from './CVTemplates';
 import { generate100SampleCandidates, getStoredImportedCandidates } from '../../services/bulkCvImportService';
+import GenerateCvFromJdModal from './GenerateCvFromJdModal';
 
 interface CVManagerModalProps {
   isOpen: boolean;
@@ -93,6 +94,7 @@ export default function CVManagerModal({
   const [newRole, setNewRole] = useState('');
   const [selectedSourceCvId, setSelectedSourceCvId] = useState<string>('');
   const [selectedCareerTemplate, setSelectedCareerTemplate] = useState<number>(0);
+  const [isAiJdModalOpen, setIsAiJdModalOpen] = useState(false);
 
   if (!isOpen) return null;
 
@@ -487,8 +489,36 @@ export default function CVManagerModal({
 
           {activeTab === 'create_new' && (
             <form onSubmit={handleCreateSubmit} className="space-y-5">
+              {/* Highlight AI JD Creator */}
+              <div className="p-4 rounded-xl bg-gradient-to-r from-purple-50 via-indigo-50 to-blue-50 border border-purple-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-start sm:items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-indigo-600 text-white flex items-center justify-center shrink-0 shadow-md">
+                    <Sparkles size={20} className="text-yellow-300 animate-pulse" />
+                  </div>
+                  <div>
+                    <h4 className="text-xs sm:text-sm font-bold text-purple-950 flex items-center gap-2">
+                      AI Tự Động Tạo CV Khớp JD Tuyển Dụng
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-200 text-purple-800 uppercase tracking-wide">
+                        Khuyên Dùng
+                      </span>
+                    </h4>
+                    <p className="text-[11px] text-purple-700 mt-0.5">
+                      Dán tin tuyển dụng (JD), AI Gemini sẽ đọc kỹ năng, đồ án từ Hồ Sơ Cá Nhân và tự động sinh bản CV mục tiêu hoàn chỉnh.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsAiJdModalOpen(true)}
+                  className="px-4 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-bold rounded-xl shrink-0 shadow-md transition active:scale-95 flex items-center justify-center gap-2"
+                >
+                  <Sparkles size={14} className="text-yellow-300" />
+                  Tạo Bằng AI Ngay
+                </button>
+              </div>
+
               <div>
-                <h3 className="text-sm font-bold text-slate-900 mb-1">1. Chọn Cách Thức Khởi Tạo CV</h3>
+                <h3 className="text-sm font-bold text-slate-900 mb-1">1. Hoặc Chọn Cách Thức Khởi Tạo Thủ Công</h3>
                 <p className="text-xs text-slate-500 mb-3">Bạn có thể kế thừa toàn bộ nội dung từ các CV cũ để tùy chỉnh nhanh cho từng JD.</p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -513,7 +543,7 @@ export default function CVManagerModal({
                         <ShieldCheck size={15} className="text-emerald-600" />
                         Tự Động Từ Hồ Sơ Sinh Viên
                       </div>
-                      <p className="text-[11px] text-slate-500 mt-1">Nạp toàn bộ đồ án đã xác thực, bằng cấp, kỹ năng từ trang Profile của bạn.</p>
+                      <p className="text-[11px] text-slate-500 mt-1">Nạp toàn bộ đồ án, bằng cấp, kỹ năng từ trang Profile của bạn.</p>
                     </div>
                   </label>
 
@@ -705,6 +735,18 @@ export default function CVManagerModal({
           )}
         </div>
       </div>
+
+      {isAiJdModalOpen && (
+        <GenerateCvFromJdModal
+          isOpen={isAiJdModalOpen}
+          onClose={() => setIsAiJdModalOpen(false)}
+          onSuccess={(newCv) => {
+            setIsAiJdModalOpen(false);
+            onCVsUpdated();
+            handleSwitchCV(newCv);
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -31,9 +31,9 @@ export interface ToolSpec {
 }
 
 export const MODELS = {
-  reply: () => (ENV.GEMINI_API_KEY ? ENV.GEMINI_MODEL || "gemini-3.5-flash" : ENV.ANTHROPIC_MODEL_REPLY || "claude-3-5-sonnet-20241022"),
-  extract: () => (ENV.GEMINI_API_KEY ? ENV.GEMINI_MODEL || "gemini-3.5-flash" : ENV.ANTHROPIC_MODEL_EXTRACT || "claude-3-5-haiku-20241022"),
-  generate: () => (ENV.GEMINI_API_KEY ? ENV.GEMINI_MODEL || "gemini-3.5-flash" : ENV.ANTHROPIC_MODEL_GENERATE || "claude-3-5-sonnet-20241022"),
+  reply: () => (ENV.GEMINI_API_KEY ? ENV.GEMINI_MODEL || "gemini-3.8-flash" : ENV.ANTHROPIC_MODEL_REPLY || "claude-3-5-sonnet-20241022"),
+  extract: () => (ENV.GEMINI_API_KEY ? ENV.GEMINI_MODEL || "gemini-3.8-flash" : ENV.ANTHROPIC_MODEL_EXTRACT || "claude-3-5-haiku-20241022"),
+  generate: () => (ENV.GEMINI_API_KEY ? ENV.GEMINI_MODEL || "gemini-3.8-flash" : ENV.ANTHROPIC_MODEL_GENERATE || "claude-3-5-sonnet-20241022"),
 };
 
 /** Đệ quy làm sạch JSON schema tương thích chuẩn OpenAPI 3.0 cho Gemini */
@@ -100,9 +100,10 @@ function getGeminiClient(): GoogleGenAI {
 }
 
 const FALLBACK_GEMINI_MODELS = [
+  'gemini-3.8-flash',
+  'gemini-3.5-flash-lite',
   'gemini-3-flash-preview',
-  'gemini-3.5-flash',
-  'gemini-flash-latest',
+  'gemini-2.5-flash',
 ];
 
 export const gemini: Llm = {

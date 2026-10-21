@@ -72,6 +72,10 @@ export interface ProjectItem {
   projectUrl?: string;
   githubUrl?: string;
   is_verified?: boolean;
+  syncToMasterProfile?: boolean;
+  scopeType?: 'solo' | 'team';
+  teamSize?: number;
+  systemContext?: string;
 }
 
 export interface SkillGroupItem {
@@ -172,7 +176,7 @@ export const SECTION_METADATA: SectionTemplateMeta[] = [
   {
     type: 'education',
     defaultTitle: 'Học Vấn',
-    description: 'Trường đại học, chuyên ngành, GPA, đồ án tốt nghiệp.',
+    description: 'Trường đại học, chuyên ngành, thời gian học tập, quá trình đào tạo.',
     iconName: 'GraduationCap',
     isDefault: true,
     allowMultiple: false

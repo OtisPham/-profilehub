@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthProvider';
 import { supabase } from '../../services/supabase';
@@ -11,7 +11,10 @@ import InteractiveCVCanvas from '../../components/cv/InteractiveCVCanvas';
 import LiveAICoachPanel from '../../components/cv/LiveAICoachPanel';
 import BulkCvImportModal from '../../components/recruiter/BulkCvImportModal';
 import CVManagerModal from '../../components/cv/CVManagerModal';
-import CoverLetterModal from '../../components/cv/CoverLetterModal';
+import ProfileDataPickerModal from '../../components/cv/ProfileDataPickerModal';
+import ProjectFitExplainerModal from '../../components/cv/ProjectFitExplainerModal';
+import ApplicationPitchModal from '../../components/cv/ApplicationPitchModal';
+import { pageBudgetService } from '../../services/pageBudgetService';
 import {
   convertImportedCvToCvBuilderState,
   type ImportedCandidateCv
@@ -128,10 +131,10 @@ export default function CVBuilder() {
   // Modals & Dialogs
   const [isCardModalOpen, setIsCardModalOpen] = useState(false);
   const [isCoachModalOpen, setIsCoachModalOpen] = useState(false);
-  const [isCoverLetterModalOpen, setIsCoverLetterModalOpen] = useState(false);
   const [isAddSectionModalOpen, setIsAddSectionModalOpen] = useState(false);
   const [isBulkImportOpen, setIsBulkImportOpen] = useState(false);
   const [isCVManagerOpen, setIsCVManagerOpen] = useState(false);
+  const [isProfilePickerOpen, setIsProfilePickerOpen] = useState(false);
   const [sectionToDelete, setSectionToDelete] = useState<CVSection | null>(null);
   const [sectionToConfigure, setSectionToConfigure] = useState<CVSection | null>(null);
 
@@ -144,10 +147,24 @@ export default function CVBuilder() {
   const [deletedSectionBackup, setDeletedSectionBackup] = useState<{ section: CVSection; index: number } | null>(null);
   const [showUndoToast, setShowUndoToast] = useState(false);
 
+  // Spec v0.4 - Section 5: State Stack Undo / Redo
+  const [undoStack, setUndoStack] = useState<any[]>([]);
+  const [redoStack, setRedoStack] = useState<any[]>([]);
+
+  // Spec v0.4 - Section 3 BR-06: AI Usage Quota (20 credits/day)
+  const [remainingAiCredits, setRemainingAiCredits] = useState<number>(() => {
+    return cvService.getAiQuota(user?.id).remaining;
+  });
+
+  // Spec v0.4 - Section 3 BR-02: Opt-in Sync Banner
+  const [hasProfileDrift, setHasProfileDrift] = useState(false);
+  const [showDriftBanner, setShowDriftBanner] = useState(false);
+
   // Save State
   const [isSaving, setIsSaving] = useState(false);
   const [lastSavedTime, setLastSavedTime] = useState<string | null>(null);
   const [showSaveSuccessToast, setShowSaveSuccessToast] = useState(false);
+  const [saveToastSubtitle, setSaveToastSubtitle] = useState<string>('Dữ liệu chỉnh sửa đã được lưu an toàn.');
 
   // PERSONAL INFORMATION (HEADER SECTION)
   const [personalInfo, setPersonalInfo] = useState<PersonalInfoData>({
@@ -185,6 +202,65 @@ export default function CVBuilder() {
   // Raw DB records
   const [rawProjects, setRawProjects] = useState<any[]>([]);
 
+  // Project Fit Explainer Modal State (Ticket 03)
+  const [isProjectFitModalOpen, setIsProjectFitModalOpen] = useState(false);
+
+  // Contextual Application Pitch State (ADR 0002)
+  const [isPitchModalOpen, setIsPitchModalOpen] = useState(false);
+  const [applicationPitch, setApplicationPitch] = useState<string>('');
+  const [currentJdText, setCurrentJdText] = useState<string>('');
+
+  // Real-time Page Budget Guard (Ticket 05)
+  const pageBudget = useMemo(() => {
+    return pageBudgetService.calculatePageBudget(sections, personalInfo, spacingDensity);
+  }, [sections, personalInfo, spacingDensity]);
+
+  const isSingleColumnLayout = selectedTemplate === 'minimal' || selectedTemplate === 'executive';
+
+  const handleToggleColumns = () => {
+    if (isSingleColumnLayout) {
+      setSelectedTemplate('classic');
+    } else {
+      setSelectedTemplate('minimal');
+    }
+  };
+
+  const handleAutoCondense = () => {
+    const { sections: condensed, charactersSaved } = pageBudgetService.autoCondenseCvContent(sections);
+    setSections(condensed);
+    setSaveToastSubtitle(`Đã tự động thu gọn ${charactersSaved} ký tự để tối ưu vừa vặn 1 trang A4!`);
+    setShowSaveSuccessToast(true);
+    setTimeout(() => setShowSaveSuccessToast(false), 3500);
+  };
+
+  const handleApplyProjectsFromFitExplainer = (selectedProjects: ProjectItem[]) => {
+    setSections(prev => {
+      let updated = [...prev];
+      const projIdx = updated.findIndex(s => s.type === 'projects');
+      if (projIdx >= 0) {
+        updated[projIdx] = {
+          ...updated[projIdx],
+          items: selectedProjects
+        };
+      } else {
+        updated.push({
+          id: `sec_projects_${Date.now()}`,
+          type: 'projects',
+          title: 'DỰ ÁN & ĐỒ ÁN NỔI BẬT',
+          order_index: updated.length,
+          is_visible: true,
+          settings: { showTitle: true, showDivider: true, spacing: 'normal', titleStyle: 'bold', titleCase: 'uppercase' },
+          items: selectedProjects
+        });
+      }
+      return updated;
+    });
+
+    setSaveToastSubtitle(`Đã tuyển chọn và đưa ${selectedProjects.length} đồ án phù hợp nhất vào CV!`);
+    setShowSaveSuccessToast(true);
+    setTimeout(() => setShowSaveSuccessToast(false), 3500);
+  };
+
   // Switch template
   const handleSelectTemplate = (tmpl: typeof TEMPLATES_CONFIG[0]) => {
     setSelectedTemplate(tmpl.id);
@@ -218,6 +294,9 @@ export default function CVBuilder() {
         const timeStr = new Date(cv.data.savedAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
         setLastSavedTime(`Đã lưu lúc ${timeStr}`);
       }
+
+      setApplicationPitch(cv.data.applicationPitch || '');
+      setCurrentJdText(cv.data.targetJdText || '');
 
       const initialSummary = cv.data.sections?.find(s => s.type === 'objective')?.content || '';
       const initialEval = evaluateCvSection('summary', initialSummary, {
@@ -276,6 +355,9 @@ export default function CVBuilder() {
           const timeStr = new Date(activeCV.data.savedAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
           setLastSavedTime(`Đã lưu lúc ${timeStr}`);
         }
+        if (activeCV.data.applicationPitch) setApplicationPitch(activeCV.data.applicationPitch);
+        if (activeCV.data.targetJdText) setCurrentJdText(activeCV.data.targetJdText);
+        else if (locationState?.targetJd) setCurrentJdText(locationState.targetJd);
         const initialSummary = activeCV.data.sections.find(s => s.type === 'objective')?.content || '';
         const detectedDom = detectIndustryDomain(activeCV.data.personalInfo?.jobTitle).id;
         const initialEval = evaluateCvSection('summary', initialSummary, {
@@ -285,6 +367,21 @@ export default function CVBuilder() {
         setActiveEvaluation(initialEval);
         const fullEval = evaluateFullCv(activeCV.data.personalInfo, activeCV.data.sections, detectedDom);
         setOverallScore(fullEval.overallScore);
+
+        // Spec v0.4 BR-02: Check for Profile Drift
+        if (activeCV.data.personalInfo && sourceData.profile) {
+          const p = sourceData.profile;
+          const cvP = activeCV.data.personalInfo;
+          const isDrift = Boolean(
+            (p.full_name && p.full_name !== cvP.fullName) ||
+            (p.major && p.major !== cvP.jobTitle)
+          );
+          if (isDrift) {
+            setHasProfileDrift(true);
+            setShowDriftBanner(true);
+          }
+        }
+
         setLoading(false);
         return;
       }
@@ -306,28 +403,136 @@ export default function CVBuilder() {
     setActiveEvaluation(initialEval);
     const fullEval = evaluateFullCv(initialCV.personalInfo, initialCV.sections, initialDomain.id);
     setOverallScore(fullEval.overallScore);
+    if (locationState?.targetJd) setCurrentJdText(locationState.targetJd);
     setLoading(false);
   }, [user]);
 
   useEffect(() => {
     fetchAllData();
-  }, [fetchAllData]);
+  }, [fetchAllData, location.state, location.key]);
 
-  // Global Keyboard Shortcuts (Ctrl+S to save, Ctrl+P to print)
+  // Listen for CV switch / create events from modal or sidebar
+  useEffect(() => {
+    const handleCvSwitched = (e: any) => {
+      if (e.detail) {
+        handleSelectCVFromManager(e.detail);
+      } else {
+        fetchAllData();
+      }
+    };
+    window.addEventListener('profilehub:cv-switched', handleCvSwitched);
+
+    return () => {
+      window.removeEventListener('profilehub:cv-switched', handleCvSwitched);
+    };
+  }, [handleSelectCVFromManager, fetchAllData]);
+
+  // Spec v0.4 - Section 5: State Stack Undo / Redo
+  const handleUndoDelete = useCallback(() => {
+    if (deletedSectionBackup) {
+      setSections(prev => {
+        const copy = [...prev];
+        copy.splice(deletedSectionBackup.index, 0, deletedSectionBackup.section);
+        return copy.map((s, i) => ({ ...s, order_index: i }));
+      });
+      setDeletedSectionBackup(null);
+      setShowUndoToast(false);
+    }
+  }, [deletedSectionBackup]);
+
+  const pushUndoAction = useCallback((action: any) => {
+    setUndoStack(prev => [...prev.slice(-30), action]);
+    setRedoStack([]); // Clear redo stack on new fork
+  }, []);
+
+  const handleUndo = useCallback(() => {
+    setUndoStack(prevUndo => {
+      if (prevUndo.length === 0) {
+        // Fallback to undo delete toast if stack is empty
+        handleUndoDelete();
+        return prevUndo;
+      }
+      const action = prevUndo[prevUndo.length - 1];
+      const newUndo = prevUndo.slice(0, -1);
+
+      if (action.type === 'PERSONAL_INFO') {
+        setPersonalInfo(p => ({ ...p, [action.field]: action.oldValue }));
+      } else if (action.type === 'SECTION_CONTENT') {
+        setSections(secs => secs.map(s => s.id === action.sectionId ? { ...s, content: action.oldValue } : s));
+      } else if (action.type === 'ITEM_FIELD') {
+        setSections(secs => secs.map(s => {
+          if (s.id !== action.sectionId || !s.items) return s;
+          return {
+            ...s,
+            items: s.items.map((it: any) => it.id === action.itemId ? { ...it, [action.field]: action.oldValue } : it)
+          };
+        }));
+      } else if (action.type === 'SECTION_DELETE') {
+        setSections(secs => {
+          const copy = [...secs];
+          copy.splice(action.index, 0, action.section);
+          return copy.map((s, i) => ({ ...s, order_index: i }));
+        });
+        setShowUndoToast(false);
+      }
+
+      setRedoStack(prevRedo => [...prevRedo, action]);
+      return newUndo;
+    });
+  }, [handleUndoDelete]);
+
+  const handleRedo = useCallback(() => {
+    setRedoStack(prevRedo => {
+      if (prevRedo.length === 0) return prevRedo;
+      const action = prevRedo[prevRedo.length - 1];
+      const newRedo = prevRedo.slice(0, -1);
+
+      if (action.type === 'PERSONAL_INFO') {
+        setPersonalInfo(p => ({ ...p, [action.field]: action.newValue }));
+      } else if (action.type === 'SECTION_CONTENT') {
+        setSections(secs => secs.map(s => s.id === action.sectionId ? { ...s, content: action.newValue } : s));
+      } else if (action.type === 'ITEM_FIELD') {
+        setSections(secs => secs.map(s => {
+          if (s.id !== action.sectionId || !s.items) return s;
+          return {
+            ...s,
+            items: s.items.map((it: any) => it.id === action.itemId ? { ...it, [action.field]: action.newValue } : it)
+          };
+        }));
+      } else if (action.type === 'SECTION_DELETE') {
+        setSections(secs => secs.filter(s => s.id !== action.section.id));
+      }
+
+      setUndoStack(prevUndo => [...prevUndo, action]);
+      return newRedo;
+    });
+  }, []);
+
+  // Global Keyboard Shortcuts (Ctrl+S to save, Ctrl+P to print, Ctrl+Z to undo, Ctrl+Y to redo)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+      const isCtrl = e.ctrlKey || e.metaKey;
+      if (isCtrl && e.key.toLowerCase() === 'z') {
+        e.preventDefault();
+        if (e.shiftKey) {
+          handleRedo();
+        } else {
+          handleUndo();
+        }
+      } else if (isCtrl && e.key.toLowerCase() === 'y') {
+        e.preventDefault();
+        handleRedo();
+      } else if (isCtrl && e.key.toLowerCase() === 's') {
         e.preventDefault();
         handleSaveCV();
-      }
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'p') {
+      } else if (isCtrl && e.key.toLowerCase() === 'p') {
         e.preventDefault();
         handlePrint();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [personalInfo, sections, selectedTemplate, primaryColor, selectedFont, spacingDensity, fontSizeLevel]);
+  }, [personalInfo, sections, selectedTemplate, primaryColor, selectedFont, spacingDensity, fontSizeLevel, handleUndo, handleRedo]);
 
   // Section Focus & AI Evaluation Trigger
   const handleFocusSection = (sectionId: string, type: CVSectionType, content: string, domainOverride?: IndustryDomainId) => {
@@ -430,10 +635,18 @@ export default function CVBuilder() {
         selectedFontId: selectedFont.id,
         spacingDensity,
         fontSizeLevel,
-        savedAt: new Date().toISOString()
+        savedAt: new Date().toISOString(),
+        applicationPitch: applicationPitch || undefined,
+        targetJdText: currentJdText || locationState?.targetJd || undefined,
+        targetRoleTitle: locationState?.targetRole || personalInfo.jobTitle || undefined
       };
 
       const result = await cvService.saveCV(cvData, user?.id);
+
+      // Ticket 01: Reverse sync projects to master profile
+      const projectSections = sections.filter(s => s.type === 'projects');
+      const allProjects: ProjectItem[] = projectSections.flatMap(s => (s.items as ProjectItem[]) || []);
+      const syncResult = await cvService.syncCvProjectsToMaster(allProjects, user?.id);
 
       if (user) {
         try {
@@ -448,15 +661,28 @@ export default function CVBuilder() {
 
       const timeStr = new Date(result.savedAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
       setLastSavedTime(`Đã lưu lúc ${timeStr}`);
+      if (syncResult && syncResult.syncedProjects.length > 0) {
+        setSaveToastSubtitle(`Đã đồng bộ ${syncResult.syncedProjects.length} dự án mới vào Kho Quản lý dự án!`);
+      } else {
+        setSaveToastSubtitle('Dữ liệu chỉnh sửa đã được lưu an toàn.');
+      }
       setShowSaveSuccessToast(true);
       setTimeout(() => {
         setShowSaveSuccessToast(false);
-      }, 3000);
+      }, 3500);
     } catch (err) {
       console.error('Failed to save CV:', err);
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const handleSavePitchFromModal = (pitch: string, jd: string) => {
+    setApplicationPitch(pitch);
+    setCurrentJdText(jd);
+    setSaveToastSubtitle('Đã lưu nội dung Pitch Letter vào bản CV!');
+    setShowSaveSuccessToast(true);
+    setTimeout(() => setShowSaveSuccessToast(false), 3000);
   };
 
   const handleResetToOriginal = () => {
@@ -467,71 +693,6 @@ export default function CVBuilder() {
       setLastSavedTime(null);
       fetchAllData();
     }
-  };
-
-  const handleNavigateToJevMatch = async () => {
-    await handleSaveCV();
-
-    const skillsSection = sections.find(s => s.type === 'skills');
-    const extractedSkills: string[] = [];
-    if (skillsSection && Array.isArray(skillsSection.items)) {
-      (skillsSection.items as SkillGroupItem[]).forEach(g => {
-        if (Array.isArray(g.skills)) {
-          g.skills.forEach(sk => {
-            if (typeof sk === 'string' && sk.trim()) extractedSkills.push(sk.trim());
-            else if (sk && typeof sk === 'object' && (sk as any).name) extractedSkills.push((sk as any).name);
-          });
-        }
-      });
-    }
-
-    const projectSection = sections.find(s => s.type === 'projects');
-    const extractedProjects: any[] = [];
-    if (projectSection && Array.isArray(projectSection.items)) {
-      (projectSection.items as ProjectItem[]).forEach((p, idx) => {
-        const techs = Array.isArray(p.technologies) ? p.technologies : [];
-        extractedProjects.push({
-          id: p.id || `proj_${idx}`,
-          title: p.projectName || 'Đồ án dự án',
-          description: p.description || (p.bullets ? p.bullets.join('. ') : ''),
-          technologies: techs,
-          tags: techs,
-          is_verified: !!p.is_verified,
-          demo_url: p.projectUrl,
-          github_url: p.githubUrl,
-          metrics: p.bullets ? p.bullets.filter(b => /\d+%/i.test(b)) : []
-        });
-      });
-    }
-
-    const activeCvData = {
-      id: 'cv_builder_active',
-      name: personalInfo.fullName || 'Hồ Sơ CV Của Tôi',
-      avatarBadge: '📄 BẢN CV VỪA TẠO',
-      targetRole: personalInfo.jobTitle || 'Developer / Software Engineer',
-      level: 'fresher' as const,
-      headline: personalInfo.jobTitle ? `Ứng tuyển vị trí ${personalInfo.jobTitle}` : 'Hồ sơ tạo từ ProfileHub CV Builder',
-      skills: extractedSkills.length > 0 ? extractedSkills : ['React', 'TypeScript', 'HTML/CSS', 'Git'],
-      projects: extractedProjects.length > 0 ? extractedProjects : [
-        {
-          id: 'p1',
-          title: 'Dự án thực tế từ CV',
-          description: 'Dự án được đồng bộ trực tiếp từ CV Builder.',
-          technologies: extractedSkills.slice(0, 3),
-          is_verified: true,
-        }
-      ],
-      certificates: []
-    };
-
-    localStorage.setItem('profilehub_active_cv_from_builder', JSON.stringify(activeCvData));
-
-    navigate('/portfolio-match', {
-      state: {
-        fromCvBuilder: true,
-        activeCvData: activeCvData
-      }
-    });
   };
 
   // Handle importing a candidate CV (from XLSX or sample 100 dataset) into the CV Builder
@@ -702,17 +863,33 @@ export default function CVBuilder() {
     }, 5000);
   };
 
-  const handleUndoDelete = () => {
-    if (deletedSectionBackup) {
-      setSections(prev => {
-        const copy = [...prev];
-        copy.splice(deletedSectionBackup.index, 0, deletedSectionBackup.section);
-        return copy.map((s, i) => ({ ...s, order_index: i }));
-      });
-      setDeletedSectionBackup(null);
-      setShowUndoToast(false);
-    }
-  };
+  // Spec v0.4 - Section 3 BR-06: Deduct AI credit
+  const handleDeductAiCredit = useCallback(() => {
+    const rem = cvService.deductAiCredit(user?.id);
+    setRemainingAiCredits(rem);
+  }, [user]);
+
+  // Spec v0.4 - Section 3 BR-02: Opt-in Sync from Master Profile
+  const handleAcceptSyncFromProfile = useCallback(() => {
+    if (!profileSourceData?.profile) return;
+    const p = profileSourceData.profile;
+    const oldPersonal = { ...personalInfo };
+    const newPersonal: PersonalInfoData = {
+      ...personalInfo,
+      fullName: p.full_name || personalInfo.fullName,
+      jobTitle: p.major || personalInfo.jobTitle,
+    };
+    setPersonalInfo(newPersonal);
+    pushUndoAction({
+      type: 'PERSONAL_INFO',
+      field: 'fullName',
+      oldValue: oldPersonal.fullName,
+      newValue: newPersonal.fullName,
+      description: 'Đồng bộ từ Hồ sơ gốc'
+    });
+    setHasProfileDrift(false);
+    setShowDriftBanner(false);
+  }, [profileSourceData, personalInfo, pushUndoAction]);
 
   // 7. SECTION SETTINGS (Title, Spacing, Divider, Case)
   const handleSaveSectionSettings = (sectionId: string, updatedTitle: string, updatedSettings: SectionSettings) => {
@@ -802,6 +979,62 @@ export default function CVBuilder() {
     setSections(prev =>
       prev.map(s => (s.id === sectionId ? { ...s, ...updated } : s))
     );
+  };
+
+  // Import selected projects and certificates from Profile via Checkboxes
+  const handleImportFromProfile = (selectedProjects: ProjectItem[], selectedCerts: CertificationItem[]) => {
+    setSections(prev => {
+      let updated = [...prev];
+
+      if (selectedProjects.length > 0) {
+        const projIdx = updated.findIndex(s => s.type === 'projects');
+        if (projIdx >= 0) {
+          const existing = (updated[projIdx].items as ProjectItem[]) || [];
+          updated[projIdx] = {
+            ...updated[projIdx],
+            items: [...existing, ...selectedProjects]
+          };
+        } else {
+          updated.push({
+            id: `sec_projects_${Date.now()}`,
+            type: 'projects',
+            title: 'DỰ ÁN & ĐỒ ÁN NỔI BẬT',
+            order_index: updated.length,
+            is_visible: true,
+            settings: { showTitle: true, showDivider: true, spacing: 'normal', titleStyle: 'bold', titleCase: 'uppercase' },
+            items: selectedProjects
+          });
+        }
+      }
+
+      if (selectedCerts.length > 0) {
+        const certIdx = updated.findIndex(s => s.type === 'certifications');
+        if (certIdx >= 0) {
+          const existing = (updated[certIdx].items as CertificationItem[]) || [];
+          updated[certIdx] = {
+            ...updated[certIdx],
+            items: [...existing, ...selectedCerts]
+          };
+        } else {
+          updated.push({
+            id: `sec_certs_${Date.now()}`,
+            type: 'certifications',
+            title: 'CHỨNG CHỈ & BẰNG CẤP',
+            order_index: updated.length,
+            is_visible: true,
+            settings: { showTitle: true, showDivider: true, spacing: 'normal', titleStyle: 'bold', titleCase: 'uppercase' },
+            items: selectedCerts
+          });
+        }
+      }
+
+      return updated;
+    });
+
+    const timeStr = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+    setLastSavedTime(`Đã kéo ${selectedProjects.length} dự án & ${selectedCerts.length} chứng chỉ từ hồ sơ (Lúc ${timeStr})`);
+    setShowSaveSuccessToast(true);
+    setTimeout(() => setShowSaveSuccessToast(false), 3000);
   };
 
   // 1-Click Auto Fix: write AI suggestion directly to active section/item
@@ -958,7 +1191,7 @@ export default function CVBuilder() {
                 AI ATS CV Studio
               </span>
               <span className="text-[10px] text-slate-400 font-medium hidden lg:inline">
-                Trợ lý thiết kế & Chấm điểm ATS
+                Trợ lý thiết kế & Tối ưu hồ sơ
               </span>
             </div>
           </div>
@@ -971,22 +1204,33 @@ export default function CVBuilder() {
             <span>{lastSavedTime || 'Đã tự động lưu 15:16'}</span>
           </div>
 
-          {/* Undo / Redo Buttons */}
+          {/* Undo / Redo Buttons (Spec v0.4 - UC-CAN-011) */}
           <div className="flex items-center gap-1 border-l border-slate-200 dark:border-slate-700 pl-2">
             <button
-              onClick={handleUndoDelete}
-              title="Hoàn tác (Ctrl + Z)"
-              className="p-1.5 text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+              onClick={handleUndo}
+              disabled={undoStack.length === 0}
+              title={`Hoàn tác (Ctrl + Z)${undoStack.length > 0 ? ` [${undoStack.length}]` : ''}`}
+              className="p-1.5 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" />
             </button>
             <button
-              onClick={() => {}}
-              title="Làm lại (Ctrl + Y)"
-              className="p-1.5 text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors opacity-60"
+              onClick={handleRedo}
+              disabled={redoStack.length === 0}
+              title={`Làm lại (Ctrl + Y)${redoStack.length > 0 ? ` [${redoStack.length}]` : ''}`}
+              className="p-1.5 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
             >
               <RotateCw className="w-3.5 h-3.5" />
             </button>
+          </div>
+
+          {/* AI Usage Quota Indicator (Spec v0.4 - BR-06 & UC-SYS-003) */}
+          <div
+            className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-300 text-[11px] font-bold shadow-2xs"
+            title="Hạn mức AI theo quy định Spec: 20 lượt tác vụ/ngày"
+          >
+            <Zap className="w-3 h-3 text-purple-600 fill-purple-600" />
+            <span>Còn: <strong>{remainingAiCredits}</strong>/20 lượt AI</span>
           </div>
 
           {/* Zoom Ratio 100% */}
@@ -1021,6 +1265,16 @@ export default function CVBuilder() {
             <span className="hidden sm:inline">Chia sẻ</span>
           </button>
 
+          {/* Pitch Letter CTA (ADR 0002) */}
+          <button
+            onClick={() => setIsPitchModalOpen(true)}
+            className="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer"
+            title="Tạo Thư ứng tuyển theo ngữ cảnh JD (Contextual Application Pitch)"
+          >
+            <FileText className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+            <span className="hidden sm:inline">Pitch Letter</span>
+          </button>
+
           {/* Main CTA: Xuất PDF (Màu xanh tím nổi bật) */}
           <button
             onClick={handlePrint}
@@ -1040,24 +1294,6 @@ export default function CVBuilder() {
 
       </header>
 
-      {/* Target JD Improvement Context Banner (If navigated from JD Match) */}
-      {locationState?.targetJd && (
-        <div className="bg-gradient-to-r from-blue-900 to-indigo-900 text-white px-4 py-2.5 flex items-center justify-between gap-4 text-xs font-medium border-b border-blue-700 shadow-md">
-          <div className="flex items-center gap-2">
-            <Target className="w-4 h-4 text-amber-300 shrink-0" />
-            <span>
-              🎯 <strong>Chế độ tối ưu hóa CV theo JD:</strong> Bạn đang chỉnh sửa CV theo đề xuất AI để nâng cao điểm tương thích.
-            </span>
-          </div>
-          <button
-            onClick={handleNavigateToJevMatch}
-            className="px-3 py-1 bg-white text-blue-900 font-bold rounded-lg text-[11px] hover:bg-blue-50 transition-colors shrink-0 flex items-center gap-1 cursor-pointer"
-          >
-            Re-Match (Đánh giá lại) →
-          </button>
-        </div>
-      )}
-
       {/* WORKSPACE: 3-PANE RATIO (MAIN CANVAS + AI ATS COPILOT) */}
       <div className="flex-1 flex overflow-hidden relative">
         
@@ -1069,7 +1305,7 @@ export default function CVBuilder() {
             </div>
             <div>
               <div className="font-bold text-emerald-300">Đã lưu CV thành công!</div>
-              <div className="text-[11px] text-slate-300">Dữ liệu chỉnh sửa đã được lưu an toàn.</div>
+              <div className="text-[11px] text-slate-300">{saveToastSubtitle}</div>
             </div>
           </div>
         )}
@@ -1130,8 +1366,56 @@ export default function CVBuilder() {
               )}
             </div>
 
-            {/* Các nút tùy chỉnh: Giao diện & Font, Tối ưu STAR */}
-            <div className="flex items-center gap-2">
+            {/* Page Budget & Adaptive Layout Controls (Ticket 05) */}
+            <div className="flex items-center gap-1.5">
+              {/* Page Budget Pill */}
+              <div
+                className={`px-2.5 py-1 rounded-lg text-xs font-bold border flex items-center gap-1.5 transition-colors ${
+                  pageBudget.status === 'optimal'
+                    ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800'
+                    : pageBudget.status === 'warning'
+                    ? 'bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border-amber-200 dark:border-amber-800'
+                    : 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-800 animate-pulse'
+                }`}
+                title="Tỷ lệ lấp đầy trang in A4 thời gian thực"
+              >
+                <span>📊 {pageBudget.statusText}</span>
+              </div>
+
+              {/* 1-Click AI Auto-Condense */}
+              {pageBudget.firstPageFillPercent > 85 && (
+                <button
+                  onClick={handleAutoCondense}
+                  className="px-2 py-1 rounded-lg text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white flex items-center gap-1 transition-all shadow-xs"
+                  title="1-Click AI Auto-Condense: Tự động rút gọn câu từ rườm rà, bảo toàn 100% từ khóa"
+                >
+                  <Zap className="w-3 h-3" />
+                  <span>Thu Gọn</span>
+                </button>
+              )}
+
+              {/* Adaptive Layout Switcher */}
+              <button
+                onClick={handleToggleColumns}
+                className="px-2.5 py-1 rounded-lg text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center gap-1 transition-all"
+                title="Chuyển đổi luân phiên bố cục 1 cột và 2 cột"
+              >
+                <span>{isSingleColumnLayout ? '📑 2 Cột' : '📄 1 Cột'}</span>
+              </button>
+            </div>
+
+            {/* Các nút tùy chỉnh: Giao diện & Font, Tối ưu STAR, Kéo từ hồ sơ, Tuyển chọn JD */}
+            <div className="flex items-center gap-1.5 flex-wrap">
+              {/* Nút Tuyển Chọn Theo JD (Fit Explainer - Ticket 03) */}
+              <button
+                onClick={() => setIsProjectFitModalOpen(true)}
+                className="px-3 py-1.5 rounded-lg text-xs font-bold bg-purple-50 hover:bg-purple-100 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border border-purple-200 dark:border-purple-800/80 flex items-center gap-1.5 transition-all shadow-2xs"
+                title="Đối chiếu các dự án trong kho với JD văn bản dán vào và xếp hạng % phù hợp"
+              >
+                <Target className="w-3.5 h-3.5 text-purple-600" />
+                <span>Fit Theo JD</span>
+              </button>
+
               <button
                 onClick={() => {
                   setDesignTab('font');
@@ -1144,14 +1428,14 @@ export default function CVBuilder() {
                 <span>Giao diện & Font</span>
               </button>
 
-              {/* Nút Thư Giới Thiệu (Cover Letter) */}
+              {/* Nút Kéo Từ Hồ Sơ */}
               <button
-                onClick={() => setIsCoverLetterModalOpen(true)}
-                className="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-blue-50 hover:bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-800/80 flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer"
-                title="Tạo Thư Ứng Tuyển / Cover Letter chuyên nghiệp chuẩn A4"
+                onClick={() => setIsProfilePickerOpen(true)}
+                className="px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-50 hover:bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-800/80 flex items-center gap-1.5 transition-all shadow-2xs"
+                title="Kéo thông tin dự án và chứng chỉ từ Hồ sơ cá nhân bằng checkbox"
               >
-                <FileText className="w-3.5 h-3.5 text-blue-600" />
-                <span>Thư Giới Thiệu</span>
+                <FolderKanban className="w-3.5 h-3.5 text-blue-600" />
+                <span>Kéo Từ Hồ Sơ</span>
               </button>
 
               {/* Nút Tối ưu STAR màu tím */}
@@ -1327,6 +1611,33 @@ export default function CVBuilder() {
             </div>
           )}
 
+          {/* BR-02: Opt-in Sync Banner */}
+          {hasProfileDrift && showDriftBanner && (
+            <div className="max-w-[850px] mx-auto mb-4 p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 flex items-center justify-between text-xs text-amber-900 dark:text-amber-200 shadow-xs">
+              <div className="flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded-lg bg-amber-500 text-white flex items-center justify-center font-bold">🔔</div>
+                <div>
+                  <strong>Đồng bộ Opt-in (Spec BR-02):</strong> Hồ sơ gốc có thông tin mới hơn bản CV này.
+                  <div className="text-[11px] text-amber-700 dark:text-amber-400">Hệ thống không tự ý ghi đè dữ liệu. Bạn có muốn đồng bộ các thông tin mới nhất vào CV không?</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleAcceptSyncFromProfile}
+                  className="px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-xs transition-colors"
+                >
+                  Đồng bộ ngay
+                </button>
+                <button
+                  onClick={() => setShowDriftBanner(false)}
+                  className="px-2.5 py-1.5 rounded-lg border border-amber-300 dark:border-amber-700 hover:bg-amber-100 dark:hover:bg-amber-900/40 text-amber-800 dark:text-amber-300 text-xs transition-colors"
+                >
+                  Bỏ qua
+                </button>
+              </div>
+            </div>
+          )}
+
           {loading ? (
             <div className="flex items-center justify-center h-64 text-sm text-slate-500">
               ⏳ Đang nạp cấu trúc Section và dữ liệu CV...
@@ -1361,6 +1672,12 @@ export default function CVBuilder() {
               onDeleteItemFromSection={handleDeleteItemFromSection}
               onUpdateItemInSection={handleUpdateItemInSection}
               onDuplicateItemInSection={handleDuplicateItemInSection}
+              targetRole={locationState?.targetRole || personalInfo.jobTitle || 'Chuyên viên kỹ thuật'}
+              jdContext={locationState?.targetJd || ''}
+              remainingCredits={remainingAiCredits}
+              onRecordUndo={pushUndoAction}
+              onDeductAiCredit={handleDeductAiCredit}
+              onOpenProfilePicker={() => setIsProfilePickerOpen(true)}
             />
           )}
         </main>
@@ -1376,13 +1693,6 @@ export default function CVBuilder() {
             onOpenFullCoach={() => setIsCoachModalOpen(true)}
             currentDomainId={selectedDomainId}
             onSelectDomain={handleSelectDomain}
-            targetJdInfo={locationState?.targetJd ? {
-              targetRole: locationState.targetRole,
-              targetJd: locationState.targetJd,
-              coachingTips: locationState.coachingTips,
-              gapAnalysis: locationState.gapAnalysis
-            } : undefined}
-            onReMatch={handleNavigateToJevMatch}
             onReEvaluateAll={handleRefreshFullAtsEvaluation}
           />
         </aside>
@@ -1504,24 +1814,6 @@ export default function CVBuilder() {
         onCVsUpdated={refreshCVList}
       />
 
-      {/* Cover Letter (Thư Giới Thiệu / Thư Ứng Tuyển) Modal */}
-      <CoverLetterModal
-        isOpen={isCoverLetterModalOpen}
-        onClose={() => setIsCoverLetterModalOpen(false)}
-        candidateName={personalInfo.fullName || 'Họ và tên ứng viên'}
-        candidateEmail={personalInfo.email || user?.email || 'candidate@example.com'}
-        candidatePhone={personalInfo.phone || '0901 234 567'}
-        candidateLocation={personalInfo.location || 'TP. Hồ Chí Minh'}
-        targetRole={personalInfo.jobTitle || 'Chuyên viên'}
-        skills={personalInfo.jobTitle ? [personalInfo.jobTitle] : []}
-        projects={sections.find(s => s.type === 'projects')?.items?.map((item: any) => ({
-          id: item.id,
-          title: item.projectName || item.title || 'Dự án',
-          description: item.description || ''
-        })) || []}
-        domainId={selectedDomainId}
-      />
-
       {/* Bulk Excel & 100 Sample CV Import Modal */}
       <BulkCvImportModal
         isOpen={isBulkImportOpen}
@@ -1529,6 +1821,39 @@ export default function CVBuilder() {
         title="Nhập CV Nhanh Bằng Excel (.xlsx) / 100 CV Mẫu Cho AI CV Builder"
         subtitle="Chọn từ 100 CV mẫu chuẩn hóa hoặc tải lên file Excel để nạp tức thì vào CV Builder, tự động khớp chuyên ngành & kích hoạt AI Live Coach."
         onSelectCandidate={handleImportCandidateIntoCvBuilder}
+      />
+
+      {/* Profile Data Picker Modal (Kéo Dự Án & Chứng Chỉ Qua Checkbox) */}
+      <ProfileDataPickerModal
+        isOpen={isProfilePickerOpen}
+        onClose={() => setIsProfilePickerOpen(false)}
+        profileData={profileSourceData}
+        currentSections={sections}
+        onImport={handleImportFromProfile}
+      />
+
+      {/* Project Fit Explainer Modal (Ticket 03) */}
+      <ProjectFitExplainerModal
+        isOpen={isProjectFitModalOpen}
+        onClose={() => setIsProjectFitModalOpen(false)}
+        projects={rawProjects}
+        onApplySelectedProjects={handleApplyProjectsFromFitExplainer}
+      />
+
+      {/* Contextual Application Pitch Modal (ADR 0002) */}
+      <ApplicationPitchModal
+        isOpen={isPitchModalOpen}
+        onClose={() => setIsPitchModalOpen(false)}
+        applicantName={personalInfo.fullName}
+        targetRole={locationState?.targetRole || personalInfo.jobTitle || 'Lập trình viên'}
+        initialJd={currentJdText || locationState?.targetJd || ''}
+        projects={
+          sections.filter(s => s.type === 'projects').flatMap(s => (s.items as ProjectItem[]) || []).length > 0
+            ? sections.filter(s => s.type === 'projects').flatMap(s => (s.items as ProjectItem[]) || [])
+            : rawProjects
+        }
+        savedPitch={applicationPitch}
+        onSavePitch={handleSavePitchFromModal}
       />
 
     </div>

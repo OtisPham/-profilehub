@@ -1,6 +1,8 @@
-import type { AiEvidenceLevel, AiMatchResult, JevEvidenceLevel, JevMatchResult } from '../types/portfolioMatch';
-import type { MBTIType, CandidateMBTIResult } from '../types/mbti';
-import { calculateMBTIJobCompatibility, getMockMBTIForCandidate, getCandidateMBTI, type MBTIJobCompatibility } from './mbtiService';
+export type AiEvidenceLevel = 
+  | 'unverified_claim'      // Level 0: 0.30 - Chỉ tự khai
+  | 'self_documented'       // Level 1: 0.60 - Có mô tả nhưng không có link
+  | 'live_artifact'         // Level 2: 0.85 - Có link GitHub / Demo sống
+  | 'institutional_verified'; // Level 3: 1.00 - Có huy hiệu Verified
 
 export interface HiringBrief {
   position: string;
@@ -27,7 +29,7 @@ export interface CandidateAiPillars {
   evidenceDepthScore: number;
   impactScore: number;
   alignmentScore: number;
-  mbtiCulturalFitScore: number;
+  mbtiCulturalFitScore?: number;
 }
 
 export type CandidateJevPillars = CandidateAiPillars;
@@ -37,8 +39,8 @@ export interface CandidateMatchResult {
   candidateName: string;
   matchScore: number;
   technicalScore: number;
-  mbtiType: MBTIType;
-  mbtiCompatibility: MBTIJobCompatibility;
+  mbtiType?: string;
+  mbtiCompatibility?: any;
   matchRating: 'STANDOUT_MATCH' | 'STRONG_FIT' | 'POTENTIAL_FIT' | 'NEEDS_DEVELOPMENT';
   trustTier: 'VERIFIED_ELITE' | 'HIGH_TRUST' | 'MODERATE' | 'UNVERIFIED';
   trustMultiplier: number;
@@ -256,12 +258,6 @@ export function matchCandidatesWithJob(
       antiStuffingRisk = 'MEDIUM';
     }
 
-    // --- MBTI & CULTURAL WORKPLACE FIT (15%) ---
-    const storedMBTI = getCandidateMBTI();
-    const candidateMBTI = (storedMBTI && storedMBTI.mbtiType) ? storedMBTI : getMockMBTIForCandidate(cand.id);
-    const mbtiCompatibility = calculateMBTIJobCompatibility(candidateMBTI.mbtiType, brief.position, brief.mustHaveSkills);
-    const mbtiCulturalFitScore = mbtiCompatibility.culturalFitScore;
-
     // --- COMPOSITE SCORE CALCULATION ---
     const rawTechnical = (
       skillFitScore * 0.30 +
@@ -271,10 +267,7 @@ export function matchCandidatesWithJob(
     ) * trustMultiplier;
 
     const technicalScore = Math.min(100, Math.max(30, Math.round(rawTechnical)));
-
-    // Combined overall compatibility (85% JEV Technical Evidence + 15% MBTI Cultural Fit)
-    const rawComposite = (technicalScore * 0.85) + (mbtiCulturalFitScore * 0.15);
-    const matchScore = Math.min(99, Math.max(35, Math.round(rawComposite)));
+    const matchScore = technicalScore;
 
     let matchRating: CandidateMatchResult['matchRating'] = 'NEEDS_DEVELOPMENT';
     if (matchScore >= 85) matchRating = 'STANDOUT_MATCH';
@@ -285,12 +278,11 @@ export function matchCandidatesWithJob(
     const whyText: string[] = [];
     matchingMustHave.forEach(sk => whyText.push(`✓ Khớp kỹ năng cốt lõi: ${sk}`));
     if (cand.verified_projects_count > 0) {
-      whyText.push(`🛡️ ${cand.verified_projects_count} đồ án được Giảng viên bảo chứng (Verified Badge)`);
+      whyText.push(`🛡️ ${cand.verified_projects_count} đồ án có minh chứng thực tế`);
     }
     if (uniqueMetrics.length > 0) {
       whyText.push(`📊 Có số liệu định lượng: ${uniqueMetrics.slice(0, 2).join(', ')}`);
     }
-    whyText.push(`🧠 Tính cách ${candidateMBTI.mbtiType}: ${mbtiCompatibility.roleAlignmentTitle} (${mbtiCulturalFitScore}% phù hợp)`);
 
     let warningText: string | undefined = undefined;
     if (missingSkills.length > 0) {
@@ -305,8 +297,6 @@ export function matchCandidatesWithJob(
       candidateName: cand.full_name,
       matchScore,
       technicalScore,
-      mbtiType: candidateMBTI.mbtiType,
-      mbtiCompatibility,
       matchRating,
       trustTier,
       trustMultiplier,
@@ -315,7 +305,6 @@ export function matchCandidatesWithJob(
         evidenceDepthScore,
         impactScore,
         alignmentScore,
-        mbtiCulturalFitScore,
       },
       matchingMustHave,
       matchingNiceToHave,

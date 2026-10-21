@@ -1,4 +1,4 @@
-export type UserRole = 'student' | 'recruiter' | 'teacher';
+export type UserRole = 'student' | 'recruiter';
 
 export type VerificationStatus = 'pending' | 'verified' | 'rejected';
 

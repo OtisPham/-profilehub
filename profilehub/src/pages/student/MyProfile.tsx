@@ -4,11 +4,30 @@ import { useAuth } from '../../context/AuthProvider';
 import { supabase } from '../../services/supabase';
 import CertificateModal, { CertificateData } from '../../components/certificates/CertificateModal';
 import AchievementModal, { AchievementData } from '../../components/achievements/AchievementModal';
+import AddProjectModal from '../../components/projects/AddProjectModal';
 import { 
   Award, Trophy, User, BookOpen, GraduationCap, Briefcase, Plus, 
   ExternalLink, Trash2, Edit3, Eye, FileText, CheckCircle2, Star, 
-  Sparkles, ShieldCheck, X, ArrowUpRight
+  Sparkles, ShieldCheck, X, ArrowUpRight, FolderKanban, Globe, Github
 } from 'lucide-react';
+
+export interface ProfileProjectData {
+  id: string;
+  title: string;
+  project_type: string;
+  score?: string;
+  description: string;
+  is_verified?: boolean;
+  role: string;
+  team_size: string;
+  instructor?: string;
+  tags: string[];
+  image_url: string;
+  demo_url?: string;
+  github_url?: string;
+  figma_url?: string;
+  doc_url?: string;
+}
 
 interface StudentProfile {
   id?: string;
@@ -40,6 +59,11 @@ export default function MyProfile() {
     skills: ''
   });
 
+  // =================== PROJECTS STATE ===================
+  const [projects, setProjects] = useState<ProfileProjectData[]>([]);
+  const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<ProfileProjectData | null>(null);
+
   // =================== CERTIFICATES STATE ===================
   const [certificates, setCertificates] = useState<CertificateData[]>([]);
   const [isCertModalOpen, setIsCertModalOpen] = useState(false);
@@ -67,6 +91,20 @@ export default function MyProfile() {
         bio: data.bio || '',
         skills: data.skills ? data.skills.join(', ') : ''
       });
+    }
+  }, [user]);
+
+  // Load Projects
+  const fetchProjects = useCallback(async () => {
+    if (!user) return;
+    const { data, error } = await supabase
+      .from('projects')
+      .select('*')
+      .eq('student_id', user.id)
+      .order('created_at', { ascending: false });
+
+    if (!error && data) {
+      setProjects(data.map(item => ({ ...item, tags: item.tags || [] })));
     }
   }, [user]);
 
@@ -100,9 +138,10 @@ export default function MyProfile() {
 
   useEffect(() => {
     fetchProfile();
+    fetchProjects();
     fetchCertificates();
     fetchAchievements();
-  }, [fetchProfile, fetchCertificates, fetchAchievements]);
+  }, [fetchProfile, fetchProjects, fetchCertificates, fetchAchievements]);
 
   // Save Profile Info
   const handleSaveProfile = async (e: React.FormEvent) => {
@@ -149,6 +188,25 @@ export default function MyProfile() {
     if (window.confirm("Bạn có chắc chắn muốn xóa chứng chỉ này?")) {
       await supabase.from('certificates').delete().eq('id', id);
       fetchCertificates();
+    }
+  };
+
+  // Project Handlers
+  const handleAddNewProject = () => {
+    setSelectedProject(null);
+    setIsProjectModalOpen(true);
+  };
+
+  const handleEditProject = (proj: ProfileProjectData) => {
+    setSelectedProject(proj);
+    setIsProjectModalOpen(true);
+  };
+
+  const handleDeleteProject = async (id: string | undefined) => {
+    if (!id) return;
+    if (window.confirm("Bạn có chắc chắn muốn xóa dự án này?")) {
+      await supabase.from('projects').delete().eq('id', id);
+      fetchProjects();
     }
   };
 
@@ -216,12 +274,18 @@ export default function MyProfile() {
         </div>
 
         {/* Quick Anchor Navigation */}
-        <div style={{ display: 'flex', gap: '8px' }}>
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
           <button 
             onClick={() => scrollToSection('sec-info')}
             style={{ padding: '6px 12px', borderRadius: '6px', border: '1px solid #e2e8f0', backgroundColor: '#ffffff', color: '#334155', fontSize: '12px', fontWeight: '600', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
           >
             <User size={13} color="#2563eb" /> Thông tin cá nhân
+          </button>
+          <button 
+            onClick={() => scrollToSection('sec-projects')}
+            style={{ padding: '6px 12px', borderRadius: '6px', border: '1px solid #e2e8f0', backgroundColor: '#ffffff', color: '#334155', fontSize: '12px', fontWeight: '600', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+          >
+            <FolderKanban size={13} color="#2563eb" /> Dự án ({projects.length})
           </button>
           <button 
             onClick={() => scrollToSection('sec-certs')}
@@ -334,10 +398,10 @@ export default function MyProfile() {
               </div>
             </div>
 
-            {/* GPA & Quick Stats Ribbon */}
-            <div style={{ display: 'flex', gap: '16px', marginTop: '18px', paddingTop: '16px', borderTop: '1px solid #f1f5f9' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: '#1e40af', backgroundColor: '#eff6ff', padding: '6px 12px', borderRadius: '20px', fontWeight: '600' }}>
-                🎯 GPA Tích lũy: {profile?.gpa || '3.6 / 4.0'}
+            {/* Quick Stats Ribbon */}
+            <div style={{ display: 'flex', gap: '12px', marginTop: '18px', paddingTop: '16px', borderTop: '1px solid #f1f5f9', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: '#1d4ed8', backgroundColor: '#dbeafe', padding: '6px 12px', borderRadius: '20px', fontWeight: '600' }}>
+                <FolderKanban size={14} /> {projects.length} Dự án thực tế
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: '#047857', backgroundColor: '#ecfdf5', padding: '6px 12px', borderRadius: '20px', fontWeight: '600' }}>
                 <Award size={14} /> {certificates.length} Chứng chỉ & Bằng cấp
@@ -376,15 +440,9 @@ export default function MyProfile() {
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-              <div>
-                <label style={{ display: 'block', fontSize: '12.5px', fontWeight: '600', marginBottom: '6px', color: '#334155' }}>Chuyên ngành</label>
-                <input type="text" value={formData.major} onChange={e => setFormData({ ...formData, major: e.target.value })} style={{ width: '100%', padding: '9px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', boxSizing: 'border-box', fontSize: '13px' }} />
-              </div>
-              <div>
-                <label style={{ display: 'block', fontSize: '12.5px', fontWeight: '600', marginBottom: '6px', color: '#334155' }}>GPA Tích lũy</label>
-                <input type="text" placeholder="VD: 3.65 / 4.0" value={formData.gpa} onChange={e => setFormData({ ...formData, gpa: e.target.value })} style={{ width: '100%', padding: '9px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', boxSizing: 'border-box', fontSize: '13px' }} />
-              </div>
+            <div style={{ marginBottom: '16px' }}>
+              <label style={{ display: 'block', fontSize: '12.5px', fontWeight: '600', marginBottom: '6px', color: '#334155' }}>Chuyên ngành</label>
+              <input type="text" value={formData.major} onChange={e => setFormData({ ...formData, major: e.target.value })} style={{ width: '100%', padding: '9px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', boxSizing: 'border-box', fontSize: '13px' }} />
             </div>
 
             <div style={{ marginBottom: '16px' }}>
@@ -426,9 +484,6 @@ export default function MyProfile() {
                   <div style={{ fontSize: '15px', fontWeight: '700', color: '#1e3a8a' }}>{profile?.university || 'Trường Đại học Bách Khoa'}</div>
                   <div style={{ fontSize: '13px', color: '#475569', marginTop: '3px' }}>Chuyên ngành: <strong>{profile?.major || 'Công nghệ Thông tin'}</strong></div>
                 </div>
-                <span style={{ fontSize: '12px', fontWeight: '600', backgroundColor: '#eff6ff', color: '#1d4ed8', padding: '4px 10px', borderRadius: '6px' }}>
-                  GPA: {profile?.gpa || '3.6'}
-                </span>
               </div>
             </div>
           </div>
@@ -494,7 +549,127 @@ export default function MyProfile() {
           </div>
         </div>
 
-        {/* ===================== SECTION 2: CHỨNG CHỈ & BẰNG CẤP (CERTIFICATES) ===================== */}
+        {/* ===================== SECTION 2: QUẢN LÝ DỰ ÁN & MINH CHỨNG KỸ NĂNG (PROJECTS) ===================== */}
+        <section id="sec-projects" style={{ backgroundColor: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0', padding: '26px 30px', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '22px', borderBottom: '1px solid #f1f5f9', paddingBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{ width: '32px', height: '32px', borderRadius: '8px', backgroundColor: '#eff6ff', color: '#1d4ed8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <FolderKanban size={18} />
+                </div>
+                <div>
+                  <h2 style={{ margin: 0, fontSize: '18px', fontWeight: '700', color: '#0f172a' }}>
+                    Quản Lý Dự Án & Bằng Chứng Năng Lực ({projects.length})
+                  </h2>
+                  <div style={{ fontSize: '12.5px', color: '#64748b', marginTop: '2px' }}>
+                    Đồ án môn học, sản phẩm thực tế và dự án nghiên cứu minh chứng cho kỹ năng chuyên môn
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={handleAddNewProject}
+              style={{
+                padding: '8px 16px',
+                backgroundColor: '#1e3a8a',
+                color: '#ffffff',
+                border: 'none',
+                borderRadius: '8px',
+                fontSize: '13px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                boxShadow: '0 2px 4px rgba(30,58,138,0.2)'
+              }}
+            >
+              <Plus size={15} /> Thêm dự án
+            </button>
+          </div>
+
+          {projects.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '40px 20px', backgroundColor: '#f8fafc', borderRadius: '12px', border: '1px dashed #cbd5e1' }}>
+              <FolderKanban size={36} color="#94a3b8" style={{ margin: '0 auto 10px auto' }} />
+              <div style={{ fontSize: '14px', fontWeight: '600', color: '#475569', marginBottom: '4px' }}>Chưa có dự án nào</div>
+              <div style={{ fontSize: '12.5px', color: '#94a3b8', marginBottom: '14px' }}>Dự án thực tế là bằng chứng quan trọng nhất giúp nhà tuyển dụng đánh giá năng lực của bạn</div>
+              <button onClick={handleAddNewProject} style={{ padding: '7px 14px', backgroundColor: '#1e3a8a', color: 'white', border: 'none', borderRadius: '6px', fontSize: '12.5px', fontWeight: '600', cursor: 'pointer' }}>+ Thêm dự án ngay</button>
+            </div>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '16px' }}>
+              {projects.map((proj) => (
+                <div key={proj.id} style={{
+                  backgroundColor: '#ffffff',
+                  borderRadius: '12px',
+                  border: '1px solid #e2e8f0',
+                  padding: '18px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '10px'
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
+                    <span style={{ fontSize: '11px', color: '#1e40af', backgroundColor: '#eff6ff', padding: '3px 8px', borderRadius: '4px', fontWeight: '600' }}>
+                      {proj.project_type || 'Dự án thực tế'}
+                    </span>
+                    <span style={{ fontSize: '11.5px', color: '#64748b' }}>
+                      Vai trò: <strong>{proj.role || 'Thành viên'}</strong>
+                    </span>
+                  </div>
+
+                  <h3 style={{ margin: '0', fontSize: '15.5px', fontWeight: '700', color: '#0f172a' }}>
+                    {proj.title}
+                  </h3>
+
+                  {proj.description && (
+                    <p style={{ margin: '0', fontSize: '12.5px', color: '#475569', lineHeight: '1.5', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                      {proj.description}
+                    </p>
+                  )}
+
+                  {proj.tags && proj.tags.length > 0 && (
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+                      {proj.tags.slice(0, 4).map((tag, idx) => (
+                        <span key={idx} style={{ fontSize: '10.5px', backgroundColor: '#f1f5f9', color: '#334155', padding: '2px 7px', borderRadius: '4px', fontWeight: '500' }}>
+                          {tag}
+                        </span>
+                      ))}
+                      {proj.tags.length > 4 && (
+                        <span style={{ fontSize: '10.5px', color: '#94a3b8' }}>+{proj.tags.length - 4}</span>
+                      )}
+                    </div>
+                  )}
+
+                  <div style={{ marginTop: 'auto', paddingTop: '10px', borderTop: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      {proj.demo_url && (
+                        <a href={proj.demo_url} target="_blank" rel="noreferrer" style={{ color: '#2563eb', display: 'flex', alignItems: 'center', gap: '3px', fontSize: '11.5px', textDecoration: 'none', fontWeight: '600' }}>
+                          <Globe size={13} /> Demo
+                        </a>
+                      )}
+                      {proj.github_url && (
+                        <a href={proj.github_url} target="_blank" rel="noreferrer" style={{ color: '#0f172a', display: 'flex', alignItems: 'center', gap: '3px', fontSize: '11.5px', textDecoration: 'none', fontWeight: '600' }}>
+                          <Github size={13} /> Code
+                        </a>
+                      )}
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '6px' }}>
+                      <button onClick={() => handleEditProject(proj)} style={{ padding: '4px 10px', backgroundColor: '#ffffff', color: '#475569', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '11.5px', fontWeight: '600', cursor: 'pointer' }}>
+                        Sửa
+                      </button>
+                      <button onClick={() => handleDeleteProject(proj.id)} style={{ padding: '4px 10px', backgroundColor: '#fff1f2', color: '#e11d48', border: 'none', borderRadius: '6px', fontSize: '11.5px', fontWeight: '600', cursor: 'pointer' }}>
+                        Xóa
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* ===================== SECTION 3: CHỨNG CHỈ & BẰNG CẤP (CERTIFICATES) ===================== */}
         <section id="sec-certs" style={{ backgroundColor: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0', padding: '26px 30px', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '22px', borderBottom: '1px solid #f1f5f9', paddingBottom: '16px' }}>
             <div>
@@ -831,6 +1006,16 @@ export default function MyProfile() {
       </div>
 
       {/* ===================== MODALS ===================== */}
+      <AddProjectModal
+        isOpen={isProjectModalOpen}
+        onClose={() => setIsProjectModalOpen(false)}
+        onSuccess={() => {
+          setIsProjectModalOpen(false);
+          fetchProjects();
+        }}
+        editData={selectedProject}
+      />
+
       <CertificateModal
         isOpen={isCertModalOpen}
         onClose={() => setIsCertModalOpen(false)}

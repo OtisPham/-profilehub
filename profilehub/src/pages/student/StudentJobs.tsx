@@ -3,6 +3,7 @@ import { useAuth } from '../../context/AuthProvider';
 import { getSharedJobs, getRecruiterCompanyProfile } from '../../utils/jobSync';
 import { addToSharedPipeline } from '../../utils/pipelineSync';
 import RecruiterCompanyModal from '../../components/student/RecruiterCompanyModal';
+import GenerateCvFromJdModal from '../../components/cv/GenerateCvFromJdModal';
 import { 
   Search, 
   Briefcase, 
@@ -11,19 +12,13 @@ import {
   Send, 
   Info, 
   CheckCircle2, 
-  Sparkles, 
-  ShieldCheck, 
-  Target, 
-  BarChart3, 
-  Cpu, 
-  AlertCircle,
-  Clock,
-  X,
-  ChevronRight
+  ShieldCheck,
+  Sparkles
 } from 'lucide-react';
 import type { JobPost } from '../../types/database';
-import { analyzeAiPortfolioMatch } from '../../services/portfolioMatchService';
-import type { AiMatchResult, AiCandidateProfile, AiJobDescriptionInput } from '../../types/portfolioMatch';
+import { supabase } from '../../services/supabase';
+import { cvService } from '../../services/cvService';
+import { applicationService } from '../../services/applicationService';
 
 export default function StudentJobs() {
   const { user } = useAuth();
@@ -31,45 +26,57 @@ export default function StudentJobs() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedJobForModal, setSelectedJobForModal] = useState<JobPost | null>(null);
   const [appliedJobIds, setAppliedJobIds] = useState<string[]>([]);
+  const [generateCvJob, setGenerateCvJob] = useState<{
+    isOpen: boolean;
+    role: string;
+    company: string;
+    jdText: string;
+  } | null>(null);
 
-  // AI Matching Modal State
-  const [selectedJobForAi, setSelectedJobForAi] = useState<JobPost | null>(null);
-  const [aiMatchResult, setAiMatchResult] = useState<AiMatchResult | null>(null);
-  const [aiLoading, setAiLoading] = useState(false);
+  const handleOpenGenerateCvModal = (job: JobPost, companyName: string) => {
+    const skillsList = job.required_skills && job.required_skills.length > 0
+      ? job.required_skills.map(s => `- ${s}`).join('\n')
+      : '- Không có yêu cầu cụ thể';
 
-  // Student Profile Context for AI Matching
-  const studentProfile: AiCandidateProfile = {
-    target_role: 'Frontend Developer / Software Engineer',
-    skills: ['React', 'TypeScript', 'Tailwind CSS', 'JavaScript', 'REST API', 'Git', 'HTML/CSS'],
-    projects: [
-      {
-        id: 'p1',
-        title: 'Hệ thống Quản lý Portfolio & Đồ án Sinh viên (ProfileHub)',
-        description: 'Xây dựng bằng React và TypeScript, tích hợp AI CV Matcher và tối ưu render giúp giảm 35% response time, phục vụ 500+ sinh viên.',
-        technologies: ['React', 'TypeScript', 'Tailwind CSS', 'REST API'],
-        is_verified: true,
-        verifier_name: 'TS. Nguyễn Văn A (Khoa CNTT)',
-        demo_url: 'https://demo.profilehub.dev',
-        github_url: 'https://github.com/profilehub/frontend',
-        metrics: ['giảm 35% response time', '500+ sinh viên', '9.2/10 điểm đồ án'],
-      },
-      {
-        id: 'p2',
-        title: 'E-Commerce Storefront SPA',
-        description: 'Trang web bán hàng thời trang có giỏ hàng, tích hợp thanh toán và quản lý sản phẩm.',
-        technologies: ['React', 'JavaScript', 'REST API', 'Tailwind CSS'],
-        is_verified: false,
-        github_url: 'https://github.com/student/ecommerce-store',
-        metrics: [],
-      }
-    ],
-    experience_level: 'fresher',
+    const jdContent = `Vị trí tuyển dụng: ${job.title}
+Công ty: ${companyName}
+Địa điểm: ${job.location || 'Toàn quốc'}
+Phòng ban: ${job.department || 'Công nghệ thông tin'}
+
+Mô tả công việc:
+${job.description || 'Tham gia nghiên cứu, phát triển và đóng góp vào các dự án phần mềm theo yêu cầu.'}
+
+Yêu cầu kỹ năng và năng lực:
+${skillsList}`;
+
+    setGenerateCvJob({
+      isOpen: true,
+      role: job.title,
+      company: companyName,
+      jdText: jdContent
+    });
   };
 
   useEffect(() => {
-    const loadJobs = () => {
+    const loadJobs = async () => {
+      // 1. Tải nhanh từ Local Cache
       const allJobs = getSharedJobs();
       setJobs(allJobs);
+
+      // 2. Thử truy vấn thêm các Jobs thật từ Supabase Cloud
+      try {
+        const { data: dbJobs, error } = await supabase
+          .from('jobs')
+          .select('*')
+          .eq('status', 'active')
+          .order('created_at', { ascending: false });
+
+        if (!error && Array.isArray(dbJobs) && dbJobs.length > 0) {
+          setJobs(dbJobs);
+        }
+      } catch (err) {
+        // Fallback local
+      }
     };
 
     loadJobs();
@@ -81,45 +88,80 @@ export default function StudentJobs() {
     };
   }, []);
 
-  const handleApplyJob = (job: JobPost) => {
+  const handleApplyJob = async (job: JobPost) => {
+    // Thu thập bản CV đang kích hoạt (Active CV) hoặc CV mặc định của sinh viên
+    const activeCv = cvService.getActiveCV(user?.id);
+    const newId = 'p_' + Date.now();
+
+    // Lấy danh sách kỹ năng thực tế từ bản CV
+    const candidateSkills = (
+      activeCv?.data?.sections?.find(s => s.type === 'skills')?.items?.flatMap((g: any) => g.skills || []) ||
+      ['React', 'TypeScript', 'Node.js', 'Git']
+    );
+
     const newItem = {
-      id: 'p_' + Date.now(),
+      id: newId,
       recruiter_id: job.recruiter_id || 'rec1',
       student_id: user?.id || 'std_curr',
+      job_id: job.id,
       stage: 'discovered' as const,
+      cv_id: activeCv?.id,
+      cv_data: activeCv?.data,
       student: {
         id: user?.id || 'std_curr',
-        full_name: user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Sinh Viên Ứng Tuyển',
-        major: 'Công Nghệ Thông Tin',
-        university: 'Đại Học Bách Khoa',
-        gpa: '3.6 / 4.0',
-        skills: ['React', 'TypeScript', 'Node.js', 'Git']
+        full_name: user?.user_metadata?.full_name || user?.email?.split('@')[0] || activeCv?.data?.personalInfo?.fullName || 'Sinh Viên Ứng Tuyển',
+        major: activeCv?.targetRole || 'Công Nghệ Thông Tin',
+        university: activeCv?.data?.sections?.find(s => s.type === 'education')?.items?.[0]?.institution || 'Đại Học Công Nghệ',
+        skills: candidateSkills,
       },
-      private_notes: `Ứng tuyển trực tiếp từ bài đăng tuyển dụng: ${job.title}`
+      private_notes: `Ứng tuyển từ tin tuyển dụng: ${job.title}. Bản CV: "${activeCv?.title || 'CV Chính'}"`
     };
 
-    addToSharedPipeline(newItem, job.recruiter_id);
-    setAppliedJobIds(prev => [...prev, job.id]);
-    alert(`🎉 Ứng tuyển thành công vị trí: ${job.title}!\nHồ sơ Verified của bạn đã được chuyển tới Nhà tuyển dụng.`);
-  };
-
-  const handleOpenAiAnalysis = async (job: JobPost) => {
-    setSelectedJobForAi(job);
-    setAiLoading(true);
+    // 1. Gửi trực tiếp lên Supabase Cloud Database để Nhà tuyển dụng ở máy khác nhận được ngay
     try {
-      const jobInput: AiJobDescriptionInput = {
-        title: job.title,
-        raw_jd_text: `${job.title} ${job.description} ${(job.required_skills || []).join(' ')}`,
-        required_skills: job.required_skills || [],
-        level: 'fresher',
-      };
-      const result = await analyzeAiPortfolioMatch(studentProfile, jobInput);
-      setAiMatchResult(result);
-    } catch (err) {
-      console.error('Error computing AI match score:', err);
-    } finally {
-      setAiLoading(false);
+      if (user?.id) {
+        await supabase.from('candidate_pipeline').insert([{
+          id: newId,
+          recruiter_id: job.recruiter_id || 'rec1',
+          student_id: user.id,
+          job_id: job.id,
+          stage: 'discovered',
+          private_notes: newItem.private_notes,
+          cv_id: activeCv?.id || null,
+          cv_data: activeCv?.data || null,
+        }]);
+      }
+    } catch (e) {
+      console.warn('[StudentJobs] Lỗi ghi pipeline Supabase, lưu fallback local:', e);
     }
+
+    // 2. Đồng thời lưu local cache để tương thích với các tab đang mở
+    addToSharedPipeline(newItem, job.recruiter_id);
+
+    // 3. Tự động ghi nhận vào Application Hub cá nhân của sinh viên (bảo toàn CV & JD Snapshot)
+    try {
+      const company = getRecruiterCompanyProfile(job.recruiter_id);
+      applicationService.createApplication({
+        studentId: user?.id || 'std_curr',
+        companyName: company?.companyName || 'Công ty Công Nghệ Tuyển Dụng',
+        position: job.title,
+        jobDescription: job.description,
+        jobUrl: '',
+        source: 'ProfileHub Jobs',
+        status: 'applied',
+        appliedDate: new Date().toISOString().split('T')[0],
+        priority: 'high',
+        cvId: activeCv?.id,
+        cvTitle: activeCv?.title,
+        cvSnapshot: activeCv?.data,
+        notes: `Ứng tuyển trực tiếp từ tin tuyển dụng ProfileHub: ${job.title}`
+      }, 'Ứng tuyển trực tiếp qua cổng tuyển dụng ProfileHub', 'auto_apply');
+    } catch (appErr) {
+      console.warn('[StudentJobs] Lỗi ghi nhận Application cá nhân:', appErr);
+    }
+
+    setAppliedJobIds(prev => [...prev, job.id]);
+    alert(`🎉 Ứng tuyển thành công vị trí: ${job.title}!\nBản CV "${activeCv?.title || 'CV Mặc Định'}" của bạn đã được chuyển tới Nhà tuyển dụng và tự động đồng bộ vào Hub Tiến trình Ứng tuyển.`);
   };
 
   const filteredJobs = jobs.filter(job =>
@@ -131,7 +173,7 @@ export default function StudentJobs() {
   return (
     <div style={{ padding: '30px', maxWidth: '1200px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
       
-      {/* Header Banner with AI Badge */}
+      {/* Header Banner */}
       <div style={{
         backgroundColor: '#ffffff',
         borderRadius: '16px',
@@ -146,18 +188,15 @@ export default function StudentJobs() {
         gap: '15px'
       }}>
         <div>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', borderRadius: '12px', backgroundColor: '#eff6ff', color: '#1d4ed8', fontSize: '11px', fontWeight: 'bold', marginBottom: '8px' }}>
-            <Sparkles size={14} /> AI SMART MATCH ENABLED
-          </div>
           <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 6px 0', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            💼 Việc Làm & Đánh Giá Tương Thích AI
+            💼 Khám Phá Cơ Hội Việc Làm & Ứng Tuyển
           </h1>
           <p style={{ color: '#64748b', margin: 0, fontSize: '14px' }}>
-            Hệ thống tự động so khớp đồ án thực tế và huy hiệu Verified của bạn với từng vị trí công việc.
+            Xem danh sách bài đăng tuyển dụng từ doanh nghiệp đối tác và nộp hồ sơ ứng tuyển trực tiếp.
           </p>
         </div>
-        <div style={{ fontSize: '13px', fontWeight: 'bold', backgroundColor: '#f0fdf4', color: '#15803d', padding: '8px 16px', borderRadius: '12px', border: '1px solid #bbf7d0', display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <ShieldCheck size={16} /> 2 Đồ án Verified Sẵn Sàng
+        <div style={{ fontSize: '13px', fontWeight: 'bold', backgroundColor: '#eff6ff', color: '#1d4ed8', padding: '8px 16px', borderRadius: '12px', border: '1px solid #bfdbfe', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <Briefcase size={16} /> {filteredJobs.length} Vị Trí Đang Mở
         </div>
       </div>
 
@@ -225,13 +264,10 @@ export default function StudentJobs() {
                     </div>
                   </div>
 
-                  {/* AI Match Pill on Job Card */}
+                  {/* Status Pill on Job Card */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontSize: '11px', fontWeight: 'bold', backgroundColor: '#f0fdf4', color: '#166534', padding: '5px 12px', borderRadius: '12px', border: '1px solid #bbf7d0', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <Sparkles size={12} color="#16a34a" /> AI Match Ready
-                    </span>
                     <span style={{ fontSize: '11px', fontWeight: 'bold', backgroundColor: '#ecfdf5', color: '#047857', padding: '5px 10px', borderRadius: '12px', border: '1px solid #a7f3d0' }}>
-                      🟢 Tuyển Dụng
+                      🟢 Đang Tuyển Dụng
                     </span>
                   </div>
                 </div>
@@ -255,27 +291,6 @@ export default function StudentJobs() {
 
                 {/* Bottom Buttons */}
                 <div style={{ display: 'flex', gap: '10px', paddingTop: '14px', borderTop: '1px solid #f1f5f9', flexWrap: 'wrap' }}>
-                  
-                  {/* AI Compatibility Assessment Button */}
-                  <button
-                    onClick={() => handleOpenAiAnalysis(job)}
-                    style={{
-                      padding: '9px 16px',
-                      backgroundColor: '#eff6ff',
-                      color: '#1d4ed8',
-                      border: '1px solid #bfdbfe',
-                      borderRadius: '8px',
-                      fontSize: '12.5px',
-                      fontWeight: 'bold',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '6px'
-                    }}
-                  >
-                    <Sparkles size={15} /> 🔍 Phân Tích Tương Thích AI
-                  </button>
-
                   <button
                     onClick={() => setSelectedJobForModal(job)}
                     style={{
@@ -293,6 +308,27 @@ export default function StudentJobs() {
                     }}
                   >
                     <Info size={15} /> Thông Tin Công Ty
+                  </button>
+
+                  <button
+                    onClick={() => handleOpenGenerateCvModal(job, recruiterProfile.companyName)}
+                    style={{
+                      padding: '9px 16px',
+                      background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
+                      color: '#ffffff',
+                      border: 'none',
+                      borderRadius: '8px',
+                      fontSize: '12.5px',
+                      fontWeight: 'bold',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      boxShadow: '0 2px 8px rgba(124, 58, 237, 0.25)'
+                    }}
+                  >
+                    <Sparkles size={15} style={{ color: '#fde047' }} />
+                    AI Tạo CV Khớp JD Này
                   </button>
 
                   <button
@@ -340,208 +376,15 @@ export default function StudentJobs() {
         />
       )}
 
-      {/* AI Compatibility Assessment Modal for Student */}
-      {selectedJobForAi && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(15, 23, 42, 0.75)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 9999,
-          padding: '20px',
-          backdropFilter: 'blur(4px)'
-        }}>
-          <div style={{
-            backgroundColor: '#ffffff',
-            borderRadius: '20px',
-            maxWidth: '850px',
-            width: '100%',
-            maxHeight: '90vh',
-            overflowY: 'auto',
-            padding: '28px',
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-            border: '1px solid #e2e8f0',
-            position: 'relative'
-          }}>
-            {/* Modal Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid #f1f5f9', paddingBottom: '16px', marginBottom: '20px' }}>
-              <div>
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 'bold', color: '#1d4ed8', backgroundColor: '#eff6ff', padding: '3px 10px', borderRadius: '10px', marginBottom: '6px' }}>
-                  <Sparkles size={13} /> AI MATCH REPORT
-                </div>
-                <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#0f172a', margin: 0 }}>
-                  Đánh Giá Tương Thích: {selectedJobForAi.title}
-                </h2>
-              </div>
-              <button
-                onClick={() => { setSelectedJobForAi(null); setAiMatchResult(null); }}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748b' }}
-              >
-                <X size={22} />
-              </button>
-            </div>
-
-            {aiLoading ? (
-              <div style={{ padding: '60px', textAlign: 'center', color: '#64748b' }}>
-                <div style={{ width: '36px', height: '36px', border: '3px solid #cbd5e1', borderTopColor: '#1d4ed8', borderRadius: '50%', margin: '0 auto 16px auto', animation: 'spin 1s linear infinite' }} />
-                <div style={{ fontWeight: 'bold', fontSize: '15px', color: '#0f172a' }}>AI Engine Đang Phân Tích Ma Trận 4 Trụ Cột...</div>
-                <div style={{ fontSize: '12px', marginTop: '4px' }}>Đối chiếu đồ án Verified, Metrics định lượng và kỹ năng với JD</div>
-              </div>
-            ) : aiMatchResult && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                
-                {/* Top Score Banner */}
-                <div style={{ backgroundColor: '#f8fafc', borderRadius: '16px', padding: '20px', border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyItems: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                    <div style={{
-                      width: '64px',
-                      height: '64px',
-                      borderRadius: '50%',
-                      backgroundColor: aiMatchResult.overall_score < 50 ? '#e11d48' : aiMatchResult.overall_score >= 80 ? '#059669' : aiMatchResult.overall_score >= 60 ? '#1e3a8a' : '#d97706',
-                      color: 'white',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontWeight: 'black',
-                      fontSize: '20px',
-                      flexShrink: 0
-                    }}>
-                      <span>{aiMatchResult.overall_score}%</span>
-                      <span style={{ fontSize: '8px', textTransform: 'uppercase', opacity: 0.9, fontWeight: 'bold' }}>AI</span>
-                    </div>
-                    <div>
-                      <div style={{ display: 'flex', gap: '6px', alignItems: 'center', marginBottom: '4px' }}>
-                        <span style={{ fontSize: '11px', fontWeight: 'bold', backgroundColor: '#ecfdf5', color: '#047857', padding: '2px 8px', borderRadius: '8px' }}>
-                          {aiMatchResult.match_rating}
-                        </span>
-                        <span style={{ fontSize: '11px', fontWeight: 'bold', backgroundColor: '#eff6ff', color: '#1d4ed8', padding: '2px 8px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '3px' }}>
-                          <ShieldCheck size={12} /> {aiMatchResult.trust_index.trust_tier} (x{aiMatchResult.trust_index.multiplier})
-                        </span>
-                      </div>
-                      <div style={{ fontSize: '13px', color: '#334155', fontWeight: '500' }}>
-                        {aiMatchResult.executive_summary}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 4-Pillars Visual Cards */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px' }}>
-                  <div style={{ padding: '14px', borderRadius: '12px', border: '1px solid #e2e8f0', backgroundColor: '#ffffff' }}>
-                    <div style={{ fontSize: '11px', fontWeight: 'bold', color: '#1d4ed8', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <Target size={14} /> 1. SKILLS FIT (30%)
-                    </div>
-                    <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#0f172a' }}>{aiMatchResult.pillars.skill_fit.score}%</div>
-                    <div style={{ fontSize: '11px', color: '#64748b', marginTop: '4px' }}>
-                      Khớp {aiMatchResult.pillars.skill_fit.matched_core.length} kỹ năng cốt lõi
-                    </div>
-                  </div>
-
-                  <div style={{ padding: '14px', borderRadius: '12px', border: '1px solid #e2e8f0', backgroundColor: '#ffffff' }}>
-                    <div style={{ fontSize: '11px', fontWeight: 'bold', color: '#4f46e5', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <ShieldCheck size={14} /> 2. EVIDENCE (40%)
-                    </div>
-                    <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#0f172a' }}>{aiMatchResult.pillars.evidence_depth.score}%</div>
-                    <div style={{ fontSize: '11px', color: '#64748b', marginTop: '4px' }}>
-                      {aiMatchResult.trust_index.verified_project_count} Đồ án Verified
-                    </div>
-                  </div>
-
-                  <div style={{ padding: '14px', borderRadius: '12px', border: '1px solid #e2e8f0', backgroundColor: '#ffffff' }}>
-                    <div style={{ fontSize: '11px', fontWeight: 'bold', color: '#d97706', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <BarChart3 size={14} /> 3. METRICS (20%)
-                    </div>
-                    <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#0f172a' }}>{aiMatchResult.pillars.impact_complexity.score}%</div>
-                    <div style={{ fontSize: '11px', color: '#64748b', marginTop: '4px' }}>
-                      {aiMatchResult.pillars.impact_complexity.detected_metrics_count} chỉ số định lượng
-                    </div>
-                  </div>
-
-                  <div style={{ padding: '14px', borderRadius: '12px', border: '1px solid #e2e8f0', backgroundColor: '#ffffff' }}>
-                    <div style={{ fontSize: '11px', fontWeight: 'bold', color: '#7c3aed', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <Cpu size={14} /> 4. LEVEL (10%)
-                    </div>
-                    <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#0f172a' }}>{aiMatchResult.pillars.alignment_level.score}%</div>
-                    <div style={{ fontSize: '11px', color: '#64748b', marginTop: '4px' }}>
-                      Cấp độ Fresher phù hợp
-                    </div>
-                  </div>
-                </div>
-
-                {/* Gap Analysis & Actionable Project Roadmap */}
-                {aiMatchResult.gap_analysis && aiMatchResult.gap_analysis.length > 0 && (
-                  <div style={{ backgroundColor: '#fff1f2', borderRadius: '14px', padding: '18px', border: '1px solid #fecdd3' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#be123c', fontWeight: 'bold', fontSize: '14px', marginBottom: '10px' }}>
-                      <AlertCircle size={16} /> Lỗ Hổng Năng Lực & Đề Xuất Đồ Án Mẫu Bù Đắp:
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                      {aiMatchResult.gap_analysis.map((gap, i) => (
-                        <div key={i} style={{ backgroundColor: '#ffffff', borderRadius: '10px', padding: '12px 14px', border: '1px solid #ffe4e6' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                            <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#e11d48' }}>
-                              Thiếu Kỹ Năng: {gap.skill_or_topic}
-                            </span>
-                            <span style={{ fontSize: '11px', color: '#64748b', display: 'flex', alignItems: 'center', gap: '3px' }}>
-                              <Clock size={12} /> ~{gap.remediation_roadmap.estimated_effort_weeks} tuần
-                            </span>
-                          </div>
-                          <div style={{ fontSize: '12.5px', fontWeight: 'bold', color: '#0f172a', marginBottom: '2px' }}>
-                            💡 {gap.remediation_roadmap.suggested_project_title}
-                          </div>
-                          <div style={{ fontSize: '12px', color: '#475569', marginBottom: '6px' }}>
-                            {gap.remediation_roadmap.project_objective}
-                          </div>
-                          <div style={{ fontSize: '11px', color: '#059669', backgroundColor: '#f0fdf4', padding: '4px 8px', borderRadius: '6px', fontWeight: 'bold' }}>
-                            🎯 Tiêu chuẩn đầu ra: {gap.remediation_roadmap.target_metrics}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Coaching Advice */}
-                <div style={{ backgroundColor: '#fefce8', borderRadius: '14px', padding: '16px', border: '1px solid #fef08a' }}>
-                  <div style={{ fontSize: '13px', fontWeight: 'bold', color: '#854d0e', marginBottom: '8px' }}>
-                    💡 Lời Khuyên Tối Ưu CV Trước Khi Nộp:
-                  </div>
-                  <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '12.5px', color: '#713f12', lineHeight: '1.6' }}>
-                    {aiMatchResult.cv_coaching_tips.map((tip, i) => (
-                      <li key={i}>{tip}</li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Modal Footer Action */}
-                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', paddingTop: '10px' }}>
-                  <button
-                    onClick={() => { setSelectedJobForAi(null); setSelectedJobForModal(selectedJobForAi); }}
-                    style={{ padding: '10px 18px', backgroundColor: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '8px', fontWeight: 'bold', fontSize: '13px', cursor: 'pointer' }}
-                  >
-                    Xem Chi Tiết Công Ty
-                  </button>
-                  <button
-                    onClick={() => {
-                      if (selectedJobForAi) handleApplyJob(selectedJobForAi);
-                      setSelectedJobForAi(null);
-                    }}
-                    style={{ padding: '10px 22px', backgroundColor: '#1e3a8a', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 'bold', fontSize: '13px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
-                  >
-                    <Send size={14} /> Ứng Tuyển Với Điểm AI ({aiMatchResult.overall_score}%)
-                  </button>
-                </div>
-
-              </div>
-            )}
-
-          </div>
-        </div>
+      {/* AI Generate CV From JD Modal */}
+      {generateCvJob?.isOpen && (
+        <GenerateCvFromJdModal
+          isOpen={generateCvJob.isOpen}
+          onClose={() => setGenerateCvJob(null)}
+          initialJdText={generateCvJob.jdText}
+          initialTargetRole={generateCvJob.role}
+          initialCompanyName={generateCvJob.company}
+        />
       )}
 
     </div>

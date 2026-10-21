@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthProvider';
 import { supabase } from '../../services/supabase';
 import RecruiterFeedbackModal from '../../components/recruiter/RecruiterFeedbackModal';
 import { getSharedPipeline, saveSharedPipeline } from '../../utils/pipelineSync';
-import { User, Edit3, MessageSquarePlus, Calendar, Clock, Video, MapPin, Trash2, FileText, ExternalLink, Mail, ShieldCheck, Brain, X, FolderOpen, FileSignature } from 'lucide-react';
+import { User, Edit3, MessageSquarePlus, Calendar, Clock, Video, MapPin, Trash2, FileText, ExternalLink, Mail, ShieldCheck, Brain, X, FolderOpen } from 'lucide-react';
 import type { PipelineStage, CandidatePipelineItem } from '../../types/database';
 import CandidateDossierModal, { type DossierCandidate } from '../../components/recruiter/CandidateDossierModal';
 
@@ -41,21 +41,29 @@ export default function CandidatePipeline() {
   useEffect(() => {
     const fetchPipeline = async () => {
       setLoading(true);
-      try {
-        const shared = getSharedPipeline(user?.id);
-        if (shared && shared.length > 0) {
-          setPipeline(shared);
-        } else {
-          const { data: dbItems } = await supabase
-            .from('recruiter_pipeline')
-            .select('*, student:student_profiles(*)');
+      // 1. Tải nhanh từ Local Cache
+      const shared = getSharedPipeline(user?.id);
+      if (shared && shared.length > 0) {
+        setPipeline(shared);
+      }
 
-          if (dbItems && dbItems.length > 0) {
-            setPipeline(dbItems);
-            saveSharedPipeline(dbItems, user?.id);
-          } else {
-            setPipeline([]);
-          }
+      // 2. Tải trực tiếp từ Supabase Cloud Database để nhận ứng viên từ các máy khác
+      try {
+        let q = supabase
+          .from('candidate_pipeline')
+          .select('*, student:student_profiles(*), job:jobs(*)')
+          .order('created_at', { ascending: false });
+
+        if (user?.id) {
+          // Lọc theo recruiter_id nếu có
+          q = q.eq('recruiter_id', user.id);
+        }
+
+        const { data: dbItems, error } = await q;
+
+        if (!error && dbItems && dbItems.length > 0) {
+          setPipeline(dbItems);
+          saveSharedPipeline(dbItems, user?.id);
         }
       } catch (err) {
         console.error("Pipeline fetch error:", err);
@@ -96,6 +104,15 @@ export default function CandidatePipeline() {
     const updated = pipeline.map(item => item.id === itemId ? { ...item, stage: newStage, updated_at: new Date().toISOString() } : item);
     savePipelineToStorage(updated);
 
+    // Đồng bộ trạng thái lên Supabase Cloud
+    Promise.resolve(
+      supabase.from('candidate_pipeline')
+        .update({ stage: newStage, updated_at: new Date().toISOString() })
+        .eq('id', itemId)
+    ).then((res: any) => {
+      if (res?.error) console.warn('[CandidatePipeline] Lỗi cập nhật stage trên Supabase:', res.error.message);
+    }, (err) => console.warn('[CandidatePipeline] Exception cập nhật stage:', err));
+
     // Auto open Interview Schedule Modal when moving to 'interview'
     if (newStage === 'interview' && itemToUpdate) {
       handleOpenScheduleModal(itemToUpdate);
@@ -111,6 +128,16 @@ export default function CandidatePipeline() {
     if (!editingItem) return;
     const updated = pipeline.map(item => item.id === editingItem.id ? { ...item, private_notes: noteText } : item);
     savePipelineToStorage(updated);
+
+    // Đồng bộ ghi chú lên Supabase Cloud
+    Promise.resolve(
+      supabase.from('candidate_pipeline')
+        .update({ private_notes: noteText, updated_at: new Date().toISOString() })
+        .eq('id', editingItem.id)
+    ).then((res: any) => {
+      if (res?.error) console.warn('[CandidatePipeline] Lỗi lưu ghi chú lên Supabase:', res.error.message);
+    }, (err) => console.warn('[CandidatePipeline] Exception lưu ghi chú:', err));
+
     setEditingItem(null);
   };
 
@@ -352,23 +379,6 @@ export default function CandidatePipeline() {
                                 style={{ background: 'none', border: 'none', color: '#7c3aed', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '3px', padding: 0, fontWeight: '500' }}
                               >
                                 <Calendar size={12} /> Hẹn lịch
-                              </button>
-
-                              <button
-                                onClick={() => {
-                                  const student = item.student as any;
-                                  const params = new URLSearchParams({
-                                    candidateName: student?.full_name || '',
-                                    role: student?.major || '',
-                                    candidateEmail: student?.email || '',
-                                    candidatePhone: student?.phone || ''
-                                  });
-                                  navigate(`/recruiter/offer-letter?${params.toString()}`);
-                                }}
-                                style={{ background: 'none', border: 'none', color: '#059669', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '3px', padding: 0, fontWeight: 'bold' }}
-                                title="Soạn và gửi thư mời nhận việc qua Email / Word"
-                              >
-                                <FileSignature size={12} /> Offer Letter
                               </button>
                             </div>
 

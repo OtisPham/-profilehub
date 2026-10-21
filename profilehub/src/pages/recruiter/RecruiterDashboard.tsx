@@ -691,7 +691,7 @@ export default function RecruiterDashboard() {
                         <div key={p.id}>
                           <div style={{ fontSize: '12px', fontWeight: 'bold', color: '#1e3a8a', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <span>{p.title}</span>
-                            <VerifiedBadge teacherName={p.instructor} size="sm" />
+                            <VerifiedBadge size="sm" />
                           </div>
                         </div>
                       ))}
@@ -801,7 +801,7 @@ export default function RecruiterDashboard() {
                     <div key={p.id} style={{ backgroundColor: '#ffffff', padding: '16px', borderRadius: '10px', border: '1px solid #cbd5e1', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                         <span style={{ fontSize: '16px', fontWeight: 'bold', color: '#0f172a' }}>{p.title}</span>
-                        {p.is_verified && <VerifiedBadge teacherName={p.instructor} size="md" />}
+                        {p.is_verified && <VerifiedBadge size="md" />}
                       </div>
 
                       {p.description && (

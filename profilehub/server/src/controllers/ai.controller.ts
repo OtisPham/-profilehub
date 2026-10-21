@@ -1,43 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { aiCvService } from '../services/aiCv.service.js';
-import { aiInterviewService } from '../services/aiInterview.service.js';
-import { aiMatchingService } from '../services/aiMatching.service.js';
 
 export const aiController = {
-  /**
-   * Đánh giá tương thích CV - JD theo chuẩn AI Matching Framework v1.0
-   */
-  async evaluateAiCompatibility(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { candidate, job, jdText, userSkills, projects, certificates } = req.body;
-
-      // Hỗ trợ cả 2 định dạng payload: cấu trúc trực tiếp hoặc phân rã
-      const candidateProfile = candidate || {
-        skills: userSkills || [],
-        projects: projects || [],
-        certificates: certificates || [],
-        experience_level: req.body.experience_level || 'fresher',
-      };
-
-      const jobDescription = job || {
-        raw_jd_text: jdText || '',
-        required_skills: req.body.required_skills,
-        preferred_skills: req.body.preferred_skills,
-        level: req.body.job_level || 'fresher',
-      };
-
-      const result = await aiMatchingService.evaluateCompatibility(candidateProfile, jobDescription);
-      res.status(200).json({ success: true, data: result });
-    } catch (error) {
-      next(error);
-    }
-  },
-
-  // Alias for backward compatibility
-  evaluateJevCompatibility(req: Request, res: Response, next: NextFunction) {
-    return aiController.evaluateAiCompatibility(req, res, next);
-  },
-
   async optimizeCV(req: Request, res: Response, next: NextFunction) {
     try {
       const { jdText, userSkills, projects, certificates } = req.body;
@@ -48,23 +12,55 @@ export const aiController = {
     }
   },
 
-  async getInterviewQuestions(req: Request, res: Response, next: NextFunction) {
+  async generateTailoredCV(req: Request, res: Response, next: NextFunction) {
     try {
-      const { project, job } = req.body;
-      const questions = aiInterviewService.generateTailoredQuestions(project, job);
-      res.status(200).json({ success: true, data: questions });
+      const { jdText, targetRole, companyName, profile, projects, certificates, achievements } = req.body;
+
+      if (!jdText || typeof jdText !== 'string' || jdText.trim().length === 0) {
+        res.status(400).json({ success: false, message: 'Vui lòng cung cấp nội dung Mô tả công việc (JD).' });
+        return;
+      }
+
+      const generatedCV = await aiCvService.generateTailoredCVFromJD({
+        jdText,
+        targetRole,
+        companyName,
+        profile: profile || {},
+        projects: Array.isArray(projects) ? projects : [],
+        certificates: Array.isArray(certificates) ? certificates : [],
+        achievements: Array.isArray(achievements) ? achievements : []
+      });
+
+      res.status(200).json({ success: true, data: generatedCV });
     } catch (error) {
       next(error);
     }
   },
 
-  async evaluateInterviewAnswer(req: Request, res: Response, next: NextFunction) {
+  async contextualAction(req: Request, res: Response, next: NextFunction) {
     try {
-      const { question, answerText } = req.body;
-      const evaluation = aiInterviewService.evaluateStudentAnswer(question, answerText || '');
-      res.status(200).json({ success: true, data: evaluation });
+      const { actionType, currentText, targetRole, jdContext, keywords } = req.body;
+      if (!currentText || typeof currentText !== 'string') {
+        res.status(400).json({ success: false, message: 'Thiếu đoạn văn bản cần tối ưu (currentText).' });
+        return;
+      }
+
+      const validAction = ['REWRITE_FOR_JD', 'ADD_KEYWORDS', 'SHORTEN'].includes(actionType)
+        ? actionType
+        : 'REWRITE_FOR_JD';
+
+      const result = await aiCvService.executeContextualAction({
+        actionType: validAction,
+        currentText,
+        targetRole,
+        jdContext,
+        keywords: Array.isArray(keywords) ? keywords : []
+      });
+
+      res.status(200).json({ success: true, data: result });
     } catch (error) {
       next(error);
     }
   },
 };
+

@@ -13,8 +13,7 @@ export default function ProjectQRCodeModal({ project, onClose }: ProjectQRCodeMo
   const [copied, setCopied] = useState(false);
 
   const baseUrl = import.meta.env.VITE_APP_URL || window.location.origin;
-  const verificationCode = project.verification_code || project.id;
-  const publicUrl = `${baseUrl}/verify/${verificationCode}`;
+  const publicUrl = project.demo_url || project.github_url || `${baseUrl}/projects`;
 
   const handleDownloadPNG = () => {
     const canvas = canvasRef.current?.querySelector('canvas');
@@ -22,7 +21,7 @@ export default function ProjectQRCodeModal({ project, onClose }: ProjectQRCodeMo
       const image = canvas.toDataURL('image/png');
       const link = document.createElement('a');
       link.href = image;
-      link.download = `QR-Verification-${verificationCode}.png`;
+      link.download = `QR-Project-${project.id.slice(0, 8)}.png`;
       link.click();
     }
   };
@@ -42,8 +41,8 @@ export default function ProjectQRCodeModal({ project, onClose }: ProjectQRCodeMo
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <span style={{ fontSize: '20px' }}>🛡️</span>
             <div>
-              <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 'bold' }}>Mã QR Xác Thực Đồ Án</h3>
-              <p style={{ margin: 0, fontSize: '11px', color: '#94a3b8' }}>Academic Verification QR Code</p>
+              <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 'bold' }}>Mã QR Minh Chứng Đồ Án</h3>
+              <p style={{ margin: 0, fontSize: '11px', color: '#94a3b8' }}>Project Evidence & Portfolio QR</p>
             </div>
           </div>
           <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', padding: '4px', borderRadius: '50%' }}>
@@ -56,7 +55,7 @@ export default function ProjectQRCodeModal({ project, onClose }: ProjectQRCodeMo
           
           <div style={{ display: 'inline-block', backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', color: '#166534', padding: '6px 14px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold', marginBottom: '20px' }}>
             <ShieldCheck size={14} style={{ verticalAlign: 'middle', marginRight: '4px' }} />
-            VERIFIED BADGE • {verificationCode}
+            EVIDENCE LINKED • {project.id.slice(0, 8)}
           </div>
 
           <h4 style={{ fontSize: '16px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 16px', lineHeight: '1.4' }}>
@@ -74,7 +73,7 @@ export default function ProjectQRCodeModal({ project, onClose }: ProjectQRCodeMo
           </div>
 
           <p style={{ fontSize: '12px', color: '#64748b', margin: '0 0 20px', lineHeight: '1.5' }}>
-            Dán mã QR này vào <strong>CV PDF, Slide thuyết trình</strong> hoặc trang cá nhân. Nhà tuyển dụng quét mã để xem trực tiếp xác thực từ Giảng viên.
+            Dán mã QR này vào <strong>CV PDF, Slide thuyết trình</strong> hoặc Portfolio. Nhà tuyển dụng quét mã để truy cập trực tiếp demo, minh chứng hoặc mã nguồn dự án.
           </p>
 
           {/* Action Buttons */}
@@ -91,7 +90,7 @@ export default function ProjectQRCodeModal({ project, onClose }: ProjectQRCodeMo
               style={{ width: '100%', backgroundColor: '#f1f5f9', color: '#334155', border: '1px solid #cbd5e1', padding: '10px', borderRadius: '10px', fontWeight: '600', fontSize: '13px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
             >
               {copied ? <Check size={16} color="#10b981" /> : <Copy size={16} />}
-              {copied ? 'Đã Sao Chép Link Public!' : 'Sao Chép Link Xác Thực'}
+              {copied ? 'Đã Sao Chép Link!' : 'Sao Chép Link Minh Chứng'}
             </button>
 
             <a 
@@ -100,7 +99,7 @@ export default function ProjectQRCodeModal({ project, onClose }: ProjectQRCodeMo
               rel="noopener noreferrer" 
               style={{ fontSize: '12px', color: '#2563eb', textDecoration: 'none', marginTop: '4px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}
             >
-              <ExternalLink size={12} /> Thử mở link xác thực trên giao diện công khai
+              <ExternalLink size={12} /> Thử mở liên kết minh chứng dự án
             </a>
           </div>
 

@@ -31,8 +31,6 @@ import {
   TrendingUp
 } from 'lucide-react';
 import { addToSharedPipeline } from '../../utils/pipelineSync';
-import CandidateMBTIInsightCard from '../../components/recruiter/CandidateMBTIInsightCard';
-import { getMockMBTIForCandidate } from '../../services/mbtiService';
 import BulkCvImportModal from '../../components/recruiter/BulkCvImportModal';
 import { getStoredImportedCandidates, type ImportedCandidateCv } from '../../services/bulkCvImportService';
 
@@ -564,7 +562,6 @@ export default function AIRecruitmentAssistant() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(370px, 1fr))', gap: '20px' }}>
             {matchedResults.map(res => {
               const candData = candidatesList.find(c => c.id === res.candidateId);
-              const mbtiData = getMockMBTIForCandidate(res.candidateId);
               return (
                 <div key={res.candidateId} style={{ backgroundColor: 'white', borderRadius: '16px', border: '1px solid #e2e8f0', padding: '22px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 4px 10px rgba(0,0,0,0.03)' }}>
                   <div>
@@ -586,15 +583,10 @@ export default function AIRecruitmentAssistant() {
                       </div>
                     </div>
 
-                    {/* Trust Tier, MBTI Badge & Dual-Fit Pills */}
+                    {/* Trust Tier & Pills */}
                     <div style={{ display: 'flex', gap: '6px', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap' }}>
                       <span style={{ fontSize: '11px', fontWeight: 'bold', backgroundColor: res.trustTier === 'VERIFIED_ELITE' ? '#ecfdf5' : '#eff6ff', color: res.trustTier === 'VERIFIED_ELITE' ? '#047857' : '#1d4ed8', padding: '3px 10px', borderRadius: '12px', border: '1px solid #bfdbfe', display: 'flex', alignItems: 'center', gap: '4px' }}>
                         <ShieldCheck size={13} /> {res.trustTier} (x{res.trustMultiplier})
-                      </span>
-
-                      {/* MBTI Badge */}
-                      <span style={{ fontSize: '11px', fontWeight: 'bold', backgroundColor: mbtiData.profile.badgeBg, color: mbtiData.profile.badgeColor, padding: '3px 10px', borderRadius: '12px', border: `1px solid ${mbtiData.profile.badgeColor}33`, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <Brain size={12} /> {mbtiData.mbtiType} • {res.pillars.mbtiCulturalFitScore || 90}% Phù hợp
                       </span>
 
                       {res.antiStuffingRisk === 'HIGH' && (
@@ -604,18 +596,8 @@ export default function AIRecruitmentAssistant() {
                       )}
                     </div>
 
-                    {/* Dual Score Overview Pill */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', backgroundColor: '#f1f5f9', padding: '6px 12px', borderRadius: '8px', marginBottom: '10px', fontSize: '11.5px' }}>
-                      <span style={{ color: '#1e3a8a', fontWeight: '600' }}>
-                        ⚙️ Kỹ thuật AI (85%): <strong>{res.technicalScore || res.matchScore}%</strong>
-                      </span>
-                      <span style={{ color: '#7c3aed', fontWeight: '600' }}>
-                        🧠 Văn hóa MBTI (15%): <strong>{res.pillars.mbtiCulturalFitScore || 90}%</strong>
-                      </span>
-                    </div>
-
-                    {/* 4-Pillars Mini Score Grid */}
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', backgroundColor: '#f8fafc', padding: '10px 12px', borderRadius: '10px', border: '1px solid #f1f5f9', marginBottom: '14px' }}>
+                    {/* 3-Pillars Mini Score Grid */}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', backgroundColor: '#f8fafc', padding: '10px 12px', borderRadius: '10px', border: '1px solid #f1f5f9', marginBottom: '14px' }}>
                       <div style={{ fontSize: '11px', color: '#475569' }}>
                         🎯 Skills: <strong style={{ color: '#0f172a' }}>{res.pillars.skillFitScore}%</strong>
                       </div>
@@ -624,9 +606,6 @@ export default function AIRecruitmentAssistant() {
                       </div>
                       <div style={{ fontSize: '11px', color: '#475569' }}>
                         📊 Metrics: <strong style={{ color: '#0f172a' }}>{res.pillars.impactScore}%</strong>
-                      </div>
-                      <div style={{ fontSize: '11px', color: '#475569' }}>
-                        🧠 MBTI Fit: <strong style={{ color: '#7c3aed' }}>{res.pillars.mbtiCulturalFitScore || 90}%</strong>
                       </div>
                     </div>
 
@@ -656,7 +635,7 @@ export default function AIRecruitmentAssistant() {
                       onClick={() => setInspectCandidateResult(res)}
                       style={{ width: '100%', padding: '9px', backgroundColor: '#f0fdf4', color: '#166534', border: '1px solid #bbf7d0', borderRadius: '6px', fontSize: '12.5px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
                     >
-                      <Eye size={15} /> Xem Phân Tích AI & MBTI Chi Tiết
+                      <Eye size={15} /> Xem Phân Tích Độ Khớp AI Chi Tiết
                     </button>
 
                     <div style={{ display: 'flex', gap: '8px' }}>
@@ -721,7 +700,7 @@ export default function AIRecruitmentAssistant() {
         </div>
       )}
 
-      {/* DETAILED CANDIDATE JEV & MBTI INSPECTION MODAL */}
+      {/* DETAILED CANDIDATE JEV INSPECTION MODAL */}
       {inspectCandidateResult && (
         <div style={{
           position: 'fixed',
@@ -768,7 +747,7 @@ export default function AIRecruitmentAssistant() {
                   </span>
                 </div>
                 <div style={{ fontSize: '13px', color: '#64748b', marginTop: '4px' }}>
-                  Đánh giá toàn diện: Kỹ thuật AI V6.1 ({inspectCandidateResult.technicalScore || inspectCandidateResult.matchScore}%) + Văn hóa MBTI ({inspectCandidateResult.pillars.mbtiCulturalFitScore || 90}%)
+                  Đánh giá toàn diện: Kỹ thuật & Bằng chứng đồ án ({inspectCandidateResult.matchScore}%)
                 </div>
               </div>
 
@@ -788,7 +767,7 @@ export default function AIRecruitmentAssistant() {
               </div>
             </div>
 
-            {/* Modal Body - 2 Pillars Section: AI Technical Matching & MBTI Workplace Fit */}
+            {/* Modal Body: AI Technical Matching & Gap Analysis */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
               {/* SECTION 1: AI 4-PILLAR BREAKDOWN */}
               <div style={{ backgroundColor: '#f8fafc', padding: '20px', borderRadius: '14px', border: '1px solid #e2e8f0' }}>
@@ -848,22 +827,6 @@ export default function AIRecruitmentAssistant() {
                     )}
                   </div>
                 </div>
-              </div>
-
-              {/* SECTION 2: MBTI PERSONALITY & BEHAVIORAL FIT */}
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                  <Brain size={18} color="#8b5cf6" />
-                  <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 'bold', color: '#0f172a' }}>
-                    2. Hồ Sơ Tính Cách & Phong Cách Làm Việc (MBTI Cultural Fit)
-                  </h3>
-                </div>
-                <CandidateMBTIInsightCard
-                  candidateId={inspectCandidateResult.candidateId}
-                  candidateName={inspectCandidateResult.candidateName}
-                  jobTitle={hiringBrief?.position || generatedJD?.title || jdTitle}
-                  rawJdText={generatedJD?.aboutRole || (hiringBrief?.mustHaveSkills ? hiringBrief.mustHaveSkills.join(', ') : '') || jdAbout}
-                />
               </div>
 
               {/* SECTION 3: POST-INTERVIEW LEVEL CALIBRATION & OFFER STRATEGY */}

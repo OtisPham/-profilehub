@@ -1,5 +1,3 @@
-import VerifiedBadge from '../common/VerifiedBadge';
-
 export type CVTemplateType = 'classic' | 'minimal' | 'tech' | 'executive' | 'pro_split' | 'compact_ats';
 
 export interface CVDataProps {
@@ -77,7 +75,6 @@ export function RenderCVTemplate({ template, data }: { template: CVTemplateType;
               <h3 style={{ margin: '0 0 8px 0', fontSize: '13px', color: primaryColor, textTransform: 'uppercase', borderBottom: '1px solid #e2e8f0', paddingBottom: '4px', fontWeight: 'bold' }}>Học Vấn</h3>
               <div style={{ fontSize: '12px', fontWeight: 'bold', color: '#0f172a' }}>{profile?.university}</div>
               <div style={{ fontSize: '11px', color: '#475569', margin: '2px 0' }}>Chuyên ngành: {profile?.major}</div>
-              {profile?.gpa && <div style={{ fontSize: '11px', color: '#059669', fontWeight: 'bold' }}>GPA: {profile?.gpa}</div>}
             </div>
 
             <div style={{ marginBottom: '18px' }}>
@@ -118,7 +115,6 @@ export function RenderCVTemplate({ template, data }: { template: CVTemplateType;
                   <div key={p.id} style={{ marginBottom: '14px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <strong style={{ fontSize: '12px', color: '#0f172a' }}>{p.title}</strong>
-                      {p.is_verified && <VerifiedBadge size="sm" />}
                     </div>
                     <div style={{ fontSize: '10px', color: '#64748b', fontStyle: 'italic', margin: '2px 0 4px 0' }}>
                       Vai trò: {p.role || 'Thành viên'} | Loại: {p.project_type || 'Đồ án'}
@@ -159,7 +155,6 @@ export function RenderCVTemplate({ template, data }: { template: CVTemplateType;
           </div>
           <div style={{ fontSize: '11px', color: '#475569', display: 'flex', justifyContent: 'center', gap: '15px' }}>
             <span>📧 {userEmail}</span>
-            {profile?.gpa && <span>GPA: {profile?.gpa}</span>}
           </div>
         </div>
 
@@ -186,13 +181,12 @@ export function RenderCVTemplate({ template, data }: { template: CVTemplateType;
         {/* Đồ án Verified */}
         <div style={{ marginBottom: '18px' }}>
           <h3 style={{ margin: '0 0 10px 0', fontSize: '12px', color: primaryColor, textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 'bold' }}>
-            ĐỒ ÁN & DỰ ÁN NỔI BẬT (VERIFIED PROJECTS)
+            ĐỒ ÁN & DỰ ÁN NỔI BẬT
           </h3>
           {selectedProjects.map(p => (
             <div key={p.id} style={{ marginBottom: '12px', paddingBottom: '10px', borderBottom: '1px dashed #e2e8f0' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <strong style={{ fontSize: '12px', color: '#0f172a' }}>{p.title}</strong>
-                {p.is_verified && <VerifiedBadge size="sm" />}
               </div>
               <div style={{ fontSize: '10px', color: '#64748b', fontStyle: 'italic', margin: '2px 0 4px 0' }}>
                 Vai trò: {p.role || 'Thành viên'} | Công nghệ: {p.tags?.join(', ')}
@@ -247,7 +241,6 @@ export function RenderCVTemplate({ template, data }: { template: CVTemplateType;
           <div style={{ fontSize: '10px', color: '#e0f2fe', lineHeight: '1.6', marginBottom: '20px', borderBottom: '1px solid rgba(255,255,255,0.2)', paddingBottom: '12px' }}>
             <div>📧 {userEmail}</div>
             <div>📍 {profile?.university}</div>
-            {profile?.gpa && <div>🎓 GPA: {profile?.gpa}</div>}
           </div>
 
           <div style={{ marginBottom: '20px' }}>
@@ -287,14 +280,13 @@ export function RenderCVTemplate({ template, data }: { template: CVTemplateType;
 
           <div style={{ marginBottom: '18px' }}>
             <h3 style={{ margin: '0 0 10px 0', fontSize: '12px', color: primaryColor, textTransform: 'uppercase', fontWeight: 'bold', borderBottom: `2px solid ${primaryColor}`, paddingBottom: '3px' }}>
-              ĐỒ ÁN KỸ THUẬT XÁC THỰC (VERIFIED PROJECTS)
+              ĐỒ ÁN KỸ THUẬT TIÊU BIỂU
             </h3>
 
             {selectedProjects.map(p => (
               <div key={p.id} style={{ marginBottom: '14px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <strong style={{ fontSize: '12px', color: '#0f172a' }}>{p.title}</strong>
-                  {p.is_verified && <VerifiedBadge size="sm" />}
                 </div>
                 <div style={{ fontSize: '10px', color: '#64748b', fontStyle: 'italic', margin: '2px 0' }}>
                   Role: {p.role || 'Developer'} | Stack: {p.tags?.join(', ')}
@@ -335,7 +327,7 @@ export function RenderCVTemplate({ template, data }: { template: CVTemplateType;
               {profile?.major} — {profile?.university}
             </div>
             <div style={{ fontSize: '10px', color: '#64748b' }}>
-              Email: {userEmail} | Điểm GPA: {profile?.gpa || 'N/A'}
+              Email: {userEmail}
             </div>
           </div>
 
@@ -350,13 +342,12 @@ export function RenderCVTemplate({ template, data }: { template: CVTemplateType;
 
           <div style={{ marginBottom: '16px' }}>
             <h3 style={{ margin: '0 0 8px 0', fontSize: '12px', color: primaryColor, textTransform: 'uppercase', fontFamily: 'sans-serif', fontWeight: 'bold' }}>
-              II. NĂNG LỰC ĐỒ ÁN & NGHIÊN CỨU KIỂM ĐỊNH
+              II. NĂNG LỰC ĐỒ ÁN & DỰ ÁN THỰC TẾ
             </h3>
             {selectedProjects.map(p => (
               <div key={p.id} style={{ marginBottom: '10px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <strong style={{ fontSize: '12px', color: '#0f172a' }}>{p.title}</strong>
-                  {p.is_verified && <VerifiedBadge size="sm" />}
                 </div>
                 <div style={{ fontSize: '10px', color: '#64748b', fontStyle: 'italic', margin: '1px 0 3px 0' }}>
                   Vai trò đảm nhận: {p.role || 'Thành viên'} ({p.project_type})
@@ -402,7 +393,6 @@ export function RenderCVTemplate({ template, data }: { template: CVTemplateType;
           <div style={{ fontSize: '11px', color: '#64748b', lineHeight: '1.6', marginBottom: '16px', borderBottom: '1px solid #e2e8f0', paddingBottom: '12px' }}>
             <div>📧 {userEmail}</div>
             <div>📍 {profile?.university}</div>
-            {profile?.gpa && <div>🎯 GPA: {profile?.gpa}</div>}
           </div>
 
           <div style={{ marginBottom: '16px' }}>
@@ -448,7 +438,6 @@ export function RenderCVTemplate({ template, data }: { template: CVTemplateType;
               <div key={p.id} style={{ marginBottom: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <strong style={{ fontSize: '12px', color: '#0f172a' }}>{p.title}</strong>
-                  {p.is_verified && <VerifiedBadge size="sm" />}
                 </div>
                 <div style={{ fontSize: '10px', color: '#64748b', fontStyle: 'italic', margin: '2px 0' }}>
                   {p.role || 'Thành viên'} | {p.project_type}
@@ -475,7 +464,6 @@ export function RenderCVTemplate({ template, data }: { template: CVTemplateType;
         </div>
         <div style={{ textAlign: 'right', fontSize: '10px', color: '#475569' }}>
           <div>📧 {userEmail} | 📍 {profile?.university}</div>
-          {profile?.gpa && <div>Điểm GPA: {profile?.gpa}</div>}
         </div>
       </div>
 
@@ -510,7 +498,6 @@ export function RenderCVTemplate({ template, data }: { template: CVTemplateType;
               <div key={p.id} style={{ marginBottom: '8px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <strong>{p.title}</strong>
-                  {p.is_verified && <VerifiedBadge size="sm" />}
                 </div>
                 <p style={{ margin: '2px 0 0 0', fontSize: '10px', color: '#475569' }}>{p.description}</p>
               </div>

@@ -320,7 +320,7 @@ export default function AiCvCoachModal({
             </div>
             <div className="flex items-center gap-2">
               <h3 className="text-sm sm:text-base font-black tracking-tight text-blue-950 truncate">
-                AI CV Diagnostic & Score Studio
+                AI CV Diagnostic & Optimization Studio
               </h3>
               <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10.5px] font-bold border border-emerald-200 shrink-0">
                 ATS v4.2 Live
@@ -472,15 +472,15 @@ export default function AiCvCoachModal({
                       </span>
                     </div>
 
-                    {hasScore && (
-                      <span className={`text-[10px] font-mono font-black px-1.5 py-0.5 rounded-md ${
+                    {evalMap[sec] && (
+                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${
                         isCurrent
                           ? 'bg-white/20 text-white'
                           : isPassed
                           ? 'bg-emerald-100 text-emerald-800'
                           : 'bg-amber-100 text-amber-800'
                       }`}>
-                        {evalMap[sec]?.score}đ
+                        {isPassed ? 'Đạt' : 'Cần sửa'}
                       </span>
                     )}
                   </button>
@@ -715,11 +715,12 @@ export default function AiCvCoachModal({
                   <div className="space-y-4">
                     
                     {/* Score Card Header with Circular Progress Ring */}
+                    {/* Criteria Status Header */}
                     <div className="flex items-center justify-between pb-4 border-b border-blue-100">
                       <div>
                         <div className="flex items-center gap-1.5 mb-1">
                           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                            Điểm Đánh Giá Tiêu Chuẩn:
+                            Tiêu Chuẩn Đánh Giá:
                           </span>
                           <span className="text-[10px] font-bold text-blue-700">
                             {activeDomain.shortName}
@@ -727,15 +728,10 @@ export default function AiCvCoachModal({
                         </div>
                         
                         <div className="flex items-center gap-2">
-                          <span className={`text-3xl font-black font-mono tracking-tight ${
-                            currentEval.score >= 75
-                              ? 'text-emerald-600'
-                              : currentEval.score >= 50
-                              ? 'text-amber-500'
-                              : 'text-rose-500'
+                          <span className={`text-xl font-bold tracking-tight ${
+                            currentEval.status === 'pass' ? 'text-emerald-700' : 'text-amber-700'
                           }`}>
-                            {currentEval.score}
-                            <span className="text-xs font-normal text-slate-400">/100</span>
+                            {passedCriteriaCount}/{totalCriteriaCount} tiêu chí đạt
                           </span>
 
                           <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold ${
@@ -748,40 +744,12 @@ export default function AiCvCoachModal({
                         </div>
                       </div>
 
-                      {/* Circular Gauge */}
-                      <div className="relative w-14 h-14 flex items-center justify-center shrink-0">
-                        <svg className="w-14 h-14 -rotate-90 transform" viewBox="0 0 56 56">
-                          <circle
-                            cx="28"
-                            cy="28"
-                            r={radius}
-                            stroke="currentColor"
-                            strokeWidth="4"
-                            className="text-blue-50"
-                            fill="transparent"
-                          />
-                          <circle
-                            cx="28"
-                            cy="28"
-                            r={radius}
-                            stroke="currentColor"
-                            strokeWidth="4"
-                            strokeDasharray={circumference}
-                            strokeDashoffset={activeStrokeOffset}
-                            strokeLinecap="round"
-                            className={`${
-                              currentEval.score >= 75
-                                ? 'text-emerald-500'
-                                : currentEval.score >= 50
-                                ? 'text-amber-500'
-                                : 'text-rose-500'
-                            } transition-all duration-700 ease-out`}
-                            fill="transparent"
-                          />
-                        </svg>
-                        <Award className={`w-5 h-5 absolute ${
-                          currentEval.status === 'pass' ? 'text-emerald-500' : 'text-amber-500'
-                        }`} />
+                      <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 border ${
+                        currentEval.status === 'pass'
+                          ? 'bg-emerald-50 border-emerald-200 text-emerald-600'
+                          : 'bg-amber-50 border-amber-200 text-amber-600'
+                      }`}>
+                        <Award className="w-5 h-5" />
                       </div>
                     </div>
 
@@ -1002,7 +970,7 @@ export default function AiCvCoachModal({
                   <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold">
                     <Shield className="w-3.5 h-3.5" /> ProfileHub Verified
                   </div>
-                  <div className="text-xs font-mono font-bold text-slate-400 mt-1">Điểm chất lượng: {averageScore}/100</div>
+                  <div className="text-xs font-semibold text-emerald-700 mt-1">Đã tối ưu theo chuẩn ngành</div>
                 </div>
               </div>
 

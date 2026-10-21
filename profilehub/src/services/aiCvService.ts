@@ -57,17 +57,17 @@ export async function analyzeAndTailorCV(
     kw => !userSkillsNormalized.some(s => s.includes(kw))
   );
 
-  // 3. Score & select relevant projects
+  // 3. Score & select relevant projects based on tech keywords and domain relevance
   const scoredProjects = projects.map(proj => {
     let score = 0;
-    const projText = `${proj.title} ${proj.description || ''} ${proj.tags?.join(' ') || ''}`.toLowerCase();
+    const titleText = (proj.title || '').toLowerCase();
+    const tagsText = (proj.tags?.join(' ') || '').toLowerCase();
+    const descText = (proj.description || '').toLowerCase();
 
-    // Give bonus for Verified Projects
-    if (proj.is_verified) score += 20;
-
-    // Match keywords
     jdKeywords.forEach(kw => {
-      if (projText.includes(kw)) score += 15;
+      if (titleText.includes(kw)) score += 25;
+      if (tagsText.includes(kw)) score += 20;
+      if (descText.includes(kw)) score += 10;
     });
 
     return { id: proj.id, score };
@@ -87,7 +87,7 @@ export async function analyzeAndTailorCV(
 
   // 6. Generate Tailored Professional Summary
   const topSkillsStr = matchingSkills.slice(0, 4).join(', ') || userSkills.slice(0, 3).join(', ') || 'Software Development';
-  const summaryText = `Sinh viên giàu nhiệt huyết với định hướng phát triển chuyên sâu trong vị trí công việc. Nắm vững kỹ năng nền tảng và chuyên môn về ${topSkillsStr}. Đã hoàn thành các đồ án thực tế đã được xác thực chính thức, sẵn sàng đóng góp năng lực và tư duy giải quyết vấn đề vào mục tiêu phát triển của doanh nghiệp.`;
+  const summaryText = `Sinh viên giàu nhiệt huyết với định hướng phát triển chuyên sâu trong vị trí công việc. Nắm vững kỹ năng nền tảng và chuyên môn về ${topSkillsStr}. Đã tích lũy kinh nghiệm qua các dự án và sản phẩm thực tế, sẵn sàng đóng góp năng lực và tư duy giải quyết vấn đề vào mục tiêu phát triển của doanh nghiệp.`;
 
   return {
     matchScore,

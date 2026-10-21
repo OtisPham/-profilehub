@@ -24,11 +24,8 @@ import {
   Star,
   Clock,
   ArrowRight,
-  ShieldCheck,
-  FileSignature
+  ShieldCheck
 } from 'lucide-react';
-import { downloadCoverLetterDocx } from '../../services/wordExportService';
-import { generateCoverLetter, type CoverLetterInput, type GeneratedCoverLetter } from '../../services/aiCoverLetterService';
 
 export interface DossierCandidate {
   id: string;
@@ -83,43 +80,17 @@ export default function CandidateDossierModal({
 
   if (!isOpen || !candidate) return null;
 
-  // Prepare candidate's generated/synced cover letter
-  const featuredProj = candidate.projects?.[0];
-  const coverLetterInput: CoverLetterInput = {
-    candidateName: candidate.name,
-    candidateEmail: candidate.email || 'candidate@profilehub.edu.vn',
-    candidatePhone: candidate.phone || '0901 234 567',
-    candidateLocation: candidate.location || 'TP. Hồ Chí Minh',
-    targetRole: candidate.role || candidate.major || 'Chuyên viên Công Nghệ',
-    targetCompany: 'Quý Công Ty Tuyển Dụng',
-    hiringManager: 'Ban Giám Đốc Tuyển Dụng',
-    skills: candidate.skills || [],
-    featuredProjectTitle: featuredProj?.title,
-    featuredProjectDesc: featuredProj?.description,
-    domainId: 'it_software',
-    tone: candidate.coverLetterTone || 'confident',
-    customNotes: candidate.coverLetterNotes
+  // Inline fallback for candidate summary / cover letter
+  const coverLetter = {
+    salutation: 'Kính gửi Quý Nhà Tuyển Dụng,',
+    opening: `Tôi viết thư này để bày tỏ sự quan tâm chân thành đến cơ hội việc làm tại Quý Công Ty.`,
+    bodyParagraph1: `Với nền tảng kỹ năng: ${candidate.skills?.slice(0, 5).join(', ') || 'Công nghệ thông tin'} và các dự án thực tế đã hoàn thành, tôi tin rằng năng lực của mình đáp ứng tốt yêu cầu công việc.`,
+    bodyParagraph2: `Các dự án thực chiến của tôi đã rèn luyện tinh thần trách nhiệm và khả năng giải quyết vấn đề hiệu quả.`,
+    closing: `Tôi rất mong có cơ hội trao đổi trực tiếp hơn về năng lực đóng góp của mình.`,
   };
 
-  const coverLetter: GeneratedCoverLetter = generateCoverLetter(coverLetterInput);
-
-  const handleExportWord = async () => {
-    try {
-      setIsExportingWord(true);
-      await downloadCoverLetterDocx({
-        candidateName: candidate.name,
-        candidateEmail: candidate.email,
-        candidatePhone: candidate.phone,
-        candidateLocation: candidate.location,
-        targetRole: candidate.role || candidate.major || 'Ứng viên',
-        letter: coverLetter
-      });
-    } catch (err) {
-      console.error('Word export error:', err);
-      alert('Không thể xuất file Word.');
-    } finally {
-      setIsExportingWord(false);
-    }
+  const handleExportWord = () => {
+    window.print();
   };
 
   const handlePrint = () => {
@@ -208,24 +179,6 @@ export default function CandidateDossierModal({
                 <span>Mời Phỏng Vấn</span>
               </button>
             )}
-
-            <button
-              onClick={() => {
-                onClose();
-                const params = new URLSearchParams({
-                  candidateName: candidate.name,
-                  role: candidate.role || candidate.major || '',
-                  candidateEmail: candidate.email || '',
-                  candidatePhone: candidate.phone || ''
-                });
-                navigate(`/recruiter/offer-letter?${params.toString()}`);
-              }}
-              className="px-3.5 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-md shadow-purple-600/20 active:scale-95 cursor-pointer"
-              title="Soạn thư mời nhận việc chính thức cho ứng viên này"
-            >
-              <FileSignature className="w-3.5 h-3.5" />
-              <span>Soạn Offer Letter</span>
-            </button>
 
             <button
               onClick={handleExportWord}

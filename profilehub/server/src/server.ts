@@ -7,9 +7,31 @@ import { errorHandler } from './middlewares/errorHandler.middleware.js';
 const app = express();
 
 // Middlewares
+// Dynamic CORS Configuration compliant with W3C specification for credentials: true
+const allowedOrigins = [
+  ENV.CLIENT_URL,
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:3000',
+  ...(process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',').map(s => s.trim()) : [])
+];
+
 app.use(
   cors({
-    origin: '*',
+    origin: (origin, callback) => {
+      // Cho phép requests không có origin (server-to-server, mobile apps, curl)
+      if (!origin) return callback(null, true);
+
+      // Cho phép các domain trong danh sách và tất cả domain Vercel preview (*.vercel.app)
+      const isAllowed = allowedOrigins.includes(origin) || /\.vercel\.app$/.test(origin);
+      if (isAllowed) {
+        callback(null, true);
+      } else {
+        console.warn(`[CORS Warning] Chặn origin chưa được cấp phép: ${origin}`);
+        callback(null, false);
+      }
+    },
     credentials: true,
   })
 );

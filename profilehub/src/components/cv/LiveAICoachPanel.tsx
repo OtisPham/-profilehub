@@ -19,24 +19,6 @@ import {
   INDUSTRY_DOMAINS
 } from '../../services/aiCvCoachService';
 
-export interface TargetJdInfo {
-  targetRole?: string;
-  targetJd?: string;
-  coachingTips?: string[];
-  gapAnalysis?: Array<{
-    skill_or_topic: string;
-    importance: string;
-    gap_description?: string;
-    remediation_roadmap?: {
-      suggested_project_title?: string;
-      project_objective?: string;
-      recommended_tech_stack?: string[];
-      target_metrics?: string;
-      estimated_effort_weeks?: number;
-    };
-  }>;
-}
-
 interface LiveAICoachPanelProps {
   activeSectionTitle: string;
   evaluation: AICoachEvaluation | null;
@@ -47,8 +29,6 @@ interface LiveAICoachPanelProps {
   onReEvaluateAll: () => void;
   currentDomainId?: IndustryDomainId;
   onSelectDomain?: (domainId: IndustryDomainId) => void;
-  targetJdInfo?: TargetJdInfo;
-  onReMatch?: () => void;
 }
 
 export default function LiveAICoachPanel({
@@ -61,12 +41,9 @@ export default function LiveAICoachPanel({
   onReEvaluateAll,
   currentDomainId,
   onSelectDomain,
-  targetJdInfo,
-  onReMatch
 }: LiveAICoachPanelProps) {
   const [showDomainPicker, setShowDomainPicker] = useState(false);
   const [quickActionSuccess, setQuickActionSuccess] = useState<string | null>(null);
-  const [coachTab, setCoachTab] = useState<'section' | 'targetJd'>(targetJdInfo?.targetJd ? 'targetJd' : 'section');
 
   const availableDomains = getAvailableIndustryDomains();
 
@@ -82,11 +59,7 @@ export default function LiveAICoachPanel({
     setTimeout(() => setQuickActionSuccess(null), 2500);
   };
 
-  // Circular progress calculation
-  const radius = 22;
-  const circumference = 2 * Math.PI * radius;
-  const displayScore = overallScore || 85;
-  const strokeDashoffset = circumference - (displayScore / 100) * circumference;
+
 
   // Default Medical/General standard checklist items if evaluation criteria isn't ready
   const defaultChecklist = [
@@ -140,7 +113,7 @@ export default function LiveAICoachPanel({
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             </div>
             <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
-              Trợ lý chấm điểm tự động
+              Trợ lý gợi ý tối ưu CV
             </p>
           </div>
         </div>
@@ -156,37 +129,6 @@ export default function LiveAICoachPanel({
       {/* Main Scrollable Body */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3.5">
         
-        {/* Tab Switcher if Target JD is available */}
-        {targetJdInfo?.targetJd && (
-          <div className="flex bg-slate-200/80 dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700">
-            <button
-              onClick={() => setCoachTab('section')}
-              className={`flex-1 py-1 text-center text-xs font-bold rounded-lg transition-all ${
-                coachTab === 'section'
-                  ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs'
-                  : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-              }`}
-            >
-              Mục Đang Sửa
-            </button>
-            <button
-              onClick={() => setCoachTab('targetJd')}
-              className={`flex-1 py-1 text-center text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${
-                coachTab === 'targetJd'
-                  ? 'bg-indigo-600 text-white shadow-xs'
-                  : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-              }`}
-            >
-              <span>Đối Chiếu JD</span>
-              {targetJdInfo.gapAnalysis && targetJdInfo.gapAnalysis.length > 0 && (
-                <span className="bg-rose-500 text-white text-[9px] px-1.5 py-0.2 rounded-full font-mono font-bold">
-                  {targetJdInfo.gapAnalysis.length}
-                </span>
-              )}
-            </button>
-          </div>
-        )}
-
         {/* 2. Card 1 - Chuẩn Ngành Tuyển Dụng */}
         <div className="relative">
           <div className="p-3.5 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-2xs">
@@ -243,68 +185,42 @@ export default function LiveAICoachPanel({
           )}
         </div>
 
-        {/* 3. Card 2 - Điểm Tiêu Chuẩn ATS (With Circular Progress Bar) */}
+        {/* 3. Card 2 - Tiêu Chuẩn Hoàn Thiện Mục */}
         <div className="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-2xs">
           <div className="flex items-center justify-between">
             <div>
               <div className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">
-                Điểm Tiêu Chuẩn ATS
+                Tiêu Chí Hoàn Thiện
               </div>
-              <div className="text-3xl font-black font-mono text-slate-900 dark:text-white">
-                {displayScore}<span className="text-sm font-normal text-slate-400">/100</span>
+              <div className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
+                <span>{passedCount}/{totalCount}</span>
+                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">tiêu chí đạt</span>
               </div>
             </div>
 
-            {/* Circular Progress Bar Indicator */}
-            <div className="relative w-14 h-14 flex items-center justify-center shrink-0">
-              <svg className="w-14 h-14 -rotate-90 transform" viewBox="0 0 52 52">
-                <circle
-                  cx="26"
-                  cy="26"
-                  r={radius}
-                  stroke="currentColor"
-                  strokeWidth="4"
-                  fill="transparent"
-                  className="text-slate-100 dark:text-slate-700"
-                />
-                <circle
-                  cx="26"
-                  cy="26"
-                  r={radius}
-                  stroke="currentColor"
-                  strokeWidth="4.5"
-                  strokeDasharray={circumference}
-                  strokeDashoffset={strokeDashoffset}
-                  strokeLinecap="round"
-                  fill="transparent"
-                  className="text-emerald-500 transition-all duration-700 ease-out"
-                />
-              </svg>
-              <span className="absolute text-xs font-mono font-black text-emerald-600 dark:text-emerald-400">
-                {displayScore}%
-              </span>
+            <div className={`p-2.5 rounded-xl border flex items-center justify-center shrink-0 ${
+              passedCount === totalCount
+                ? 'bg-emerald-50 dark:bg-emerald-950/50 border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400'
+                : 'bg-amber-50 dark:bg-amber-950/50 border-amber-200 dark:border-amber-800 text-amber-600 dark:text-amber-400'
+            }`}>
+              <CheckCircle2 className="w-6 h-6" />
             </div>
           </div>
 
           <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-xs">
             <span className={`font-semibold flex items-center gap-1.5 transition-colors ${
-              displayScore >= 80 
+              passedCount === totalCount
                 ? 'text-emerald-600 dark:text-emerald-400' 
-                : displayScore >= 65 
-                ? 'text-amber-600 dark:text-amber-400' 
-                : 'text-rose-600 dark:text-rose-400'
+                : 'text-amber-600 dark:text-amber-400'
             }`}>
-              <CheckCircle2 className={`w-3.5 h-3.5 shrink-0 ${
-                displayScore >= 80 ? 'text-emerald-500' : displayScore >= 65 ? 'text-amber-500' : 'text-rose-500'
-              }`} />
               <span className="text-left">
-                {displayScore >= 80 ? 'Đạt chuẩn ATS & Minh chứng' : displayScore >= 65 ? 'Khá chuẩn ATS (Cần STAR)' : 'Cần tối ưu thêm ATS'}
+                {passedCount === totalCount ? 'Đạt toàn bộ tiêu chí chuẩn ngành' : 'Cần bổ sung chi tiết theo gợi ý'}
               </span>
             </span>
             <button
               onClick={onReEvaluateAll}
               disabled={isEvaluating}
-              title={isEvaluating ? 'Đang phân tích & chấm lại...' : 'Chấm lại toàn bộ điểm ATS'}
+              title={isEvaluating ? 'Đang phân tích...' : 'Kiểm tra lại tiêu chí'}
               className="text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-700/60 p-1.5 rounded-lg transition-all active:scale-90 disabled:opacity-50 flex items-center gap-1"
             >
               <RotateCcw className={`w-3.5 h-3.5 transition-all ${isEvaluating ? 'animate-spin text-indigo-600 dark:text-indigo-400' : 'hover:-rotate-45'}`} />
