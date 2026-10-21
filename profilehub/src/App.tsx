@@ -17,7 +17,6 @@ import JobManagement from './pages/recruiter/JobManagement';
 import AIRecruitmentAssistant from './pages/recruiter/AIRecruitmentAssistant';
 import RecruiterProfile from './pages/recruiter/RecruiterProfile';
 import StudentJobs from './pages/student/StudentJobs';
-import StudentApplicationsPage from './pages/student/StudentApplicationsPage';
 import MainLayout from './components/layout/MainLayout';
 
 function App() {
@@ -40,7 +39,6 @@ function App() {
         <Route path="/cv-manager" element={<CVManagementPage />} />
         <Route path="/cv-builder" element={<CVBuilder />} />
         <Route path="/student/jobs" element={<StudentJobs />} />
-        <Route path="/student/applications" element={<StudentApplicationsPage />} />
 
         {/* Recruiter Core */}
         <Route path="/recruiter/profile" element={<RecruiterProfile />} />

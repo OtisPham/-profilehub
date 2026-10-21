@@ -18,7 +18,6 @@ import {
 import type { JobPost } from '../../types/database';
 import { supabase } from '../../services/supabase';
 import { cvService } from '../../services/cvService';
-import { applicationService } from '../../services/applicationService';
 
 export default function StudentJobs() {
   const { user } = useAuth();
@@ -137,31 +136,8 @@ ${skillsList}`;
 
     // 2. Đồng thời lưu local cache để tương thích với các tab đang mở
     addToSharedPipeline(newItem, job.recruiter_id);
-
-    // 3. Tự động ghi nhận vào Application Hub cá nhân của sinh viên (bảo toàn CV & JD Snapshot)
-    try {
-      const company = getRecruiterCompanyProfile(job.recruiter_id);
-      applicationService.createApplication({
-        studentId: user?.id || 'std_curr',
-        companyName: company?.companyName || 'Công ty Công Nghệ Tuyển Dụng',
-        position: job.title,
-        jobDescription: job.description,
-        jobUrl: '',
-        source: 'ProfileHub Jobs',
-        status: 'applied',
-        appliedDate: new Date().toISOString().split('T')[0],
-        priority: 'high',
-        cvId: activeCv?.id,
-        cvTitle: activeCv?.title,
-        cvSnapshot: activeCv?.data,
-        notes: `Ứng tuyển trực tiếp từ tin tuyển dụng ProfileHub: ${job.title}`
-      }, 'Ứng tuyển trực tiếp qua cổng tuyển dụng ProfileHub', 'auto_apply');
-    } catch (appErr) {
-      console.warn('[StudentJobs] Lỗi ghi nhận Application cá nhân:', appErr);
-    }
-
     setAppliedJobIds(prev => [...prev, job.id]);
-    alert(`🎉 Ứng tuyển thành công vị trí: ${job.title}!\nBản CV "${activeCv?.title || 'CV Mặc Định'}" của bạn đã được chuyển tới Nhà tuyển dụng và tự động đồng bộ vào Hub Tiến trình Ứng tuyển.`);
+    alert(`🎉 Ứng tuyển thành công vị trí: ${job.title}!\nBản CV "${activeCv?.title || 'CV Mặc Định'}" của bạn đã được chuyển tới Nhà tuyển dụng.`);
   };
 
   const filteredJobs = jobs.filter(job =>

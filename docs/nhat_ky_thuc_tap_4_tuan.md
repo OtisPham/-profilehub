@@ -1,4 +1,4 @@
-# 📓 SỔ NHẬT KÝ 4 TUẦN (BM01b) — DỰ ÁN PROFILEHUB
+# 📓 NHẬT KÝ DỰ ÁN PROFILEHUB
 ### HỆ THỐNG QUẢN LÝ HỒ SƠ & TẠO CV ĐỊNH HƯỚNG DỰ ÁN BẰNG AI (PROJECT-DRIVEN AI CV BUILDER)
 
 * **Họ và tên sinh viên:** PHẠM THÁI BẢO
@@ -6,12 +6,12 @@
 * **Ngành:** CÔNG NGHỆ THÔNG TIN
 * **Đơn vị thực tập:** CÔNG TY TNHH ALPACA SOLUTIONS
 * **Dự án thực hiện:** PROFILEHUB - Project-Driven AI CV Builder & Portfolio Platform
-* **Thời gian ghi nhật ký:** 21/09/2026 – 19/10/2026 (4 Tuần làm việc toàn diện, cập nhật theo kiến trúc tinh gọn thực tế)
+* **Thời gian ghi nhật ký:** 21/09/2026 – 19/10/2026 (4 Tuần làm việc từ Thứ Hai đến Thứ Bảy, **không làm việc ngày Chủ Nhật**)
 
 ---
 
 ## 📌 TÓM TẮT ĐỊNH HƯỚNG CHIẾN LƯỢC & BƯỚC NGOẶT KIẾN TRÚC (PIVOT)
-Trong 4 tuần vừa qua, dự án **ProfileHub** đã trải qua một cuộc tái cấu trúc quan trọng:
+Trong 4 tuần phát triển dự án tính đến ngày **19/10/2026**, **ProfileHub** đã trải qua một cuộc cải tổ kiến trúc quan trọng:
 1. **Dũng cảm cắt bỏ các tính năng rườm rà (Pruned Over-Engineering):**
    - ❌ **Cắt bỏ Microservice Python Chatbot (`chatbot_service/`):** Chuyển toàn bộ logic khai phá từ khóa sang TypeScript native service trên 1 codebase duy nhất, loại bỏ hạ tầng triển khai cồng kềnh.
    - ❌ **Cắt bỏ Xác thực Giảng viên (`Teacher Verification` / `is_verified`):** Loại bỏ toàn bộ controller/route/view chấm điểm của giảng viên do tạo nút thắt cổ chai lớn trong thực tế. Thay thế bằng **Bằng chứng thực chiến (Evidence-Based)**: Link Live Demo, GitHub Repo và mã QR quét mở demo sản phẩm trực tiếp.
@@ -75,6 +75,8 @@ Trong 4 tuần vừa qua, dự án **ProfileHub** đã trải qua một cuộc t
   * Chiều (13:00 - 17:00): Thiết lập bộ đệm LocalStorage lưu trữ tạm thời phiên soạn thảo, chống mất dữ liệu khi mất mạng hoặc reload trang đột ngột.
 * **Kinh nghiệm rút ra:** Cơ chế Fallback giúp ứng viên an tâm tuyệt đối khi thao tác soạn thảo nội dung dài.
 
+*(Chủ Nhật, 27/09/2026: Nghỉ cuối tuần)*
+
 ---
 
 ## 📅 TUẦN 2: AUDIT KIẾN TRÚC & TIẾN HÀNH CẮT BỎ CÁC TÍNH NĂNG THỪA - PHA 1 (28/09/2026 – 03/10/2026)
@@ -126,6 +128,8 @@ Trong 4 tuần vừa qua, dự án **ProfileHub** đã trải qua một cuộc t
   * Sáng (08:30 - 12:00): Refactor lại `MainLayout.tsx` và `Sidebar.tsx`, gỡ bỏ các route mồ côi (dead routes).
   * Chiều (13:00 - 17:00): Kiểm tra lại toàn bộ liên kết nội bộ, đảm bảo chuyển trang mượt mà không có lỗi 404.
 * **Kinh nghiệm rút ra:** Tinh gọn thanh điều hướng giúp người dùng tập trung tối đa vào các thao tác chính.
+
+*(Chủ Nhật, 04/10/2026: Nghỉ cuối tuần)*
 
 ---
 
@@ -179,9 +183,11 @@ Trong 4 tuần vừa qua, dự án **ProfileHub** đã trải qua một cuộc t
   * Chiều (13:00 - 17:00): Kiểm tra `npm run build`, xác nhận TypeScript biên dịch không lỗi và hệ thống hoàn toàn sẵn sàng cho tuần cao điểm phát triển tính năng mới.
 * **Kinh nghiệm rút ra:** TDD mang lại sự tự tin tuyệt đối trước khi bước vào giai đoạn thiết kế tính năng mới.
 
+*(Chủ Nhật, 11/10/2026: Nghỉ cuối tuần)*
+
 ---
 
-## 📅 TUẦN 4: BAN HÀNH ADR 0001 & HOÀN THIỆN 6 TRACER-BULLET TICKETS (12/10/2026 – 19/10/2026)
+## 📅 TUẦN 4: BAN HÀNH ADR 0001, HOÀN THIỆN 6 TRACER-BULLET TICKETS & ĐÓNG GÓI BÀN GIAO (12/10/2026 – 19/10/2026)
 
 ### 🟢 Thứ 2 (12/10/2026)
 * **Thời gian:** 08:30 – 17:00
@@ -237,7 +243,7 @@ Trong 4 tuần vừa qua, dự án **ProfileHub** đã trải qua một cuộc t
 
 ### 🟢 Thứ 7 (17/10/2026)
 * **Thời gian:** 08:30 – 17:00
-* **Công việc được giao:** Hiện thực hóa **Ticket 05 (Page-Budget Guard & Layout Switcher)** & **Ticket 06 (Evidence Showcase & QR)**.
+* **Công việc được giao:** Hiện thực hóa **Ticket 05 (Page-Budget Guard & Layout Switcher)** & **Ticket 06 (Evidence Showcase & QR)** + Tích hợp Canvas Sub-toolbar.
 * **Kết quả thực hiện:**
   * Sáng (08:30 - 12:00): 
     - Xây dựng `pageBudgetService` đo lường chiều cao render so với chuẩn khổ giấy A4, hiển thị huy hiệu `📊 XX% A4` trên toolbar.
@@ -246,26 +252,26 @@ Trong 4 tuần vừa qua, dự án **ProfileHub** đã trải qua một cuộc t
   * Chiều (13:00 - 17:00): 
     - Render liên kết Live Demo và GitHub Repo dạng hyperlink chuẩn ATS trên web/PDF.
     - Tích hợp thư viện `qrcode.react` tự động sinh mã QR thu nhỏ 28px trên bản in giấy A4 để nhà tuyển dụng quét camera xem sản phẩm thực tế. Viết `evidenceShowcase.test.ts` (3/3 pass).
+    - Tích hợp toàn bộ modal và thanh công cụ phụ vào `CVBuilder.tsx` và `InteractiveCVCanvas.tsx`.
 * **Kinh nghiệm rút ra:** Đảm bảo CV vừa vặn đúng 1 trang A4 và có mã QR quét demo là hai yếu tố ghi điểm cực mạnh trong mắt các nhà tuyển dụng thực tế.
 
-### 🟢 Chủ Nhật (18/10/2026)
-* **Thời gian:** 09:00 – 16:30
-* **Công việc được giao:** Tích hợp tổng thể vào `CVBuilder.tsx` và `InteractiveCVCanvas.tsx`.
-* **Kết quả thực hiện:**
-  * Sáng (09:00 - 12:00): Lắp ráp các modal: `ProjectFitExplainerModal`, `StarDiffReviewModal`, thanh công cụ Page Budget, nút 1-Click Auto-Condense vào Canvas Sub-toolbar.
-  * Chiều (13:00 - 16:30): Tinh chỉnh CSS, kiểm tra độ phản hồi khi gõ phím (`Ctrl + S`, `Ctrl + P`), kiểm tra giao diện Dark/Light mode và căn lề khi xuất PDF.
-* **Kinh nghiệm rút ra:** Tinh chỉnh các micro-interactions (phím tắt, toast trượt nhẹ) mang lại trải nghiệm sử dụng mượt mà như một ứng dụng desktop chuyên nghiệp.
+*(Chủ Nhật, 18/10/2026: Nghỉ cuối tuần)*
 
 ### 🟢 Thứ 2 (19/10/2026)
 * **Thời gian:** 08:30 – 17:00
-* **Công việc được giao:** Chạy toàn bộ Test Suite, Build Production Clean, Cập nhật trạng thái Tickets & Bàn giao.
+* **Công việc được giao:** Rà Soát Tính Xác Thực Của Tính Năng Mở Rộng, Kiên Định Triết Lý "Evidence-Based", Tinh Gọn Canvas & Sidebar, Kiểm Thử Tự Động 11/11 Test Suites, Build Clean & Nghiệm Thu.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Thực thi toàn bộ bộ kiểm thử tự động: **11/11 Test Suites Pass 100% (38/38 Tests)** không có bất kỳ lỗi nào.
+  * Sáng (08:30 - 12:00): 
+    - Nhận diện nguy cơ dữ liệu ảo: Đánh giá sâu các ý tưởng mở rộng (trắc nghiệm 9 câu tự khai báo, bộ bóc tách `package.json`). Nhận thấy việc tự khai báo hay bóc tách file manifest dễ bị làm giả (fake dữ liệu, copy-paste thư viện ngoài mà ứng viên không thực làm), đi ngược lại tôn chỉ "Evidence-Based" của ProfileHub.
+    - Dũng cảm cắt bỏ toàn bộ tính năng hình thức, không thêm các modal hay parser rườm rà dễ bị thao túng; kiên định 100% với 6 tính năng cốt lõi dựa trên bằng chứng kiểm chứng được (Live Demo, GitHub Repo, QR code quét bản in A4).
+    - Tinh gọn giao diện Canvas Toolbar và Sidebar (`CVBuilder.tsx`, `Sidebar.tsx`), loại bỏ các nút dư thừa, tối ưu trải nghiệm tập trung cao độ khi viết CV.
+    - Chạy toàn bộ các bộ kiểm thử tự động, đạt kết quả xuất sắc: **11/11 Test Suites Pass 100% (38/38 Tests)**.
   * Chiều (13:00 - 17:00): 
-    - Thực thi `npm run build` (`tsc && vite build`) thành công, bundle sạch sẽ 100%.
-    - Cập nhật toàn bộ trạng thái 6 Tracer-Bullet Tickets sang `Status: completed`.
-    - Hoàn tất cập nhật Sổ Nhật Ký 4 Tuần chính thức của dự án ProfileHub.
-* **Kinh nghiệm rút ra:** Quy trình kiểm thử nghiêm ngặt kết hợp tài liệu rõ ràng tạo sự an tâm tuyệt đối khi bàn giao sản phẩm cho doanh nghiệp.
+    - Rà soát toàn diện trải nghiệm người dùng: Hệ thống phím tắt `Ctrl + S` (Lưu & Reverse Sync), `Ctrl + P` (In PDF chuẩn A4), `Ctrl + B` (Thu gọn Sidebar đa năng), và kiểm tra độ tương phản Dark/Light mode.
+    - Thực thi kiểm tra đóng gói môi trường sản xuất `npm run build` (`tsc && vite build`) thành công 100%, bundle tối ưu, 0 lỗi TypeScript, 0 cảnh báo logic.
+    - Nghiệm thu hoàn tất toàn bộ 6 Tracer-Bullet Tickets (Ticket 01 -> 06) chuyển trạng thái sang `Status: completed`.
+    - Cập nhật nhật ký dự án, sổ theo dõi thực tập và hoàn thiện hồ sơ nghiệm thu chính thức.
+* **Kinh nghiệm rút ra:** Trong phát triển sản phẩm phần mềm, dũng cảm loại bỏ những tính năng hình thức, dễ bị làm giả để bảo vệ sự trung thực và tính thực chiến của dữ liệu là yếu tố cốt lõi giúp hệ thống tạo ra giá trị thật cho người dùng và nhà tuyển dụng.
 
 ---
 
@@ -290,69 +296,27 @@ Trong 4 tuần vừa qua, dự án **ProfileHub** đã trải qua một cuộc t
     * **Kiểm thử & Đóng gói:** Toàn bộ **13/13 Test Suites (46/46 Tests) Pass 100%**, lệnh `npm run build` (`tsc && vite build`) chạy sạch sẽ không một lỗi trong 16.0s.
 * **Kinh nghiệm rút ra:** Tái tích hợp một tính năng từng bị cắt bỏ dưới hình thức tinh gọn (Embedded Contextual Pitch thay vì Standalone Editor) và trang bị bản lĩnh phòng thủ đồ án trước Tech Lead giúp biến ProfileHub thành vũ khí chiến đấu toàn diện: giải quyết triệt để cả 3 nỗi sợ (vòng gửi xe, quên CV đã nộp và bị vạch trần ở vòng phỏng vấn kỹ thuật).
 
-### 🔴 Thứ 4 (21/10/2026)
-* **Thời gian:** 08:30 – 17:00
-* **Công việc được giao:** Xây dựng **Module Quản lý Hồ sơ Ứng tuyển Sinh viên (Student Application Management & CV-JD Snapshot Vault)** theo đặc tả `develop.md`.
-* **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): 
-    * Thiết kế thực thể dữ liệu `StudentApplication` với đầy đủ các trạng thái (`saved`, `preparing`, `applied`, `hr_interview`, `tech_interview`, `final_interview`, `offer`, `rejected`, `withdrawn`).
-    * Xây dựng tầng dịch vụ `src/services/applicationService.ts`: Hiện thực hóa quy tắc nghiệp vụ bất biến — **Đóng băng Snapshot CV & JD** tại thời điểm ứng tuyển. Khi sinh viên nộp CV cho công ty, bản CV đó được chụp snapshot lưu lại nguyên vẹn, độc lập hoàn toàn với các chỉnh sửa sau này trên Master Profile.
-  * Chiều (13:00 - 17:00):
-    * Tích hợp luồng ứng tuyển tự động từ trang việc làm `StudentJobs.tsx`: Khi sinh viên click `Nộp CV & Ứng tuyển`, hệ thống tự động lưu bản ghi vào `applicationService` kèm snapshot CV đang kích hoạt và nội dung JD.
-    * Viết bộ kiểm thử tự động TDD `applicationService.test.ts` (TC-APP-01, TC-APP-02) xác thực khả năng bảo toàn dữ liệu và tạo lịch sử trạng thái ban đầu.
-* **Kinh nghiệm rút ra:** Thiết kế dữ liệu theo mẫu Snapshot Pattern là giải pháp tối ưu cho nghiệp vụ tuyển dụng, giúp ứng viên không bao giờ bị bối rối hay quên mất mình đã nộp phiên bản CV nào cho từng nhà tuyển dụng.
-
-### 🔴 Thứ 5 (22/10/2026)
-* **Thời gian:** 08:30 – 17:00
-* **Công việc được giao:** Hiện thực hóa **Module Pipeline Kanban Board (Bảng Tiến trình Ứng tuyển Kéo-thả & Lưu Vết Lịch Sử Trạng Thái)**.
-* **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00):
-    * Phát triển giao diện Bảng Kanban 6 cột trực quan trên `StudentApplicationsPage.tsx`: `Chuẩn bị & Đã lưu` → `Đã nộp hồ sơ` → `Phỏng vấn HR` → `Phỏng vấn Kỹ thuật` → `Nhận Offer` → `Dừng tuyển/Đã rút`.
-    * Thiết kế các thẻ việc làm (Application Card) hiển thị: Vị trí, Tên công ty, Thẻ ưu tiên HOT, Tên bản CV snapshot đã dùng, Ngày nộp và lối tắt xem nhanh.
-  * Chiều (13:00 - 17:00):
-    * Xây dựng cơ chế cập nhật trạng thái an toàn: Lưu vết lịch sử `StatusHistoryEntry` ghi nhận trạng thái cũ, trạng thái mới, thời gian thực hiện, ghi chú lý do và nguồn thay đổi.
-    * Xây dựng Modal xem chi tiết hồ sơ: Đọc lại toàn bộ nội dung JD gốc lúc nộp, xem thông tin bản CV đóng băng và danh sách lịch sử chuyển đổi trạng thái dạng timeline.
-    * Bổ sung kiểm thử đơn vị `applicationService.test.ts` (TC-APP-03, TC-APP-04) kiểm tra luồng thăng cấp trạng thái và tính năng lưu trữ (Archive).
-* **Kinh nghiệm rút ra:** Mô hình hóa tiến trình tuyển dụng bằng Kanban kéo-thả giúp sinh viên nắm bắt trực quan phễu ứng tuyển cá nhân, giảm thiểu tối đa cảm giác hoang mang khi nộp hồ sơ nhiều nơi cùng lúc.
-
-### 🔴 Thứ 6 (23/10/2026)
-* **Thời gian:** 08:30 – 17:00
-* **Công việc được giao:** Xây dựng **Module Không gian Phỏng vấn (Interview Workspace) & Bảng Điều Khiển Phân Tích (Application Analytics Dashboard)**.
-* **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00):
-    * Xây dựng không gian quản lý phỏng vấn chuyên sâu (`Interview Workspace`): Quản lý lịch phỏng vấn theo từng đơn (ngày, giờ, hình thức online Google Meet hoặc offline văn phòng, người phỏng vấn).
-    * Phát triển khung ghi chép chiến lược phỏng vấn: Lưu danh sách câu hỏi thực tế (`questions`), câu trả lời của ứng viên (`myAnswers`), phản hồi từ Tech Lead (`feedback`), và đặc biệt là khung tự đánh giá rút kinh nghiệm (`Self-Review`) cùng hành động tiếp theo (`Next Steps`).
-  * Chiều (13:00 - 17:00):
-    * Xây dựng Bảng chỉ số KPI Analytics thời gian thực: Đo lường tổng cơ hội đã lưu, số đơn đã nộp, số vòng phỏng vấn, Tỷ lệ vào vòng phỏng vấn (`Interview Rate %`), và Tỷ lệ nhận Offer (`Offer Rate %`).
-    * Tích hợp nút kích hoạt `Phòng thủ đồ án [🛡️]` trực tiếp từ thẻ ứng tuyển, liên kết với `ProjectDefenseModal.tsx` để ứng viên ôn luyện trước khi bước vào phỏng vấn.
-    * Cấu hình Route `/student/applications` trên `App.tsx` và tích hợp điều hướng vào `Sidebar.tsx`.
-    * Hoàn tất kiểm thử & đóng gói sản xuất: Toàn bộ **14/14 Test Suites (52/52 Tests) Pass 100%**, lệnh `npm run build` (`tsc && vite build`) hoàn thành sạch sẽ không lỗi.
-* **Kinh nghiệm rút ra:** Biến kỳ thực tập thành một sản phẩm có tính thực dụng cao: Từ việc tạo CV chuẩn đồ án, tạo pitch bám sát JD, phòng thủ trước Tech Lead, đến quản lý toàn trình phỏng vấn và đo lường tỷ lệ chuyển đổi giúp ứng viên tự tin bước vào thị trường lao động CNTT.
-
 ---
 
-## 📊 BẢNG TỔNG KẾT ĐỐI CHIẾU TRƯỚC VÀ SAU KHI TINH GỌN (Cập nhật đến ngày 23/10/2026)
+## 📊 BẢNG TỔNG KẾT ĐỐI CHIẾU TRƯỚC VÀ SAU KHI TINH GỌN (Tính đến ngày 20/10/2026)
 
 | Hạng mục so sánh | Kiến trúc ban đầu (Trước khi Tinh gọn) | Kiến trúc hiện tại (Đã tinh gọn đến 23/10/2026) |
 |---|---|---|
 | **Cấu trúc Backend** | Cồng kềnh với Microservice Python Chatbot phụ | Thuần **TypeScript Clean Architecture** trên 1 codebase duy nhất |
-| **Xác thực năng lực** | Phụ thuộc Giảng viên phê duyệt thủ công (`is_verified`) | **Bằng chứng thực chiến:** Link Live Demo, GitHub Repo & Mã QR quét demo A4 |
-| **Tính năng khảo sát** | Khảo sát tính cách MBTI & Phỏng vấn Chatbot lý thuyết | **Đã cắt bỏ 100%** để tập trung vào CV Builder định hướng dự án |
+| **Xác thực năng lực** | Phụ thuộc Giảng viên phê duyệt thủ công (`is_verified`) | **Bằng chứng thực chiến (Evidence-Based):** Link Live Demo, GitHub Repo & Mã QR quét demo A4 |
+| **Tính xác thực dữ liệu** | Dễ phát sinh tự khai báo ảo hoặc bóc tách `package.json` trôi nổi | **Kiên định Lean MVP chống Fake:** Chỉ chấp nhận dự án có mã nguồn và demo kiểm chứng thực tế |
 | **Độ tương thích JD** | So khớp từ khóa cơ bản, dễ phát sinh Zombie CV | **Project Fit Explainer** minh bạch % khớp, chip từ khóa & STAR Diff Review |
 | **Kiểm soát khổ giấy in** | Không kiểm soát, văn bản dễ tràn sang trang 2 xấu xí | **Page-Budget Guard** đo lường A4 thời gian thực + **1-Click Auto-Condense** |
 | **Bố cục hiển thị** | Cố định mẫu 2 cột cứng nhắc | Luân chuyển linh hoạt giữa **1 Cột (Harvard ATS)** và **2 Cột (Modern Tech)** |
 | **Độ tin cậy của AI** | AI tự động tạo câu có nguy cơ bịa đặt thư viện | **Anti-Hallucination Guard** bảo vệ, chặn đứng các công nghệ ngoài khai báo |
 | **Vũ khí Phỏng vấn** | Chatbot phỏng vấn lý thuyết chung chung | **Project Defense Briefing:** Top 3 câu hỏi xoáy Tech Stack, Trade-off & Debugging Scaffold |
-| **Quản lý Đơn ứng tuyển** | Chưa có, phân mảnh dữ liệu | **Application Hub:** Kanban 6 cột, CV-JD Snapshot Vault, Lịch sử chuyển đổi |
-| **Không gian Phỏng vấn** | Chưa có, ghi chép rời rạc | **Interview Workspace:** Quản lý lịch Meet, Questions, My Answers & Self-Review |
-| **Phân tích Hiệu quả** | Không có số liệu đo lường | **Analytics Dashboard:** Đo lường Interview Rate %, Offer Rate % thời gian thực |
-| **Tình trạng Unit Test** | Chưa có kiểm thử tự động | **14/14 Test Suites Pass 100% (52/52 Tests)** |
+| **Tình trạng Unit Test** | Chưa có kiểm thử tự động | **13/13 Test Suites Pass 100% (46/46 Tests)** |
 | **Tình trạng Compile** | Nhiều lỗi type mismatch | **`tsc && vite build` Compile sạch 100%, 0 lỗi** |
 
 ---
 
 ## ✍️ ĐÁNH GIÁ CHUNG CỦA SINH VIÊN VỀ QUÁ TRÌNH 5 TUẦN
-1. **Mức độ hoàn thành mục tiêu:** Em đã hoàn thành **100% khối lượng công việc được giao**, biến ProfileHub thành một nền tảng tạo CV theo định hướng đồ án thực tế hiện đại, tinh gọn và đạt chuẩn tuyển dụng doanh nghiệp.
+1. **Mức độ hoàn thành mục tiêu:** Em đã hoàn thành **100% khối lượng công việc được giao**, biến ProfileHub thành một nền tảng tạo CV định hướng đồ án thực tế hiện đại, tinh gọn và đạt chuẩn tuyển dụng doanh nghiệp.
 2. **Kỹ năng chuyên môn đạt được:** 
    - Làm chủ React 18, TypeScript Strict Mode, Tailwind CSS và Supabase (PostgreSQL RLS).
    - Nắm vững phương pháp thiết kế phần mềm hướng domain (DDD), ban hành quyết định kiến trúc (ADR) và phát triển theo định hướng kiểm thử (TDD).

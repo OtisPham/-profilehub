@@ -678,32 +678,6 @@ export default function Sidebar() {
               <Briefcase size={17} color={location.pathname.includes('/student/jobs') ? theme.activeIcon : '#3b82f6'} />
               {!collapsed && <span>Việc Làm & Tuyển Dụng</span>}
             </Link>
-
-            <Link
-              to="/student/applications"
-              onClick={() => setMobileOpen(false)}
-              className="ph-nav-link"
-              title={collapsed ? 'Tiến Trình Ứng Tuyển (Application Hub)' : undefined}
-              style={getMenuStyles('/student/applications', collapsed)}
-            >
-              <Kanban size={17} color={location.pathname.includes('/student/applications') ? theme.activeIcon : '#2563eb'} />
-              {!collapsed && (
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-                  <span>Tiến Trình Ứng Tuyển</span>
-                  <span style={{
-                    fontSize: '9px',
-                    fontWeight: '800',
-                    backgroundColor: '#eff6ff',
-                    color: '#2563eb',
-                    padding: '1.5px 5px',
-                    borderRadius: '4px',
-                    border: '1px solid #bfdbfe'
-                  }}>
-                    HUB
-                  </span>
-                </div>
-              )}
-            </Link>
           </>
         )}
 

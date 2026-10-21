@@ -606,7 +606,7 @@ def create_bm01b_document():
             )
         },
         {
-            "week_header": "TUẦN 5: CONTEXTUAL APPLICATION PITCH, APPLICATION HUB & INTERVIEW WORKSPACE (20/10/2026 – 23/10/2026)",
+            "week_header": "TUẦN 5: CONTEXTUAL APPLICATION PITCH & PROJECT DEFENSE BRIEFING (20/10/2026)",
             "day_title": "Tuần: 5   Thứ: 3   Ngày: 20/10/2026",
             "morning": (
                 "Phản biện Cover Letter ngành IT, ban hành ADR 0002 Contextual Application Pitch",
@@ -617,48 +617,6 @@ def create_bm01b_document():
                 "Xây dựng ApplicationPitchModal & Trụ Cột 3: Project Technical Defense Briefing",
                 "Xây dựng applicationPitchService.ts, ApplicationPitchModal.tsx (đếm từ thời gian thực, 1-Click Copy). Xây dựng projectDefenseService.ts và ProjectDefenseModal.tsx huấn luyện ứng viên phòng thủ trước Tech Lead (Top 3 câu hỏi xoáy, Trade-off, Debugging Scaffold). Tích hợp Sidebar. Chạy 13 test suites (46 tests) pass 100%.",
                 "Trang bị bản lĩnh phòng thủ đồ án trước Tech Lead giúp ứng viên tự tin vượt qua cả vòng lọc CV lẫn vòng phỏng vấn kỹ thuật chuyên sâu."
-            )
-        },
-        {
-            "week_header": None,
-            "day_title": "Tuần: 5   Thứ: 4   Ngày: 21/10/2026",
-            "morning": (
-                "Thiết kế CSDL & Tầng dịch vụ Student Application Hub (applicationService.ts)",
-                "Thiết kế thực thể StudentApplication với 9 trạng thái tuyển dụng. Xây dựng applicationService.ts: Hiện thực hóa quy tắc Snapshot Pattern — Đóng băng bản CV và JD tại thời điểm ứng tuyển, bảo toàn dữ liệu độc lập với Master Profile.",
-                "Áp dụng Snapshot Pattern ở tầng ứng tuyển bảo vệ ứng viên khỏi rủi ro quên phiên bản CV đã nộp khi nhà tuyển dụng liên hệ phỏng vấn."
-            ),
-            "afternoon": (
-                "Tích hợp luồng ứng tuyển tự động từ StudentJobs.tsx & Bộ kiểm thử TDD",
-                "Kết nối nút 'Nộp CV & Ứng tuyển' trên StudentJobs.tsx tự động đẩy hồ sơ vào Application Hub cá nhân kèm snapshot CV đang active. Viết bộ kiểm thử TDD applicationService.test.ts (TC-APP-01, TC-APP-02) xác thực bất biến và lịch sử trạng thái.",
-                "Tự động hóa luồng lưu trữ đơn ứng tuyển từ cổng việc làm giúp giảm tối đa thao tác nhập liệu thủ công cho sinh viên."
-            )
-        },
-        {
-            "week_header": None,
-            "day_title": "Tuần: 5   Thứ: 5   Ngày: 22/10/2026",
-            "morning": (
-                "Phát triển giao diện Bảng Kanban Tiến trình Ứng tuyển 6 Cột (StudentApplicationsPage)",
-                "Xây dựng giao diện Kanban 6 cột trực quan: Chuẩn bị/Lưu -> Đã nộp -> Phỏng vấn HR -> Phỏng vấn Kỹ thuật -> Nhận Offer -> Dừng tuyển. Hiển thị thẻ Application Card kèm chip ưu tiên HOT, tên bản CV snapshot và thời gian nộp.",
-                "Trực quan hóa tiến trình hồ sơ bằng Kanban board giúp sinh viên nắm bắt bức tranh toàn cảnh phễu ứng tuyển cá nhân."
-            ),
-            "afternoon": (
-                "Xây dựng cơ chế Status History an toàn & Modal xem chi tiết hồ sơ snapshot",
-                "Hiện thực hóa StatusHistoryEntry ghi nhận vết chuyển trạng thái (trạng thái cũ/mới, thời gian, lý do). Xây dựng Modal chi tiết hiển thị toàn văn JD gốc và thông tin bản CV đóng băng. Bổ sung test TC-APP-03, TC-APP-04 (thăng cấp trạng thái, Archive).",
-                "Lưu vết lịch sử chuyển đổi trạng thái đảm bảo tính minh bạch và cung cấp dữ liệu chính xác cho các phân tích chuyển đổi sau này."
-            )
-        },
-        {
-            "week_header": None,
-            "day_title": "Tuần: 5   Thứ: 6   Ngày: 23/10/2026",
-            "morning": (
-                "Xây dựng Không gian Phỏng vấn chuyên sâu (Interview Workspace)",
-                "Xây dựng tính năng lên lịch phỏng vấn (ngày giờ, Google Meet link, vòng HR/Technical/Final). Phát triển khung ghi chép chiến lược: câu hỏi thực tế từ Tech Lead, câu trả lời, feedback và khung tự rút kinh nghiệm (Self-Review & Next Steps).",
-                "Ghi chép và tự đánh giá ngay sau mỗi buổi phỏng vấn giúp sinh viên nhanh chóng biến thất bại thành bài học kinh nghiệm để cải thiện liên tục."
-            ),
-            "afternoon": (
-                "Xây dựng Analytics Dashboard KPI, Route Sidebar & Kiểm thử Build toàn diện",
-                "Phát triển thẻ chỉ số KPI thời gian thực: Tỷ lệ vào vòng phỏng vấn (Interview Rate %), Tỷ lệ nhận Offer (Offer Rate %). Tích hợp nút Phòng thủ đồ án trực tiếp trên thẻ. Đăng ký route /student/applications và Sidebar. Chạy 14/14 Test Suites (52/52 Tests) pass 100%, npm run build thành công 0 lỗi.",
-                "Hoàn thành toàn bộ hệ sinh thái ProfileHub: từ CV đồ án thực chiến, bảo vệ trước Tech Lead, đến quản lý toàn trình phỏng vấn chuẩn doanh nghiệp."
             )
         }
     ]
