@@ -1,5 +1,7 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import React from 'react';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthProvider';
+import type { UserRole } from './types/database';
 
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register'; 
@@ -27,16 +29,54 @@ import RecruiterProfile from './pages/recruiter/RecruiterProfile';
 import MainLayout from './components/layout/MainLayout';
 
 /**
- * Điều hướng thông minh cho đường dẫn /dashboard:
- * Chuyển thẳng về CV Management Workspace đối với Ứng viên,
- * hoặc Bảng Tin Tuyển Dụng đối với Nhà tuyển dụng.
+ * Component bảo vệ tuyến đường nội bộ - Kích hoạt luồng bắt buộc đăng nhập (Login-First Architecture)
+ * (updateui.md Section 1.1 & Section 5)
  */
-function SmartDashboardRedirect() {
+function ProtectedRoute({ 
+  children, 
+  allowedRoles 
+}: { 
+  children: React.ReactNode; 
+  allowedRoles?: UserRole[];
+}) {
+  const { user, loading, userRole } = useAuth();
+  const location = useLocation();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-[#0c101c]">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-3 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+          <p className="text-xs font-semibold text-slate-600 dark:text-slate-400">Đang kiểm tra phiên làm việc ProfileHub...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Khách chưa đăng nhập: chuyển hướng về /login và ghi nhớ đường dẫn quay lại
+  if (!user) {
+    return <Navigate to="/login" state={{ returnTo: location.pathname }} replace />;
+  }
+
+  // Phân quyền theo vai trò nếu có yêu cầu cụ thể
+  if (allowedRoles && !allowedRoles.includes(userRole)) {
+    return <Navigate to={userRole === 'recruiter' ? '/recruiter/dashboard' : '/dashboard'} replace />;
+  }
+
+  return <>{children}</>;
+}
+
+/**
+ * Điều hướng thông minh cho đường dẫn /dashboard:
+ * Chuyển sang /recruiter/dashboard nếu là Nhà tuyển dụng,
+ * hoặc hiển thị Dashboard hành động phỏng vấn War Room cho Ứng viên.
+ */
+function DashboardRoute() {
   const { userRole } = useAuth();
   if (userRole === 'recruiter') {
     return <Navigate to="/recruiter/dashboard" replace />;
   }
-  return <Navigate to="/cv-management" replace />;
+  return <Dashboard />;
 }
 
 function App() {
@@ -55,36 +95,141 @@ function App() {
 
       {/* Layout SaaS toàn cục có HeaderBar kính mờ & Footer */}
       <Route element={<MainLayout />}>
-        {/* 1. Trang chủ Landing Page chuẩn Consumer SaaS */}
+        {/* 1. Trang chủ Landing Page chuẩn Consumer SaaS (Công khai) */}
         <Route path="/" element={<HomePage />} />
 
-        {/* 2. Bảng điều khiển trung tâm hành động (Action-Driven Dashboard) */}
-        <Route path="/dashboard" element={<Dashboard />} />
+        {/* 2. Bảng điều khiển trung tâm hành động (Bảo vệ đăng nhập) */}
+        <Route 
+          path="/dashboard" 
+          element={
+            <ProtectedRoute>
+              <DashboardRoute />
+            </ProtectedRoute>
+          } 
+        />
 
-        {/* 3. Phân hệ Ứng viên (Candidate & Student Workspace) */}
-        <Route path="/cv-management" element={<CVManagementPage />} />
+        {/* 3. Phân hệ Ứng viên (Candidate & Student Workspace - Bắt buộc đăng nhập) */}
+        <Route 
+          path="/cv-management" 
+          element={
+            <ProtectedRoute allowedRoles={['student']}>
+              <CVManagementPage />
+            </ProtectedRoute>
+          } 
+        />
         <Route path="/cv-manager" element={<Navigate to="/cv-management" replace />} />
-        <Route path="/cv-builder" element={<CVBuilder />} />
+        <Route 
+          path="/cv-builder" 
+          element={
+            <ProtectedRoute allowedRoles={['student']}>
+              <CVBuilder />
+            </ProtectedRoute>
+          } 
+        />
         
-        <Route path="/my-projects" element={<Projects />} />
+        <Route 
+          path="/my-projects" 
+          element={
+            <ProtectedRoute allowedRoles={['student']}>
+              <Projects />
+            </ProtectedRoute>
+          } 
+        />
         <Route path="/projects" element={<Navigate to="/my-projects" replace />} />
 
-        <Route path="/my-profile" element={<MyProfile />} />
+        <Route 
+          path="/my-profile" 
+          element={
+            <ProtectedRoute allowedRoles={['student']}>
+              <MyProfile />
+            </ProtectedRoute>
+          } 
+        />
         <Route path="/profile" element={<Navigate to="/my-profile" replace />} />
 
-        <Route path="/certificates" element={<Certificates />} />
-        <Route path="/achievements" element={<Achievements />} />
-        <Route path="/student/jobs" element={<StudentJobs />} />
+        <Route 
+          path="/certificates" 
+          element={
+            <ProtectedRoute allowedRoles={['student']}>
+              <Certificates />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/achievements" 
+          element={
+            <ProtectedRoute allowedRoles={['student']}>
+              <Achievements />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/student/jobs" 
+          element={
+            <ProtectedRoute allowedRoles={['student']}>
+              <StudentJobs />
+            </ProtectedRoute>
+          } 
+        />
 
-        {/* 4. Phân hệ Nhà tuyển dụng (Recruiter Workspace) */}
-        <Route path="/recruiter/dashboard" element={<RecruiterDashboard />} />
-        <Route path="/recruiter/profile" element={<RecruiterProfile />} />
-        <Route path="/recruiter/jobs" element={<JobManagement />} />
-        <Route path="/recruiter/candidates" element={<CandidateSearch />} />
+        {/* 4. Phân hệ Nhà tuyển dụng (Recruiter Workspace - Bắt buộc đăng nhập) */}
+        <Route 
+          path="/recruiter/dashboard" 
+          element={
+            <ProtectedRoute allowedRoles={['recruiter']}>
+              <RecruiterDashboard />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/recruiter/profile" 
+          element={
+            <ProtectedRoute allowedRoles={['recruiter']}>
+              <RecruiterProfile />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/recruiter/jobs" 
+          element={
+            <ProtectedRoute allowedRoles={['recruiter']}>
+              <JobManagement />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/recruiter/candidates" 
+          element={
+            <ProtectedRoute allowedRoles={['recruiter']}>
+              <CandidateSearch />
+            </ProtectedRoute>
+          } 
+        />
         <Route path="/recruiter/search" element={<Navigate to="/recruiter/candidates" replace />} />
-        <Route path="/recruiter/pipeline" element={<CandidatePipeline />} />
-        <Route path="/recruiter/saved" element={<SavedCandidates />} />
-        <Route path="/recruiter/ai-assistant" element={<AIRecruitmentAssistant />} />
+        <Route 
+          path="/recruiter/pipeline" 
+          element={
+            <ProtectedRoute allowedRoles={['recruiter']}>
+              <CandidatePipeline />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/recruiter/saved" 
+          element={
+            <ProtectedRoute allowedRoles={['recruiter']}>
+              <SavedCandidates />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/recruiter/ai-assistant" 
+          element={
+            <ProtectedRoute allowedRoles={['recruiter']}>
+              <AIRecruitmentAssistant />
+            </ProtectedRoute>
+          } 
+        />
       </Route>
 
       {/* 404 Route */}

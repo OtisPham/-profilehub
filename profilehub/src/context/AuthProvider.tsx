@@ -22,10 +22,20 @@ const AuthContext = createContext<AuthContextType>({
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
-  const [userRole, setUserRole] = useState<UserRole>('student');
+  const [userRole, setUserRole] = useState<UserRole>(() => {
+    const saved = typeof window !== 'undefined' ? localStorage.getItem('profilehub_demo_role') : null;
+    return (saved === 'recruiter' || saved === 'student') ? (saved as UserRole) : 'student';
+  });
   const [loading, setLoading] = useState(true);
 
   const fetchUserRole = useCallback(async (userId: string, metadataRole?: string) => {
+    // Ưu tiên vai trò demo nếu người dùng chủ động chọn thử nghiệm trên giao diện
+    const demoRole = typeof window !== 'undefined' ? localStorage.getItem('profilehub_demo_role') : null;
+    if (demoRole === 'recruiter' || demoRole === 'student') {
+      setUserRole(demoRole as UserRole);
+      return;
+    }
+
     try {
       const { data, error } = await supabase
         .from('users')

@@ -429,7 +429,7 @@ export default function HomePage() {
       </section>
 
       {/* 3. CORE PILLARS BENTO GRID (4 TRỤ CỘT CỐT LÕI) */}
-      <section className="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="features" className="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-2">
@@ -483,7 +483,7 @@ export default function HomePage() {
       </section>
 
       {/* 4. BEFORE / AFTER COMPARISON SECTION */}
-      <section className="py-16 sm:py-24 bg-slate-100/70 dark:bg-[#0c101c] border-t border-slate-200/80 dark:border-slate-800 transition-colors">
+      <section id="about" className="py-16 sm:py-24 bg-slate-100/70 dark:bg-[#0c101c] border-t border-slate-200/80 dark:border-slate-800 transition-colors">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="text-center max-w-3xl mx-auto mb-14">
@@ -543,7 +543,7 @@ export default function HomePage() {
               Sẵn Sàng Biến Đồ Án Của Bạn Thành Lời Mời Phỏng Vấn?
             </h3>
             <p className="mt-4 text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl mx-auto">
-              Không cần đăng nhập rườm rà. Bắt đầu ngay trên trình duyệt, dán link GitHub và sở hữu bản CV chuẩn ATS hoàn hảo trong 5 phút.
+              Bảo vệ dữ liệu vĩnh viễn trên Supabase Cloud. Bắt đầu ngay, quản lý đồ án thật và sở hữu bản CV chuẩn ATS hoàn hảo trong 2 phút.
             </p>
 
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">

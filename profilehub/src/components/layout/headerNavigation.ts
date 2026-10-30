@@ -14,9 +14,21 @@ export interface HeaderNavLink {
 }
 
 /**
- * Trả về danh sách liên kết điều hướng trên HeaderBar dựa theo vai trò người dùng
+ * Trả về danh sách liên kết điều hướng trên HeaderBar dựa theo trạng thái đăng nhập và vai trò người dùng (updateui.md Section 2)
  */
-export function getHeaderNavLinks(role: UserRole = 'student'): HeaderNavLink[] {
+export function getHeaderNavLinks(
+  role: UserRole = 'student',
+  isAuthenticated: boolean = false
+): HeaderNavLink[] {
+  // Trạng thái 1: Khi chưa đăng nhập (Public Landing Page)
+  if (!isAuthenticated) {
+    return [
+      { label: 'Về Chúng Tôi', path: '/#about' },
+      { label: 'Tính Năng JEV', path: '/#features' },
+    ];
+  }
+
+  // Trạng thái 2: Khi đã đăng nhập - Nhà tuyển dụng (Recruiter Workspace)
   if (role === 'recruiter') {
     return [
       { label: 'Bảng Tin Tuyển Dụng', path: '/recruiter/dashboard' },
@@ -26,10 +38,11 @@ export function getHeaderNavLinks(role: UserRole = 'student'): HeaderNavLink[] {
     ];
   }
 
-  // Mặc định cho Student / Guest - Chỉ giữ các lối tắt thực sự hữu dụng và hoàn chỉnh (Fix.md BUG-01)
+  // Trạng thái 2: Khi đã đăng nhập - Ứng viên (Candidate Workspace: Đúng 3 Menu Cốt Lõi Duy Nhất)
   return [
-    { label: 'Quản Lý CV', path: '/cv-management' },
-    { label: 'Kho Đồ Án', path: '/my-projects' },
+    { label: '📊 Tổng Quan', path: '/dashboard' },
+    { label: '📂 Kho Đồ Án', path: '/my-projects' },
+    { label: '📄 Quản Lý CV', path: '/cv-management' },
   ];
 }
 
