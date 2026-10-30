@@ -12,7 +12,7 @@ Qua đợt thử nghiệm thực tế với ứng viên bên ngoài, hệ thốn
 
 | STT | Mã lỗi | Phân loại | Tóm tắt phản ánh từ ứng viên | Mức độ ưu tiên |
 | :---: | :---: | :--- | :--- | :---: |
-| **01** | `BUG-01` | **Luồng nghiệp vụ** | Mục "Cơ hội việc làm" chưa có việc thật, click vào gây cụt hứng $\rightarrow$ Cần ẩn xuống. | **P0** (Làm ngay) |
+| **01** | `BUG-01` | **Luồng nghiệp vụ & Điều hướng** | Ẩn 2 tính năng "Tìm Việc Làm" và "Công Cụ Nghề Nghiệp" chưa phát triển xong trên HeaderBar & Sidebar để tinh gọn luồng. | **P0** (Làm ngay) |
 | **02** | `BUG-02` | **Giao diện soạn thảo** | Quá nhiều icon tính năng trùng lặp trên thanh ngang khi viết CV thủ công $\rightarrow$ Rối mắt. | **P0** (Làm ngay) |
 | **03** | `BUG-03` | **Bảo mật & Dữ liệu** | Hiện tượng đăng nhập vào vẫn thấy CV của phiên khách hoặc khách thấy CV tài khoản khác. | **P0** (Làm ngay) |
 | **04** | `BUG-04` | **Thuật ngữ & Giao diện** | Bảng bên phải để "Đánh giá theo STAR" khó hiểu $\rightarrow$ Đổi tên thành **AI Copilot**. | **P1** |
@@ -28,15 +28,28 @@ Qua đợt thử nghiệm thực tế với ứng viên bên ngoài, hệ thốn
 
 ---
 
-### 1. `BUG-01`: Ẩn phân hệ "Cơ Hội Việc Làm" chưa phát triển
+### 1. `BUG-01`: Ẩn 2 tính năng "Tìm Việc Làm" và "Công Cụ Nghề Nghiệp" chưa phát triển hoàn thiện
 
-* **Hiện tượng lỗi:**
-  * Trên `Sidebar.tsx` và `Dashboard.tsx` có mục **"Việc Làm & Tuyển Dụng"** (`/student/jobs`).
-  * Tuy nhiên, vì hệ thống đang tập trung vào giá trị cốt lõi (Hồ sơ, Kho đồ án Proof-of-Work, CV Studio, War Room) và chưa mở cổng tuyển dụng thực tế cho nhiều doanh nghiệp, ứng viên bấm vào thấy trang trống hoặc tin mẫu, gây cảm giác nền tảng "chưa xong".
-* **Nguyên nhân:** Đưa tính năng Job Board ra thanh menu chính quá sớm khi nguồn việc chưa sẵn sàng.
+* **Hiện tượng lỗi & Phản ánh từ ứng viên:**
+  1. **Tính năng "Tìm Việc Làm" (Cơ hội việc làm):**
+     * Xuất hiện trên thanh điều hướng trên cùng (`HeaderBar.tsx`: menu *Tìm Việc Làm*), thanh menu bên trái (`Sidebar.tsx`: menu *Việc Làm & Tuyển Dụng*) và khối gợi ý hành động (`Dashboard.tsx`: nút *Khám Phá Việc Làm*).
+     * Khi ứng viên click vào đường dẫn `/student/jobs`, hệ thống chỉ hiển thị danh sách tĩnh giả lập do cổng doanh nghiệp tuyển dụng thật chưa kích hoạt đại trà. Ứng viên cảm thấy cụt hứng và đánh giá nền tảng "chưa hoàn thiện".
+  2. **Tính năng "Công Cụ Nghề Nghiệp" (Dropdown Tiện ích trên Header):**
+     * Nằm trên `HeaderBar.tsx` (định nghĩa tại `headerNavigation.ts` với nhãn *Công Cụ Nghề Nghiệp*).
+     * Sổ xuống hàng loạt đường dẫn dang dở hoặc chưa có backend xử lý trọn vẹn: `/portfolio-match` (Khớp hồ sơ việc làm), `/mbti` (Trắc nghiệm tính cách MBTI), `/interview-prep` (trang phỏng vấn lẻ tẻ ngoài War Room).
+     * Việc bày biện quá nhiều công cụ chưa phát triển xong làm loãng trải nghiệm, khiến ứng viên bị xao nhãng khỏi 4 "vũ khí" cốt lõi của ProfileHub: **Hồ Sơ Gốc • Kho Đồ Án Proof-of-Work • May Đo CV ATS • Trạm Tác Chiến War Room**.
+* **Nguyên nhân:** Đưa các menu phái sinh và Job Board ra vị trí trung tâm của thanh điều hướng (Header & Sidebar) quá sớm trong giai đoạn MVP.
 * **Phương án sửa (Proposed Fix):**
-  1. Ẩn menu `Việc Làm & Tuyển Dụng` khỏi thanh `Sidebar.tsx` của ứng viên.
-  2. Tại Dashboard, chuyển nút *"Khám phá việc làm"* thành nhãn badge: *"Cơ hội việc làm (Sắp ra mắt)"* hoặc tạm ẩn đi, tập trung 100% sự chú ý của ứng viên vào **Tạo CV Khớp JD** và **Kho Đồ Án**.
+  1. **Trên HeaderBar (`headerNavigation.ts` & `HeaderBar.tsx`):**
+     * Loại bỏ hoàn toàn mục **"Tìm Việc Làm"** (`/student/jobs`).
+     * Loại bỏ hoàn toàn dropdown **"Công Cụ Nghề Nghiệp"** (`#tools`).
+     * Thanh Header của Ứng viên chỉ giữ các lối tắt thực sự hữu dụng và hoàn chỉnh: **Quản Lý CV (`/cv-management`) • Kho Đồ Án (`/my-projects`)**.
+  2. **Trên Sidebar (`Sidebar.tsx`):**
+     * Ẩn bỏ mục **"Việc Làm & Tuyển Dụng"** (`/student/jobs`).
+     * Đưa mục **"Kho Đồ Án (Proof-of-Work)"** lên thay thế để ứng viên tiện tay truy cập.
+  3. **Trên Dashboard (`Dashboard.tsx`):**
+     * Ẩn nút *"Khám Phá Việc Làm"* tại khối Smart Next Action, chỉ tập trung vào 2 nút hành động chính: **+ Tạo CV Khớp JD** và **+ Lên Lịch Phỏng Vấn Mới**.
+  4. Đưa 2 tính năng này vào danh mục chờ phát triển trong tương lai (Post-MVP Roadmap) khi đã có đủ số lượng nhà tuyển dụng thật trên hệ thống.
 
 ---
 
@@ -232,7 +245,7 @@ Qua đợt thử nghiệm thực tế với ứng viên bên ngoài, hệ thốn
 
 | Thứ tự | Tệp mã nguồn cần sửa | Nội dung công việc cụ thể | Trạng thái |
 | :---: | :--- | :--- | :---: |
-| **01** | `src/components/layout/Sidebar.tsx` | Ẩn menu "Việc Làm & Tuyển Dụng" (`/student/jobs`); thêm menu "Kho Đồ Án". | ⏳ Sẵn sàng sửa |
+| **01** | `Sidebar.tsx`, `headerNavigation.ts`, `HeaderBar.tsx`, `Dashboard.tsx` | Ẩn 2 tính năng "Tìm Việc Làm" và "Công Cụ Nghề Nghiệp" khỏi Header, Sidebar và Dashboard; thay bằng menu "Kho Đồ Án". | ⏳ Sẵn sàng sửa |
 | **02** | `src/pages/student/CVBuilder.tsx` | Gỡ bỏ nút Khảo sát lương & Phỏng vấn AI; gom icon kiểm tra ATS/Lỗi/STAR. | ⏳ Sẵn sàng sửa |
 | **03** | `src/pages/student/CVBuilder.tsx` | Đổi tên panel bên phải thành **AI Copilot**; loại bỏ thuật ngữ STAR gây rối. | ⏳ Sẵn sàng sửa |
 | **04** | `src/pages/student/CVBuilder.tsx` | Ẩn badge `Còn 20/20 lượt AI`; chỉ bật modal nạp khi quota = 0; fix lỗi màn mờ khi lưu. | ⏳ Sẵn sàng sửa |

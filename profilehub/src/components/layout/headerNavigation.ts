@@ -26,23 +26,10 @@ export function getHeaderNavLinks(role: UserRole = 'student'): HeaderNavLink[] {
     ];
   }
 
-  // Mặc định cho Student / Guest
+  // Mặc định cho Student / Guest - Chỉ giữ các lối tắt thực sự hữu dụng và hoàn chỉnh (Fix.md BUG-01)
   return [
     { label: 'Quản Lý CV', path: '/cv-management' },
-    { label: 'Kho Dự Án', path: '/my-projects' },
-    { label: 'Tìm Việc Làm', path: '/student/jobs' },
-    {
-      label: 'Công Cụ Nghề Nghiệp',
-      path: '#tools',
-      isDropdown: true,
-      subLinks: [
-        { label: 'Luyện Phỏng Vấn AI', path: '/interview-prep', description: 'Mô phỏng phỏng vấn & kịch bản gỡ lỗi' },
-        { label: 'Khớp Hồ Sơ Việc Làm', path: '/portfolio-match', description: 'Đo lường độ khớp giữa đồ án và vị trí' },
-        { label: 'Trắc Nghiệm MBTI', path: '/mbti', description: 'Định vị thiên hướng nghề nghiệp phù hợp' },
-        { label: 'Chứng Chỉ & Thành Tựu', path: '/certificates', description: 'Hồ sơ chứng chỉ năng lực được bảo chứng' },
-        { label: 'Hồ Sơ Năng Lực Gốc', path: '/my-profile', description: 'Master Profile đồng bộ ngược tự động' },
-      ],
-    },
+    { label: 'Kho Đồ Án', path: '/my-projects' },
   ];
 }
 

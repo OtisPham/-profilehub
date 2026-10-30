@@ -64,8 +64,8 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
-                <Link to="/student/jobs" className="hover:text-white transition">
-                  Cơ Hội Việc Làm IT
+                <Link to="/my-projects" className="hover:text-white transition">
+                  Kho Đồ Án Kỹ Thuật (Proof-of-Work)
                 </Link>
               </li>
               <li>

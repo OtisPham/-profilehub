@@ -3,21 +3,14 @@ import { getHeaderNavLinks, getPendingInterviewNotificationCount } from './heade
 import type { CandidatePipelineItem } from '../../types/database';
 
 describe('HeaderBar Navigation Logic & Role Contracts', () => {
-  it('TC-HEADER-01: Sinh viên / Ứng viên nhận được bộ liên kết điều hướng chính xác', () => {
+  it('TC-HEADER-01: Sinh viên / Ứng viên nhận được bộ liên kết điều hướng tinh gọn (Quản Lý CV & Kho Đồ Án)', () => {
     const studentLinks = getHeaderNavLinks('student');
     const paths = studentLinks.map(l => l.path);
 
     expect(paths).toContain('/cv-management');
     expect(paths).toContain('/my-projects');
-    expect(paths).toContain('/student/jobs');
-    
-    // Kiểm tra menu tiện ích mở rộng
-    const utilitiesMenu = studentLinks.find(l => l.isDropdown);
-    expect(utilitiesMenu).toBeDefined();
-    expect(utilitiesMenu?.subLinks?.map(s => s.path)).toContain('/interview-prep');
-    expect(utilitiesMenu?.subLinks?.map(s => s.path)).toContain('/portfolio-match');
-    expect(utilitiesMenu?.subLinks?.map(s => s.path)).toContain('/mbti');
-    expect(utilitiesMenu?.subLinks?.map(s => s.path)).toContain('/my-profile');
+    expect(paths).not.toContain('/student/jobs');
+    expect(paths).not.toContain('#tools');
   });
 
   it('TC-HEADER-02: Nhà tuyển dụng (Recruiter) nhận được bộ liên kết quản trị tuyển dụng', () => {

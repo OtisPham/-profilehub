@@ -636,13 +636,6 @@ export default function Dashboard() {
                     <Sparkles size={15} className="fill-slate-950" />
                     <span>May Đo CV Khớp JD (1-Chạm)</span>
                   </button>
-                  <Link
-                    to="/my-projects"
-                    className="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-bold rounded-xl border border-white/20 transition-all flex items-center gap-1.5 active:scale-95"
-                  >
-                    <FolderKanban size={15} />
-                    <span>Kho Đồ Án Kỹ Thuật</span>
-                  </Link>
                 </div>
               </div>
             </div>
