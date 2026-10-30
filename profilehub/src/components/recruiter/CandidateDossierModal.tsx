@@ -27,6 +27,14 @@ import {
   ShieldCheck
 } from 'lucide-react';
 
+const formatExternalUrl = (url?: string) => {
+  if (!url) return '';
+  const trimmed = url.trim();
+  if (!trimmed) return '';
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return 'https://' + trimmed;
+};
+
 export interface DossierCandidate {
   id: string;
   name: string;
@@ -370,12 +378,12 @@ export default function CandidateDossierModal({
                             )}
                             <div className="flex items-center gap-3 pt-1 text-[10px] text-blue-600 font-medium">
                               {proj.demo_url && (
-                                <a href={proj.demo_url} target="_blank" rel="noreferrer" className="flex items-center gap-1 hover:underline">
+                                <a href={formatExternalUrl(proj.demo_url)} target="_blank" rel="noreferrer" className="flex items-center gap-1 hover:underline">
                                   <ExternalLink className="w-3 h-3" /> Demo
                                 </a>
                               )}
                               {proj.github_url && (
-                                <a href={proj.github_url} target="_blank" rel="noreferrer" className="flex items-center gap-1 hover:underline">
+                                <a href={formatExternalUrl(proj.github_url)} target="_blank" rel="noreferrer" className="flex items-center gap-1 hover:underline">
                                   <ExternalLink className="w-3 h-3" /> GitHub
                                 </a>
                               )}
@@ -556,12 +564,12 @@ export default function CandidateDossierModal({
                           )}
                           <div className="flex items-center gap-3 pt-2 text-xs text-blue-600 font-bold">
                             {proj.demo_url && (
-                              <a href={proj.demo_url} target="_blank" rel="noreferrer" className="flex items-center gap-1 hover:underline">
+                              <a href={formatExternalUrl(proj.demo_url)} target="_blank" rel="noreferrer" className="flex items-center gap-1 hover:underline">
                                 <ExternalLink className="w-3.5 h-3.5" /> Xem Demo
                               </a>
                             )}
                             {proj.github_url && (
-                              <a href={proj.github_url} target="_blank" rel="noreferrer" className="flex items-center gap-1 hover:underline">
+                              <a href={formatExternalUrl(proj.github_url)} target="_blank" rel="noreferrer" className="flex items-center gap-1 hover:underline">
                                 <ExternalLink className="w-3.5 h-3.5" /> Source Code
                               </a>
                             )}

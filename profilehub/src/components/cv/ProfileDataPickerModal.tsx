@@ -150,9 +150,9 @@ export default function ProfileDataPickerModal({
       <div className="bg-white rounded-3xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden border border-slate-100">
         
         {/* Header */}
-        <div className="px-6 py-5 bg-gradient-to-r from-blue-50/90 via-indigo-50/50 to-white border-b border-slate-100 flex items-center justify-between">
+        <div className="px-6 py-5 bg-gradient-to-r from-blue-50/90 via-sky-50/40 to-white border-b border-slate-100 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#1e3a8a] to-[#2563eb] flex items-center justify-center text-white shadow-md shadow-blue-500/20">
               <FolderKanban size={20} />
             </div>
             <div>

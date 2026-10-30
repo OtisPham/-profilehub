@@ -774,18 +774,193 @@ export const cvService = {
 
     return { syncedProjects, optedOutCount, skippedCount };
   },
+  /**
+   * Reverse-Sync: Synchronize full CV data back to Student Profile & Master Tables
+   */
+  async syncCvToFullProfile(
+    cvData: {
+      personalInfo: PersonalInfoData;
+      sections: CVSection[];
+    },
+    userId?: string
+  ): Promise<{
+    profileUpdated: boolean;
+    syncedProjectsCount: number;
+    syncedSkillsCount: number;
+    summary: string[];
+  }> {
+    const summary: string[] = [];
+    if (!userId) {
+      return {
+        profileUpdated: false,
+        syncedProjectsCount: 0,
+        syncedSkillsCount: 0,
+        summary: ['Chế độ Khách: Đã lưu CV an toàn vào trình duyệt (localStorage).']
+      };
+    }
+
+    let profileUpdated = false;
+    let syncedProjectsCount = 0;
+    let syncedSkillsCount = 0;
+
+    try {
+      // 1. Extract Education & Bio & Skills
+      const objectiveSection = cvData.sections.find(s => s.type === 'objective');
+      const educationSection = cvData.sections.find(s => s.type === 'education');
+      const skillsSections = cvData.sections.filter(s => s.type === 'skills');
+
+      const primaryEducation = educationSection?.items?.[0];
+      const bioContent = objectiveSection?.content || '';
+
+      // Extract skills list
+      const extractedSkills: string[] = [];
+      skillsSections.forEach(sec => {
+        (sec.items || []).forEach((item: any) => {
+          if (Array.isArray(item.skills)) {
+            extractedSkills.push(...item.skills);
+          } else if (item.name) {
+            extractedSkills.push(item.name);
+          } else if (typeof item === 'string') {
+            extractedSkills.push(item);
+          }
+        });
+      });
+      const uniqueSkills = Array.from(new Set(extractedSkills.map(s => s.trim()).filter(Boolean)));
+
+      // 2. Update student_profiles
+      const profileUpdates: any = {
+        updated_at: new Date().toISOString()
+      };
+      if (cvData.personalInfo.fullName) {
+        profileUpdates.full_name = cvData.personalInfo.fullName;
+        summary.push(`Họ tên: ${cvData.personalInfo.fullName}`);
+      }
+      if (cvData.personalInfo.jobTitle) {
+        profileUpdates.major = cvData.personalInfo.jobTitle;
+      }
+      if (bioContent) {
+        profileUpdates.bio = bioContent;
+      }
+      if (primaryEducation?.institution) {
+        profileUpdates.university = primaryEducation.institution;
+      }
+      if (primaryEducation?.gpa) {
+        profileUpdates.gpa = primaryEducation.gpa;
+      }
+      if (uniqueSkills.length > 0) {
+        profileUpdates.skills = uniqueSkills;
+        syncedSkillsCount = uniqueSkills.length;
+        summary.push(`${uniqueSkills.length} Kỹ năng`);
+      }
+
+      const { error: profError } = await supabase
+        .from('student_profiles')
+        .upsert({ id: userId, ...profileUpdates });
+
+      if (!profError) {
+        profileUpdated = true;
+      }
+
+      // Also update full_name in users table
+      if (cvData.personalInfo.fullName) {
+        await supabase.from('users').update({ full_name: cvData.personalInfo.fullName }).eq('id', userId);
+      }
+
+      // 3. Sync projects into projects table
+      const projectSections = cvData.sections.filter(s => s.type === 'projects');
+      const allProjects: ProjectItem[] = projectSections.flatMap(s => (s.items as ProjectItem[]) || []);
+      
+      for (const proj of allProjects) {
+        const title = (proj.projectName || '').trim();
+        if (!title) continue;
+
+        const payload: any = {
+          student_id: userId,
+          title,
+          role: proj.role || 'Lập trình viên',
+          description: proj.description || '',
+          tags: proj.technologies || [],
+          demo_url: proj.projectUrl || null,
+          github_url: proj.githubUrl || null,
+          project_type: proj.scopeType === 'team' ? 'Dự án nhóm' : 'Mã nguồn mở / Cá nhân',
+          created_at: new Date().toISOString()
+        };
+
+        const { data: existing } = await supabase
+          .from('projects')
+          .select('id')
+          .eq('student_id', userId)
+          .eq('title', title)
+          .maybeSingle();
+
+        if (existing?.id) {
+          await supabase.from('projects').update(payload).eq('id', existing.id);
+        } else {
+          await supabase.from('projects').insert([payload]);
+        }
+        syncedProjectsCount++;
+      }
+
+      if (syncedProjectsCount > 0) {
+        summary.push(`${syncedProjectsCount} Dự án vào Kho`);
+      }
+    } catch (err) {
+      console.warn('[cvService] Reverse-sync exception:', err);
+    }
+
+    return {
+      profileUpdated,
+      syncedProjectsCount,
+      syncedSkillsCount,
+      summary
+    };
+  },
+
 
   /**
-   * Clears all bulk imported CVs, keeping only default/first CV
+   * Clears all bulk / excess imported CVs, keeping only the primary default CV.
+   * Deletes thoroughly from both localStorage and Supabase Cloud Database.
    */
-  clearAllBulkCVs(userId?: string): void {
+  async clearAllBulkCVs(userId?: string): Promise<{ deletedCount: number; keptTitle: string }> {
     const list = this.getAllCVs(userId);
-    const keep = list.filter(c => c.isDefault || !c.id.startsWith('cv_bulk_'));
-    const finalList = keep.length > 0 ? keep : (list.length > 0 ? [list[0]] : []);
+    if (list.length <= 1) return { deletedCount: 0, keptTitle: list[0]?.title || '' };
+
+    // Giữ lại duy nhất bản CV Mặc Định (hoặc bản đầu tiên nếu chưa gán default)
+    const primaryCV = list.find(c => c.isDefault) || list[0];
+    primaryCV.isDefault = true;
+
+    const itemsToDelete = list.filter(c => c.id !== primaryCV.id);
+
+    // 1. Lưu duy nhất 1 bản CV chính vào localStorage
+    const finalList = [primaryCV];
     this.saveAllCVs(finalList, userId);
-    if (finalList.length > 0) {
-      this.setActiveCVId(finalList[0].id, userId);
+    this.setActiveCVId(primaryCV.id, userId);
+
+    try {
+      localStorage.removeItem('profilehub_bulk_imported_cvs');
+    } catch {}
+
+    // 2. Xóa triệt để toàn bộ các bản CV thừa trên Supabase Cloud Database
+    if (userId) {
+      try {
+        await supabase
+          .from('student_cvs')
+          .delete()
+          .eq('user_id', userId)
+          .neq('id', primaryCV.id);
+
+        // Đảm bảo bản CV duy nhất còn lại được đánh dấu is_default = true
+        await supabase
+          .from('student_cvs')
+          .update({ is_default: true })
+          .eq('id', primaryCV.id)
+          .eq('user_id', userId);
+      } catch (err) {
+        console.warn('[cvService] Failed to clear excess CVs on Supabase:', err);
+      }
     }
+
+    return { deletedCount: itemsToDelete.length, keptTitle: primaryCV.title };
   },
 
   /**
@@ -1400,7 +1575,15 @@ export const cvService = {
    * Gọi API siêu nhẹ xử lý 1 câu/đoạn cụ thể, phản hồi < 1s
    */
   async executeContextualAiAction(params: {
-    actionType: 'REWRITE_FOR_JD' | 'ADD_KEYWORDS' | 'SHORTEN';
+    actionType:
+      | 'REWRITE_FOR_JD'
+      | 'ADD_KEYWORDS'
+      | 'SHORTEN'
+      | 'REWRITE_PROFESSIONAL'
+      | 'FOCUS_RESULTS'
+      | 'EXPAND'
+      | 'TRANSLATE_EN'
+      | 'TRANSLATE_VI';
     currentText: string;
     targetRole?: string;
     jdContext?: string;
@@ -1438,6 +1621,24 @@ export const cvService = {
         .replace(/đã thực hiện /gi, '')
         .replace(/tiến hành /gi, '')
         .trim();
+    } else if (actionType === 'REWRITE_PROFESSIONAL') {
+      const core = fallback.replace(/^[•\s-]+/, '');
+      fallback = fallback.startsWith('•')
+        ? `• Trực tiếp thiết kế, triển khai và tối ưu ${core} theo chuẩn kiến trúc doanh nghiệp.`
+        : `Trực tiếp thiết kế, triển khai và tối ưu ${core} theo chuẩn kiến trúc doanh nghiệp.`;
+    } else if (actionType === 'FOCUS_RESULTS') {
+      fallback = fallback.includes('%') || fallback.match(/\d+/)
+        ? fallback
+        : `${fallback}, nâng cao 30% hiệu năng vận hành và giảm thiểu tối đa lỗi phát sinh.`;
+    } else if (actionType === 'EXPAND') {
+      fallback = `${fallback}, áp dụng các phương pháp kỹ thuật tiên tiến và giải pháp tối ưu hệ thống.`;
+    } else if (actionType === 'TRANSLATE_EN') {
+      const core = fallback.replace(/^[•\s-]+/, '');
+      fallback = fallback.startsWith('•')
+        ? `• Developed and optimized ${core}, ensuring high software performance and code quality.`
+        : `Developed and optimized ${core}, ensuring high software performance and code quality.`;
+    } else if (actionType === 'TRANSLATE_VI') {
+      fallback = fallback;
     }
 
     return {

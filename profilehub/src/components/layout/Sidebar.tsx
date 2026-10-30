@@ -4,13 +4,11 @@ import { useAuth } from '../../context/AuthProvider';
 import type { UserRole } from '../../types/database';
 import { 
   Menu, X, LogOut, FileText, LayoutDashboard, UserCheck, 
-  Briefcase, Star, Kanban, Sparkles, 
+  Briefcase, Star, Kanban, Sparkles, FolderKanban,
   Building2, Layers, ChevronDown, ChevronRight, User, LayoutTemplate,
   PanelLeftClose, PanelLeftOpen, ShieldAlert
 } from 'lucide-react';
-import GenerateCvFromJdModal from '../cv/GenerateCvFromJdModal';
 import CreateCvFlowModal from '../cv/CreateCvFlowModal';
-import ProjectDefenseModal from '../cv/ProjectDefenseModal';
 import type { ProjectItem } from '../../types/cvSection';
 import { cvService } from '../../services/cvService';
 
@@ -59,48 +57,14 @@ export default function Sidebar() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const cvPaths = ['/cv-manager', '/cv-builder'];
+  const cvPaths = ['/cv-manager', '/cv-management', '/cv-builder'];
   const isCvSectionActive = cvPaths.some(path => location.pathname.includes(path));
-  const [cvMenuOpen, setCvMenuOpen] = useState(true);
-  const [isGenerateCvModalOpen, setIsGenerateCvModalOpen] = useState(false);
   const [isCreateCvFlowModalOpen, setIsCreateCvFlowModalOpen] = useState(false);
   const [createFlowStep, setCreateFlowStep] = useState<'choose_flow' | 'manual_studio'>('choose_flow');
-  const [isDefenseModalOpen, setIsDefenseModalOpen] = useState(false);
-  const [defenseProjects, setDefenseProjects] = useState<ProjectItem[]>([]);
-  const [loadingDefense, setLoadingDefense] = useState(false);
-
-  const handleOpenDefenseModal = async () => {
-    setLoadingDefense(true);
-    try {
-      const sourceData = await cvService.fetchStudentCVSourceData(user?.id);
-      const projs: ProjectItem[] = (sourceData.projects || []).map((p: any) => ({
-        id: p.id || `proj_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
-        projectName: p.projectName || p.title || 'Dự án không tên',
-        role: p.role || 'Lập trình viên',
-        startDate: p.startDate || '2025-01',
-        endDate: p.endDate || '2025-06',
-        technologies: p.technologies || p.tags || ['React', 'Node.js', 'PostgreSQL'],
-        description: p.description || '',
-        bullets: p.bullets || [],
-        projectUrl: p.projectUrl || p.demo_url,
-        githubUrl: p.githubUrl || p.github_url
-      }));
-      setDefenseProjects(projs);
-      setIsDefenseModalOpen(true);
-    } catch (err) {
-      console.error('Lỗi khi nạp dữ liệu phòng thủ đồ án:', err);
-    } finally {
-      setLoadingDefense(false);
-    }
-  };
 
 
-  // Tự động mở menu CV khi truy cập nhóm CV
-  useEffect(() => {
-    if (isCvSectionActive) {
-      setCvMenuOpen(true);
-    }
-  }, [location.pathname, isCvSectionActive]);
+
+
 
   // Bảng màu theo role (SaaS Palette tinh tế chuẩn Linear / Stripe)
   const getRoleTheme = (role: UserRole) => {
@@ -354,180 +318,37 @@ export default function Sidebar() {
               {!collapsed && <span>Hồ Sơ Cá Nhân</span>}
             </Link>
 
-            {/* Nhóm Quản Lý Hồ Sơ & CV */}
+            <Link
+              to="/my-projects"
+              onClick={() => setMobileOpen(false)}
+              className="ph-nav-link"
+              title={collapsed ? 'Kho Đồ Án (Proof-of-Work)' : undefined}
+              style={getMenuStyles('/my-projects', collapsed)}
+            >
+              <FolderKanban size={17} color={location.pathname.includes('/my-projects') || location.pathname.includes('/projects') ? theme.activeIcon : '#64748b'} />
+              {!collapsed && <span>Kho Đồ Án</span>}
+            </Link>
+
+            {/* Quản Lý CV - 1 Cửa duy nhất theo Lean UX */}
             {!collapsed ? (
               <>
                 <div className="ph-section-title" style={{ padding: '14px 16px 4px 16px', fontSize: '10px', color: '#94a3b8', fontWeight: '700', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
                   Hồ Sơ & CV
                 </div>
-                <div style={{ margin: '2px 0' }}>
-                  <button
-                    type="button"
-                    onClick={() => setCvMenuOpen(!cvMenuOpen)}
-                    className="ph-nav-link"
-                    style={{
-                      width: 'calc(100% - 16px)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      padding: '7.5px 12px',
-                      margin: '2px 8px',
-                      borderRadius: '8px',
-                      backgroundColor: isCvSectionActive && !cvMenuOpen ? theme.activeBg : 'transparent',
-                      color: isCvSectionActive ? theme.activeText : '#475569',
-                      border: 'none',
-                      cursor: 'pointer',
-                      fontSize: '13px',
-                      fontWeight: isCvSectionActive ? '600' : '500',
-                      textAlign: 'left',
-                      transition: 'all 0.15s ease',
-                      borderLeft: isCvSectionActive ? `3px solid ${theme.accent}` : '3px solid transparent',
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <Layers size={17} color={isCvSectionActive ? theme.activeIcon : '#6366f1'} />
-                      <span>Quản Lý Hồ Sơ & CV</span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', color: '#94a3b8' }}>
-                      {cvMenuOpen ? (
-                        <ChevronDown size={14} style={{ transition: 'transform 0.2s ease' }} />
-                      ) : (
-                        <ChevronRight size={14} style={{ transition: 'transform 0.2s ease' }} />
-                      )}
-                    </div>
-                  </button>
 
-                  {/* Submenu xổ xuống với đường dẫn trực quan */}
-                  {cvMenuOpen && (
-                    <div style={{
-                      marginLeft: '24px',
-                      marginRight: '8px',
-                      paddingLeft: '4px',
-                      borderLeft: '1.5px solid #e2e8f0',
-                      marginTop: '2px',
-                      marginBottom: '4px'
-                    }}>
-                      <Link to="/cv-manager" onClick={() => setMobileOpen(false)} className="ph-subnav-link" style={getSubMenuStyles('/cv-manager', false)}>
-                        <Layers size={14} color={location.pathname.includes('/cv-manager') ? theme.activeIcon : '#6366f1'} />
-                        <span>Danh Sách & Quản Lý CV</span>
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setMobileOpen(false);
-                          setIsGenerateCvModalOpen(true);
-                        }}
-                        className="ph-subnav-link"
-                        style={{
-                          ...getSubMenuStyles('', false),
-                          width: '100%',
-                          border: 'none',
-                          background: 'transparent',
-                          cursor: 'pointer',
-                          textAlign: 'left',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <Sparkles size={14} color="#7c3aed" className="animate-pulse" />
-                          <span style={{ color: '#6d28d9', fontWeight: '600' }}>AI Tạo CV Khớp JD</span>
-                        </div>
-                        <span style={{
-                          fontSize: '9px',
-                          fontWeight: '800',
-                          background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
-                          color: '#ffffff',
-                          padding: '1.5px 5px',
-                          borderRadius: '4px',
-                          letterSpacing: '0.04em'
-                        }}>
-                          AI
-                        </span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setMobileOpen(false);
-                          setCreateFlowStep('manual_studio');
-                          setIsCreateCvFlowModalOpen(true);
-                        }}
-                        className="ph-subnav-link"
-                        style={{
-                          ...getSubMenuStyles('', false),
-                          width: '100%',
-                          border: 'none',
-                          background: 'transparent',
-                          cursor: 'pointer',
-                          textAlign: 'left',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <LayoutTemplate size={14} color="#2563eb" />
-                          <span style={{ color: '#1d4ed8', fontWeight: '600' }}>Tự Chọn Mẫu & Viết CV</span>
-                        </div>
-                        <span style={{
-                          fontSize: '9px',
-                          fontWeight: '700',
-                          backgroundColor: '#eff6ff',
-                          color: '#2563eb',
-                          padding: '1.5px 5px',
-                          borderRadius: '4px',
-                          border: '1px solid #bfdbfe'
-                        }}>
-                          Mẫu A4
-                        </span>
-                      </button>
-                      <Link to="/cv-builder" onClick={() => setMobileOpen(false)} className="ph-subnav-link" style={getSubMenuStyles('/cv-builder', false)}>
-                        <FileText size={14} color={location.pathname.includes('/cv-builder') ? theme.activeIcon : '#2563eb'} />
-                        <span>AI CV Builder & Coach</span>
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setMobileOpen(false);
-                          handleOpenDefenseModal();
-                        }}
-                        className="ph-subnav-link"
-                        style={{
-                          ...getSubMenuStyles('', false),
-                          width: '100%',
-                          border: 'none',
-                          background: 'transparent',
-                          cursor: 'pointer',
-                          textAlign: 'left',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <ShieldAlert size={14} color="#4f46e5" />
-                          <span style={{ color: '#4338ca', fontWeight: '600' }}>Phòng Thủ Đồ Án (Tech Lead)</span>
-                        </div>
-                        <span style={{
-                          fontSize: '9px',
-                          fontWeight: '800',
-                          backgroundColor: '#eef2ff',
-                          color: '#4f46e5',
-                          padding: '1.5px 5px',
-                          borderRadius: '4px',
-                          border: '1px solid #c7d2fe',
-                          letterSpacing: '0.04em'
-                        }}>
-                          🛡️ MỚI
-                        </span>
-                      </button>
-                    </div>
-                  )}
-                </div>
+                <Link
+                  to="/cv-management"
+                  onClick={() => setMobileOpen(false)}
+                  className="ph-nav-link"
+                  title="Quản Lý CV"
+                  style={getMenuStyles('/cv-manage', collapsed)}
+                >
+                  <Layers size={17} color={isCvSectionActive ? theme.activeIcon : '#6366f1'} />
+                  <span>Quản Lý CV</span>
+                </Link>
 
-                {/* Quick Action Button for CV Creation */}
-                <div style={{ margin: '6px 8px 10px 8px' }}>
+                {/* Single Clean Action Button: + Tạo CV Mới */}
+                <div style={{ margin: '8px 8px 10px 8px' }}>
                   <button
                     type="button"
                     onClick={() => {
@@ -538,9 +359,9 @@ export default function Sidebar() {
                     className="ph-ai-quick-btn"
                     style={{
                       width: '100%',
-                      padding: '8px 12px',
-                      borderRadius: '8px',
-                      background: 'linear-gradient(135deg, #2563eb 0%, #4f46e5 50%, #7c3aed 100%)',
+                      padding: '9px 12px',
+                      borderRadius: '10px',
+                      background: 'linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 50%, #2563eb 100%)',
                       color: '#ffffff',
                       border: 'none',
                       cursor: 'pointer',
@@ -548,14 +369,14 @@ export default function Sidebar() {
                       alignItems: 'center',
                       justifyContent: 'center',
                       gap: '7px',
-                      fontSize: '12px',
+                      fontSize: '12.5px',
                       fontWeight: '700',
-                      boxShadow: '0 2px 8px rgba(79, 70, 229, 0.25)',
+                      boxShadow: '0 2px 8px rgba(30, 58, 138, 0.25)',
                       transition: 'all 0.15s ease',
                     }}
                   >
                     <Sparkles size={14} color="#fde047" />
-                    <span>+ Tạo CV (AI hoặc Tự Viết)</span>
+                    <span>+ Tạo CV Mới</span>
                   </button>
                 </div>
               </>
@@ -564,72 +385,15 @@ export default function Sidebar() {
                 <div style={{ margin: '6px 12px', borderTop: '1px solid #f1f5f9' }} />
                 
                 <Link
-                  to="/cv-manager"
+                  to="/cv-management"
                   className="ph-nav-link"
-                  title="Danh Sách & Quản Lý CV"
-                  style={getMenuStyles('/cv-manager', true)}
+                  title="Quản Lý CV"
+                  style={getMenuStyles('/cv-manage', true)}
                 >
-                  <Layers size={17} color={location.pathname.includes('/cv-manager') ? theme.activeIcon : '#6366f1'} />
+                  <Layers size={17} color={isCvSectionActive ? theme.activeIcon : '#6366f1'} />
                 </Link>
 
-                <button
-                  type="button"
-                  onClick={() => setIsGenerateCvModalOpen(true)}
-                  className="ph-subnav-link"
-                  title="AI Tạo CV Khớp JD"
-                  style={{
-                    ...getSubMenuStyles('', true),
-                    border: 'none',
-                    background: 'transparent',
-                    cursor: 'pointer',
-                  }}
-                >
-                  <Sparkles size={16} color="#7c3aed" className="animate-pulse" />
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setCreateFlowStep('manual_studio');
-                    setIsCreateCvFlowModalOpen(true);
-                  }}
-                  className="ph-subnav-link"
-                  title="Tự Chọn Mẫu & Viết CV (Mẫu A4)"
-                  style={{
-                    ...getSubMenuStyles('', true),
-                    border: 'none',
-                    background: 'transparent',
-                    cursor: 'pointer',
-                  }}
-                >
-                  <LayoutTemplate size={16} color="#2563eb" />
-                </button>
-
-                <Link
-                  to="/cv-builder"
-                  className="ph-subnav-link"
-                  title="AI CV Builder & Coach"
-                  style={getSubMenuStyles('/cv-builder', true)}
-                >
-                  <FileText size={16} color={location.pathname.includes('/cv-builder') ? theme.activeIcon : '#2563eb'} />
-                </Link>
-
-                <button
-                  type="button"
-                  onClick={() => handleOpenDefenseModal()}
-                  className="ph-subnav-link"
-                  title="Bản Lĩnh Phòng Thủ Đồ Án Trước Tech Lead [🛡️ MỚI]"
-                  style={{
-                    ...getSubMenuStyles('', true),
-                    border: 'none',
-                    background: 'transparent',
-                    cursor: 'pointer',
-                  }}
-                >
-                  <ShieldAlert size={16} color="#4f46e5" />
-                </button>
-
-                {/* Collapsed Quick Action Button */}
+                {/* Collapsed Single Action Button */}
                 <div style={{ display: 'flex', justifyContent: 'center', margin: '6px 0' }}>
                   <button
                     type="button"
@@ -643,14 +407,14 @@ export default function Sidebar() {
                       width: '38px',
                       height: '38px',
                       borderRadius: '8px',
-                      background: 'linear-gradient(135deg, #2563eb 0%, #4f46e5 50%, #7c3aed 100%)',
+                      background: 'linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 50%, #2563eb 100%)',
                       color: '#ffffff',
                       border: 'none',
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      boxShadow: '0 2px 6px rgba(79, 70, 229, 0.3)',
+                      boxShadow: '0 2px 6px rgba(30, 58, 138, 0.3)',
                       transition: 'all 0.15s ease',
                     }}
                   >
@@ -1009,15 +773,7 @@ export default function Sidebar() {
         }
       `}</style>
 
-      {/* Modal AI Tạo CV Khớp JD */}
-      {isGenerateCvModalOpen && (
-        <GenerateCvFromJdModal
-          isOpen={isGenerateCvModalOpen}
-          onClose={() => setIsGenerateCvModalOpen(false)}
-        />
-      )}
-
-      {/* Modal Tạo CV Mới (AI hoặc Tự Chọn Mẫu Viết Tay) */}
+      {/* Modal Tạo CV Mới (AI May Đo Khớp JD hoặc Tự Chọn Mẫu Viết Tay) */}
       {isCreateCvFlowModalOpen && (
         <CreateCvFlowModal
           isOpen={isCreateCvFlowModalOpen}
@@ -1026,16 +782,6 @@ export default function Sidebar() {
           userId={user?.id}
           userEmail={user?.email}
           profileSourceData={null}
-        />
-      )}
-
-      {/* Modal Phòng Thủ Đồ Án Trước Tech Lead (Trụ Cột 3) */}
-      {isDefenseModalOpen && (
-        <ProjectDefenseModal
-          isOpen={isDefenseModalOpen}
-          onClose={() => setIsDefenseModalOpen(false)}
-          project={defenseProjects[0] || null}
-          projects={defenseProjects}
         />
       )}
 

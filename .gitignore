@@ -34,3 +34,11 @@ Thumbs.db
 
 # Agent skills cache
 .agents/
+
+# Temporary scratch and cache
+.scratch/
+*/.scratch/
+__pycache__/
+*.pyc
+.vercel
+

@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthProvider';
 import type { VerificationStatus } from '../../types/database';
 import { 
   Building2, Globe, GraduationCap, Shield, Code2, 
-  FileText, Sparkles, Upload, X, Check, ArrowRight, Layers, Target, TrendingUp
+  FileText, Sparkles, Upload, Zap, Github, X, Check, ArrowRight, Layers, Target, TrendingUp
 } from 'lucide-react';
 
 interface AddProjectModalProps {
@@ -45,6 +45,92 @@ export default function AddProjectModal({ isOpen, onClose, onSuccess, editData }
   // Form State
   const [projectType, setProjectType] = useState('Dự án doanh nghiệp / Khách hàng');
   const [isNDAProtected, setIsNDAProtected] = useState(false);
+  // GitHub Auto-Fill State
+  const [isScanningGitHub, setIsScanningGitHub] = useState(false);
+  const [scanFeedback, setScanFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
+  const handleScanGitHub = async () => {
+    setScanFeedback(null);
+    let clean = (formData.github_url || '').trim();
+    clean = clean.replace(/^https?:\/\//i, '').replace(/^github\.com\//i, '').replace(/\/$/, '').replace(/\.git$/i, '');
+    const parts = clean.split('/');
+    if (parts.length < 2 || !parts[0] || !parts[1]) {
+      setScanFeedback({ type: 'error', message: 'Vui lòng nhập định dạng: github.com/owner/repo hoặc owner/repo' });
+      return;
+    }
+
+    const owner = parts[0];
+    const repo = parts[1];
+    setIsScanningGitHub(true);
+
+    try {
+      // 1. Fetch Repo info
+      const repoRes = await fetch(`https://api.github.com/repos/${owner}/${repo}`);
+      if (!repoRes.ok) {
+        throw new Error(`Không thể tìm thấy repo public "${owner}/${repo}". Hãy kiểm tra lại link.`);
+      }
+      const repoData = await repoRes.json();
+
+      // 2. Fetch package.json
+      let detectedTechs: string[] = [];
+      let detectedRole = 'Fullstack Developer';
+      let backendScore = 0;
+      let frontendScore = 0;
+
+      if (repoData.language) detectedTechs.push(repoData.language);
+
+      try {
+        const pkgRes = await fetch(`https://raw.githubusercontent.com/${owner}/${repo}/HEAD/package.json`);
+        if (pkgRes.ok) {
+          const pkg = await pkgRes.json();
+          const allDeps = { ...(pkg.dependencies || {}), ...(pkg.devDependencies || {}) };
+          const depNames = Object.keys(allDeps);
+
+          if (depNames.some(d => d.includes('react'))) { detectedTechs.push('React'); frontendScore += 2; }
+          if (depNames.some(d => d.includes('vue'))) { detectedTechs.push('Vue.js'); frontendScore += 2; }
+          if (depNames.some(d => d.includes('next'))) { detectedTechs.push('Next.js'); frontendScore += 2; }
+          if (depNames.some(d => d.includes('tailwind'))) { detectedTechs.push('Tailwind CSS'); frontendScore += 1; }
+          if (depNames.some(d => d.includes('express'))) { detectedTechs.push('Express.js'); backendScore += 2; }
+          if (depNames.some(d => d.includes('nest'))) { detectedTechs.push('NestJS'); backendScore += 2; }
+          if (depNames.some(d => d.includes('prisma'))) { detectedTechs.push('Prisma ORM'); backendScore += 2; }
+          if (depNames.some(d => d.includes('mongodb') || d.includes('mongoose'))) { detectedTechs.push('MongoDB'); backendScore += 2; }
+          if (depNames.some(d => d.includes('typescript')) && !detectedTechs.includes('TypeScript')) detectedTechs.push('TypeScript');
+        }
+      } catch {
+        // Continue
+      }
+
+      if (frontendScore > backendScore + 1) detectedRole = 'Frontend Developer';
+      else if (backendScore > frontendScore + 1) detectedRole = 'Backend Developer';
+
+      detectedTechs = Array.from(new Set(detectedTechs));
+      const cleanTitle = repoData.name.replace(/[-_]/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase());
+      const techString = detectedTechs.join(', ');
+
+      setFormData(prev => ({
+        ...prev,
+        title: prev.title || cleanTitle,
+        role: prev.role || detectedRole,
+        team_size: prev.team_size || '3',
+        tags: prev.tags ? prev.tags : techString,
+        github_url: repoData.html_url || `https://github.com/${owner}/${repo}`,
+        demo_url: prev.demo_url || repoData.homepage || '',
+        challenge: prev.challenge || (repoData.description || `Xây dựng giải pháp ${cleanTitle} phục vụ nhu cầu nghiệp vụ với hiệu năng cao.`),
+        architecture: prev.architecture || `Triển khai bằng ${techString}, thiết kế theo mô hình mô-đun hóa, tối ưu truy vấn và khả năng tái sử dụng component.`,
+        impact: prev.impact || `Hệ thống triển khai ổn định với đầy đủ mã nguồn và quản lý qua Git version control.`
+      }));
+
+      setScanFeedback({
+        type: 'success',
+        message: `✓ Đã tự động điền Tên, Tags (${techString}), Vai trò (${detectedRole}) và khung STAR!`
+      });
+    } catch (err: any) {
+      setScanFeedback({ type: 'error', message: err.message || 'Lỗi khi quét repo GitHub.' });
+    } finally {
+      setIsScanningGitHub(false);
+    }
+  };
+
   const [describeMode, setDescribeMode] = useState<'star' | 'freeform'>('star');
 
   const [formData, setFormData] = useState({
@@ -380,6 +466,40 @@ export default function AddProjectModal({ isOpen, onClose, onSuccess, editData }
               </label>
             </div>
           )}
+
+          
+          {/* ⚡ Quick GitHub Auto-Fill Bar */}
+          <div style={{ backgroundColor: '#0f172a', color: 'white', borderRadius: '10px', padding: '12px 16px', marginBottom: '18px', border: '1px solid #334155' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '15px' }}>⚡</span>
+                <span style={{ fontSize: '12.5px', fontWeight: '700', color: '#60a5fa' }}>Điền Nhanh Từ GitHub Repo (Tự động 80%)</span>
+              </div>
+              <span style={{ fontSize: '11px', color: '#94a3b8' }}>Bóc tách Tech-Stack & STAR</span>
+            </div>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <input
+                type="text"
+                placeholder="Dán link GitHub (ví dụ: github.com/username/project)..."
+                value={formData.github_url}
+                onChange={e => setFormData({ ...formData, github_url: e.target.value })}
+                style={{ flex: 1, padding: '8px 12px', borderRadius: '6px', border: '1px solid #475569', backgroundColor: '#1e293b', color: 'white', fontSize: '12px', outline: 'none' }}
+              />
+              <button
+                type="button"
+                onClick={handleScanGitHub}
+                disabled={isScanningGitHub || !formData.github_url.trim()}
+                style={{ padding: '8px 16px', backgroundColor: '#2563eb', color: 'white', border: 'none', borderRadius: '6px', fontSize: '12px', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', whiteSpace: 'nowrap' }}
+              >
+                {isScanningGitHub ? 'Đang quét...' : '🚀 Quét & Điền Tự Động'}
+              </button>
+            </div>
+            {scanFeedback && (
+              <div style={{ marginTop: '8px', fontSize: '11px', color: scanFeedback.type === 'success' ? '#34d399' : '#f87171', fontWeight: '600' }}>
+                {scanFeedback.message}
+              </div>
+            )}
+          </div>
 
           {/* 3. Tên dự án & Vai trò & Quy mô */}
           <div style={{ display: 'grid', gridTemplateColumns: '2fr 1.2fr 1fr', gap: '14px' }}>

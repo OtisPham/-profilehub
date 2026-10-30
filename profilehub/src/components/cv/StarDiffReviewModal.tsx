@@ -213,7 +213,7 @@ export default function StarDiffReviewModal({
           <div className="flex items-center gap-2">
             <button
               onClick={handleApply}
-              className="px-5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl text-xs shadow-md shadow-blue-500/20 transition-all flex items-center gap-1.5"
+              className="px-5 py-2 bg-gradient-to-r from-[#1e3a8a] to-[#2563eb] hover:from-[#172554] hover:to-[#1d4ed8] text-white font-bold rounded-xl text-xs shadow-md shadow-blue-500/20 transition-all flex items-center gap-1.5 cursor-pointer"
             >
               <Check className="w-4 h-4" /> Cập nhật vào CV
             </button>

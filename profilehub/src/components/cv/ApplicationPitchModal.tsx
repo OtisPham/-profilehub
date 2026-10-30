@@ -188,7 +188,7 @@ export default function ApplicationPitchModal({
           {/* Context Badges Bar */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200/60 dark:border-slate-800 text-xs">
             <div className="flex items-center gap-2">
-              <Target className="w-4 h-4 text-indigo-500 shrink-0" />
+              <Target className="w-4 h-4 text-blue-500 shrink-0" />
               <span className="text-slate-500 dark:text-slate-400">Vị trí:</span>
               <span className="font-semibold text-slate-800 dark:text-slate-200 truncate">
                 {targetRole || 'Lập trình viên'}

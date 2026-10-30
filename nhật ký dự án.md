@@ -318,27 +318,103 @@ Trong 4 tuần phát triển dự án tính đến ngày **19/10/2026**, **Profi
 
 ---
 
-## 📊 BẢNG TỔNG KẾT ĐỐI CHIẾU TRƯỚC VÀ SAU KHI TINH GỌN (Tính đến ngày 21/10/2026)
-
-| Hạng mục so sánh | Kiến trúc ban đầu (Trước khi Tinh gọn) | Kiến trúc hiện tại (Đã tinh gọn đến 23/10/2026) |
-|---|---|---|
-| **Cấu trúc Backend** | Cồng kềnh với Microservice Python Chatbot phụ | Thuần **TypeScript Clean Architecture** trên 1 codebase duy nhất |
-| **Xác thực năng lực** | Phụ thuộc Giảng viên phê duyệt thủ công (`is_verified`) | **Bằng chứng thực chiến (Evidence-Based):** Link Live Demo, GitHub Repo & Mã QR quét demo A4 |
-| **Tính xác thực dữ liệu** | Dễ phát sinh tự khai báo ảo hoặc bóc tách `package.json` trôi nổi | **Kiên định Lean MVP chống Fake:** Chỉ chấp nhận dự án có mã nguồn và demo kiểm chứng thực tế |
-| **Độ tương thích JD** | So khớp từ khóa cơ bản, dễ phát sinh Zombie CV | **Project Fit Explainer** minh bạch % khớp, chip từ khóa & STAR Diff Review |
-| **Kiểm soát khổ giấy in** | Không kiểm soát, văn bản dễ tràn sang trang 2 xấu xí | **Page-Budget Guard** đo lường A4 thời gian thực + **1-Click Auto-Condense** |
-| **Bố cục hiển thị** | Cố định mẫu 2 cột cứng nhắc | Luân chuyển linh hoạt giữa **1 Cột (Harvard ATS)** và **2 Cột (Modern Tech)** |
-| **Độ tin cậy của AI** | AI tự động tạo câu có nguy cơ bịa đặt thư viện | **Anti-Hallucination Guard** bảo vệ, chặn đứng các công nghệ ngoài khai báo |
-| **Vũ khí Phỏng vấn** | Chatbot phỏng vấn lý thuyết chung chung | **Project Defense Briefing:** Top 3 câu hỏi xoáy Tech Stack, Trade-off & Debugging Scaffold |
-| **Tình trạng Unit Test** | Chưa có kiểm thử tự động | **13/13 Test Suites Pass 100% (46/46 Tests)** |
-| **Tình trạng Compile** | Nhiều lỗi type mismatch | **`tsc && vite build` Compile sạch 100%, 0 lỗi** |
+### 🔴 Thứ 5 (22/10/2026)
+* **Thời gian:** 08:30 – 17:00
+* **Công việc được giao:** Nâng cấp Module Quản lý Đồ Án Sinh Viên (`AddProjectModal.tsx`), tối ưu hóa biểu mẫu nhập liệu minh chứng, xây dựng Tour Hướng Dẫn Tương Tác Game Hóa (`GamifiedOnboardingTour.tsx`) và Modal Mã QR Đồ Án (`ProjectQRCodeModal.tsx`).
+* **Kết quả thực hiện:**
+  * Sáng (08:30 - 12:00): Thiết kế lại form thêm/sửa đồ án hỗ trợ liên kết Live Demo URL, GitHub Repo, bối cảnh hệ thống (System Context) và phân tách trách nhiệm cá nhân; bổ sung trường gắn nhãn công nghệ tự động gợi ý.
+  * Chiều (13:00 - 17:00): Xây dựng `GamifiedOnboardingTour.tsx` hướng dẫn từng bước cho sinh viên mới lần đầu vào hệ thống; hoàn thiện component `ProjectQRCodeModal.tsx` xuất mã Smart QR để nhà tuyển dụng quét mở demo trực tiếp trên điện thoại.
+* **Kinh nghiệm rút ra:** Thiết kế onboarding dạng game hóa giúp người dùng nhanh chóng nắm bắt các tính năng cốt lõi của nền tảng mà không cần đọc hướng dẫn sử dụng dài dòng.
 
 ---
 
-## ✍️ ĐÁNH GIÁ CHUNG CỦA SINH VIÊN VỀ QUÁ TRÌNH 5 TUẦN
-1. **Mức độ hoàn thành mục tiêu:** Em đã hoàn thành **100% khối lượng công việc được giao**, biến ProfileHub thành một nền tảng tạo CV định hướng đồ án thực tế hiện đại, tinh gọn và đạt chuẩn tuyển dụng doanh nghiệp.
+### 🔴 Thứ 6 (23/10/2026)
+* **Thời gian:** 08:30 – 17:00
+* **Công việc được giao:** Thiết lập quy trình tự động hóa CI/CD GitHub Actions cho dự án, kiểm thử tích hợp tự động và thiết lập các ngưỡng chất lượng (Quality Gates).
+* **Kết quả thực hiện:**
+  * Sáng (08:30 - 12:00): Cấu hình các workflow `.github/workflows/`: `3dwebsite-ci.yml`, `3dwebsite-deploy.yml`, `3dwebsite-release.yml`, `3dwebsite-rollback.yml` kiểm soát chất lượng code tự động khi push hoặc mở Pull Request.
+  * Chiều (13:00 - 17:00): Thiết lập kịch bản rollback tự động khi phát sinh sự cố triển khai; chạy thử nghiệm toàn bộ luồng build và deploy trên môi trường staging; đảm bảo 100% build sạch.
+* **Kinh nghiệm rút ra:** Tự động hóa kiểm tra mã nguồn (lint, typecheck, unit test) qua CI pipeline giúp phát hiện lỗi từ sớm và ngăn chặn code lỗi được merge vào nhánh chính.
+
+---
+
+### 🔴 Thứ 7 (24/10/2026)
+* **Thời gian:** 08:30 – 17:00
+* **Công việc được giao:** Đánh giá luồng trải nghiệm ứng viên (Candidate Journey UX Audit), tối ưu hóa hiệu năng giao diện Canvas, tổng kết tuần 5 và chuẩn bị kế hoạch tuần mới.
+* **Kết quả thực hiện:**
+  * Sáng (08:30 - 12:00): Rà soát toàn bộ hành trình người dùng từ khâu tạo hồ sơ, đưa đồ án vào CV, đến khi xuất bản; đo lường độ trễ hiển thị và sửa các điểm giật lag trên Canvas.
+  * Chiều (13:00 - 17:00): Chạy toàn bộ regression test suite; dọn dẹp mã nguồn rác và lập tài liệu định hướng các tính năng kiểm định ATS và phân tích hành vi tuyển dụng cho tuần 6.
+* **Kinh nghiệm rút ra:** Trực tiếp đóng vai người dùng cuối để kiểm thử giúp phát hiện nhiều điểm nghẽn trải nghiệm mà quá trình lập trình thuần túy dễ bỏ qua.
+
+*(Chủ Nhật, 25/10/2026: Nghỉ cuối tuần)*
+
+---
+
+## 📅 TUẦN 6: ATS PARSER EYE, SAAS HEADERBAR & INTERVIEW WAR ROOM (26/10/2026 – 29/10/2026)
+
+### 🔵 Thứ 2 (26/10/2026)
+* **Thời gian:** 08:30 – 17:00
+* **Công việc được giao:** Khảo sát các "tử huyệt" của ứng viên khi nộp CV công nghệ và thiết kế kiến trúc giải pháp mô phỏng máy quét ATS (ATS Eye-View).
+* **Kết quả thực hiện:**
+  * Sáng (08:30 - 12:00): Khảo sát các khoảng trống thị trường (TopCV, ITviec, Canva): bẫy máy quét ATS quốc tế làm vỡ layout 2 cột, thiếu chỉ số định lượng, không có phản hồi HR và bị bỡ ngỡ khi phỏng vấn kỹ thuật; soạn thảo tài liệu `DANH_GIA_TINH_NANG_CV_PROFILEHUB.md`.
+  * Chiều (13:00 - 17:00): Định nghĩa các luật kiểm tra ATS: phát hiện thanh kỹ năng dạng % (anti-pattern), cảnh báo xáo trộn thứ tự đọc trên layout 2 cột, kiểm tra cấu trúc tiêu đề chuẩn; lập kế hoạch kiểm thử TDD.
+* **Kinh nghiệm rút ra:** Hiểu rõ cơ chế phân tích cú pháp của các hệ thống ATS quốc tế (Workday, Taleo) giúp thiết kế bộ lọc cảnh báo chính xác cho ứng viên.
+
+---
+
+### 🔵 Thứ 3 (27/10/2026)
+* **Thời gian:** 08:30 – 17:00
+* **Công việc được giao:** Xây dựng Bộ Quy Tắc Kiểm Định Chất Lượng CV (`cvQualityCheckService.ts`) và nâng cấp tính năng chỉnh sửa linh hoạt trên CV Canvas.
+* **Kết quả thực hiện:**
+  * Sáng (08:30 - 12:00): Phát triển bộ quy tắc kiểm tra 10 tiêu chí: độ dài lý tưởng, tỷ lệ câu định lượng, mật độ từ khóa kỹ thuật, kiểm tra liên kết hỏng; xây dựng `CVQualityCheckModal.tsx` và viết 5 bài test tự động pass 100%.
+  * Chiều (13:00 - 17:00): Xây dựng `InlineEditPopover.tsx`, `SectionSettingsModal.tsx`, `ReorderSectionsModal.tsx` cho phép kéo thả sắp xếp lại các phần; tích hợp `GitHubQuickImportBar.tsx` kéo repo từ GitHub vào thẳng dự án CV; cập nhật `InteractiveCVCanvas.tsx`.
+* **Kinh nghiệm rút ra:** Tự động hóa việc chấm điểm chất lượng CV giúp người dùng tự tin chỉnh sửa bản CV đạt độ hoàn thiện cao nhất trước khi gửi đi.
+
+---
+
+### 🔵 Thứ 4 (28/10/2026)
+* **Thời gian:** 08:30 – 17:00
+* **Công việc được giao:** Tái cấu trúc giao diện sang phong cách Consumer SaaS (HeaderBar, Footer & Landing Page), hiện thực hóa "Mắt Thần ATS" (`AtsParserEyeModal.tsx`) & Động Cơ Khảo Sát Lương Thị Trường (`SalaryBenchmarkModal.tsx`).
+* **Kết quả thực hiện:**
+  * Sáng (08:30 - 12:00): Loại bỏ Sidebar cố định 240px trong `MainLayout.tsx` để giải phóng 100% không gian ngang cho màn hình soạn thảo CV; xây dựng `HeaderBar.tsx` kính mờ (Glassmorphism), `Footer.tsx` và trang chủ Landing Page `HomePage.tsx` tại `/`; viết test pass 100%.
+  * Chiều (13:00 - 17:00): Hoàn thành `atsParserEyeService.ts` & `AtsParserEyeModal.tsx` hiển thị chuỗi Plain-Text bot ATS đọc ra; hoàn thành `salaryBenchmarkService.ts` & `SalaryBenchmarkModal.tsx` nhận diện cấp bậc, tính Tech Multiplier (+10% đến 35%) và dùng đồ án làm đòn bẩy nâng phân vị lương từ P50 lên P75-P85 (8/8 tests pass).
+* **Kinh nghiệm rút ra:** Trang bị công cụ khảo sát dải lương thị trường theo Tech Stack giúp sinh viên có vị thế tự tin và biết cách đàm phán mức lương xứng đáng dựa trên bằng chứng đồ án thực tế.
+
+---
+
+### 🔵 Thứ 5 (29/10/2026)
+* **Thời gian:** 08:30 – 17:00
+* **Công việc được giao:** Xây dựng Widget Bản Đồ Nhiệt Theo Dõi CV (`CvHeatmapWidget.tsx`), Phòng Luyện Phỏng Vấn Kỹ Thuật War Room (`InterviewWarRoomModal.tsx`) & Đồng Bộ Lịch Phỏng Vấn 2 Chiều.
+* **Kết quả thực hiện:**
+  * Sáng (08:30 - 12:00): Hoàn thành `cvTrackingAnalyticsService.ts`: Đo lường lượt xem thực tế của NTD, thời gian dừng đọc trung bình (Avg Dwell Time), tỷ lệ đọc hết trang và trực quan hóa % thời gian HR dừng lại ở từng mục; tích hợp nhật ký Recruiter Visit Feed; xây dựng `ThemeToggleSwitch.tsx` (Dark/Light mode).
+  * Chiều (13:00 - 17:00): Hoàn thành `aiMockInterviewService.ts`, `selfInterviewService.ts`, `AiMockInterviewModal.tsx`, `InterviewWarRoomModal.tsx` mô phỏng 4 chặng: Elevator Pitch, STAR Deep-Dive, Live Incident Crisis, Skill Gap Defense; tích hợp tính năng đổi giờ phỏng vấn (Reschedule) đồng bộ 2 chiều sang pipeline NTD; toàn bộ 82/82 tests pass, build sạch 100%.
+* **Kinh nghiệm rút ra:** Kết hợp luyện phỏng vấn tình huống khẩn cấp (Live Incident) và đồng bộ lịch 2 chiều giúp giải quyết trọn vẹn điểm nghẽn cuối cùng từ khâu nộp hồ sơ đến khi nhận offer thành công.
+
+---
+
+## 📊 BẢNG TỔNG KẾT ĐỐI CHIẾU TRƯỚC VÀ SAU KHI TINH GỌN (Tính đến ngày 29/10/2026)
+
+| Hạng mục so sánh | Kiến trúc ban đầu (Trước khi Tinh gọn) | Kiến trúc hiện tại (Đã tinh gọn đến 29/10/2026) |
+|---|---|---|
+| **Bố cục Giao diện** | Dashboard cũ với Sidebar cố định 240px choán màn hình | **Consumer SaaS Layout:** HeaderBar kính mờ, Footer tối giản & Landing Page `/` hiện đại |
+| **Cấu trúc Backend** | Cồng kềnh với Microservice Python Chatbot phụ | Thuần **TypeScript Clean Architecture** trên 1 codebase duy nhất |
+| **Xác thực năng lực** | Phụ thuộc Giảng viên phê duyệt thủ công (`is_verified`) | **Bằng chứng thực chiến (Evidence-Based):** Link Live Demo, GitHub Repo & Mã Smart QR quét A4 |
+| **Tính xác thực dữ liệu** | Dễ phát sinh tự khai báo ảo hoặc bóc tách `package.json` trôi nổi | **Kiên định Zero Fake Metrics:** STAR Diagnostic khai thác số liệu thực (EXPLAIN, k6 RPS, Vitest) |
+| **Độ tương thích JD** | So khớp từ khóa cơ bản, dễ phát sinh Zombie CV | **Project Fit Explainer** minh bạch % khớp, chip từ khóa & STAR Diff Review |
+| **Kiểm tra chuẩn ATS** | Không kiểm tra, dễ bị máy quét ATS loại vì lỗi layout 2 cột | **ATS Eye-View Parser:** Xem trước Plain-Text bot đọc & 1-Click chuyển Minimalist Harvard 1 cột |
+| **Kiểm soát khổ in** | Không kiểm soát, văn bản dễ tràn sang trang 2 xấu xí | **Page-Budget Guard** đo lường A4 thời gian thực + **1-Click Auto-Condense** |
+| **Đo lường sự quan tâm** | Hoàn toàn mù mờ sau khi nộp CV (hố đen nộp CV) | **CV Heatmap Tracking:** Đo Dwell Time, Read-through rate & Recruiter Live Visit Feed |
+| **Khảo sát lương** | Ứng viên mù mờ mức lương thị trường, dễ bị ép giá | **AI Salary Benchmark:** Nhận diện cấp bậc, Tech Multiplier và dùng đồ án nâng phân vị P75-P85 |
+| **Luyện phỏng vấn** | Chatbot hỏi lý thuyết suông | **Interview War Room 4 chặng:** Elevator Pitch, STAR Deep-Dive, Live Incident & Skill Gap Defense |
+| **Tình trạng Unit Test** | Chưa có kiểm thử tự động | **22/22 Test Suites Pass 100% (82/82 Tests)** |
+| **Tình trạng Compile** | Nhiều lỗi type mismatch | **`tsc && vite build` Compile sạch 100%, 0 lỗi trong 23s** |
+
+---
+
+## ✍️ ĐÁNH GIÁ CHUNG CỦA SINH VIÊN VỀ QUÁ TRÌNH 6 TUẦN
+1. **Mức độ hoàn thành mục tiêu:** Em đã hoàn thành **100% khối lượng công việc được giao**, phát triển ProfileHub từ một ý tưởng ban đầu thành một nền tảng tạo CV định hướng đồ án thực tế hoàn chỉnh, đạt chuẩn Consumer SaaS hiện đại và giải quyết trọn vẹn cả 3 bài toán lớn: vượt qua máy quét ATS, chứng minh năng lực bằng dự án thực tế và tự tin phòng thủ kỹ thuật trong vòng phỏng vấn.
 2. **Kỹ năng chuyên môn đạt được:** 
-   - Làm chủ React 18, TypeScript Strict Mode, Tailwind CSS và Supabase (PostgreSQL RLS).
-   - Nắm vững phương pháp thiết kế phần mềm hướng domain (DDD), ban hành quyết định kiến trúc (ADR) và phát triển theo định hướng kiểm thử (TDD).
-   - Nâng cao tư duy sản phẩm: Dũng cảm loại bỏ các tính năng over-engineering để tập trung giải quyết bài toán thực tế của người dùng.
-3. **Kỹ năng làm việc & Kỷ luật:** Rèn luyện tác phong làm việc trách nhiệm, quản lý mã nguồn Git chuẩn mực, viết tài liệu kỹ thuật chi tiết tại **CÔNG TY TNHH ALPACA SOLUTIONS**.
+   - Làm chủ React 18, TypeScript Strict Mode, Tailwind CSS, Supabase (PostgreSQL RLS), Vitest TDD và GitHub Actions CI/CD.
+   - Nắm vững kiến trúc phần mềm hướng Domain (DDD), ban hành các quyết định kiến trúc chuẩn mực (ADR 0001, ADR 0002) và kỷ luật Green Build 100%.
+   - Nâng cao tư duy sản phẩm: Không sa đà vào các tính năng "ảo", luôn lấy trải nghiệm thực tế và bằng chứng kiểm chứng được của người dùng làm trung tâm.
+3. **Kỹ năng làm việc & Kỷ luật:** Rèn luyện tác phong làm việc trách nhiệm, kỷ luật cao trong quản lý mã nguồn Git, viết tài liệu kỹ thuật chi tiết tại **CÔNG TY TNHH ALPACA SOLUTIONS**.

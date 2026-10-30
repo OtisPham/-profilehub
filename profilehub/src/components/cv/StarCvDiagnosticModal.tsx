@@ -150,7 +150,7 @@ export default function StarCvDiagnosticModal({
         {/* Header */}
         <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-950/50">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center">
               <Sparkles className="w-5 h-5" />
             </div>
             <div>
@@ -181,7 +181,7 @@ export default function StarCvDiagnosticModal({
             onClick={() => setActiveTab('scan')}
             className={`py-3 px-2 text-xs font-semibold border-b-2 flex items-center gap-2 transition ${
               activeTab === 'scan'
-                ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400'
+                ? 'border-blue-600 text-blue-600 dark:text-blue-400'
                 : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
@@ -191,7 +191,7 @@ export default function StarCvDiagnosticModal({
             onClick={() => setActiveTab('blank_slate')}
             className={`py-3 px-2 text-xs font-semibold border-b-2 flex items-center gap-2 transition ${
               activeTab === 'blank_slate'
-                ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400'
+                ? 'border-blue-600 text-blue-600 dark:text-blue-400'
                 : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
@@ -213,7 +213,7 @@ export default function StarCvDiagnosticModal({
                   value={rawText}
                   onChange={e => setRawText(e.target.value)}
                   placeholder="Ví dụ:&#10;Dự án 1: Website Bán Hàng E-Commerce&#10;- Tham gia phát triển giao diện bằng React&#10;- Hỗ trợ kết nối cơ sở dữ liệu và API..."
-                  className="w-full text-xs p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-800 dark:text-slate-200"
+                  className="w-full text-xs p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-800 dark:text-slate-200"
                 />
                 <div className="flex justify-between items-center mt-2.5">
                   <span className="text-[11px] text-slate-400">
@@ -222,7 +222,7 @@ export default function StarCvDiagnosticModal({
                   <button
                     onClick={handleRunDiagnostic}
                     disabled={!rawText.trim()}
-                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-xs font-semibold rounded-lg shadow-sm transition flex items-center gap-1.5"
+                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-xs font-semibold rounded-lg shadow-sm transition flex items-center gap-1.5"
                   >
                     <Search className="w-4 h-4" /> Bắt Mạch Dự Án
                   </button>
@@ -244,7 +244,7 @@ export default function StarCvDiagnosticModal({
                     </div>
                     <div className="flex items-center gap-3">
                       <div className="text-right">
-                        <div className="text-lg font-black text-indigo-600 dark:text-indigo-400">
+                        <div className="text-lg font-black text-blue-600 dark:text-blue-400">
                           {diagnosticReport.averageScore} / 100
                         </div>
                         <div className="text-[10px] text-slate-400">STAR Score</div>
@@ -261,7 +261,7 @@ export default function StarCvDiagnosticModal({
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <span className="w-6 h-6 rounded-md bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xs font-bold">
+                            <span className="w-6 h-6 rounded-md bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs font-bold">
                               {idx + 1}
                             </span>
                             <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100">
@@ -281,7 +281,7 @@ export default function StarCvDiagnosticModal({
                             )}
                             <button
                               onClick={() => handleStartInterviewForProject(proj)}
-                              className="px-2.5 py-1 bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900/80 text-indigo-600 dark:text-indigo-300 text-[11px] font-semibold rounded-md transition flex items-center gap-1"
+                              className="px-2.5 py-1 bg-blue-50 dark:bg-blue-950/60 hover:bg-blue-100 dark:hover:bg-blue-900/80 text-blue-600 dark:text-blue-300 text-[11px] font-semibold rounded-md transition flex items-center gap-1"
                             >
                               <Zap className="w-3 h-3" /> Khai Thác STAR
                             </button>
@@ -315,21 +315,21 @@ export default function StarCvDiagnosticModal({
               <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
                 <div className="flex items-center gap-2">
                   <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                    step >= 1 ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-400'
+                    step >= 1 ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-400'
                   }`}>1</div>
                   <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">Bối Cảnh (S/T)</span>
                 </div>
                 <ChevronRight className="w-4 h-4 text-slate-300" />
                 <div className="flex items-center gap-2">
                   <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                    step >= 2 ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-400'
+                    step >= 2 ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-400'
                   }`}>2</div>
                   <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">Hành Động (A)</span>
                 </div>
                 <ChevronRight className="w-4 h-4 text-slate-300" />
                 <div className="flex items-center gap-2">
                   <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                    step >= 3 ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-400'
+                    step >= 3 ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-400'
                   }`}>3</div>
                   <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">Đo Lường (R)</span>
                 </div>
@@ -400,7 +400,7 @@ export default function StarCvDiagnosticModal({
                   <div className="flex justify-end pt-2">
                     <button
                       onClick={() => setStep(2)}
-                      className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg flex items-center gap-1.5"
+                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg flex items-center gap-1.5"
                     >
                       Tiếp Theo: Hành Động (A) <ArrowRight className="w-4 h-4" />
                     </button>
@@ -448,7 +448,7 @@ export default function StarCvDiagnosticModal({
                     </button>
                     <button
                       onClick={() => setStep(3)}
-                      className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg flex items-center gap-1.5"
+                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg flex items-center gap-1.5"
                     >
                       Tiếp Theo: Đo Lường & Kết Quả (R) <ArrowRight className="w-4 h-4" />
                     </button>
@@ -535,7 +535,7 @@ export default function StarCvDiagnosticModal({
                     </button>
                     <button
                       onClick={handleApplyToCanvas}
-                      className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg shadow-md hover:shadow-lg transition flex items-center gap-2"
+                      className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg shadow-md hover:shadow-lg transition flex items-center gap-2"
                     >
                       <Check className="w-4 h-4" /> Đưa Vào CV Canvas
                     </button>

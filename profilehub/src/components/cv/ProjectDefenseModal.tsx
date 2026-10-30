@@ -70,7 +70,7 @@ export default function ProjectDefenseModal({
           </p>
           <button
             onClick={onClose}
-            className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition"
+            className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition"
           >
             Đóng
           </button>
@@ -152,7 +152,7 @@ export default function ProjectDefenseModal({
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-850/50">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shadow-2xs">
+            <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-800 flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-2xs">
               <ShieldAlert className="w-5 h-5" />
             </div>
             <div>
@@ -160,7 +160,7 @@ export default function ProjectDefenseModal({
                 <h3 className="font-bold text-slate-900 dark:text-white text-base">
                   Bản Lĩnh Phòng Thủ Đồ Án (Project Defense Briefing)
                 </h3>
-                <span className="px-2 py-0.5 text-[10px] font-bold bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 rounded-full border border-indigo-300 dark:border-indigo-700">
+                <span className="px-2 py-0.5 text-[10px] font-bold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-full border border-blue-300 dark:border-blue-700">
                   Vũ khí Vòng Phỏng Vấn
                 </span>
               </div>
@@ -180,7 +180,7 @@ export default function ProjectDefenseModal({
         {/* Project Target Bar */}
         <div className="px-6 py-3 bg-slate-100/70 dark:bg-slate-800/60 border-b border-slate-200/60 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-2 min-w-0">
-            <Code2 className="w-4 h-4 text-indigo-500 shrink-0" />
+            <Code2 className="w-4 h-4 text-blue-500 shrink-0" />
             <span className="font-bold text-slate-900 dark:text-white truncate">
               {defensePlan.projectName}
             </span>
@@ -197,7 +197,7 @@ export default function ProjectDefenseModal({
                 <select
                   value={activeProject.id}
                   onChange={(e) => setSelectedProjectId(e.target.value)}
-                  className="bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg px-2 py-1 text-xs font-semibold text-slate-800 dark:text-slate-100 shadow-2xs focus:ring-1 focus:ring-indigo-500 outline-none cursor-pointer"
+                  className="bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg px-2 py-1 text-xs font-semibold text-slate-800 dark:text-slate-100 shadow-2xs focus:ring-1 focus:ring-blue-500 outline-none cursor-pointer"
                 >
                   {projects.map(p => (
                     <option key={p.id} value={p.id}>
@@ -227,7 +227,7 @@ export default function ProjectDefenseModal({
             onClick={() => setActiveTab('trap')}
             className={`py-3 px-3 border-b-2 flex items-center gap-1.5 transition-all ${
               activeTab === 'trap'
-                ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400'
+                ? 'border-blue-600 text-blue-600 dark:text-blue-400'
                 : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
@@ -239,7 +239,7 @@ export default function ProjectDefenseModal({
             onClick={() => setActiveTab('tradeoff')}
             className={`py-3 px-3 border-b-2 flex items-center gap-1.5 transition-all ${
               activeTab === 'tradeoff'
-                ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400'
+                ? 'border-blue-600 text-blue-600 dark:text-blue-400'
                 : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
@@ -251,7 +251,7 @@ export default function ProjectDefenseModal({
             onClick={() => setActiveTab('debug')}
             className={`py-3 px-3 border-b-2 flex items-center gap-1.5 transition-all ${
               activeTab === 'debug'
-                ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400'
+                ? 'border-blue-600 text-blue-600 dark:text-blue-400'
                 : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
@@ -263,7 +263,7 @@ export default function ProjectDefenseModal({
             onClick={() => setActiveTab('limitations')}
             className={`py-3 px-3 border-b-2 flex items-center gap-1.5 transition-all ${
               activeTab === 'limitations'
-                ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400'
+                ? 'border-blue-600 text-blue-600 dark:text-blue-400'
                 : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
@@ -291,7 +291,7 @@ export default function ProjectDefenseModal({
                   className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-850 space-y-2.5 shadow-2xs"
                 >
                   <div className="flex items-start gap-2.5">
-                    <span className="w-6 h-6 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 text-xs font-bold flex items-center justify-center shrink-0">
+                    <span className="w-6 h-6 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 text-xs font-bold flex items-center justify-center shrink-0">
                       {idx + 1}
                     </span>
                     <h4 className="text-sm font-bold text-slate-900 dark:text-white leading-snug">
@@ -316,8 +316,8 @@ export default function ProjectDefenseModal({
           {/* TAB 2: TRADE-OFFS */}
           {activeTab === 'tradeoff' && (
             <div className="space-y-4">
-              <div className="p-3 bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800/50 rounded-xl text-xs text-indigo-800 dark:text-indigo-300 flex items-start gap-2">
-                <Lightbulb className="w-4 h-4 shrink-0 mt-0.5 text-indigo-600" />
+              <div className="p-3 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/50 rounded-xl text-xs text-blue-800 dark:text-blue-300 flex items-start gap-2">
+                <Lightbulb className="w-4 h-4 shrink-0 mt-0.5 text-blue-600" />
                 <span>
                   <strong>Tư duy Senior:</strong> Không có công nghệ nào là hoàn hảo, chỉ có công nghệ phù hợp với bài toán. Khả năng giải thích "Tại sao chọn A mà không chọn B" là thước đo lớn nhất giữa Fresher và Middle Dev.
                 </span>
@@ -329,7 +329,7 @@ export default function ProjectDefenseModal({
                   className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-850 space-y-2 shadow-2xs"
                 >
                   <div className="flex items-center justify-between text-xs font-bold border-b border-slate-100 dark:border-slate-800 pb-2">
-                    <span className="text-indigo-600 dark:text-indigo-400">Công nghệ đã chọn: {trade.technology}</span>
+                    <span className="text-blue-600 dark:text-blue-400">Công nghệ đã chọn: {trade.technology}</span>
                     <span className="text-slate-400">So sánh với: {trade.comparedTo}</span>
                   </div>
                   <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed pt-1">
@@ -429,7 +429,7 @@ export default function ProjectDefenseModal({
 
           <button
             onClick={handleCopyAll}
-            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-md shadow-indigo-600/25 transition-all active:scale-95 cursor-pointer"
+            className="px-4 py-2 bg-gradient-to-r from-[#1e3a8a] to-[#2563eb] hover:from-[#172554] hover:to-[#1d4ed8] text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-md shadow-blue-600/25 transition-all active:scale-95 cursor-pointer"
           >
             {isCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
             <span>{isCopied ? 'Đã sao chép phao phỏng vấn!' : '1-Click Sao chép phao'}</span>

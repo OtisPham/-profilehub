@@ -45,7 +45,16 @@ export const aiController = {
         return;
       }
 
-      const validAction = ['REWRITE_FOR_JD', 'ADD_KEYWORDS', 'SHORTEN'].includes(actionType)
+      const validAction = [
+        'REWRITE_FOR_JD',
+        'ADD_KEYWORDS',
+        'SHORTEN',
+        'REWRITE_PROFESSIONAL',
+        'FOCUS_RESULTS',
+        'EXPAND',
+        'TRANSLATE_EN',
+        'TRANSLATE_VI'
+      ].includes(actionType)
         ? actionType
         : 'REWRITE_FOR_JD';
 

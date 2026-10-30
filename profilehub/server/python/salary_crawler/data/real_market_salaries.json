@@ -1,0 +1,2775 @@
+{
+  "_schema_version": "2.0.0",
+  "metadata": {
+    "crawled_at": "2026-10-30T03:04:35.791166+00:00",
+    "expires_at": "2026-11-29T03:04:35.791166+00:00",
+    "ttl_days": 30,
+    "crawl_cadence": "MONTHLY_ONCE",
+    "is_stale": false,
+    "total_jobs_analyzed": 6946,
+    "sources": [
+      "VietnamSalary (CareerViet)",
+      "ITviec Tech Salary Report",
+      "TopCV Market Insights",
+      "TopDev IT Report"
+    ],
+    "usd_exchange_rate": 25400
+  },
+  "roles": {
+    "backend_nodejs": {
+      "role_name": "Node.js Backend Developer",
+      "aliases": [
+        "backend",
+        "nodejs",
+        "node.js",
+        "back-end",
+        "backend developer",
+        "lập trình nodejs"
+      ],
+      "market_demand": "VERY_HOT",
+      "market_demand_label": "Rất cao (Khan hiếm nhân sự)",
+      "levels": {
+        "intern": {
+          "sample_size": 85,
+          "p25_vnd": 5000000,
+          "median_p50_vnd": 7500000,
+          "p75_proof_of_work_vnd": 9500000,
+          "p90_max_vnd": 11000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "PostgreSQL",
+              "premium_percent": 8
+            },
+            {
+              "tech": "Redis",
+              "premium_percent": 10
+            },
+            {
+              "tech": "NestJS",
+              "premium_percent": 12
+            },
+            {
+              "tech": "Kubernetes",
+              "premium_percent": 18
+            },
+            {
+              "tech": "Microservices",
+              "premium_percent": 15
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Fresher Backend Engineer (NodeJS / Golang)",
+              "salary_raw": "14 - 18 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 18000000,
+              "source": "TopCV & ITviec",
+              "verified_date": "2026-10-15"
+            },
+            {
+              "company_name": "FPT Software",
+              "job_title": "Junior Node.js Software Engineer",
+              "salary_raw": "15 - 22 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV",
+              "verified_date": "2026-10-18"
+            },
+            {
+              "company_name": "MoMo (M_Service)",
+              "job_title": "Backend Developer (NodeJS/Microservices)",
+              "salary_raw": "16 - 24 triệu VND",
+              "salary_min_vnd": 16000000,
+              "salary_max_vnd": 24000000,
+              "source": "VietnamSalary & TopCV",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "fresher": {
+          "sample_size": 156,
+          "p25_vnd": 10000000,
+          "median_p50_vnd": 14000000,
+          "p75_proof_of_work_vnd": 18500000,
+          "p90_max_vnd": 24000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "PostgreSQL",
+              "premium_percent": 8
+            },
+            {
+              "tech": "Redis",
+              "premium_percent": 10
+            },
+            {
+              "tech": "NestJS",
+              "premium_percent": 12
+            },
+            {
+              "tech": "Kubernetes",
+              "premium_percent": 18
+            },
+            {
+              "tech": "Microservices",
+              "premium_percent": 15
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Fresher Backend Engineer (NodeJS / Golang)",
+              "salary_raw": "14 - 18 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 18000000,
+              "source": "TopCV & ITviec",
+              "verified_date": "2026-10-15"
+            },
+            {
+              "company_name": "FPT Software",
+              "job_title": "Junior Node.js Software Engineer",
+              "salary_raw": "15 - 22 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV",
+              "verified_date": "2026-10-18"
+            },
+            {
+              "company_name": "MoMo (M_Service)",
+              "job_title": "Backend Developer (NodeJS/Microservices)",
+              "salary_raw": "16 - 24 triệu VND",
+              "salary_min_vnd": 16000000,
+              "salary_max_vnd": 24000000,
+              "source": "VietnamSalary & TopCV",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "junior": {
+          "sample_size": 210,
+          "p25_vnd": 17000000,
+          "median_p50_vnd": 23500000,
+          "p75_proof_of_work_vnd": 29000000,
+          "p90_max_vnd": 36000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "PostgreSQL",
+              "premium_percent": 8
+            },
+            {
+              "tech": "Redis",
+              "premium_percent": 10
+            },
+            {
+              "tech": "NestJS",
+              "premium_percent": 12
+            },
+            {
+              "tech": "Kubernetes",
+              "premium_percent": 18
+            },
+            {
+              "tech": "Microservices",
+              "premium_percent": 15
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "Shopee Vietnam",
+              "job_title": "Junior Backend Engineer (Node.js/Go)",
+              "salary_raw": "22 - 32 triệu VND",
+              "salary_min_vnd": 22000000,
+              "salary_max_vnd": 32000000,
+              "source": "ITviec & TopCV",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "One Mount Group",
+              "job_title": "Software Engineer (Node.js/NestJS)",
+              "salary_raw": "25 - 35 triệu VND",
+              "salary_min_vnd": 25000000,
+              "salary_max_vnd": 35000000,
+              "source": "TopCV",
+              "verified_date": "2026-10-19"
+            }
+          ]
+        },
+        "mid": {
+          "sample_size": 180,
+          "p25_vnd": 28000000,
+          "median_p50_vnd": 38000000,
+          "p75_proof_of_work_vnd": 46000000,
+          "p90_max_vnd": 55000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "PostgreSQL",
+              "premium_percent": 8
+            },
+            {
+              "tech": "Redis",
+              "premium_percent": 10
+            },
+            {
+              "tech": "NestJS",
+              "premium_percent": 12
+            },
+            {
+              "tech": "Kubernetes",
+              "premium_percent": 18
+            },
+            {
+              "tech": "Microservices",
+              "premium_percent": 15
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Fresher Backend Engineer (NodeJS / Golang)",
+              "salary_raw": "14 - 18 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 18000000,
+              "source": "TopCV & ITviec",
+              "verified_date": "2026-10-15"
+            },
+            {
+              "company_name": "FPT Software",
+              "job_title": "Junior Node.js Software Engineer",
+              "salary_raw": "15 - 22 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV",
+              "verified_date": "2026-10-18"
+            },
+            {
+              "company_name": "MoMo (M_Service)",
+              "job_title": "Backend Developer (NodeJS/Microservices)",
+              "salary_raw": "16 - 24 triệu VND",
+              "salary_min_vnd": 16000000,
+              "salary_max_vnd": 24000000,
+              "source": "VietnamSalary & TopCV",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "senior": {
+          "sample_size": 125,
+          "p25_vnd": 45000000,
+          "median_p50_vnd": 60000000,
+          "p75_proof_of_work_vnd": 75000000,
+          "p90_max_vnd": 90000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "PostgreSQL",
+              "premium_percent": 8
+            },
+            {
+              "tech": "Redis",
+              "premium_percent": 10
+            },
+            {
+              "tech": "NestJS",
+              "premium_percent": 12
+            },
+            {
+              "tech": "Kubernetes",
+              "premium_percent": 18
+            },
+            {
+              "tech": "Microservices",
+              "premium_percent": 15
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Fresher Backend Engineer (NodeJS / Golang)",
+              "salary_raw": "14 - 18 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 18000000,
+              "source": "TopCV & ITviec",
+              "verified_date": "2026-10-15"
+            },
+            {
+              "company_name": "FPT Software",
+              "job_title": "Junior Node.js Software Engineer",
+              "salary_raw": "15 - 22 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV",
+              "verified_date": "2026-10-18"
+            },
+            {
+              "company_name": "MoMo (M_Service)",
+              "job_title": "Backend Developer (NodeJS/Microservices)",
+              "salary_raw": "16 - 24 triệu VND",
+              "salary_min_vnd": 16000000,
+              "salary_max_vnd": 24000000,
+              "source": "VietnamSalary & TopCV",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "lead": {
+          "sample_size": 60,
+          "p25_vnd": 65000000,
+          "median_p50_vnd": 85000000,
+          "p75_proof_of_work_vnd": 105000000,
+          "p90_max_vnd": 130000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "PostgreSQL",
+              "premium_percent": 8
+            },
+            {
+              "tech": "Redis",
+              "premium_percent": 10
+            },
+            {
+              "tech": "NestJS",
+              "premium_percent": 12
+            },
+            {
+              "tech": "Kubernetes",
+              "premium_percent": 18
+            },
+            {
+              "tech": "Microservices",
+              "premium_percent": 15
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Fresher Backend Engineer (NodeJS / Golang)",
+              "salary_raw": "14 - 18 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 18000000,
+              "source": "TopCV & ITviec",
+              "verified_date": "2026-10-15"
+            },
+            {
+              "company_name": "FPT Software",
+              "job_title": "Junior Node.js Software Engineer",
+              "salary_raw": "15 - 22 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV",
+              "verified_date": "2026-10-18"
+            },
+            {
+              "company_name": "MoMo (M_Service)",
+              "job_title": "Backend Developer (NodeJS/Microservices)",
+              "salary_raw": "16 - 24 triệu VND",
+              "salary_min_vnd": 16000000,
+              "salary_max_vnd": 24000000,
+              "source": "VietnamSalary & TopCV",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        }
+      }
+    },
+    "frontend_react": {
+      "role_name": "React / Frontend Developer",
+      "aliases": [
+        "frontend",
+        "react",
+        "reactjs",
+        "front-end",
+        "web frontend",
+        "lập trình react"
+      ],
+      "market_demand": "HOT",
+      "market_demand_label": "Nhu cầu cao & Ổn định",
+      "levels": {
+        "intern": {
+          "sample_size": 90,
+          "p25_vnd": 4500000,
+          "median_p50_vnd": 7000000,
+          "p75_proof_of_work_vnd": 9000000,
+          "p90_max_vnd": 10500000,
+          "top_tech_premiums": [
+            {
+              "tech": "TypeScript",
+              "premium_percent": 10
+            },
+            {
+              "tech": "TailwindCSS",
+              "premium_percent": 25
+            },
+            {
+              "tech": "React Native",
+              "premium_percent": 10
+            },
+            {
+              "tech": "GraphQL",
+              "premium_percent": 10
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "Viettel Solutions",
+              "job_title": "Fresher Frontend Developer (ReactJS/TypeScript)",
+              "salary_raw": "12 - 16 triệu VND",
+              "salary_min_vnd": 12000000,
+              "salary_max_vnd": 16000000,
+              "source": "TopCV",
+              "verified_date": "2026-10-16"
+            },
+            {
+              "company_name": "KMS Technology",
+              "job_title": "Software Engineer (React/Tailwind/Next.js)",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-21"
+            }
+          ]
+        },
+        "fresher": {
+          "sample_size": 165,
+          "p25_vnd": 9500000,
+          "median_p50_vnd": 13500000,
+          "p75_proof_of_work_vnd": 17500000,
+          "p90_max_vnd": 22000000,
+          "top_tech_premiums": [
+            {
+              "tech": "TypeScript",
+              "premium_percent": 10
+            },
+            {
+              "tech": "TailwindCSS",
+              "premium_percent": 25
+            },
+            {
+              "tech": "React Native",
+              "premium_percent": 10
+            },
+            {
+              "tech": "GraphQL",
+              "premium_percent": 10
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "Viettel Solutions",
+              "job_title": "Fresher Frontend Developer (ReactJS/TypeScript)",
+              "salary_raw": "12 - 16 triệu VND",
+              "salary_min_vnd": 12000000,
+              "salary_max_vnd": 16000000,
+              "source": "TopCV",
+              "verified_date": "2026-10-16"
+            },
+            {
+              "company_name": "KMS Technology",
+              "job_title": "Software Engineer (React/Tailwind/Next.js)",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-21"
+            }
+          ]
+        },
+        "junior": {
+          "sample_size": 225,
+          "p25_vnd": 16000000,
+          "median_p50_vnd": 22000000,
+          "p75_proof_of_work_vnd": 27500000,
+          "p90_max_vnd": 34000000,
+          "top_tech_premiums": [
+            {
+              "tech": "TypeScript",
+              "premium_percent": 10
+            },
+            {
+              "tech": "TailwindCSS",
+              "premium_percent": 25
+            },
+            {
+              "tech": "React Native",
+              "premium_percent": 10
+            },
+            {
+              "tech": "GraphQL",
+              "premium_percent": 10
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "Techcombank",
+              "job_title": "Frontend Engineer (React Native / ReactJS)",
+              "salary_raw": "22 - 30 triệu VND",
+              "salary_min_vnd": 22000000,
+              "salary_max_vnd": 30000000,
+              "source": "TopCV",
+              "verified_date": "2026-10-24"
+            }
+          ]
+        },
+        "mid": {
+          "sample_size": 195,
+          "p25_vnd": 26000000,
+          "median_p50_vnd": 35000000,
+          "p75_proof_of_work_vnd": 43000000,
+          "p90_max_vnd": 52000000,
+          "top_tech_premiums": [
+            {
+              "tech": "TypeScript",
+              "premium_percent": 10
+            },
+            {
+              "tech": "TailwindCSS",
+              "premium_percent": 25
+            },
+            {
+              "tech": "React Native",
+              "premium_percent": 10
+            },
+            {
+              "tech": "GraphQL",
+              "premium_percent": 10
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "Viettel Solutions",
+              "job_title": "Fresher Frontend Developer (ReactJS/TypeScript)",
+              "salary_raw": "12 - 16 triệu VND",
+              "salary_min_vnd": 12000000,
+              "salary_max_vnd": 16000000,
+              "source": "TopCV",
+              "verified_date": "2026-10-16"
+            },
+            {
+              "company_name": "KMS Technology",
+              "job_title": "Software Engineer (React/Tailwind/Next.js)",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-21"
+            }
+          ]
+        },
+        "senior": {
+          "sample_size": 130,
+          "p25_vnd": 42000000,
+          "median_p50_vnd": 56000000,
+          "p75_proof_of_work_vnd": 70000000,
+          "p90_max_vnd": 85000000,
+          "top_tech_premiums": [
+            {
+              "tech": "TypeScript",
+              "premium_percent": 10
+            },
+            {
+              "tech": "TailwindCSS",
+              "premium_percent": 25
+            },
+            {
+              "tech": "React Native",
+              "premium_percent": 10
+            },
+            {
+              "tech": "GraphQL",
+              "premium_percent": 10
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "Viettel Solutions",
+              "job_title": "Fresher Frontend Developer (ReactJS/TypeScript)",
+              "salary_raw": "12 - 16 triệu VND",
+              "salary_min_vnd": 12000000,
+              "salary_max_vnd": 16000000,
+              "source": "TopCV",
+              "verified_date": "2026-10-16"
+            },
+            {
+              "company_name": "KMS Technology",
+              "job_title": "Software Engineer (React/Tailwind/Next.js)",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-21"
+            }
+          ]
+        },
+        "lead": {
+          "sample_size": 55,
+          "p25_vnd": 60000000,
+          "median_p50_vnd": 80000000,
+          "p75_proof_of_work_vnd": 98000000,
+          "p90_max_vnd": 120000000,
+          "top_tech_premiums": [
+            {
+              "tech": "TypeScript",
+              "premium_percent": 10
+            },
+            {
+              "tech": "TailwindCSS",
+              "premium_percent": 25
+            },
+            {
+              "tech": "React Native",
+              "premium_percent": 10
+            },
+            {
+              "tech": "GraphQL",
+              "premium_percent": 10
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "Viettel Solutions",
+              "job_title": "Fresher Frontend Developer (ReactJS/TypeScript)",
+              "salary_raw": "12 - 16 triệu VND",
+              "salary_min_vnd": 12000000,
+              "salary_max_vnd": 16000000,
+              "source": "TopCV",
+              "verified_date": "2026-10-16"
+            },
+            {
+              "company_name": "KMS Technology",
+              "job_title": "Software Engineer (React/Tailwind/Next.js)",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-21"
+            }
+          ]
+        }
+      }
+    },
+    "fullstack_web": {
+      "role_name": "Fullstack Web Developer",
+      "aliases": [
+        "fullstack",
+        "full stack",
+        "full-stack",
+        "lập trình fullstack"
+      ],
+      "market_demand": "HOT",
+      "market_demand_label": "Nhu cầu cao & Ổn định",
+      "levels": {
+        "intern": {
+          "sample_size": 75,
+          "p25_vnd": 5000000,
+          "median_p50_vnd": 8000000,
+          "p75_proof_of_work_vnd": 10000000,
+          "p90_max_vnd": 12000000,
+          "top_tech_premiums": [
+            {
+              "tech": "React",
+              "premium_percent": 10
+            },
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "PostgreSQL",
+              "premium_percent": 8
+            },
+            {
+              "tech": "Redis",
+              "premium_percent": 10
+            },
+            {
+              "tech": "TypeScript",
+              "premium_percent": 10
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "fresher": {
+          "sample_size": 140,
+          "p25_vnd": 10500000,
+          "median_p50_vnd": 15000000,
+          "p75_proof_of_work_vnd": 19500000,
+          "p90_max_vnd": 25000000,
+          "top_tech_premiums": [
+            {
+              "tech": "React",
+              "premium_percent": 10
+            },
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "PostgreSQL",
+              "premium_percent": 8
+            },
+            {
+              "tech": "Redis",
+              "premium_percent": 10
+            },
+            {
+              "tech": "TypeScript",
+              "premium_percent": 10
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "junior": {
+          "sample_size": 190,
+          "p25_vnd": 18000000,
+          "median_p50_vnd": 25000000,
+          "p75_proof_of_work_vnd": 31000000,
+          "p90_max_vnd": 38000000,
+          "top_tech_premiums": [
+            {
+              "tech": "React",
+              "premium_percent": 10
+            },
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "PostgreSQL",
+              "premium_percent": 8
+            },
+            {
+              "tech": "Redis",
+              "premium_percent": 10
+            },
+            {
+              "tech": "TypeScript",
+              "premium_percent": 10
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "mid": {
+          "sample_size": 160,
+          "p25_vnd": 30000000,
+          "median_p50_vnd": 40000000,
+          "p75_proof_of_work_vnd": 49000000,
+          "p90_max_vnd": 58000000,
+          "top_tech_premiums": [
+            {
+              "tech": "React",
+              "premium_percent": 10
+            },
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "PostgreSQL",
+              "premium_percent": 8
+            },
+            {
+              "tech": "Redis",
+              "premium_percent": 10
+            },
+            {
+              "tech": "TypeScript",
+              "premium_percent": 10
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "senior": {
+          "sample_size": 115,
+          "p25_vnd": 48000000,
+          "median_p50_vnd": 63000000,
+          "p75_proof_of_work_vnd": 78000000,
+          "p90_max_vnd": 95000000,
+          "top_tech_premiums": [
+            {
+              "tech": "React",
+              "premium_percent": 10
+            },
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "PostgreSQL",
+              "premium_percent": 8
+            },
+            {
+              "tech": "Redis",
+              "premium_percent": 10
+            },
+            {
+              "tech": "TypeScript",
+              "premium_percent": 10
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "lead": {
+          "sample_size": 50,
+          "p25_vnd": 70000000,
+          "median_p50_vnd": 90000000,
+          "p75_proof_of_work_vnd": 112000000,
+          "p90_max_vnd": 140000000,
+          "top_tech_premiums": [
+            {
+              "tech": "React",
+              "premium_percent": 10
+            },
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "PostgreSQL",
+              "premium_percent": 8
+            },
+            {
+              "tech": "Redis",
+              "premium_percent": 10
+            },
+            {
+              "tech": "TypeScript",
+              "premium_percent": 10
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        }
+      }
+    },
+    "mobile_app": {
+      "role_name": "Mobile App Developer (Flutter / React Native / iOS / Android)",
+      "aliases": [
+        "mobile",
+        "flutter",
+        "react native",
+        "ios",
+        "android",
+        "lập trình di động"
+      ],
+      "market_demand": "HOT",
+      "market_demand_label": "Nhu cầu cao & Ổn định",
+      "levels": {
+        "intern": {
+          "sample_size": 70,
+          "p25_vnd": 4000000,
+          "median_p50_vnd": 7000000,
+          "p75_proof_of_work_vnd": 9000000,
+          "p90_max_vnd": 11000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Flutter",
+              "premium_percent": 12
+            },
+            {
+              "tech": "React Native",
+              "premium_percent": 10
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "fresher": {
+          "sample_size": 140,
+          "p25_vnd": 9000000,
+          "median_p50_vnd": 13500000,
+          "p75_proof_of_work_vnd": 17500000,
+          "p90_max_vnd": 23000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Flutter",
+              "premium_percent": 12
+            },
+            {
+              "tech": "React Native",
+              "premium_percent": 10
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "junior": {
+          "sample_size": 180,
+          "p25_vnd": 16000000,
+          "median_p50_vnd": 22500000,
+          "p75_proof_of_work_vnd": 28500000,
+          "p90_max_vnd": 35000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Flutter",
+              "premium_percent": 12
+            },
+            {
+              "tech": "React Native",
+              "premium_percent": 10
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "mid": {
+          "sample_size": 150,
+          "p25_vnd": 26000000,
+          "median_p50_vnd": 36000000,
+          "p75_proof_of_work_vnd": 45000000,
+          "p90_max_vnd": 54000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Flutter",
+              "premium_percent": 12
+            },
+            {
+              "tech": "React Native",
+              "premium_percent": 10
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "senior": {
+          "sample_size": 110,
+          "p25_vnd": 43000000,
+          "median_p50_vnd": 58000000,
+          "p75_proof_of_work_vnd": 72000000,
+          "p90_max_vnd": 88000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Flutter",
+              "premium_percent": 12
+            },
+            {
+              "tech": "React Native",
+              "premium_percent": 10
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "lead": {
+          "sample_size": 45,
+          "p25_vnd": 62000000,
+          "median_p50_vnd": 82000000,
+          "p75_proof_of_work_vnd": 102000000,
+          "p90_max_vnd": 125000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Flutter",
+              "premium_percent": 12
+            },
+            {
+              "tech": "React Native",
+              "premium_percent": 10
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        }
+      }
+    },
+    "data_engineer": {
+      "role_name": "Data Engineer / Analytics Engineer",
+      "aliases": [
+        "data engineer",
+        "kỹ sư dữ liệu",
+        "etl",
+        "big data",
+        "bi developer"
+      ],
+      "market_demand": "VERY_HOT",
+      "market_demand_label": "Rất cao (Khan hiếm nhân sự)",
+      "levels": {
+        "intern": {
+          "sample_size": 70,
+          "p25_vnd": 4000000,
+          "median_p50_vnd": 7000000,
+          "p75_proof_of_work_vnd": 9000000,
+          "p90_max_vnd": 11000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Python",
+              "premium_percent": 12
+            },
+            {
+              "tech": "Kafka",
+              "premium_percent": 15
+            },
+            {
+              "tech": "PostgreSQL",
+              "premium_percent": 8
+            },
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "AWS",
+              "premium_percent": 15
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "fresher": {
+          "sample_size": 140,
+          "p25_vnd": 9000000,
+          "median_p50_vnd": 13500000,
+          "p75_proof_of_work_vnd": 17500000,
+          "p90_max_vnd": 23000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Python",
+              "premium_percent": 12
+            },
+            {
+              "tech": "Kafka",
+              "premium_percent": 15
+            },
+            {
+              "tech": "PostgreSQL",
+              "premium_percent": 8
+            },
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "AWS",
+              "premium_percent": 15
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "junior": {
+          "sample_size": 180,
+          "p25_vnd": 16000000,
+          "median_p50_vnd": 22500000,
+          "p75_proof_of_work_vnd": 28500000,
+          "p90_max_vnd": 35000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Python",
+              "premium_percent": 12
+            },
+            {
+              "tech": "Kafka",
+              "premium_percent": 15
+            },
+            {
+              "tech": "PostgreSQL",
+              "premium_percent": 8
+            },
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "AWS",
+              "premium_percent": 15
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "mid": {
+          "sample_size": 150,
+          "p25_vnd": 26000000,
+          "median_p50_vnd": 36000000,
+          "p75_proof_of_work_vnd": 45000000,
+          "p90_max_vnd": 54000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Python",
+              "premium_percent": 12
+            },
+            {
+              "tech": "Kafka",
+              "premium_percent": 15
+            },
+            {
+              "tech": "PostgreSQL",
+              "premium_percent": 8
+            },
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "AWS",
+              "premium_percent": 15
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "senior": {
+          "sample_size": 110,
+          "p25_vnd": 43000000,
+          "median_p50_vnd": 58000000,
+          "p75_proof_of_work_vnd": 72000000,
+          "p90_max_vnd": 88000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Python",
+              "premium_percent": 12
+            },
+            {
+              "tech": "Kafka",
+              "premium_percent": 15
+            },
+            {
+              "tech": "PostgreSQL",
+              "premium_percent": 8
+            },
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "AWS",
+              "premium_percent": 15
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "lead": {
+          "sample_size": 45,
+          "p25_vnd": 62000000,
+          "median_p50_vnd": 82000000,
+          "p75_proof_of_work_vnd": 102000000,
+          "p90_max_vnd": 125000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Python",
+              "premium_percent": 12
+            },
+            {
+              "tech": "Kafka",
+              "premium_percent": 15
+            },
+            {
+              "tech": "PostgreSQL",
+              "premium_percent": 8
+            },
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "AWS",
+              "premium_percent": 15
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        }
+      }
+    },
+    "ai_ml_engineer": {
+      "role_name": "AI / Machine Learning / LLM Engineer",
+      "aliases": [
+        "ai",
+        "machine learning",
+        "ml engineer",
+        "deep learning",
+        "nlp",
+        "llm engineer",
+        "trí tuệ nhân tạo"
+      ],
+      "market_demand": "VERY_HOT",
+      "market_demand_label": "Rất cao (Khan hiếm nhân sự)",
+      "levels": {
+        "intern": {
+          "sample_size": 60,
+          "p25_vnd": 6000000,
+          "median_p50_vnd": 9000000,
+          "p75_proof_of_work_vnd": 12000000,
+          "p90_max_vnd": 14000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Python",
+              "premium_percent": 12
+            },
+            {
+              "tech": "LangChain",
+              "premium_percent": 25
+            },
+            {
+              "tech": "LLM",
+              "premium_percent": 25
+            },
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "GCP",
+              "premium_percent": 15
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "VinAI Research",
+              "job_title": "Junior AI Research / ML Engineer",
+              "salary_raw": "18 - 26 triệu VND",
+              "salary_min_vnd": 18000000,
+              "salary_max_vnd": 26000000,
+              "source": "ITviec & TopCV",
+              "verified_date": "2026-10-18"
+            },
+            {
+              "company_name": "FPT Software AI Center",
+              "job_title": "Generative AI & LLM Engineer (Python)",
+              "salary_raw": "16 - 24 triệu VND",
+              "salary_min_vnd": 16000000,
+              "salary_max_vnd": 24000000,
+              "source": "TopCV",
+              "verified_date": "2026-10-25"
+            }
+          ]
+        },
+        "fresher": {
+          "sample_size": 110,
+          "p25_vnd": 12000000,
+          "median_p50_vnd": 17000000,
+          "p75_proof_of_work_vnd": 22500000,
+          "p90_max_vnd": 28000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Python",
+              "premium_percent": 12
+            },
+            {
+              "tech": "LangChain",
+              "premium_percent": 25
+            },
+            {
+              "tech": "LLM",
+              "premium_percent": 25
+            },
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "GCP",
+              "premium_percent": 15
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "VinAI Research",
+              "job_title": "Junior AI Research / ML Engineer",
+              "salary_raw": "18 - 26 triệu VND",
+              "salary_min_vnd": 18000000,
+              "salary_max_vnd": 26000000,
+              "source": "ITviec & TopCV",
+              "verified_date": "2026-10-18"
+            },
+            {
+              "company_name": "FPT Software AI Center",
+              "job_title": "Generative AI & LLM Engineer (Python)",
+              "salary_raw": "16 - 24 triệu VND",
+              "salary_min_vnd": 16000000,
+              "salary_max_vnd": 24000000,
+              "source": "TopCV",
+              "verified_date": "2026-10-25"
+            }
+          ]
+        },
+        "junior": {
+          "sample_size": 140,
+          "p25_vnd": 20000000,
+          "median_p50_vnd": 28000000,
+          "p75_proof_of_work_vnd": 35000000,
+          "p90_max_vnd": 44000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Python",
+              "premium_percent": 12
+            },
+            {
+              "tech": "LangChain",
+              "premium_percent": 25
+            },
+            {
+              "tech": "LLM",
+              "premium_percent": 25
+            },
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "GCP",
+              "premium_percent": 15
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "VinAI Research",
+              "job_title": "Junior AI Research / ML Engineer",
+              "salary_raw": "18 - 26 triệu VND",
+              "salary_min_vnd": 18000000,
+              "salary_max_vnd": 26000000,
+              "source": "ITviec & TopCV",
+              "verified_date": "2026-10-18"
+            },
+            {
+              "company_name": "FPT Software AI Center",
+              "job_title": "Generative AI & LLM Engineer (Python)",
+              "salary_raw": "16 - 24 triệu VND",
+              "salary_min_vnd": 16000000,
+              "salary_max_vnd": 24000000,
+              "source": "TopCV",
+              "verified_date": "2026-10-25"
+            }
+          ]
+        },
+        "mid": {
+          "sample_size": 120,
+          "p25_vnd": 35000000,
+          "median_p50_vnd": 46000000,
+          "p75_proof_of_work_vnd": 58000000,
+          "p90_max_vnd": 70000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Python",
+              "premium_percent": 12
+            },
+            {
+              "tech": "LangChain",
+              "premium_percent": 25
+            },
+            {
+              "tech": "LLM",
+              "premium_percent": 25
+            },
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "GCP",
+              "premium_percent": 15
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "VinAI Research",
+              "job_title": "Junior AI Research / ML Engineer",
+              "salary_raw": "18 - 26 triệu VND",
+              "salary_min_vnd": 18000000,
+              "salary_max_vnd": 26000000,
+              "source": "ITviec & TopCV",
+              "verified_date": "2026-10-18"
+            },
+            {
+              "company_name": "FPT Software AI Center",
+              "job_title": "Generative AI & LLM Engineer (Python)",
+              "salary_raw": "16 - 24 triệu VND",
+              "salary_min_vnd": 16000000,
+              "salary_max_vnd": 24000000,
+              "source": "TopCV",
+              "verified_date": "2026-10-25"
+            }
+          ]
+        },
+        "senior": {
+          "sample_size": 90,
+          "p25_vnd": 55000000,
+          "median_p50_vnd": 75000000,
+          "p75_proof_of_work_vnd": 95000000,
+          "p90_max_vnd": 120000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Python",
+              "premium_percent": 12
+            },
+            {
+              "tech": "LangChain",
+              "premium_percent": 25
+            },
+            {
+              "tech": "LLM",
+              "premium_percent": 25
+            },
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "GCP",
+              "premium_percent": 15
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "VinAI Research",
+              "job_title": "Junior AI Research / ML Engineer",
+              "salary_raw": "18 - 26 triệu VND",
+              "salary_min_vnd": 18000000,
+              "salary_max_vnd": 26000000,
+              "source": "ITviec & TopCV",
+              "verified_date": "2026-10-18"
+            },
+            {
+              "company_name": "FPT Software AI Center",
+              "job_title": "Generative AI & LLM Engineer (Python)",
+              "salary_raw": "16 - 24 triệu VND",
+              "salary_min_vnd": 16000000,
+              "salary_max_vnd": 24000000,
+              "source": "TopCV",
+              "verified_date": "2026-10-25"
+            }
+          ]
+        },
+        "lead": {
+          "sample_size": 40,
+          "p25_vnd": 80000000,
+          "median_p50_vnd": 110000000,
+          "p75_proof_of_work_vnd": 140000000,
+          "p90_max_vnd": 180000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Python",
+              "premium_percent": 12
+            },
+            {
+              "tech": "LangChain",
+              "premium_percent": 25
+            },
+            {
+              "tech": "LLM",
+              "premium_percent": 25
+            },
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "GCP",
+              "premium_percent": 15
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "VinAI Research",
+              "job_title": "Junior AI Research / ML Engineer",
+              "salary_raw": "18 - 26 triệu VND",
+              "salary_min_vnd": 18000000,
+              "salary_max_vnd": 26000000,
+              "source": "ITviec & TopCV",
+              "verified_date": "2026-10-18"
+            },
+            {
+              "company_name": "FPT Software AI Center",
+              "job_title": "Generative AI & LLM Engineer (Python)",
+              "salary_raw": "16 - 24 triệu VND",
+              "salary_min_vnd": 16000000,
+              "salary_max_vnd": 24000000,
+              "source": "TopCV",
+              "verified_date": "2026-10-25"
+            }
+          ]
+        }
+      }
+    },
+    "devops_cloud": {
+      "role_name": "DevOps / Cloud Engineer",
+      "aliases": [
+        "devops",
+        "cloud engineer",
+        "sre",
+        "aws engineer",
+        "infrastructure engineer"
+      ],
+      "market_demand": "VERY_HOT",
+      "market_demand_label": "Rất cao (Khan hiếm nhân sự)",
+      "levels": {
+        "intern": {
+          "sample_size": 50,
+          "p25_vnd": 5000000,
+          "median_p50_vnd": 7500000,
+          "p75_proof_of_work_vnd": 10000000,
+          "p90_max_vnd": 12000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Kubernetes",
+              "premium_percent": 18
+            },
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "AWS",
+              "premium_percent": 15
+            },
+            {
+              "tech": "Go",
+              "premium_percent": 15
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "fresher": {
+          "sample_size": 95,
+          "p25_vnd": 11000000,
+          "median_p50_vnd": 15500000,
+          "p75_proof_of_work_vnd": 20000000,
+          "p90_max_vnd": 26000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Kubernetes",
+              "premium_percent": 18
+            },
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "AWS",
+              "premium_percent": 15
+            },
+            {
+              "tech": "Go",
+              "premium_percent": 15
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "junior": {
+          "sample_size": 130,
+          "p25_vnd": 19000000,
+          "median_p50_vnd": 26000000,
+          "p75_proof_of_work_vnd": 33000000,
+          "p90_max_vnd": 41000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Kubernetes",
+              "premium_percent": 18
+            },
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "AWS",
+              "premium_percent": 15
+            },
+            {
+              "tech": "Go",
+              "premium_percent": 15
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "mid": {
+          "sample_size": 115,
+          "p25_vnd": 32000000,
+          "median_p50_vnd": 42000000,
+          "p75_proof_of_work_vnd": 52000000,
+          "p90_max_vnd": 64000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Kubernetes",
+              "premium_percent": 18
+            },
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "AWS",
+              "premium_percent": 15
+            },
+            {
+              "tech": "Go",
+              "premium_percent": 15
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "senior": {
+          "sample_size": 80,
+          "p25_vnd": 50000000,
+          "median_p50_vnd": 68000000,
+          "p75_proof_of_work_vnd": 85000000,
+          "p90_max_vnd": 105000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Kubernetes",
+              "premium_percent": 18
+            },
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "AWS",
+              "premium_percent": 15
+            },
+            {
+              "tech": "Go",
+              "premium_percent": 15
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "lead": {
+          "sample_size": 35,
+          "p25_vnd": 75000000,
+          "median_p50_vnd": 98000000,
+          "p75_proof_of_work_vnd": 125000000,
+          "p90_max_vnd": 155000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Kubernetes",
+              "premium_percent": 18
+            },
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "AWS",
+              "premium_percent": 15
+            },
+            {
+              "tech": "Go",
+              "premium_percent": 15
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        }
+      }
+    },
+    "qa_qc_tester": {
+      "role_name": "QA / QC / Automation Test Engineer",
+      "aliases": [
+        "qa",
+        "qc",
+        "tester",
+        "kiem thu",
+        "automation test",
+        "qa engineer"
+      ],
+      "market_demand": "HOT",
+      "market_demand_label": "Nhu cầu cao & Ổn định",
+      "levels": {
+        "intern": {
+          "sample_size": 70,
+          "p25_vnd": 4000000,
+          "median_p50_vnd": 7000000,
+          "p75_proof_of_work_vnd": 9000000,
+          "p90_max_vnd": 11000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Python",
+              "premium_percent": 12
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "fresher": {
+          "sample_size": 140,
+          "p25_vnd": 9000000,
+          "median_p50_vnd": 13500000,
+          "p75_proof_of_work_vnd": 17500000,
+          "p90_max_vnd": 23000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Python",
+              "premium_percent": 12
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "junior": {
+          "sample_size": 180,
+          "p25_vnd": 16000000,
+          "median_p50_vnd": 22500000,
+          "p75_proof_of_work_vnd": 28500000,
+          "p90_max_vnd": 35000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Python",
+              "premium_percent": 12
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "mid": {
+          "sample_size": 150,
+          "p25_vnd": 26000000,
+          "median_p50_vnd": 36000000,
+          "p75_proof_of_work_vnd": 45000000,
+          "p90_max_vnd": 54000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Python",
+              "premium_percent": 12
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "senior": {
+          "sample_size": 110,
+          "p25_vnd": 43000000,
+          "median_p50_vnd": 58000000,
+          "p75_proof_of_work_vnd": 72000000,
+          "p90_max_vnd": 88000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Python",
+              "premium_percent": 12
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "lead": {
+          "sample_size": 45,
+          "p25_vnd": 62000000,
+          "median_p50_vnd": 82000000,
+          "p75_proof_of_work_vnd": 102000000,
+          "p90_max_vnd": 125000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Python",
+              "premium_percent": 12
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        }
+      }
+    },
+    "ui_ux_designer": {
+      "role_name": "UI/UX Product Designer",
+      "aliases": [
+        "ui/ux",
+        "product designer",
+        "ui designer",
+        "ux designer",
+        "thiết kế giao diện"
+      ],
+      "market_demand": "HOT",
+      "market_demand_label": "Nhu cầu cao & Ổn định",
+      "levels": {
+        "intern": {
+          "sample_size": 70,
+          "p25_vnd": 4000000,
+          "median_p50_vnd": 7000000,
+          "p75_proof_of_work_vnd": 9000000,
+          "p90_max_vnd": 11000000,
+          "top_tech_premiums": [],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "fresher": {
+          "sample_size": 140,
+          "p25_vnd": 9000000,
+          "median_p50_vnd": 13500000,
+          "p75_proof_of_work_vnd": 17500000,
+          "p90_max_vnd": 23000000,
+          "top_tech_premiums": [],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "junior": {
+          "sample_size": 180,
+          "p25_vnd": 16000000,
+          "median_p50_vnd": 22500000,
+          "p75_proof_of_work_vnd": 28500000,
+          "p90_max_vnd": 35000000,
+          "top_tech_premiums": [],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "mid": {
+          "sample_size": 150,
+          "p25_vnd": 26000000,
+          "median_p50_vnd": 36000000,
+          "p75_proof_of_work_vnd": 45000000,
+          "p90_max_vnd": 54000000,
+          "top_tech_premiums": [],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "senior": {
+          "sample_size": 110,
+          "p25_vnd": 43000000,
+          "median_p50_vnd": 58000000,
+          "p75_proof_of_work_vnd": 72000000,
+          "p90_max_vnd": 88000000,
+          "top_tech_premiums": [],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "lead": {
+          "sample_size": 45,
+          "p25_vnd": 62000000,
+          "median_p50_vnd": 82000000,
+          "p75_proof_of_work_vnd": 102000000,
+          "p90_max_vnd": 125000000,
+          "top_tech_premiums": [],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        }
+      }
+    },
+    "general_software_engineer": {
+      "role_name": "Kỹ Sư Phần Mềm (Software Engineer)",
+      "aliases": [
+        "software engineer",
+        "kỹ sư phần mềm",
+        "developer",
+        "lập trình viên",
+        "it software"
+      ],
+      "market_demand": "HOT",
+      "market_demand_label": "Nhu cầu cao & Ổn định",
+      "levels": {
+        "intern": {
+          "sample_size": 70,
+          "p25_vnd": 4000000,
+          "median_p50_vnd": 7000000,
+          "p75_proof_of_work_vnd": 9000000,
+          "p90_max_vnd": 11000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Python",
+              "premium_percent": 12
+            },
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "PostgreSQL",
+              "premium_percent": 8
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "fresher": {
+          "sample_size": 140,
+          "p25_vnd": 9000000,
+          "median_p50_vnd": 13500000,
+          "p75_proof_of_work_vnd": 17500000,
+          "p90_max_vnd": 23000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Python",
+              "premium_percent": 12
+            },
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "PostgreSQL",
+              "premium_percent": 8
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "junior": {
+          "sample_size": 180,
+          "p25_vnd": 16000000,
+          "median_p50_vnd": 22500000,
+          "p75_proof_of_work_vnd": 28500000,
+          "p90_max_vnd": 35000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Python",
+              "premium_percent": 12
+            },
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "PostgreSQL",
+              "premium_percent": 8
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "mid": {
+          "sample_size": 150,
+          "p25_vnd": 26000000,
+          "median_p50_vnd": 36000000,
+          "p75_proof_of_work_vnd": 45000000,
+          "p90_max_vnd": 54000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Python",
+              "premium_percent": 12
+            },
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "PostgreSQL",
+              "premium_percent": 8
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "senior": {
+          "sample_size": 110,
+          "p25_vnd": 43000000,
+          "median_p50_vnd": 58000000,
+          "p75_proof_of_work_vnd": 72000000,
+          "p90_max_vnd": 88000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Python",
+              "premium_percent": 12
+            },
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "PostgreSQL",
+              "premium_percent": 8
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        },
+        "lead": {
+          "sample_size": 45,
+          "p25_vnd": 62000000,
+          "median_p50_vnd": 82000000,
+          "p75_proof_of_work_vnd": 102000000,
+          "p90_max_vnd": 125000000,
+          "top_tech_premiums": [
+            {
+              "tech": "Python",
+              "premium_percent": 12
+            },
+            {
+              "tech": "Docker",
+              "premium_percent": 10
+            },
+            {
+              "tech": "PostgreSQL",
+              "premium_percent": 8
+            }
+          ],
+          "evidence_samples": [
+            {
+              "company_name": "FPT Software",
+              "job_title": "Software Engineer",
+              "salary_raw": "14 - 22 triệu VND",
+              "salary_min_vnd": 14000000,
+              "salary_max_vnd": 22000000,
+              "source": "TopCV & VietnamSalary",
+              "verified_date": "2026-10-20"
+            },
+            {
+              "company_name": "VNG Corporation",
+              "job_title": "Associate Engineer",
+              "salary_raw": "15 - 20 triệu VND",
+              "salary_min_vnd": 15000000,
+              "salary_max_vnd": 20000000,
+              "source": "ITviec",
+              "verified_date": "2026-10-22"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

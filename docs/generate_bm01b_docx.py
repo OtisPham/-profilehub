@@ -633,6 +633,21 @@ def create_bm01b_document():
                 "Trợ lý AI xuất sắc là công cụ đặt đúng câu hỏi gợi mở để ứng viên tự tin kể lại thành tựu kỹ thuật có thật thay vì tự tiện bịa số liệu ảo."
             )
         }
+    ,
+        {
+            "week_header": None,
+            "day_title": "Tuần: 5   Thứ: 5   Ngày: 22/10/2026",
+            "morning": (
+                "Tinh gọn tàn dư học thuật, chuẩn hóa Login & Bóc tách 1-Click từ GitHub",
+                "Loại bỏ tính năng phòng thủ đồ án rườm rà trên Canvas và Sidebar. Tái thiết kế Login.tsx theo chuẩn Developer Evidence (Card mockup 24 commits, GitHub OAuth, Guest Access). Phát triển GitHubQuickImportBar bóc tách package.json, phân tích commit logs và gợi ý STAR bullets. Tích hợp autofill vào form AddProjectModal.",
+                "Loại bỏ các thao tác học thuật nặng nề và tự động bóc tách từ GitHub giúp ứng viên bắt đầu tạo CV trong chưa đầy 30 giây."
+            ),
+            "afternoon": (
+                "Thiết kế UI ITviec, Gamified Onboarding, Reverse-Sync & Public Showcase Link",
+                "Redesign MyProjects.tsx theo chuẩn ITviec (Dark Hero Banner, Segmented Filters). Xây dựng GamifiedOnboardingTour (chuỗi Quest RPG +100 XP). Hiện thực hóa Reverse-Sync cvService.syncCvToFullProfile tự động đồng bộ CV ngược vào Profile/Projects kèm phím Ctrl+S. Phát triển PublicShowcase.tsx chia sẻ hàng loạt dự án không cần đăng nhập kèm deep-link từng dự án. Kiểm thử tsc 0 lỗi.",
+                "Ứng viên cần trải nghiệm mượt mà không bị 'quằng' qua nhiều bước; Reverse-Sync và link Showcase công khai giải quyết triệt để bài toán chia sẻ năng lực thực chiến."
+            )
+        }
     ]
 
     col_widths = [Cm(2.6), Cm(4.5), Cm(5.4), Cm(4.0)]

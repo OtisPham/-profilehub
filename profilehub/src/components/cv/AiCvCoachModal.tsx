@@ -312,7 +312,7 @@ export default function AiCvCoachModal({
       <div className="bg-white w-full max-w-6xl rounded-3xl shadow-2xl shadow-blue-900/10 border border-blue-100 flex flex-col max-h-[94vh] overflow-hidden">
         
         {/* Top Header Bar: Pro White & Blue Studio Aesthetic */}
-        <div className="relative px-5 py-3 border-b border-blue-100 flex flex-col md:flex-row md:items-center justify-between gap-3 bg-gradient-to-r from-blue-50/90 via-indigo-50/40 to-white backdrop-blur-sm pr-14 md:pr-16">
+        <div className="relative px-5 py-3 border-b border-blue-100 flex flex-col md:flex-row md:items-center justify-between gap-3 bg-gradient-to-r from-blue-50/90 via-sky-50/40 to-white backdrop-blur-sm pr-14 md:pr-16">
           {/* Left: Brand / Title */}
           <div className="flex items-center gap-3 shrink-0">
             <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-md shadow-blue-600/25 shrink-0">

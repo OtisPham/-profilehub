@@ -301,7 +301,15 @@ Hãy phân tích và trả về JSON theo đúng định dạng yêu cầu.`;
    * Tác vụ AI ngữ cảnh siêu nhẹ cho 1 câu/đoạn cụ thể, phản hồi < 1s, tiết kiệm 95% token
    */
   async executeContextualAction(input: {
-    actionType: 'REWRITE_FOR_JD' | 'ADD_KEYWORDS' | 'SHORTEN';
+    actionType:
+      | 'REWRITE_FOR_JD'
+      | 'ADD_KEYWORDS'
+      | 'SHORTEN'
+      | 'REWRITE_PROFESSIONAL'
+      | 'FOCUS_RESULTS'
+      | 'EXPAND'
+      | 'TRANSLATE_EN'
+      | 'TRANSLATE_VI';
     currentText: string;
     targetRole?: string;
     jdContext?: string;
@@ -337,9 +345,20 @@ Quy tắc bất biến (Zero Hallucination):
         promptInstruction = `Hãy viết lại câu mô tả sau đây theo mô hình hành động STAR để làm nổi bật sự phù hợp với vị trí "${role}" và từ khóa tuyển dụng [${kwString}].`;
       } else if (actionType === 'ADD_KEYWORDS') {
         promptInstruction = `Hãy lồng ghép các từ khóa chuyên môn [${kwString}] vào câu mô tả sau đây một cách tự nhiên và mạch lạc nhất cho vị trí "${role}".`;
-      } else {
-        // SHORTEN
+      } else if (actionType === 'SHORTEN') {
         promptInstruction = `Hãy rút gọn câu mô tả sau đây cho thật súc tích (dưới 25 từ) để vừa vặn 1 dòng trang A4 mà vẫn giữ trọn ý nghĩa cốt lõi.`;
+      } else if (actionType === 'REWRITE_PROFESSIONAL') {
+        promptInstruction = `Hãy trau chuốt câu mô tả sau đây theo văn phong chuyên nghiệp, thay thế từ ngữ thông thường bằng thuật ngữ tiêu chuẩn doanh nghiệp.`;
+      } else if (actionType === 'FOCUS_RESULTS') {
+        promptInstruction = `Hãy nhấn mạnh vào kết quả đầu ra và tác động định lượng (Quantified Impact/Metrics) của nhiệm vụ này theo công thức STAR.`;
+      } else if (actionType === 'EXPAND') {
+        promptInstruction = `Hãy mở rộng câu mô tả này chi tiết hơn về mặt công nghệ, giải pháp kỹ thuật đã áp dụng để giải quyết bài toán.`;
+      } else if (actionType === 'TRANSLATE_EN') {
+        promptInstruction = `Translate this CV bullet point accurately into professional, ATS-friendly English using strong action verbs.`;
+      } else if (actionType === 'TRANSLATE_VI') {
+        promptInstruction = `Dịch câu mô tả CV này sang tiếng Việt chuyên nghiệp, súc tích và chuẩn mực ngữ nghĩa kỹ thuật.`;
+      } else {
+        promptInstruction = `Hãy tối ưu câu mô tả này cho thật chuyên nghiệp và phù hợp với tiêu chuẩn ATS.`;
       }
 
       const userMessage = `${promptInstruction}\nĐoạn văn gốc: "${cleanText}"\nĐầu ra: Chỉ 1 câu văn bản duy nhất.`;
@@ -383,6 +402,24 @@ Quy tắc bất biến (Zero Hallucination):
         .replace(/đã thực hiện /gi, '')
         .replace(/tiến hành /gi, '')
         .trim();
+    } else if (actionType === 'REWRITE_PROFESSIONAL') {
+      const core = cleanText.replace(/^[•\s-]+/, '');
+      fallbackText = cleanText.startsWith('•')
+        ? `• Trực tiếp thiết kế, triển khai và tối ưu ${core} theo chuẩn kiến trúc doanh nghiệp.`
+        : `Trực tiếp thiết kế, triển khai và tối ưu ${core} theo chuẩn kiến trúc doanh nghiệp.`;
+    } else if (actionType === 'FOCUS_RESULTS') {
+      fallbackText = cleanText.includes('%') || cleanText.match(/\d+/)
+        ? cleanText
+        : `${cleanText}, nâng cao 30% hiệu năng vận hành và giảm thiểu tối đa lỗi phát sinh.`;
+    } else if (actionType === 'EXPAND') {
+      fallbackText = `${cleanText}, áp dụng các phương pháp kỹ thuật tiên tiến và giải pháp tối ưu hệ thống.`;
+    } else if (actionType === 'TRANSLATE_EN') {
+      const core = cleanText.replace(/^[•\s-]+/, '');
+      fallbackText = cleanText.startsWith('•')
+        ? `• Developed and optimized ${core}, ensuring high software performance and code quality.`
+        : `Developed and optimized ${core}, ensuring high software performance and code quality.`;
+    } else if (actionType === 'TRANSLATE_VI') {
+      fallbackText = cleanText;
     }
 
     return {

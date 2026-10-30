@@ -23,6 +23,7 @@ import {
   Globe,
   Facebook,
   Linkedin,
+  Github,
   Calendar,
   Tag,
   CheckCircle2,
@@ -34,9 +35,14 @@ import {
   AlertCircle,
   FolderKanban,
   Edit3,
-  ShieldAlert
+  ShieldAlert,
+  Scissors,
+  Loader2,
+  RotateCcw,
+  Target
 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
+import { cvService } from '../../services/cvService';
 import StarDiffReviewModal from './StarDiffReviewModal';
 import ProjectDefenseModal from './ProjectDefenseModal';
 import type { CVTemplateType } from './CVTemplates';
@@ -104,6 +110,7 @@ interface InteractiveCVCanvasProps {
   onDeleteItemFromSection: (sectionId: string, itemId: string) => void;
   onUpdateItemInSection: (sectionId: string, itemId: string, updated: any) => void;
   onDuplicateItemInSection?: (sectionId: string, itemId: string) => void;
+  onTogglePageBreak?: (sectionId: string) => void;
   // Contextual AI & Undo props (Spec v0.4)
   targetRole?: string;
   jdContext?: string;
@@ -162,6 +169,14 @@ export function AutoExpandingTextarea({
   );
 }
 
+const formatExternalUrl = (url?: string) => {
+  if (!url) return '';
+  const trimmed = url.trim();
+  if (!trimmed) return '';
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return 'https://' + trimmed;
+};
+
 export default function InteractiveCVCanvas({
   personalInfo,
   sections,
@@ -189,6 +204,7 @@ export default function InteractiveCVCanvas({
   onDeleteItemFromSection,
   onUpdateItemInSection,
   onDuplicateItemInSection,
+  onTogglePageBreak,
   targetRole = 'Chuyên viên kỹ thuật',
   jdContext = '',
   remainingCredits = 20,
@@ -229,6 +245,89 @@ export default function InteractiveCVCanvas({
       onSave: options.onSave,
       onApplyAi: options.onApplyAi,
     });
+  };
+
+  // 1-Click Inline AI Action State & Handler (Method 1: Zero-Modal Instant Polish)
+  const [inlineLoadingId, setInlineLoadingId] = useState<string | null>(null);
+  const [inlineToast, setInlineToast] = useState<{ message: string; onUndo?: () => void } | null>(null);
+
+  const handleInlineQuickAi = async (
+    targetType: 'objective' | 'project' | 'work_experience',
+    sectionId: string,
+    action: 'STAR' | 'JD' | 'SHORTEN',
+    itemId?: string
+  ) => {
+    const loadingKey = itemId || sectionId;
+    setInlineLoadingId(loadingKey);
+
+    try {
+      let currentText = '';
+      if (targetType === 'objective') {
+        const sec = sections.find(s => s.id === sectionId);
+        currentText = sec?.content || '';
+      } else {
+        const sec = sections.find(s => s.id === sectionId);
+        const item = sec?.items?.find((i: any) => i.id === itemId);
+        currentText = item?.description || '';
+      }
+
+      const actionType = action === 'STAR' ? 'FOCUS_RESULTS' : action === 'JD' ? 'REWRITE_FOR_JD' : 'SHORTEN';
+      const result = await cvService.executeContextualAiAction({
+        actionType,
+        currentText,
+        targetRole,
+        jdContext
+      });
+
+      const previousText = currentText;
+      const newText = result.suggestedText;
+
+      if (targetType === 'objective') {
+        if (onRecordUndo) {
+          onRecordUndo({
+            type: 'SECTION_CONTENT',
+            sectionId,
+            oldValue: previousText,
+            newValue: newText,
+            description: `Tối ưu ${action} mục tiêu`
+          });
+        }
+        onUpdateSection(sectionId, { content: newText });
+      } else {
+        if (onRecordUndo) {
+          onRecordUndo({
+            type: 'ITEM_FIELD',
+            sectionId,
+            itemId: itemId!,
+            field: 'description',
+            oldValue: previousText,
+            newValue: newText,
+            description: `Tối ưu ${action} dự án`
+          });
+        }
+        onUpdateItemInSection(sectionId, itemId!, { description: newText });
+      }
+
+      if (onDeductAiCredit) onDeductAiCredit();
+
+      const label = action === 'STAR' ? 'Chuẩn hóa STAR & Số liệu' : action === 'JD' ? 'Khớp từ khóa JD' : 'Rút gọn 1 dòng';
+      setInlineToast({
+        message: `✨ Đã ${label}!`,
+        onUndo: () => {
+          if (targetType === 'objective') {
+            onUpdateSection(sectionId, { content: previousText });
+          } else {
+            onUpdateItemInSection(sectionId, itemId!, { description: previousText });
+          }
+          setInlineToast(null);
+        }
+      });
+      setTimeout(() => setInlineToast(null), 4000);
+    } catch (err) {
+      console.error('Inline quick AI error:', err);
+    } finally {
+      setInlineLoadingId(null);
+    }
   };
 
   // STAR Diff Review Modal State (Ticket 04)
@@ -358,6 +457,12 @@ export default function InteractiveCVCanvas({
       let currentHeight = initialTopHeight;
 
       for (const section of sectionList) {
+        // Check manual page break requested by user
+        if (section.settings?.pageBreakBefore && currentPageBlocks.length > 0) {
+          resultPages.push(currentPageBlocks);
+          currentPageBlocks = [];
+          currentHeight = 0;
+        }
         const secHeaderHeight = getSectionHeaderHeight(section);
         const items = section.items || [];
 
@@ -486,43 +591,79 @@ export default function InteractiveCVCanvas({
         readOnly={!isEditorMode}
       />
       {isEditorMode && (
-        <button
-          type="button"
-          onClick={() => openInlineEditor({
-            initialText: section.content || '',
-            fieldLabel: 'mục tiêu nghề nghiệp',
-            onSave: (val) => {
-              if (onRecordUndo) {
-                onRecordUndo({
-                  type: 'SECTION_CONTENT',
-                  sectionId: section.id,
-                  oldValue: section.content || '',
-                  newValue: val,
-                  description: 'Sửa mục tiêu nghề nghiệp'
-                });
+        <div className="absolute -top-3.5 right-0 hidden group-hover/obj:flex items-center gap-1 bg-white/95 backdrop-blur-xs border border-blue-200 text-slate-800 rounded-lg p-0.5 text-[10px] z-20 shadow-md">
+          <button
+            type="button"
+            disabled={inlineLoadingId === section.id}
+            onClick={() => handleInlineQuickAi('objective', section.id, 'STAR')}
+            className="px-2 py-0.5 bg-blue-50 hover:bg-blue-600 hover:text-white text-blue-700 font-bold rounded flex items-center gap-1 transition-all cursor-pointer active:scale-95"
+            title="Tự động chuẩn hóa câu văn theo cấu trúc STAR chuẩn ATS"
+          >
+            {inlineLoadingId === section.id ? <Loader2 className="w-2.5 h-2.5 animate-spin" /> : <Sparkles className="w-2.5 h-2.5 text-blue-600" />}
+            <span>✨ STAR</span>
+          </button>
+
+          <button
+            type="button"
+            disabled={inlineLoadingId === section.id}
+            onClick={() => handleInlineQuickAi('objective', section.id, 'JD')}
+            className="px-2 py-0.5 bg-amber-50 hover:bg-amber-600 hover:text-white text-amber-800 font-bold rounded flex items-center gap-1 transition-all cursor-pointer active:scale-95"
+            title="Bổ sung từ khóa chuyên môn phù hợp với vị trí ứng tuyển"
+          >
+            <Target className="w-2.5 h-2.5 text-amber-600" />
+            <span>🎯 Khớp JD</span>
+          </button>
+
+          <button
+            type="button"
+            disabled={inlineLoadingId === section.id}
+            onClick={() => handleInlineQuickAi('objective', section.id, 'SHORTEN')}
+            className="px-2 py-0.5 bg-slate-100 hover:bg-slate-700 hover:text-white text-slate-700 font-bold rounded flex items-center gap-1 transition-all cursor-pointer active:scale-95"
+            title="Rút gọn câu văn súc tích, tránh tràn dòng"
+          >
+            <Scissors className="w-2.5 h-2.5 text-slate-600" />
+            <span>⚡ Rút gọn</span>
+          </button>
+
+          <div className="w-[1px] h-3 bg-slate-200 mx-0.5" />
+
+          <button
+            type="button"
+            onClick={() => openInlineEditor({
+              initialText: section.content || '',
+              fieldLabel: 'mục tiêu nghề nghiệp',
+              onSave: (val) => {
+                if (onRecordUndo) {
+                  onRecordUndo({
+                    type: 'SECTION_CONTENT',
+                    sectionId: section.id,
+                    oldValue: section.content || '',
+                    newValue: val,
+                    description: 'Sửa mục tiêu nghề nghiệp'
+                  });
+                }
+                onUpdateSection(section.id, { content: val });
+              },
+              onApplyAi: (val) => {
+                if (onRecordUndo) {
+                  onRecordUndo({
+                    type: 'SECTION_CONTENT',
+                    sectionId: section.id,
+                    oldValue: section.content || '',
+                    newValue: val,
+                    description: 'Áp dụng gợi ý AI mục tiêu nghề nghiệp'
+                  });
+                }
+                onUpdateSection(section.id, { content: val });
+                if (onDeductAiCredit) onDeductAiCredit();
               }
-              onUpdateSection(section.id, { content: val });
-            },
-            onApplyAi: (val) => {
-              if (onRecordUndo) {
-                onRecordUndo({
-                  type: 'SECTION_CONTENT',
-                  sectionId: section.id,
-                  oldValue: section.content || '',
-                  newValue: val,
-                  description: 'Áp dụng gợi ý AI mục tiêu nghề nghiệp'
-                });
-              }
-              onUpdateSection(section.id, { content: val });
-              if (onDeductAiCredit) onDeductAiCredit();
-            }
-          })}
-          className="absolute -top-1 right-0 hidden group-hover/obj:flex items-center gap-1 px-2 py-0.5 bg-blue-50 dark:bg-slate-800 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-slate-700 rounded text-[10px] font-bold shadow-xs hover:bg-blue-100 transition print:hidden z-10"
-          title="Chỉnh sửa & Tác vụ AI [✏️]"
-        >
-          <Edit3 className="w-2.5 h-2.5 text-blue-600" />
-          <span>Sửa / AI [✏️]</span>
-        </button>
+            })}
+            className="p-1 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded transition cursor-pointer"
+            title="Chỉnh sửa chi tiết [✏️]"
+          >
+            <Edit3 className="w-2.5 h-2.5" />
+          </button>
+        </div>
       )}
     </div>
   );
@@ -1046,7 +1187,7 @@ export default function InteractiveCVCanvas({
                 <div className="flex flex-wrap items-center gap-1.5 text-[10px]">
                   {item.projectUrl && (
                     <a
-                      href={item.projectUrl}
+                      href={formatExternalUrl(item.projectUrl)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded font-medium bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 hover:underline"
@@ -1056,7 +1197,7 @@ export default function InteractiveCVCanvas({
                   )}
                   {item.githubUrl && (
                     <a
-                      href={item.githubUrl}
+                      href={formatExternalUrl(item.githubUrl)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 hover:underline"
@@ -1524,6 +1665,25 @@ export default function InteractiveCVCanvas({
     }
 
     return (
+      <React.Fragment key={`frag_${section.id}_${secIdx}`}>
+        {/* Active Page Break Banner */}
+        {isEditorMode && section.settings?.pageBreakBefore && (
+          <div className="mb-2 p-1.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-[10.5px] font-semibold flex items-center justify-between print:hidden">
+            <div className="flex items-center gap-1.5">
+              <Scissors className="w-3.5 h-3.5 text-amber-600" />
+              <span>✂️ Mục này được cài đặt ngắt xuống đầu trang mới</span>
+            </div>
+            {onTogglePageBreak && (
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); onTogglePageBreak(section.id); }}
+                className="text-amber-700 hover:text-amber-900 underline text-[10px] cursor-pointer"
+              >
+                Hủy ngắt trang
+              </button>
+            )}
+          </div>
+        )}
       <section
         key={`${section.id}_${options?.isContinuation ? 'cont' : 'main'}_${secIdx}`}
         id={`cv-measure-sec-${section.id}`}
@@ -1552,15 +1712,28 @@ export default function InteractiveCVCanvas({
         {/* Hover Toolbar (Editor Mode Only) */}
         {isEditorMode && !options?.isContinuation && (
           <div className="absolute -top-3.5 right-1 hidden group-hover:flex print:hidden items-center gap-1 bg-slate-900 text-white rounded px-2 py-0.5 shadow-md text-xs z-20 animate-in fade-in duration-100">
+            <span className="px-1.5 py-0.2 rounded bg-blue-600 text-white font-mono text-[9px] font-bold">
+              #{secIdx + 1}
+            </span>
             <span title="Kéo thả để đổi vị trí" className="cursor-grab active:cursor-grabbing p-0.5 text-slate-400 hover:text-white">
               <GripVertical className="w-3 h-3" />
             </span>
-            <button onClick={(e) => { e.stopPropagation(); onMoveSection(section.id, 'up'); }} disabled={secIdx === 0} title="Lên" className="p-0.5 hover:text-blue-400 disabled:opacity-30">
+            <button onClick={(e) => { e.stopPropagation(); onMoveSection(section.id, 'up'); }} disabled={secIdx === 0} title="Đẩy lên trước" className="p-0.5 hover:text-blue-400 disabled:opacity-30">
               <ArrowUp className="w-3 h-3" />
             </button>
-            <button onClick={(e) => { e.stopPropagation(); onMoveSection(section.id, 'down'); }} disabled={secIdx === sections.length - 1} title="Xuống" className="p-0.5 hover:text-blue-400 disabled:opacity-30">
+            <button onClick={(e) => { e.stopPropagation(); onMoveSection(section.id, 'down'); }} disabled={secIdx === sections.length - 1} title="Đẩy ra sau" className="p-0.5 hover:text-blue-400 disabled:opacity-30">
               <ArrowDown className="w-3 h-3" />
             </button>
+            {onTogglePageBreak && (
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); onTogglePageBreak(section.id); }}
+                title={section.settings?.pageBreakBefore ? "Hủy ngắt trang" : "Ngắt sang trang mới"}
+                className={`p-0.5 rounded transition-colors ${section.settings?.pageBreakBefore ? 'text-amber-400 bg-amber-950/80 font-bold' : 'hover:text-amber-300 text-slate-300'}`}
+              >
+                <Scissors className="w-3 h-3" />
+              </button>
+            )}
             <button onClick={(e) => { e.stopPropagation(); onToggleHideSection(section.id); }} title="Ẩn mục" className="p-0.5 hover:text-amber-400 text-amber-300">
               <EyeOff className="w-3 h-3" />
             </button>
@@ -1623,6 +1796,7 @@ export default function InteractiveCVCanvas({
         </div>
 
       </section>
+      </React.Fragment>
     );
   };
 
@@ -1687,7 +1861,7 @@ export default function InteractiveCVCanvas({
             {/* A4 Sheet Container for this Page */}
             <div
               id={pageIdx === 0 ? "cv-preview-a4" : `cv-preview-a4-page-${page.pageNumber}`}
-              className={`cv-page-sheet w-full max-w-[210mm] min-h-[297mm] bg-white text-slate-800 shadow-xl rounded-sm ${paddingMap[spacingDensity]} relative transition-all border border-slate-200 print:border-none print:shadow-none print:p-[8mm_10mm] print:mb-0`}
+              className={`cv-page-sheet cv-paper-elevated w-full max-w-[210mm] min-h-[297mm] bg-white text-slate-800 shadow-xl rounded-sm ${paddingMap[spacingDensity]} relative transition-all border border-slate-200 print:border-none print:shadow-none print:p-[8mm_10mm] print:mb-0`}
               style={{
                 fontFamily,
                 fontFeatureSettings: "'cv02', 'cv03', 'cv04', 'cv11'",
@@ -1804,6 +1978,22 @@ export default function InteractiveCVCanvas({
                               readOnly={!isEditorMode}
                               className="bg-transparent border-none outline-none focus:bg-blue-50/40 rounded px-0.5 text-xs text-slate-700 text-center"
                               style={{ fontFamily, width: `${Math.max((personalInfo.linkedin || '').length + 1, 18)}ch` }}
+                            />
+                            {personalInfo.visibleFields.github !== false && <span className="text-slate-300">•</span>}
+                          </div>
+                        )}
+
+                        {personalInfo.visibleFields.github !== false && (
+                          <div className="inline-flex items-center gap-1.5 group/fld">
+                            <Github className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                            <input
+                              type="text"
+                              value={personalInfo.github || ''}
+                              onChange={(e) => onUpdatePersonalInfo('github', e.target.value)}
+                              placeholder="github.com/profile"
+                              readOnly={!isEditorMode}
+                              className="bg-transparent border-none outline-none focus:bg-blue-50/40 rounded px-0.5 text-xs text-slate-700 text-center"
+                              style={{ fontFamily, width: `${Math.max((personalInfo.github || '').length + 1, 18)}ch` }}
                             />
                           </div>
                         )}
@@ -1998,7 +2188,31 @@ export default function InteractiveCVCanvas({
                               className="bg-transparent border-none outline-none focus:bg-blue-50/40 rounded px-0.5 text-[11px] text-slate-700 dark:text-slate-300 text-right"
                               style={{ fontFamily, width: `${Math.max((personalInfo.linkedin || '').length + 1, 18)}ch` }}
                             />
-                            <Linkedin className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
+                            <Linkedin className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                          </div>
+                        )}
+
+                        {personalInfo.visibleFields.github !== false && (
+                          <div className="inline-flex items-center justify-end gap-1.5 group/fld">
+                            {isEditorMode && (
+                              <button
+                                onClick={(e) => { e.stopPropagation(); onToggleFieldVisibility('github' as any); }}
+                                className="opacity-0 group-hover/fld:opacity-100 text-slate-400 hover:text-amber-500 print:hidden text-[10px]"
+                                title="Ẩn GitHub"
+                              >
+                                <EyeOff className="w-2.5 h-2.5" />
+                              </button>
+                            )}
+                            <input
+                              type="text"
+                              value={personalInfo.github || ''}
+                              onChange={(e) => onUpdatePersonalInfo('github', e.target.value)}
+                              placeholder="github.com/profile"
+                              readOnly={!isEditorMode}
+                              className="bg-transparent border-none outline-none focus:bg-blue-50/40 rounded px-0.5 text-[11px] text-slate-700 dark:text-slate-300 text-right"
+                              style={{ fontFamily, width: `${Math.max((personalInfo.github || '').length + 1, 18)}ch` }}
+                            />
+                            <Github className="w-3.5 h-3.5 text-slate-700 dark:text-slate-300 shrink-0" />
                           </div>
                         )}
                       </div>
@@ -2149,6 +2363,21 @@ export default function InteractiveCVCanvas({
           project={defenseProjectToReview}
           targetRole={personalInfo?.jobTitle}
         />
+      )}
+
+      {/* Inline Quick AI Toast Feedback */}
+      {inlineToast && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-[#0f172a] text-white px-4 py-2.5 rounded-2xl shadow-2xl border border-blue-500/30 flex items-center gap-3 text-xs animate-in slide-in-from-bottom-3 duration-200">
+          <span className="font-bold text-emerald-400">{inlineToast.message}</span>
+          {inlineToast.onUndo && (
+            <button
+              onClick={inlineToast.onUndo}
+              className="px-2.5 py-1 bg-white/10 hover:bg-white/20 text-white rounded-lg font-semibold flex items-center gap-1 text-[11px] transition-colors cursor-pointer"
+            >
+              <RotateCcw className="w-3 h-3 text-amber-300" /> Hoàn tác
+            </button>
+          )}
+        </div>
       )}
     </div>
   );

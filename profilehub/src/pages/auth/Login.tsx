@@ -33,16 +33,36 @@ export default function Login() {
 
     if (error) {
       setError("Email hoặc mật khẩu không chính xác.");
-    }else {
+    } else {
       navigate('/dashboard');
     }
     setLoading(false);
   };
 
+  const handleGitHubLogin = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'github',
+        options: {
+          redirectTo: `${window.location.origin}/cv-builder`,
+        },
+      });
+      if (error) {
+        setError(`Đăng nhập GitHub: ${error.message}. (Nếu chưa bật GitHub Provider trên Supabase, bạn có thể trải nghiệm trực tiếp chế độ dùng thử bên dưới).`);
+      }
+    } catch (err: any) {
+      setError(err?.message || 'Lỗi kết nối GitHub OAuth');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div style={{ display: 'flex', minHeight: '100vh', fontFamily: 'Inter, sans-serif', margin: '-8px' }}>
       
-      {/* ================= CỘT TRÁI (DARK BLUE PANEL) ================= */}
+      {/* ================= CỘT TRÁI (DARK BLUE PANEL - DEVELOPER RESUME FOCUS) ================= */}
       <div style={{ 
         flex: 1, 
         backgroundColor: '#0b192c', 
@@ -56,51 +76,64 @@ export default function Login() {
         {/* Logo */}
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-            <div style={{ width: '40px', height: '40px', backgroundColor: '#1e3a8a', borderRadius: '8px', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '20px' }}>🎓</div>
+            <div style={{ width: '42px', height: '42px', backgroundColor: '#2563eb', borderRadius: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '20px' }}>⚡</div>
             <div>
-              <h2 style={{ margin: 0, fontSize: '20px', fontWeight: '700' }}>UniPortfolio Hub</h2>
-              <p style={{ margin: 0, fontSize: '10px', color: '#f59e0b', letterSpacing: '1px', fontWeight: 'bold' }}>ACADEMIC VERIFICATION ECOSYSTEM</p>
+              <h2 style={{ margin: 0, fontSize: '20px', fontWeight: '700', letterSpacing: '-0.5px' }}>ProfileHub</h2>
+              <p style={{ margin: 0, fontSize: '10px', color: '#60a5fa', letterSpacing: '1px', fontWeight: 'bold' }}>DATA-DRIVEN DEVELOPER RESUME</p>
             </div>
           </div>
         </div>
 
         {/* Nội dung chính cột trái */}
-        <div style={{ maxWidth: '450px' }}>
-          <h1 style={{ fontSize: '42px', fontWeight: 'bold', lineHeight: '1.2', marginBottom: '20px' }}>
-            Showcase Your <span style={{ color: '#f59e0b' }}>Potential.</span>
+        <div style={{ maxWidth: '480px' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', backgroundColor: 'rgba(37, 99, 235, 0.2)', border: '1px solid rgba(59, 130, 246, 0.4)', padding: '6px 14px', borderRadius: '20px', marginBottom: '20px' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#10b981' }}></span>
+            <span style={{ fontSize: '12px', color: '#93c5fd', fontWeight: '600' }}>AI + GitHub Evidence Engine</span>
+          </div>
+
+          <h1 style={{ fontSize: '38px', fontWeight: 'bold', lineHeight: '1.25', marginBottom: '16px' }}>
+            Code-Backed CV <br />for <span style={{ color: '#60a5fa' }}>Developers.</span>
           </h1>
-          <p style={{ fontSize: '15px', color: '#94a3b8', lineHeight: '1.6', marginBottom: '40px' }}>
-            Build your academic portfolio, verify your skills with faculty and connect directly with industry partners.
+          <p style={{ fontSize: '15px', color: '#94a3b8', lineHeight: '1.6', marginBottom: '35px' }}>
+            Biến mã nguồn GitHub và sản phẩm thực tế thành bản CV chuẩn ATS trong 2 phút. Bằng chứng code thật, tự động đối soát với JD tuyển dụng.
           </p>
 
-          {/* Mockup Card Sinh viên */}
-          <div style={{ backgroundColor: 'rgba(255,255,255,0.05)', padding: '25px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.1)' }}>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
-              <span style={{ backgroundColor: '#f59e0b', color: '#0b192c', padding: '4px 12px', borderRadius: '12px', fontSize: '11px', fontWeight: 'bold' }}>✓ Verified by Faculty</span>
+          {/* Mockup Card Dự án GitHub (Thay thế thẻ phòng thủ đồ án) */}
+          <div style={{ backgroundColor: 'rgba(255,255,255,0.05)', padding: '22px', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.12)', boxShadow: '0 8px 24px rgba(0,0,0,0.3)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '16px' }}>📦</span>
+                <span style={{ fontSize: '13px', fontWeight: '600', color: '#f8fafc' }}>shop-ecommerce-app</span>
+              </div>
+              <span style={{ backgroundColor: 'rgba(16, 185, 129, 0.15)', color: '#34d399', padding: '3px 10px', borderRadius: '12px', fontSize: '11px', fontWeight: '600', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
+                ● 24 Commits by Author
+              </span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '20px' }}>
-              <div style={{ width: '50px', height: '50px', borderRadius: '50%', backgroundColor: '#1e293b', display: 'flex', justifyContent: 'center', alignItems: 'center', fontWeight: 'bold' }}>NM</div>
-              <div>
-                <h4 style={{ margin: 0, fontSize: '16px' }}>Nguyễn Nhật Minh <span style={{ color: '#10b981' }}>●</span></h4>
-                <p style={{ margin: 0, fontSize: '12px', color: '#94a3b8' }}>Khoa Khoa Học & Kỹ Thuật Máy Tính • K21</p>
+
+            <div style={{ backgroundColor: 'rgba(15, 23, 42, 0.6)', padding: '12px', borderRadius: '8px', marginBottom: '12px', border: '1px solid rgba(255,255,255,0.06)' }}>
+              <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '4px' }}>TỰ ĐỘNG BÓC TÁCH TECH-STACK</div>
+              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '11px', padding: '2px 8px', borderRadius: '4px', backgroundColor: 'rgba(59, 130, 246, 0.2)', color: '#93c5fd' }}>React 18</span>
+                <span style={{ fontSize: '11px', padding: '2px 8px', borderRadius: '4px', backgroundColor: 'rgba(59, 130, 246, 0.2)', color: '#93c5fd' }}>TypeScript</span>
+                <span style={{ fontSize: '11px', padding: '2px 8px', borderRadius: '4px', backgroundColor: 'rgba(16, 185, 129, 0.2)', color: '#a7f3d0' }}>Prisma ORM</span>
+                <span style={{ fontSize: '11px', padding: '2px 8px', borderRadius: '4px', backgroundColor: 'rgba(245, 158, 11, 0.2)', color: '#fde68a' }}>JWT Auth</span>
               </div>
             </div>
-            <div style={{ backgroundColor: 'rgba(0,0,0,0.2)', padding: '15px', borderRadius: '8px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
-                <span style={{ fontSize: '12px', color: '#f59e0b' }}>🎓 Academic Capstone Project</span>
-                <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#10b981' }}>Điểm A+ (9.4/10)</span>
-              </div>
-              <h5 style={{ margin: '0 0 5px 0', fontSize: '14px' }}>BK-SmartMeter (IoT Telemetry Platform)</h5>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px' }}>
+              <span style={{ color: '#94a3b8' }}>🎯 Khớp 85% với JD Tuyển Dụng</span>
+              <span style={{ color: '#38bdf8', fontWeight: '600' }}>Tự động sinh Bullet Points →</span>
             </div>
           </div>
         </div>
 
         {/* Footer cột trái */}
         <div>
-          <p style={{ fontSize: '12px', color: '#64748b', marginBottom: '10px' }}>Connecting Candidates and Employers:</p>
+          <p style={{ fontSize: '12px', color: '#64748b', marginBottom: '10px' }}>Hệ sinh thái CV chuẩn cho kỹ sư phần mềm:</p>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <span style={{ padding: '6px 12px', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: '4px', fontSize: '11px' }}>🎓 Ứng viên / Sinh viên</span>
-            <span style={{ padding: '6px 12px', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: '4px', fontSize: '11px' }}>🏢 Doanh nghiệp tuyển dụng</span>
+            <span style={{ padding: '6px 12px', backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: '4px', fontSize: '11px' }}>⚡ Quét GitHub 5s</span>
+            <span style={{ padding: '6px 12px', backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: '4px', fontSize: '11px' }}>🎯 Đối soát JD bằng AI</span>
+            <span style={{ padding: '6px 12px', backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: '4px', fontSize: '11px' }}>📄 Xuất PDF Chuẩn ATS</span>
           </div>
         </div>
 
@@ -110,95 +143,147 @@ export default function Login() {
       <div style={{ flex: 1, backgroundColor: 'white', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '40px' }}>
         <div style={{ width: '100%', maxWidth: '450px' }}>
           
-          <div style={{ marginBottom: '30px' }}>
-            <h5 style={{ margin: 0, color: '#1e3a8a', fontSize: '11px', fontWeight: 'bold', letterSpacing: '1px' }}>PROFILEHUB • CAREER & RECRUITMENT ECOSYSTEM</h5>
-            <h2 style={{ margin: '10px 0', fontSize: '32px', color: '#0f172a' }}>Welcome Back</h2>
-            <p style={{ margin: 0, color: '#64748b', fontSize: '14px' }}>Đăng nhập để tiếp tục quản lý hồ sơ và kết nối cơ hội nghề nghiệp.</p>
+          <div style={{ marginBottom: '24px' }}>
+            <h5 style={{ margin: 0, color: '#2563eb', fontSize: '11px', fontWeight: 'bold', letterSpacing: '1px' }}>PROFILEHUB • DEVELOPER RESUME PLATFORM</h5>
+            <h2 style={{ margin: '8px 0', fontSize: '28px', color: '#0f172a' }}>Đăng nhập</h2>
+            <p style={{ margin: 0, color: '#64748b', fontSize: '14px' }}>Đăng nhập để lưu trữ hồ sơ và tạo CV tối ưu theo JD tuyển dụng.</p>
           </div>
 
-          <p style={{ fontSize: '13px', fontWeight: '600', color: '#334155', marginBottom: '10px' }}>Đăng nhập với tư cách:</p>
+          {/* Quick Guest CTA Banner - Cho phép trải nghiệm không cần đăng nhập */}
+          <div style={{ 
+            backgroundColor: '#f0fdf4', 
+            border: '1px solid #bbf7d0', 
+            borderRadius: '8px', 
+            padding: '12px 16px', 
+            marginBottom: '20px', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'space-between' 
+          }}>
+            <div>
+              <p style={{ margin: 0, fontSize: '13px', fontWeight: '600', color: '#166534' }}>⚡ Cần tạo CV gấp?</p>
+              <p style={{ margin: 0, fontSize: '12px', color: '#15803d' }}>Trải nghiệm tạo CV ngay không cần tạo tài khoản.</p>
+            </div>
+            <Link 
+              to="/cv-builder" 
+              style={{ 
+                padding: '6px 12px', 
+                backgroundColor: '#16a34a', 
+                color: 'white', 
+                borderRadius: '6px', 
+                fontSize: '12px', 
+                fontWeight: '600', 
+                textDecoration: 'none',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              Vào làm ngay →
+            </Link>
+          </div>
+
+          <p style={{ fontSize: '13px', fontWeight: '600', color: '#334155', marginBottom: '8px' }}>Đăng nhập với tư cách:</p>
           
           {/* Tabs */}
-          <div style={{ display: 'flex', gap: '10px', marginBottom: '25px', padding: '5px', backgroundColor: '#f1f5f9', borderRadius: '8px' }}>
-            <button onClick={() => setActiveTab('student')} style={{ flex: 1, padding: '10px', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '13px', backgroundColor: activeTab === 'student' ? '#1e3a8a' : 'transparent', color: activeTab === 'student' ? 'white' : '#64748b' }}>
-              👤 Người tìm việc
+          <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', padding: '4px', backgroundColor: '#f1f5f9', borderRadius: '8px' }}>
+            <button onClick={() => setActiveTab('student')} style={{ flex: 1, padding: '9px', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '13px', backgroundColor: activeTab === 'student' ? '#1e3a8a' : 'transparent', color: activeTab === 'student' ? 'white' : '#64748b' }}>
+              👤 Lập trình viên / Ứng viên
             </button>
-            <button onClick={() => setActiveTab('business')} style={{ flex: 1, padding: '10px', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '13px', backgroundColor: activeTab === 'business' ? '#1e3a8a' : 'transparent', color: activeTab === 'business' ? 'white' : '#64748b' }}>
+            <button onClick={() => setActiveTab('business')} style={{ flex: 1, padding: '9px', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '13px', backgroundColor: activeTab === 'business' ? '#1e3a8a' : 'transparent', color: activeTab === 'business' ? 'white' : '#64748b' }}>
               🏢 Nhà tuyển dụng
             </button>
+          </div>
+
+          {/* Nút Đăng nhập GitHub Ưu tiên Hàng Đầu */}
+          <button 
+            type="button"
+            onClick={handleGitHubLogin}
+            disabled={loading}
+            style={{ 
+              width: '100%', 
+              padding: '12px', 
+              backgroundColor: '#0f172a', 
+              color: 'white', 
+              border: 'none', 
+              borderRadius: '6px', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              gap: '10px', 
+              fontSize: '14px', 
+              fontWeight: '600', 
+              cursor: 'pointer', 
+              marginBottom: '18px',
+              transition: 'background-color 0.2s'
+            }}
+          >
+            <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+            </svg>
+            <span>Tiếp tục với GitHub (Khuyên dùng)</span>
+          </button>
+
+          {/* Divider */}
+          <div style={{ display: 'flex', alignItems: 'center', margin: '18px 0' }}>
+            <div style={{ flex: 1, height: '1px', backgroundColor: '#e2e8f0' }}></div>
+            <span style={{ padding: '0 12px', fontSize: '12px', color: '#94a3b8', fontWeight: '600' }}>HOẶC DÙNG EMAIL TRUYỀN THỐNG</span>
+            <div style={{ flex: 1, height: '1px', backgroundColor: '#e2e8f0' }}></div>
           </div>
 
           {/* Form */}
           <form onSubmit={handleLogin}>
             {error && <p style={{ color: '#ef4444', fontSize: '13px', margin: '0 0 15px 0', padding: '10px', backgroundColor: '#fee2e2', borderRadius: '4px' }}>{error}</p>}
             
-            <div style={{ marginBottom: '20px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                <label style={{ fontSize: '13px', fontWeight: '600', color: '#0f172a' }}>Email đăng nhập</label>
-              </div>
+            <div style={{ marginBottom: '15px' }}>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', color: '#0f172a', marginBottom: '6px' }}>Email đăng nhập</label>
               <input 
                 type="email" 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="ungvien@example.com" 
+                placeholder="developer@example.com" 
                 required
-                style={{ width: '100%', padding: '12px 15px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '14px', boxSizing: 'border-box' }} 
+                style={{ width: '100%', padding: '11px 14px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '14px', boxSizing: 'border-box' }} 
               />
             </div>
 
             <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', color: '#0f172a', marginBottom: '8px' }}>
-            Password
-          </label>
-          <div style={{ position: 'relative' }}>
-            <input 
-              type={showPassword ? 'text' : 'password'} 
-              value={password} 
-              onChange={(e) => setPassword(e.target.value)} 
-              required 
-              minLength={6} 
-              style={{ width: '100%', padding: '12px 45px 12px 15px', borderRadius: '6px', border: '1px solid #cbd5e1', boxSizing: 'border-box', outline: 'none' }} 
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#64748b', display: 'flex', alignItems: 'center', padding: '0' }}
-            >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-            </button>
-          </div>
-        </div>
-
-        
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '25px' }}>
-              <input type="checkbox" id="remember" style={{ cursor: 'pointer' }} />
-              <label htmlFor="remember" style={{ fontSize: '13px', color: '#475569', cursor: 'pointer' }}>Remember my session on this computer</label>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', color: '#0f172a', marginBottom: '6px' }}>
+                Password
+              </label>
+              <div style={{ position: 'relative' }}>
+                <input 
+                  type={showPassword ? 'text' : 'password'} 
+                  value={password} 
+                  onChange={(e) => setPassword(e.target.value)} 
+                  required 
+                  minLength={6} 
+                  style={{ width: '100%', padding: '11px 45px 11px 14px', borderRadius: '6px', border: '1px solid #cbd5e1', boxSizing: 'border-box', outline: 'none' }} 
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#64748b', display: 'flex', alignItems: 'center', padding: '0' }}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
             </div>
 
-            <button type="submit" disabled={loading} style={{ width: '100%', padding: '14px', backgroundColor: '#1e3a8a', color: 'white', border: 'none', borderRadius: '6px', fontWeight: 'bold', fontSize: '15px', cursor: 'pointer' }}>
-              {loading ? 'Đang đăng nhập...' : 'Sign in to Portfolio →'}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
+              <input type="checkbox" id="remember" style={{ cursor: 'pointer' }} />
+              <label htmlFor="remember" style={{ fontSize: '13px', color: '#475569', cursor: 'pointer' }}>Ghi nhớ phiên đăng nhập</label>
+            </div>
+
+            <button type="submit" disabled={loading} style={{ width: '100%', padding: '12px', backgroundColor: '#1e3a8a', color: 'white', border: 'none', borderRadius: '6px', fontWeight: 'bold', fontSize: '14px', cursor: 'pointer' }}>
+              {loading ? 'Đang đăng nhập...' : 'Đăng nhập vào hệ thống →'}
             </button>
           </form>
 
-          {/* Divider */}
-          <div style={{ display: 'flex', alignItems: 'center', margin: '30px 0' }}>
-            <div style={{ flex: 1, height: '1px', backgroundColor: '#e2e8f0' }}></div>
-            <span style={{ padding: '0 15px', fontSize: '12px', color: '#94a3b8', fontWeight: '600' }}>HOẶC ĐĂNG NHẬP LIÊN KẾT</span>
-            <div style={{ flex: 1, height: '1px', backgroundColor: '#e2e8f0' }}></div>
-          </div>
-
-          {/* Nút SSO & Chưa có tài khoản */}
-          <button style={{ width: '100%', padding: '12px', backgroundColor: 'white', border: '1px solid #cbd5e1', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', fontSize: '14px', fontWeight: '600', color: '#334155', cursor: 'pointer', marginBottom: '20px' }}>
-            <span>⊞</span> Continue with University SSO (Microsoft 365)
-          </button>
-
-          <div style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '6px', padding: '15px', display: 'flex', gap: '10px' }}>
+          <div style={{ marginTop: '20px', backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '6px', padding: '12px', display: 'flex', gap: '10px' }}>
             <span style={{ color: '#3b82f6' }}>ℹ️</span>
             <div>
-              <h5 style={{ margin: '0 0 5px 0', fontSize: '13px', color: '#0f172a' }}>Chưa có tài khoản?</h5>
               <p style={{ margin: 0, fontSize: '12px', color: '#64748b' }}>
-                Đăng ký tài khoản Ứng viên hoặc Nhà tuyển dụng để bắt đầu trải nghiệm hệ thống. 
-                <Link to="/register" style={{ color: '#3b82f6', textDecoration: 'none', marginLeft: '5px' }}>Đăng ký ngay</Link>
+                Chưa có tài khoản? 
+                <Link to="/register" style={{ color: '#2563eb', fontWeight: '600', textDecoration: 'none', marginLeft: '5px' }}>Đăng ký miễn phí</Link>
               </p>
             </div>
           </div>

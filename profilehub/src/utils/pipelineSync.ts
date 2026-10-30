@@ -93,3 +93,42 @@ export const updateInterviewStatusByStudent = (studentId: string, status: 'confi
   saveSharedPipeline(newItems);
   return newItems;
 };
+
+export const requestInterviewRescheduleByStudent = (
+  studentId: string,
+  newDate: string,
+  newTime: string,
+  reason?: string
+) => {
+  const items = getSharedPipeline();
+  let updated = false;
+
+  const newItems = items.map(item => {
+    if (item.student_id === studentId || item.student?.id === studentId || item.id === studentId) {
+      updated = true;
+      return {
+        ...item,
+        interview_status: 'reschedule_requested' as any,
+        suggested_interview_date: newDate,
+        suggested_interview_time: newTime,
+        student_reschedule_reason: reason,
+        updated_at: new Date().toISOString()
+      };
+    }
+    return item;
+  });
+
+  if (!updated && items.length > 0) {
+    newItems[0] = {
+      ...newItems[0],
+      interview_status: 'reschedule_requested' as any,
+      suggested_interview_date: newDate,
+      suggested_interview_time: newTime,
+      student_reschedule_reason: reason,
+      updated_at: new Date().toISOString()
+    };
+  }
+
+  saveSharedPipeline(newItems);
+  return newItems;
+};

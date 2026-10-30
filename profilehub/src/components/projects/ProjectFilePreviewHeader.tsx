@@ -25,6 +25,14 @@ interface ProjectFilePreviewHeaderProps {
   onOpenPreview?: () => void;
 }
 
+const formatExternalUrl = (url?: string) => {
+  if (!url) return '';
+  const trimmed = url.trim();
+  if (!trimmed) return '';
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return 'https://' + trimmed;
+};
+
 export default function ProjectFilePreviewHeader({ project, onOpenPreview }: ProjectFilePreviewHeaderProps) {
   const [showIframeModal, setShowIframeModal] = useState(false);
 
@@ -268,7 +276,7 @@ export default function ProjectFilePreviewHeader({ project, onOpenPreview }: Pro
                     </p>
                     {project.github_url && (
                       <a
-                        href={project.github_url}
+                        href={formatExternalUrl(project.github_url)}
                         target="_blank"
                         rel="noreferrer"
                         style={{ padding: '8px 16px', backgroundColor: '#0f172a', color: 'white', borderRadius: '6px', textDecoration: 'none', fontSize: '12px', fontWeight: 'bold', display: 'inline-flex', alignItems: 'center', gap: '6px' }}

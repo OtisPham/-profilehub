@@ -93,10 +93,10 @@ export default function CvQuickViewModal({
 
   return (
     <div className="fixed inset-0 z-[150] bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-y-auto animate-in fade-in duration-200">
-      <div className="bg-slate-100 dark:bg-slate-900 rounded-3xl max-w-4xl w-full shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col max-h-[92vh] overflow-hidden my-auto">
+      <div className="bg-slate-100 dark:bg-[#0f1523] rounded-3xl max-w-4xl w-full shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col max-h-[92vh] overflow-hidden my-auto">
         
         {/* Modal Header */}
-        <div className="p-4 sm:p-5 bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-950 text-white flex items-center justify-between shrink-0">
+        <div className="p-4 sm:p-5 bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 dark:from-[#090d16] dark:via-[#0f172a] dark:to-[#090d16] text-white flex items-center justify-between shrink-0 border-b border-slate-800">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-blue-300 shadow-inner">
               <Sparkles className="w-5 h-5 text-yellow-300 animate-pulse" />
@@ -135,27 +135,27 @@ export default function CvQuickViewModal({
         </div>
 
         {/* Modal Body / Scrollable Content */}
-        <div className="overflow-y-auto p-4 sm:p-6 space-y-5 flex-1 bg-slate-100 dark:bg-slate-950">
+        <div className="overflow-y-auto p-4 sm:p-6 space-y-5 flex-1 bg-slate-100 dark:bg-[#090d16]">
           
           {/* AI Tailoring Summary Banner (nếu có thông tin tinh chỉnh từ JD) */}
           {(aiNotes || isNewlyCreated) && (
             <div className={`p-4 rounded-2xl border shadow-xs ${
               aiNotes?.pivotScenario === 'STACK_PIVOT'
-                ? 'bg-gradient-to-r from-indigo-50 via-blue-50 to-slate-50 border-indigo-200/90'
+                ? 'bg-gradient-to-r from-blue-50 via-sky-50 to-slate-50 border-blue-200/90'
                 : aiNotes?.pivotScenario === 'CAREER_PIVOT'
                 ? 'bg-gradient-to-r from-amber-50 via-orange-50 to-yellow-50 border-amber-200/90'
-                : 'bg-gradient-to-r from-purple-50 via-indigo-50 to-blue-50 border-purple-200/80'
+                : 'bg-gradient-to-r from-blue-50 via-sky-50 to-slate-50 border-blue-200/80'
             }`}>
               <div className="flex items-start gap-3">
                 <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 shadow-sm mt-0.5 ${
                   aiNotes?.pivotScenario === 'STACK_PIVOT'
-                    ? 'bg-indigo-600 text-white'
+                    ? 'bg-blue-600 text-white'
                     : aiNotes?.pivotScenario === 'CAREER_PIVOT'
                     ? 'bg-amber-600 text-white'
-                    : 'bg-purple-600 text-white'
+                    : 'bg-[#1e3a8a] text-white'
                 }`}>
                   {aiNotes?.pivotScenario === 'STACK_PIVOT' ? (
-                    <Compass size={17} className="text-indigo-200" />
+                    <Compass size={17} className="text-blue-200" />
                   ) : aiNotes?.pivotScenario === 'CAREER_PIVOT' ? (
                     <Compass size={17} className="text-amber-200" />
                   ) : (
@@ -170,7 +170,7 @@ export default function CvQuickViewModal({
                     
                     {/* Badge kịch bản */}
                     {aiNotes?.pivotScenario === 'STACK_PIVOT' ? (
-                      <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800 border border-indigo-200 flex items-center gap-1">
+                      <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 border border-blue-200 flex items-center gap-1">
                         ⚡ LỆCH TECH STACK • ÁP DỤNG KỸ NĂNG CHUYỂN ĐỔI
                       </span>
                     ) : aiNotes?.pivotScenario === 'CAREER_PIVOT' ? (
@@ -195,9 +195,9 @@ export default function CvQuickViewModal({
                   {/* Kỹ năng nền tảng có thể chuyển đổi (Khi lệch stack hoặc khác ngành) */}
                   {aiNotes?.transferableSkills && aiNotes.transferableSkills.length > 0 && (
                     <div className="flex items-center gap-1.5 flex-wrap text-xs">
-                      <span className="text-[11px] font-bold text-indigo-950">Kỹ năng nền tảng chuyển đổi:</span>
+                      <span className="text-[11px] font-bold text-blue-950">Kỹ năng nền tảng chuyển đổi:</span>
                       {aiNotes.transferableSkills.map((sk, i) => (
-                        <span key={i} className="px-2 py-0.5 bg-indigo-600 text-white font-bold rounded-md text-[10px] shadow-2xs">
+                        <span key={i} className="px-2 py-0.5 bg-blue-600 text-white font-bold rounded-md text-[10px] shadow-2xs">
                           {sk}
                         </span>
                       ))}
@@ -438,10 +438,10 @@ export default function CvQuickViewModal({
         </div>
 
         {/* Modal Footer Toolbar */}
-        <div className="p-4 sm:p-5 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
+        <div className="p-4 sm:p-5 bg-white dark:bg-[#0c101c] border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
           <button
             onClick={onClose}
-            className="w-full sm:w-auto px-4 py-2.5 text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition"
+            className="w-full sm:w-auto px-4 py-2.5 text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition"
           >
             Đóng Xem Trước
           </button>
@@ -449,7 +449,7 @@ export default function CvQuickViewModal({
           <div className="flex items-center gap-2.5 w-full sm:w-auto">
             <button
               onClick={handlePrint}
-              className="flex-1 sm:flex-none px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-xl transition flex items-center justify-center gap-2"
+              className="flex-1 sm:flex-none px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold rounded-xl transition flex items-center justify-center gap-2"
             >
               <Printer size={15} />
               <span>In Bản CV Này</span>
@@ -457,7 +457,7 @@ export default function CvQuickViewModal({
 
             <button
               onClick={handleEditInBuilder}
-              className="flex-1 sm:flex-none px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold rounded-xl shadow-lg shadow-blue-500/25 transition active:scale-95 flex items-center justify-center gap-2"
+              className="flex-1 sm:flex-none px-5 py-2.5 bg-gradient-to-r from-[#1e3a8a] to-[#2563eb] hover:from-[#172554] hover:to-[#1d4ed8] dark:from-indigo-600 dark:to-blue-600 dark:hover:from-indigo-700 dark:hover:to-blue-700 text-white text-xs font-bold rounded-xl shadow-lg shadow-blue-500/25 transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
             >
               <Edit3 size={15} />
               <span>Chỉnh Sửa Trong CV Builder</span>

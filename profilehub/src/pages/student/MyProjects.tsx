@@ -9,7 +9,8 @@ import type { VerificationStatus } from '../../types/database';
 import { 
   Building2, Code2, GraduationCap, Shield, Search, Plus, 
   ExternalLink, Github, Figma, FileText, Sparkles, QrCode, 
-  Edit3, Trash2, Target, Layers, TrendingUp, Users
+  Edit3, Trash2, Target, Layers, TrendingUp, Users, ArrowUpRight,
+  FolderGit2, CheckCircle2, Terminal, Copy, Check, Share2
 } from 'lucide-react';
 
 interface Project {
@@ -37,11 +38,36 @@ export default function MyProjects() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedFilter, setSelectedFilter] = useState('all');
+  const [selectedFilter, setSelectedFilter] = useState<'all' | 'enterprise' | 'opensource' | 'academic'>('all');
   
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [qrModalProject, setQrModalProject] = useState<Project | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCopiedShowcase, setIsCopiedShowcase] = useState(false);
+  const [copiedProjectId, setCopiedProjectId] = useState<string | null>(null);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const handleCopyShowcaseLink = () => {
+    const showcaseUrl = `${window.location.origin}/showcase/${user?.id || 'demo'}`;
+    navigator.clipboard.writeText(showcaseUrl);
+    setIsCopiedShowcase(true);
+    setToastMessage('Đã sao chép link Showcase toàn bộ dự án! Người nhận truy cập là xem được ngay mà không cần đăng nhập.');
+    setTimeout(() => {
+      setIsCopiedShowcase(false);
+      setToastMessage(null);
+    }, 4000);
+  };
+
+  const handleCopySingleProjectLink = (projId: string) => {
+    const projectUrl = `${window.location.origin}/showcase/${user?.id || 'demo'}#project-${projId}`;
+    navigator.clipboard.writeText(projectUrl);
+    setCopiedProjectId(projId);
+    setToastMessage('Đã sao chép liên kết trực tiếp tới dự án này!');
+    setTimeout(() => {
+      setCopiedProjectId(null);
+      setToastMessage(null);
+    }, 3000);
+  };
 
   // Fetch Projects from Supabase
   const fetchProjects = useCallback(async () => {
@@ -111,6 +137,14 @@ export default function MyProjects() {
     return null;
   };
 
+  // Metrics
+  const stats = useMemo(() => {
+    const enterprise = projects.filter(p => (p.project_type || '').toLowerCase().includes('doanh nghiệp') || (p.project_type || '').toLowerCase().includes('khách hàng')).length;
+    const opensource = projects.filter(p => (p.project_type || '').toLowerCase().includes('mã nguồn mở') || (p.project_type || '').toLowerCase().includes('cá nhân')).length;
+    const academic = projects.filter(p => (p.project_type || '').toLowerCase().includes('học thuật') || (p.project_type || '').toLowerCase().includes('tốt nghiệp')).length;
+    return { enterprise, opensource, academic, total: projects.length };
+  }, [projects]);
+
   // Filter projects
   const filteredProjects = useMemo(() => {
     return projects.filter(proj => {
@@ -136,183 +170,215 @@ export default function MyProjects() {
     });
   }, [projects, searchQuery, selectedFilter]);
 
+  const formatExternalUrl = (url?: string) => {
+    if (!url) return '';
+    const trimmed = url.trim();
+    if (!trimmed) return '';
+    if (/^https?:\/\//i.test(trimmed)) return trimmed;
+    return `https://${trimmed}`;
+  };
+
   return (
-    <div style={{ padding: '0', width: '100%', boxSizing: 'border-box', backgroundColor: '#f8fafc', minHeight: '100vh', paddingBottom: '60px' }}>
+    <div className="w-full min-h-screen bg-slate-50 text-slate-900 pb-20">
       
-      {/* Top Header */}
-      <header style={{ height: '64px', backgroundColor: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 30px', borderBottom: '1px solid #e2e8f0' }}>
-        <div style={{ fontSize: '13.5px', color: '#64748b' }}>
-          <span style={{ fontWeight: '600', color: '#1e3a8a' }}>Technical Case Studies</span> 
-          <span style={{ margin: '0 8px' }}>/</span> 
-          <span style={{ color: '#0f172a', fontWeight: '500' }}>Architecture & Project Portfolio</span>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-          <span style={{ fontSize: '13px', fontWeight: '500', color: '#475569' }}>{user?.email}</span>
-          <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#1e3a8a', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '14px' }}>
-            {user?.email?.charAt(0).toUpperCase()}
+      {/* Sub-Header / Breadcrumbs bar */}
+      <div className="bg-white border-b border-slate-200 px-6 py-3.5 sticky top-0 z-20 backdrop-blur-md bg-white/90">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-2 text-xs font-semibold text-slate-500">
+            <span className="text-slate-900 font-bold flex items-center gap-1.5">
+              <FolderGit2 className="w-4 h-4 text-indigo-600" />
+              Technical Portfolio
+            </span>
+            <span>/</span>
+            <span className="text-slate-600">Architecture Case Studies</span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-medium text-slate-500 hidden sm:inline">{user?.email}</span>
+            <div className="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs ring-2 ring-slate-100">
+              {user?.email?.charAt(0).toUpperCase() || 'U'}
+            </div>
           </div>
         </div>
-      </header>
+      </div>
 
-      <div style={{ padding: '26px 30px', maxWidth: '1240px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 relative">
+        {/* Floating Toast Notification */}
+        {toastMessage && (
+          <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white px-5 py-2.5 rounded-2xl shadow-2xl border border-emerald-500/50 flex items-center gap-3 text-xs animate-in slide-in-from-top-3 duration-200">
+            <div className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+              <CheckCircle2 className="w-4 h-4" />
+            </div>
+            <span className="font-medium text-slate-200">{toastMessage}</span>
+          </div>
+        )}
         
-        {/* Banner Định hướng Cấp bậc (Intern -> Lead) */}
-        <div style={{
-          backgroundColor: '#eff6ff',
-          border: '1px solid #bfdbfe',
-          borderRadius: '12px',
-          padding: '16px 20px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '24px',
-          flexWrap: 'wrap',
-          gap: '12px'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ width: '38px', height: '38px', borderRadius: '8px', backgroundColor: '#2563eb', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Sparkles size={20} />
+        {/* ITviec-Inspired Hero Metric Banner */}
+        <div className="relative overflow-hidden bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950 text-white rounded-3xl p-6 sm:p-8 mb-8 shadow-xl border border-slate-800">
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="space-y-3 max-w-2xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-400/20 text-indigo-300 text-xs font-semibold">
+                <Terminal className="w-3.5 h-3.5 text-indigo-400" />
+                Evidence-Based Engineering Portfolio
+              </div>
+
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white leading-tight">
+                Hồ Sơ Năng Lực & Minh Chứng Kỹ Thuật
+              </h1>
+
+              <p className="text-sm text-slate-300 leading-relaxed">
+                Được chuẩn hóa theo tiêu chuẩn tuyển dụng của các công ty công nghệ lớn: 
+                tập trung vào <strong className="text-white">Kiến trúc hệ thống (System Design)</strong>, 
+                <strong className="text-white"> Mã nguồn GitHub</strong> và <strong className="text-white">Tác động đo lường được (STAR)</strong>.
+              </p>
+
+              {/* Quick Metrics */}
+              <div className="flex flex-wrap items-center gap-2 pt-2">
+                <span className="px-3 py-1 rounded-lg bg-slate-800/80 border border-slate-700/60 text-xs text-slate-200 font-medium flex items-center gap-1.5">
+                  📦 <strong>{stats.total}</strong> Dự án
+                </span>
+                <span className="px-3 py-1 rounded-lg bg-emerald-950/60 border border-emerald-800/60 text-xs text-emerald-300 font-medium flex items-center gap-1.5">
+                  ● <strong>{stats.opensource}</strong> Open Source
+                </span>
+                <span className="px-3 py-1 rounded-lg bg-blue-950/60 border border-blue-800/60 text-xs text-blue-300 font-medium flex items-center gap-1.5">
+                  🏢 <strong>{stats.enterprise}</strong> Production
+                </span>
+              </div>
             </div>
-            <div>
-              <div style={{ fontSize: '14px', fontWeight: '700', color: '#1e3a8a' }}>
-                Hồ Sơ Năng Lực Chuẩn Kỹ Thuật (Từ Intern đến Tech Lead)
+
+            <div className="flex flex-col sm:items-end gap-3 shrink-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  onClick={handleCopyShowcaseLink}
+                  className="px-4 py-2.5 bg-slate-800/90 hover:bg-slate-750 text-slate-200 border border-slate-700/80 font-bold text-xs rounded-xl shadow-md flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                  title="Sao chép link Showcase toàn bộ dự án để gửi nhà tuyển dụng"
+                >
+                  {isCopiedShowcase ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-emerald-400" />
+                      <span className="text-emerald-400">Đã chép link!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Share2 className="w-3.5 h-3.5 text-indigo-400" />
+                      <span>Sao Chép Link Showcase</span>
+                    </>
+                  )}
+                </button>
+
+                <a
+                  href={`/showcase/${user?.id || 'demo'}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3.5 py-2.5 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-all"
+                  title="Mở xem trước trang Showcase công khai như nhà tuyển dụng thấy"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>Xem Công Khai</span>
+                </a>
+
+                <button
+                  onClick={handleAddNew}
+                  className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>+ Đăng Tải Dự Án</span>
+                </button>
               </div>
-              <div style={{ fontSize: '12.5px', color: '#3b82f6', marginTop: '2px' }}>
-                Nhà tuyển dụng đánh giá cao: <strong>Bài toán hóc búa</strong>, <strong>Kiến trúc hệ thống (System Design)</strong> và <strong>Tác động đo lường được</strong>. Hỗ trợ dự án bảo mật (NDA).
-              </div>
+
+              <span className="text-[11px] text-slate-400 hidden sm:block">
+                💡 Bất kỳ ai có link đều xem được danh sách dự án mà không cần đăng nhập
+              </span>
             </div>
           </div>
-          <button 
-            onClick={handleAddNew}
-            style={{ 
-              padding: '8px 16px', 
-              backgroundColor: '#1e3a8a', 
-              color: 'white', 
-              border: 'none', 
-              borderRadius: '8px', 
-              cursor: 'pointer', 
-              fontSize: '13px', 
-              fontWeight: '700',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              boxShadow: '0 2px 4px rgba(30,58,138,0.2)'
-            }}
-          >
-            <Plus size={16} /> + Thêm Case Study Dự án
-          </button>
         </div>
 
-        {/* Thanh Tìm kiếm & Bộ lọc Cấp bậc */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '14px' }}>
+        {/* Control Toolbar: Filter Pills + Search */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mb-6">
           
-          {/* Tabs Filter */}
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          {/* Segmented Filter Pills (ITviec Style) */}
+          <div className="flex items-center gap-1.5 p-1 bg-white rounded-xl border border-slate-200/90 shadow-2xs overflow-x-auto">
             <button
               onClick={() => setSelectedFilter('all')}
-              style={{
-                padding: '6px 14px',
-                borderRadius: '20px',
-                fontSize: '12.5px',
-                fontWeight: '600',
-                border: selectedFilter === 'all' ? '1px solid #1e3a8a' : '1px solid #cbd5e1',
-                backgroundColor: selectedFilter === 'all' ? '#1e3a8a' : '#ffffff',
-                color: selectedFilter === 'all' ? '#ffffff' : '#475569',
-                cursor: 'pointer'
-              }}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+                selectedFilter === 'all'
+                  ? 'bg-slate-900 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+              }`}
             >
               Tất cả ({projects.length})
             </button>
             <button
               onClick={() => setSelectedFilter('enterprise')}
-              style={{
-                padding: '6px 14px',
-                borderRadius: '20px',
-                fontSize: '12.5px',
-                fontWeight: '600',
-                border: selectedFilter === 'enterprise' ? '1px solid #2563eb' : '1px solid #cbd5e1',
-                backgroundColor: selectedFilter === 'enterprise' ? '#eff6ff' : '#ffffff',
-                color: selectedFilter === 'enterprise' ? '#1d4ed8' : '#475569',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '5px'
-              }}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
+                selectedFilter === 'enterprise'
+                  ? 'bg-blue-600 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+              }`}
             >
-              <Building2 size={14} /> Doanh nghiệp & Production
+              <Building2 className="w-3.5 h-3.5" />
+              <span>Production & Doanh nghiệp ({stats.enterprise})</span>
             </button>
             <button
               onClick={() => setSelectedFilter('opensource')}
-              style={{
-                padding: '6px 14px',
-                borderRadius: '20px',
-                fontSize: '12.5px',
-                fontWeight: '600',
-                border: selectedFilter === 'opensource' ? '1px solid #059669' : '1px solid #cbd5e1',
-                backgroundColor: selectedFilter === 'opensource' ? '#ecfdf5' : '#ffffff',
-                color: selectedFilter === 'opensource' ? '#047857' : '#475569',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '5px'
-              }}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
+                selectedFilter === 'opensource'
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+              }`}
             >
-              <Code2 size={14} /> Mã nguồn mở & Cá nhân
+              <Code2 className="w-3.5 h-3.5" />
+              <span>Open Source ({stats.opensource})</span>
             </button>
             <button
               onClick={() => setSelectedFilter('academic')}
-              style={{
-                padding: '6px 14px',
-                borderRadius: '20px',
-                fontSize: '12.5px',
-                fontWeight: '600',
-                border: selectedFilter === 'academic' ? '1px solid #7c3aed' : '1px solid #cbd5e1',
-                backgroundColor: selectedFilter === 'academic' ? '#f5f3ff' : '#ffffff',
-                color: selectedFilter === 'academic' ? '#6d28d9' : '#475569',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '5px'
-              }}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
+                selectedFilter === 'academic'
+                  ? 'bg-purple-600 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+              }`}
             >
-              <GraduationCap size={14} /> Đồ án & NCKH
+              <GraduationCap className="w-3.5 h-3.5" />
+              <span>Học thuật & Đồ án ({stats.academic})</span>
             </button>
           </div>
 
-          {/* Search box */}
-          <div style={{ position: 'relative', width: '320px' }}>
-            <Search size={15} color="#94a3b8" style={{ position: 'absolute', left: '12px', top: '10px' }} />
+          {/* Search Box */}
+          <div className="relative w-full sm:w-80">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input 
               type="text" 
-              placeholder="Tìm theo tên hệ thống, vai trò, công nghệ..." 
+              placeholder="Tìm theo tên repo, vai trò, công nghệ..." 
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              style={{ 
-                width: '100%', 
-                padding: '8px 12px 8px 34px', 
-                borderRadius: '8px', 
-                border: '1px solid #cbd5e1', 
-                fontSize: '12.5px',
-                backgroundColor: '#ffffff',
-                boxSizing: 'border-box'
-              }} 
+              className="w-full bg-white border border-slate-200/90 rounded-xl pl-9 pr-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 shadow-2xs"
             />
           </div>
         </div>
 
-        {/* Lưới hiển thị các Case Study Dự án */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '22px', marginBottom: '40px' }}>
+        {/* Project Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           
           {loading ? (
-            <div style={{ gridColumn: '1 / -1', padding: '40px', textAlign: 'center', color: '#64748b' }}>
-              Đang tải danh sách Case Study...
+            <div className="col-span-full py-16 text-center text-slate-400 text-sm">
+              <div className="w-6 h-6 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+              Đang tải danh sách Case Studies...
             </div>
           ) : filteredProjects.length === 0 ? (
-            <div style={{ gridColumn: '1 / -1', padding: '50px 20px', textAlign: 'center', backgroundColor: '#ffffff', borderRadius: '14px', border: '1px dashed #cbd5e1' }}>
-              <Code2 size={40} color="#94a3b8" style={{ margin: '0 auto 12px auto' }} />
-              <div style={{ fontSize: '15px', fontWeight: '700', color: '#1e293b', marginBottom: '4px' }}>Chưa có dự án nào trong mục này</div>
-              <div style={{ fontSize: '13px', color: '#64748b', marginBottom: '16px' }}>Thêm dự án doanh nghiệp, pet project hoặc đồ án tốt nghiệp để phỏng vấn tuyển dụng</div>
-              <button onClick={handleAddNew} style={{ padding: '8px 16px', backgroundColor: '#1e3a8a', color: 'white', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: '700', cursor: 'pointer' }}>+ Thêm dự án ngay</button>
+            <div className="col-span-full py-16 px-4 text-center bg-white rounded-3xl border border-dashed border-slate-300">
+              <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3">
+                <Code2 className="w-6 h-6" />
+              </div>
+              <h3 className="text-base font-bold text-slate-900 mb-1">Chưa có dự án nào trong mục này</h3>
+              <p className="text-xs text-slate-500 max-w-md mx-auto mb-4">
+                Hãy bổ sung các dự án cá nhân, đồ án tốt nghiệp hoặc ứng dụng thực tế để làm bằng chứng thuyết phục nhà tuyển dụng.
+              </p>
+              <button 
+                onClick={handleAddNew} 
+                className="px-4 py-2 bg-slate-900 hover:bg-black text-white text-xs font-bold rounded-xl shadow-md transition cursor-pointer"
+              >
+                + Thêm dự án ngay
+              </button>
             </div>
           ) : (
             filteredProjects.map((proj) => {
@@ -324,33 +390,36 @@ export default function MyProjects() {
               const isOpenSourceType = (proj.project_type || '').toLowerCase().includes('mã nguồn mở');
 
               return (
-                <div key={proj.id} style={{ backgroundColor: 'white', borderRadius: '14px', overflow: 'hidden', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', boxShadow: '0 2px 4px rgba(0,0,0,0.03)', transition: 'transform 0.15s ease, box-shadow 0.15s ease' }}>
+                <div 
+                  key={proj.id} 
+                  className="bg-white rounded-2xl border border-slate-200/90 hover:border-slate-300 overflow-hidden flex flex-col shadow-xs hover:shadow-lg transition-all duration-200 group"
+                >
                   
-                  {/* Header Thumbnail / Architecture Diagram */}
+                  {/* Thumbnail / Architecture Preview Header */}
                   <ProjectFilePreviewHeader project={proj} />
 
-                  <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                  <div className="p-5 flex-1 flex flex-col">
                     
-                    {/* Row Badges: Type & NDA & Verified */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
-                      <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexWrap: 'wrap' }}>
+                    {/* Header Badges Row */}
+                    <div className="flex items-center justify-between gap-2 mb-3">
+                      <div className="flex items-center gap-1.5 flex-wrap">
                         {isEnterpriseType ? (
-                          <span style={{ fontSize: '11px', fontWeight: '700', color: '#1d4ed8', backgroundColor: '#eff6ff', padding: '3px 8px', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                            <Building2 size={12} /> Doanh Nghiệp
+                          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-200/60">
+                            <Building2 className="w-3 h-3" /> Production
                           </span>
                         ) : isOpenSourceType ? (
-                          <span style={{ fontSize: '11px', fontWeight: '700', color: '#047857', backgroundColor: '#ecfdf5', padding: '3px 8px', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                            <Code2 size={12} /> Open Source
+                          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200/60">
+                            <Code2 className="w-3 h-3" /> Open Source
                           </span>
                         ) : (
-                          <span style={{ fontSize: '11px', fontWeight: '700', color: '#6d28d9', backgroundColor: '#f5f3ff', padding: '3px 8px', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                            <GraduationCap size={12} /> Học Thuật
+                          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-md border border-purple-200/60">
+                            <GraduationCap className="w-3 h-3" /> Học Thuật
                           </span>
                         )}
 
                         {isNDA && (
-                          <span style={{ fontSize: '10.5px', fontWeight: '700', color: '#b45309', backgroundColor: '#fef3c7', padding: '3px 8px', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '3px' }}>
-                            <Shield size={11} color="#d97706" /> NDA Protected
+                          <span className="inline-flex items-center gap-1 text-[10.5px] font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200/60">
+                            <Shield className="w-2.5 h-2.5 text-amber-600" /> NDA
                           </span>
                         )}
                       </div>
@@ -360,118 +429,161 @@ export default function MyProjects() {
                       )}
                     </div>
 
-                    {/* Title */}
-                    <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', fontWeight: '700', color: '#0f172a', lineHeight: '1.4' }}>
+                    {/* Project Title */}
+                    <h3 className="font-extrabold text-slate-900 text-base leading-snug mb-2 group-hover:text-indigo-600 transition-colors">
                       {cleanTitle}
                     </h3>
 
-                    {/* Role & Team Size Ribbon */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '12px', color: '#475569', marginBottom: '14px', backgroundColor: '#f8fafc', padding: '8px 10px', borderRadius: '6px', border: '1px solid #f1f5f9' }}>
-                      <div>
-                        Vai trò: <strong style={{ color: '#0f172a' }}>{proj.role || 'Kỹ sư phát triển'}</strong>
-                      </div>
-                      <span>•</span>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <Users size={12} color="#64748b" /> {proj.team_size || '1 thành viên'}
-                      </div>
+                    {/* Role & Team Metadata Pill */}
+                    <div className="flex items-center gap-2 text-xs text-slate-500 mb-3.5 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">
+                      <span className="font-semibold text-slate-700">{proj.role || 'Kỹ sư phát triển'}</span>
+                      <span className="text-slate-300">•</span>
+                      <span className="flex items-center gap-1 text-[11.5px]">
+                        <Users className="w-3 h-3 text-slate-400" />
+                        {proj.team_size || 'Cá nhân'}
+                      </span>
                     </div>
 
-                    {/* Case Study Details (STAR Model Highlight) */}
+                    {/* STAR Framework Content Callouts */}
                     {starData ? (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '14px', fontSize: '12.5px' }}>
+                      <div className="space-y-2 mb-4 text-xs">
                         {starData.challenge && (
-                          <div style={{ backgroundColor: '#fffbeb', padding: '8px 10px', borderRadius: '6px', border: '1px solid #fef3c7' }}>
-                            <div style={{ fontWeight: '700', color: '#b45309', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11.5px', marginBottom: '2px' }}>
-                              <Target size={12} /> Bài toán & Thách thức:
+                          <div className="bg-amber-50/70 border-l-2 border-amber-500 p-2 rounded-r-lg">
+                            <div className="font-bold text-amber-900 text-[11px] flex items-center gap-1 mb-0.5">
+                              <Target className="w-3 h-3 text-amber-600" /> Bài toán:
                             </div>
-                            <div style={{ color: '#78350f', lineHeight: '1.4', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                            <p className="text-amber-950/80 leading-relaxed line-clamp-2">
                               {starData.challenge}
-                            </div>
+                            </p>
                           </div>
                         )}
 
                         {starData.architecture && (
-                          <div style={{ backgroundColor: '#eff6ff', padding: '8px 10px', borderRadius: '6px', border: '1px solid #dbeafe' }}>
-                            <div style={{ fontWeight: '700', color: '#1e40af', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11.5px', marginBottom: '2px' }}>
-                              <Layers size={12} /> Giải pháp & Kiến trúc:
+                          <div className="bg-blue-50/70 border-l-2 border-blue-500 p-2 rounded-r-lg">
+                            <div className="font-bold text-blue-900 text-[11px] flex items-center gap-1 mb-0.5">
+                              <Layers className="w-3 h-3 text-blue-600" /> Giải pháp:
                             </div>
-                            <div style={{ color: '#1e3a8a', lineHeight: '1.4', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                            <p className="text-blue-950/80 leading-relaxed line-clamp-2">
                               {starData.architecture}
-                            </div>
+                            </p>
                           </div>
                         )}
 
                         {starData.impact && (
-                          <div style={{ backgroundColor: '#ecfdf5', padding: '8px 10px', borderRadius: '6px', border: '1px solid #d1fae5' }}>
-                            <div style={{ fontWeight: '700', color: '#047857', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11.5px', marginBottom: '2px' }}>
-                              <TrendingUp size={12} /> Tác động & Chỉ số:
+                          <div className="bg-emerald-50/70 border-l-2 border-emerald-500 p-2 rounded-r-lg">
+                            <div className="font-bold text-emerald-900 text-[11px] flex items-center gap-1 mb-0.5">
+                              <TrendingUp className="w-3 h-3 text-emerald-600" /> Tác động:
                             </div>
-                            <div style={{ color: '#064e3b', lineHeight: '1.4', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                            <p className="text-emerald-950/80 leading-relaxed line-clamp-2">
                               {starData.impact}
-                            </div>
+                            </p>
                           </div>
                         )}
                       </div>
                     ) : (
-                      <p style={{ fontSize: '12.5px', color: '#64748b', marginBottom: '14px', lineHeight: '1.5', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                      <p className="text-xs text-slate-500 line-clamp-3 leading-relaxed mb-4">
                         {proj.description ? proj.description.replace('[Confidential / NDA Protected]', '').trim() : 'Chưa có mô tả chi tiết.'}
                       </p>
                     )}
 
-                    {/* Tech Stack Tags */}
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '16px' }}>
+                    {/* Tech Stack Pills (Signature ITviec Tag Style) */}
+                    <div className="flex flex-wrap gap-1.5 mb-4 mt-auto">
                       {proj.tags && proj.tags.map((tag, idx) => (
-                        <span key={idx} style={{ fontSize: '11px', fontWeight: '600', padding: '3px 8px', backgroundColor: '#f1f5f9', color: '#334155', borderRadius: '4px', border: '1px solid #e2e8f0' }}>
+                        <span 
+                          key={idx} 
+                          className="px-2 py-0.5 rounded text-[11px] font-semibold bg-slate-100 text-slate-700 border border-slate-200/60 hover:bg-slate-200 transition-colors"
+                        >
                           {tag}
                         </span>
                       ))}
                     </div>
 
-                    {/* Links Row */}
-                    <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', flexWrap: 'wrap' }}>
+                    {/* External Evidence Links */}
+                    <div className="flex flex-wrap items-center gap-1.5 pt-3 border-t border-slate-100 text-xs">
                       {proj.github_url && (
-                        <a href={proj.github_url} target="_blank" rel="noreferrer" style={{ fontSize: '11.5px', color: '#0f172a', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px', backgroundColor: '#f8fafc', padding: '4px 8px', borderRadius: '4px', border: '1px solid #cbd5e1', fontWeight: '600' }}>
-                          <Github size={12} /> Repo
+                        <a 
+                          href={formatExternalUrl(proj.github_url)} 
+                          target="_blank" 
+                          rel="noreferrer" 
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-black text-white font-medium text-[11px] transition shadow-2xs"
+                        >
+                          <Github className="w-3 h-3" />
+                          <span>Code</span>
+                          <ArrowUpRight className="w-2.5 h-2.5 opacity-60" />
                         </a>
                       )}
-                      {proj.demo_url && (
-                        <a href={proj.demo_url} target="_blank" rel="noreferrer" style={{ fontSize: '11.5px', color: '#2563eb', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px', backgroundColor: '#eff6ff', padding: '4px 8px', borderRadius: '4px', border: '1px solid #bfdbfe', fontWeight: '600' }}>
-                          <ExternalLink size={12} /> Live System
-                        </a>
-                      )}
-                      {proj.figma_url && (
-                        <a href={proj.figma_url} target="_blank" rel="noreferrer" style={{ fontSize: '11.5px', color: '#9333ea', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px', backgroundColor: '#faf5ff', padding: '4px 8px', borderRadius: '4px', border: '1px solid #e9d5ff', fontWeight: '600' }}>
-                          <Figma size={12} /> UI Design
-                        </a>
-                      )}
-                      {proj.doc_url && (
-                        <a href={proj.doc_url} target="_blank" rel="noreferrer" style={{ fontSize: '11.5px', color: '#059669', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px', backgroundColor: '#ecfdf5', padding: '4px 8px', borderRadius: '4px', border: '1px solid #a7f3d0', fontWeight: '600' }}>
-                          <FileText size={12} /> Spec/RFC
-                        </a>
-                      )}
-                    </div>
 
-                    {/* Bottom Actions */}
-                    <div style={{ marginTop: 'auto', display: 'flex', gap: '8px', borderTop: '1px solid #f1f5f9', paddingTop: '14px' }}>
-                      <button
-                        onClick={() => setQrModalProject(proj as any)}
-                        style={{ padding: '7px 10px', backgroundColor: '#f8fafc', color: '#334155', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '11.5px', fontWeight: '600', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
-                      >
-                        <QrCode size={13} /> QR
-                      </button>
-                      <button 
-                        onClick={() => handleEdit(proj)} 
-                        style={{ flex: 1, padding: '7px', backgroundColor: '#ffffff', color: '#1e3a8a', border: '1px solid #bfdbfe', borderRadius: '6px', fontSize: '12px', cursor: 'pointer', fontWeight: '600', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}
-                      >
-                        <Edit3 size={13} /> Sửa Case Study
-                      </button>
-                      <button 
-                        onClick={() => handleDelete(proj.id)} 
-                        style={{ padding: '7px 10px', backgroundColor: '#fff1f2', color: '#e11d48', border: '1px solid #ffe4e6', borderRadius: '6px', fontSize: '12px', cursor: 'pointer' }} 
-                        title="Xóa dự án"
-                      >
-                        <Trash2 size={13} />
-                      </button>
+                      {proj.demo_url && (
+                        <a 
+                          href={formatExternalUrl(proj.demo_url)} 
+                          target="_blank" 
+                          rel="noreferrer" 
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium text-[11px] border border-blue-200/60 transition"
+                        >
+                          <ExternalLink className="w-3 h-3" />
+                          <span>Live Demo</span>
+                        </a>
+                      )}
+
+                      {proj.figma_url && (
+                        <a 
+                          href={formatExternalUrl(proj.figma_url)} 
+                          target="_blank" 
+                          rel="noreferrer" 
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-700 font-medium text-[11px] border border-purple-200/60 transition"
+                        >
+                          <Figma className="w-3 h-3" />
+                          <span>Figma</span>
+                        </a>
+                      )}
+
+                      {proj.doc_url && (
+                        <a 
+                          href={formatExternalUrl(proj.doc_url)} 
+                          target="_blank" 
+                          rel="noreferrer" 
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-medium text-[11px] border border-emerald-200/60 transition"
+                        >
+                          <FileText className="w-3 h-3" />
+                          <span>Spec</span>
+                        </a>
+                      )}
+
+                      {/* Management Action Buttons */}
+                      <div className="flex items-center gap-1 ml-auto">
+                        <button
+                          onClick={() => handleCopySingleProjectLink(proj.id)}
+                          title="Sao chép link chia sẻ dự án này cho nhà tuyển dụng"
+                          className="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition"
+                        >
+                          {copiedProjectId === proj.id ? (
+                            <Check className="w-3.5 h-3.5 text-emerald-600" />
+                          ) : (
+                            <Copy className="w-3.5 h-3.5" />
+                          )}
+                        </button>
+                        <button
+                          onClick={() => setQrModalProject(proj)}
+                          title="Tạo Smart QR Code"
+                          className="p-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition"
+                        >
+                          <QrCode className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => handleEdit(proj)}
+                          title="Chỉnh sửa Case Study"
+                          className="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition"
+                        >
+                          <Edit3 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(proj.id)}
+                          title="Xóa Case Study"
+                          className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </div>
 
                   </div>
@@ -480,55 +592,31 @@ export default function MyProjects() {
             })
           )}
 
-          {/* Thẻ Thêm nhanh Case Study Mới */}
-          <div 
-            onClick={handleAddNew} 
-            style={{ 
-              backgroundColor: '#f8fafc', 
-              borderRadius: '14px', 
-              border: '2px dashed #cbd5e1', 
-              display: 'flex', 
-              flexDirection: 'column', 
-              justifyContent: 'center', 
-              alignItems: 'center', 
-              padding: '40px 24px', 
-              textAlign: 'center', 
-              cursor: 'pointer', 
-              minHeight: '380px', 
-              transition: 'all 0.15s ease' 
-            }}
-          >
-            <div style={{ width: '48px', height: '48px', borderRadius: '50%', backgroundColor: '#eff6ff', color: '#2563eb', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '24px', marginBottom: '14px', boxShadow: '0 2px 6px rgba(37,99,235,0.15)' }}>
-              +
-            </div>
-            <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', color: '#0f172a', fontWeight: '700' }}>
-              Khởi tạo Case Study Kỹ Thuật Mới
-            </h3>
-            <p style={{ fontSize: '12.5px', color: '#64748b', marginBottom: '18px', lineHeight: '1.6', maxWidth: '280px' }}>
-              Trình bày bài toán quy mô, sơ đồ kiến trúc và các chỉ số đo lường thực tế để chinh phục nhà tuyển dụng cấp cao.
-            </p>
-            <button 
-              onClick={(e) => { e.stopPropagation(); handleAddNew(); }} 
-              style={{ padding: '9px 18px', backgroundColor: '#1e3a8a', color: 'white', border: 'none', borderRadius: '6px', fontSize: '12.5px', fontWeight: '700', cursor: 'pointer' }}
-            >
-              Soạn thảo Case Study →
-            </button>
-          </div>
-
         </div>
 
       </div>
 
       {/* Modals */}
-      <AddProjectModal 
-        isOpen={isModalOpen} 
-        onClose={() => { setIsModalOpen(false); setEditingProject(null); }} 
-        onSuccess={fetchProjects} 
-        editData={editingProject} 
-      />
+      {isModalOpen && (
+        <AddProjectModal 
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSuccess={() => {
+            fetchProjects();
+            setIsModalOpen(false);
+          }}
+          editData={editingProject}
+        />
+      )}
 
       {qrModalProject && (
-        <ProjectQRCodeModal project={qrModalProject as any} onClose={() => setQrModalProject(null)} />
+        <ProjectQRCodeModal
+          onClose={() => setQrModalProject(null)}
+          project={{
+            ...qrModalProject,
+            student_id: user?.id || ''
+          } as any}
+        />
       )}
 
     </div>

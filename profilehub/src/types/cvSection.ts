@@ -19,6 +19,7 @@ export interface PersonalInfoData {
   email: string;
   facebook?: string;
   linkedin?: string;
+  github?: string;
   website?: string;
   location: string;
   avatarUrl?: string;
@@ -27,6 +28,7 @@ export interface PersonalInfoData {
     email: boolean;
     facebook: boolean;
     linkedin: boolean;
+    github?: boolean;
     website: boolean;
     location: boolean;
     avatarUrl: boolean;
@@ -142,6 +144,7 @@ export interface SectionSettings {
   spacing: 'compact' | 'normal' | 'relaxed';
   titleStyle: 'bold' | 'normal';
   titleCase: 'uppercase' | 'capitalize' | 'none';
+  pageBreakBefore?: boolean;
 }
 
 export interface CVSection {

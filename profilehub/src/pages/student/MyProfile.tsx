@@ -29,6 +29,14 @@ export interface ProfileProjectData {
   doc_url?: string;
 }
 
+const formatExternalUrl = (url?: string) => {
+  if (!url) return '';
+  const trimmed = url.trim();
+  if (!trimmed) return '';
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return 'https://' + trimmed;
+};
+
 interface StudentProfile {
   id?: string;
   full_name?: string;
@@ -643,12 +651,12 @@ export default function MyProfile() {
                   <div style={{ marginTop: 'auto', paddingTop: '10px', borderTop: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ display: 'flex', gap: '8px' }}>
                       {proj.demo_url && (
-                        <a href={proj.demo_url} target="_blank" rel="noreferrer" style={{ color: '#2563eb', display: 'flex', alignItems: 'center', gap: '3px', fontSize: '11.5px', textDecoration: 'none', fontWeight: '600' }}>
+                        <a href={formatExternalUrl(proj.demo_url)} target="_blank" rel="noreferrer" style={{ color: '#2563eb', display: 'flex', alignItems: 'center', gap: '3px', fontSize: '11.5px', textDecoration: 'none', fontWeight: '600' }}>
                           <Globe size={13} /> Demo
                         </a>
                       )}
                       {proj.github_url && (
-                        <a href={proj.github_url} target="_blank" rel="noreferrer" style={{ color: '#0f172a', display: 'flex', alignItems: 'center', gap: '3px', fontSize: '11.5px', textDecoration: 'none', fontWeight: '600' }}>
+                        <a href={formatExternalUrl(proj.github_url)} target="_blank" rel="noreferrer" style={{ color: '#0f172a', display: 'flex', alignItems: 'center', gap: '3px', fontSize: '11.5px', textDecoration: 'none', fontWeight: '600' }}>
                           <Github size={13} /> Code
                         </a>
                       )}

@@ -77,17 +77,17 @@ export default function ProjectFitExplainerModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-4xl shadow-2xl flex flex-col max-h-[92vh] overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs animate-in fade-in duration-200">
+      <div className="bg-white dark:bg-[#0f1523] border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-4xl shadow-2xl flex flex-col max-h-[92vh] overflow-hidden text-slate-900 dark:text-slate-100 transition-colors">
         
         {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-950/50">
+        <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-[#0c101c]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-600 flex items-center justify-center">
-              <Sparkles className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-amber-400" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 Project Fit Explainer (Tuyển chọn & Xếp hạng Dự án theo JD)
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -97,15 +97,15 @@ export default function ProjectFitExplainerModal({
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+            className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* JD Input Area with Sample Presets */}
-        <div className="p-4 bg-slate-50 dark:bg-slate-950/40 border-b border-slate-200 dark:border-slate-800 space-y-2">
-          <div className="flex items-center justify-between">
+        <div className="p-4 bg-slate-50/80 dark:bg-[#0c101c] border-b border-slate-200 dark:border-slate-800 space-y-2">
+          <div className="flex items-center justify-between flex-wrap gap-2">
             <span className="text-xs font-bold text-slate-700 dark:text-slate-300">Dán nội dung Job Description (JD) của nhà tuyển dụng:</span>
             <div className="flex items-center gap-1.5 text-[11px]">
               <span className="text-slate-400">Mẫu thử nhanh:</span>
@@ -113,7 +113,7 @@ export default function ProjectFitExplainerModal({
                 <button
                   key={idx}
                   onClick={() => setJdText(sample.text)}
-                  className="px-2 py-0.5 rounded bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 font-medium text-slate-600 dark:text-slate-300 transition"
+                  className="px-2.5 py-1 rounded-lg bg-white dark:bg-[#111728] hover:bg-slate-100 dark:hover:bg-[#161f36] border border-slate-200 dark:border-slate-700 font-medium text-slate-600 dark:text-slate-300 transition cursor-pointer"
                 >
                   {sample.label}
                 </button>
@@ -124,7 +124,7 @@ export default function ProjectFitExplainerModal({
             value={jdText}
             onChange={(e) => setJdText(e.target.value)}
             rows={2}
-            className="w-full p-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+            className="w-full p-2.5 bg-white dark:bg-[#090d16] border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition leading-relaxed font-mono"
             placeholder="Dán yêu cầu tuyển dụng (yêu cầu kỹ năng, công nghệ, kinh nghiệm)..."
           />
         </div>
@@ -133,7 +133,7 @@ export default function ProjectFitExplainerModal({
         <div className="flex-1 overflow-y-auto p-6 space-y-3">
           <div className="flex items-center justify-between text-xs text-slate-500 font-semibold mb-1">
             <span>KẾT QUẢ ĐỐI CHIẾU XẾP HẠNG ({rankedResults.length} DỰ ÁN)</span>
-            <span>Đã chọn: <strong className="text-indigo-600 dark:text-indigo-400">{selectedIds.size}/{rankedResults.length}</strong></span>
+            <span>Đã chọn: <strong className="text-blue-600 dark:text-blue-400">{selectedIds.size}/{rankedResults.length}</strong></span>
           </div>
 
           {rankedResults.map((result, idx) => {
@@ -151,7 +151,7 @@ export default function ProjectFitExplainerModal({
                 onClick={() => toggleSelect(result.projectId)}
                 className={`p-4 rounded-xl border transition-all cursor-pointer ${
                   isSelected
-                    ? 'border-indigo-400 dark:border-indigo-600 bg-indigo-50/20 dark:bg-indigo-950/20 shadow-xs'
+                    ? 'border-blue-400 dark:border-blue-600 bg-blue-50/30 dark:bg-blue-950/20 shadow-xs'
                     : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/60 opacity-70 hover:opacity-100'
                 }`}
               >
@@ -160,7 +160,7 @@ export default function ProjectFitExplainerModal({
                     type="checkbox"
                     checked={isSelected}
                     onChange={() => {}} // handled by parent div
-                    className="mt-1 w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                    className="mt-1 w-4 h-4 rounded text-blue-600 focus:ring-blue-500 cursor-pointer"
                   />
 
                   <div className="flex-1 min-w-0">
@@ -233,7 +233,7 @@ export default function ProjectFitExplainerModal({
           <button
             onClick={handleApply}
             disabled={selectedIds.size === 0}
-            className="px-5 py-2 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-bold rounded-xl text-xs shadow-md shadow-indigo-500/20 transition-all flex items-center gap-1.5 disabled:opacity-50"
+            className="px-5 py-2 bg-gradient-to-r from-[#1e3a8a] to-[#2563eb] hover:from-[#172554] hover:to-[#1d4ed8] text-white font-bold rounded-xl text-xs shadow-md shadow-blue-500/20 transition-all flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
           >
             <CheckCircle2 className="w-4 h-4" /> Đưa {selectedIds.size} dự án đã chọn vào CV
           </button>

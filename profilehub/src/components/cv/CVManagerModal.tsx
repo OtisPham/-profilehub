@@ -257,35 +257,35 @@ export default function CVManagerModal({
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-blue-950/30 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden border border-blue-100">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-blue-950/40 dark:bg-black/70 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+      <div className="bg-white dark:bg-[#0f1523] rounded-2xl shadow-2xl dark:shadow-[0_20px_60px_rgba(0,0,0,0.8)] w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden border border-blue-100 dark:border-slate-800 text-slate-900 dark:text-slate-100 transition-colors">
         {/* Header */}
-        <div className="px-6 py-4 bg-gradient-to-r from-blue-50/90 via-indigo-50/40 to-white border-b border-blue-100 flex items-center justify-between">
+        <div className="px-6 py-4 bg-gradient-to-r from-blue-50/90 via-sky-50/40 to-white dark:from-[#0d162a] dark:via-[#131b35] dark:to-[#0f1523] border-b border-blue-100 dark:border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold shadow-md shadow-blue-600/20">
+            <div className="w-10 h-10 rounded-xl bg-blue-600 dark:bg-indigo-600 flex items-center justify-center text-white font-bold shadow-md shadow-blue-600/20">
               <Layers size={22} />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-blue-950">Quản Lý Hồ Sơ & Phiên Bản CV</h2>
-              <p className="text-xs text-slate-500">Tạo mới, chuyển đổi hoặc nhân bản từ các CV cũ cho từng vị trí ứng tuyển</p>
+              <h2 className="text-lg font-bold text-blue-950 dark:text-slate-100">Quản Lý Hồ Sơ & Phiên Bản CV</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Tạo mới, chuyển đổi hoặc nhân bản từ các CV cũ cho từng vị trí ứng tuyển</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-blue-600 hover:text-blue-900 rounded-lg hover:bg-blue-50 transition-colors"
+            className="p-2 text-blue-600 dark:text-slate-400 hover:text-blue-900 dark:hover:text-white rounded-lg hover:bg-blue-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
           >
             <X size={20} />
           </button>
         </div>
 
         {/* Navigation Tabs */}
-        <div className="flex border-b border-slate-200 bg-slate-50 px-6 pt-2 gap-2">
+        <div className="flex border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#090d16] px-6 pt-2 gap-2">
           <button
             onClick={() => setActiveTab('my_cvs')}
-            className={`px-5 py-3 text-sm font-semibold rounded-t-xl transition-all flex items-center gap-2 border-b-2 ${
+            className={`px-5 py-3 text-sm font-semibold rounded-t-xl transition-all flex items-center gap-2 border-b-2 cursor-pointer ${
               activeTab === 'my_cvs'
-                ? 'bg-white text-blue-600 border-blue-600 shadow-sm'
-                : 'text-slate-600 border-transparent hover:text-slate-900'
+                ? 'bg-white dark:bg-[#0f1523] text-blue-600 dark:text-indigo-400 border-blue-600 dark:border-indigo-500 shadow-sm'
+                : 'text-slate-600 dark:text-slate-400 border-transparent hover:text-slate-900 dark:hover:text-slate-200'
             }`}
           >
             <FileText size={16} />
@@ -298,10 +298,10 @@ export default function CVManagerModal({
                 setSelectedSourceCvId(cvList[0].id);
               }
             }}
-            className={`px-5 py-3 text-sm font-semibold rounded-t-xl transition-all flex items-center gap-2 border-b-2 ${
+            className={`px-5 py-3 text-sm font-semibold rounded-t-xl transition-all flex items-center gap-2 border-b-2 cursor-pointer ${
               activeTab === 'create_new'
-                ? 'bg-white text-blue-600 border-blue-600 shadow-sm'
-                : 'text-slate-600 border-transparent hover:text-slate-900'
+                ? 'bg-white dark:bg-[#0f1523] text-blue-600 dark:text-indigo-400 border-blue-600 dark:border-indigo-500 shadow-sm'
+                : 'text-slate-600 dark:text-slate-400 border-transparent hover:text-slate-900 dark:hover:text-slate-200'
             }`}
           >
             <Plus size={16} />
@@ -313,22 +313,22 @@ export default function CVManagerModal({
         <div className="flex-1 overflow-y-auto p-6">
           {activeTab === 'my_cvs' && (
             <div className="space-y-4">
-              <div className="flex items-center justify-between bg-blue-50/70 p-3.5 rounded-xl border border-blue-100">
-                <div className="flex items-center gap-2 text-sm text-blue-900">
-                  <Sparkles size={16} className="text-blue-600" />
+              <div className="flex items-center justify-between bg-blue-50/70 dark:bg-indigo-950/40 p-3.5 rounded-xl border border-blue-100 dark:border-indigo-900/60">
+                <div className="flex items-center gap-2 text-sm text-blue-900 dark:text-indigo-200">
+                  <Sparkles size={16} className="text-blue-600 dark:text-indigo-400" />
                   <span>Mẹo: Bạn có thể tạo nhiều bản CV chuyên biệt cho từng vị trí (Frontend, Backend, AI...) để đạt điểm ATS và AI Matching cao nhất.</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={handleBatchSeed100}
-                    className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-lg text-xs font-bold transition flex items-center gap-1 shadow-sm"
+                    className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-lg text-xs font-bold transition flex items-center gap-1 shadow-sm cursor-pointer"
                     title="Nạp và chuyển 100 CV mẫu đa ngành vào danh sách của bạn"
                   >
                     <Zap size={13} className="fill-slate-950" /> Nạp 100 CV Mẫu
                   </button>
                   <button
                     onClick={() => setActiveTab('create_new')}
-                    className="px-3.5 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-700 transition flex items-center gap-1.5 shadow-sm"
+                    className="px-3.5 py-1.5 bg-blue-600 dark:bg-indigo-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-700 dark:hover:bg-indigo-700 transition flex items-center gap-1.5 shadow-sm cursor-pointer"
                   >
                     <Plus size={14} /> Thêm CV Mới
                   </button>
@@ -336,12 +336,12 @@ export default function CVManagerModal({
               </div>
 
               {cvList.length === 0 ? (
-                <div className="text-center py-12 border-2 border-dashed border-slate-200 rounded-2xl">
-                  <FileText size={48} className="mx-auto text-slate-300 mb-3" />
-                  <p className="text-slate-600 font-medium">Chưa có bản CV nào được lưu.</p>
+                <div className="text-center py-12 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl">
+                  <FileText size={48} className="mx-auto text-slate-300 dark:text-slate-600 mb-3" />
+                  <p className="text-slate-600 dark:text-slate-400 font-medium">Chưa có bản CV nào được lưu.</p>
                   <button
                     onClick={() => setActiveTab('create_new')}
-                    className="mt-3 px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700"
+                    className="mt-3 px-4 py-2 bg-blue-600 dark:bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 dark:hover:bg-indigo-700"
                   >
                     Tạo CV Đầu Tiên
                   </button>
@@ -358,8 +358,8 @@ export default function CVManagerModal({
                         key={cv.id}
                         className={`p-4 rounded-xl border-2 transition-all flex flex-col justify-between ${
                           isActive
-                            ? 'border-blue-600 bg-blue-50/30 shadow-md ring-2 ring-blue-100'
-                            : 'border-slate-200 bg-white hover:border-slate-300 shadow-sm'
+                            ? 'border-blue-600 dark:border-indigo-500 bg-blue-50/30 dark:bg-indigo-950/20 shadow-md ring-2 ring-blue-100 dark:ring-indigo-900/40'
+                            : 'border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#111728] hover:border-slate-300 dark:hover:border-slate-700 shadow-sm'
                         }`}
                       >
                         <div>
@@ -367,16 +367,16 @@ export default function CVManagerModal({
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-1.5 flex-wrap">
                               {isActive && (
-                                <span className="px-2 py-0.5 bg-blue-600 text-white text-[11px] font-bold rounded-full flex items-center gap-1 shadow-sm">
+                                <span className="px-2 py-0.5 bg-blue-600 dark:bg-indigo-600 text-white text-[11px] font-bold rounded-full flex items-center gap-1 shadow-sm">
                                   <Check size={11} /> Đang Soạn Thảo
                                 </span>
                               )}
                               {cv.isDefault && (
-                                <span className="px-2 py-0.5 bg-amber-500 text-white text-[11px] font-bold rounded-full flex items-center gap-1">
+                                <span className="px-2 py-0.5 bg-amber-500 dark:bg-amber-600 text-white text-[11px] font-bold rounded-full flex items-center gap-1">
                                   <Star size={11} fill="white" /> CV Chính
                                 </span>
                               )}
-                              <span className="px-2 py-0.5 bg-slate-100 text-slate-600 text-[11px] font-medium rounded-full">
+                              <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[11px] font-medium rounded-full">
                                 {cv.data?.selectedTemplate?.toUpperCase() || 'CLASSIC'}
                               </span>
                             </div>
@@ -386,7 +386,7 @@ export default function CVManagerModal({
                                 <button
                                   onClick={() => handleSetDefault(cv.id)}
                                   title="Đặt làm CV chính"
-                                  className="p-1 text-slate-400 hover:text-amber-500 hover:bg-slate-100 rounded"
+                                  className="p-1 text-slate-400 hover:text-amber-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded cursor-pointer"
                                 >
                                   <Star size={15} />
                                 </button>
@@ -394,14 +394,14 @@ export default function CVManagerModal({
                               <button
                                 onClick={() => handleDuplicate(cv)}
                                 title="Nhân bản từ CV này"
-                                className="p-1 text-slate-400 hover:text-blue-600 hover:bg-slate-100 rounded"
+                                className="p-1 text-slate-400 hover:text-blue-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded cursor-pointer"
                               >
                                 <Copy size={15} />
                               </button>
                               <button
                                 onClick={() => handleStartRename(cv)}
                                 title="Đổi tên CV"
-                                className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded"
+                                className="p-1 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded cursor-pointer"
                               >
                                 <Edit2 size={15} />
                               </button>
@@ -409,7 +409,7 @@ export default function CVManagerModal({
                                 <button
                                   onClick={() => handleDelete(cv.id, cv.title)}
                                   title="Xóa CV"
-                                  className="p-1 text-slate-400 hover:text-rose-600 hover:bg-slate-100 rounded"
+                                  className="p-1 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded cursor-pointer"
                                 >
                                   <Trash2 size={15} />
                                 </button>
@@ -419,31 +419,31 @@ export default function CVManagerModal({
 
                           {/* Rename Inline or Title */}
                           {editingCvId === cv.id ? (
-                            <div className="my-2 space-y-2 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+                            <div className="my-2 space-y-2 bg-slate-50 dark:bg-[#161f36] p-2.5 rounded-lg border border-slate-200 dark:border-slate-700">
                               <input
                                 type="text"
                                 value={editTitle}
                                 onChange={(e) => setEditTitle(e.target.value)}
                                 placeholder="Tên bản CV"
-                                className="w-full text-sm font-bold px-2.5 py-1.5 border border-slate-300 rounded bg-white"
+                                className="w-full text-sm font-bold px-2.5 py-1.5 border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-[#111728] text-slate-900 dark:text-white"
                               />
                               <input
                                 type="text"
                                 value={editRole}
                                 onChange={(e) => setEditRole(e.target.value)}
                                 placeholder="Vị trí mục tiêu (VD: Frontend Dev)"
-                                className="w-full text-xs px-2.5 py-1 border border-slate-300 rounded bg-white"
+                                className="w-full text-xs px-2.5 py-1 border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-[#111728] text-slate-900 dark:text-white"
                               />
                               <div className="flex gap-2 justify-end">
                                 <button
                                   onClick={() => setEditingCvId(null)}
-                                  className="px-2.5 py-1 text-xs text-slate-600 hover:bg-slate-200 rounded"
+                                  className="px-2.5 py-1 text-xs text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 rounded cursor-pointer"
                                 >
                                   Hủy
                                 </button>
                                 <button
                                   onClick={() => handleSaveRename(cv.id)}
-                                  className="px-3 py-1 text-xs font-semibold bg-blue-600 text-white rounded hover:bg-blue-700"
+                                  className="px-3 py-1 text-xs font-semibold bg-blue-600 dark:bg-indigo-600 text-white rounded hover:bg-blue-700 cursor-pointer"
                                 >
                                   Lưu
                                 </button>
@@ -451,29 +451,29 @@ export default function CVManagerModal({
                             </div>
                           ) : (
                             <div>
-                              <h3 className="font-bold text-slate-900 text-base line-clamp-1">{cv.title}</h3>
-                              <p className="text-xs text-blue-700 font-semibold mb-2">{cv.targetRole || 'Chưa định vị trí'}</p>
+                              <h3 className="font-bold text-slate-900 dark:text-white text-base line-clamp-1">{cv.title}</h3>
+                              <p className="text-xs text-blue-700 dark:text-indigo-400 font-semibold mb-2">{cv.targetRole || 'Chưa định vị trí'}</p>
                             </div>
                           )}
 
                           {/* Stats */}
-                          <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-500 bg-slate-50 p-2 rounded-lg my-2">
-                            <div>📁 Đồ án: <strong className="text-slate-800">{projectCount}</strong></div>
-                            <div>⚡ Kỹ năng: <strong className="text-slate-800">{skillCount}</strong></div>
-                            <div className="col-span-2 flex items-center gap-1 text-[10px] text-slate-400">
+                          <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-[#161f36] p-2 rounded-lg my-2 border border-slate-100 dark:border-slate-800">
+                            <div>📁 Đồ án: <strong className="text-slate-800 dark:text-slate-100">{projectCount}</strong></div>
+                            <div>⚡ Kỹ năng: <strong className="text-slate-800 dark:text-slate-100">{skillCount}</strong></div>
+                            <div className="col-span-2 flex items-center gap-1 text-[10px] text-slate-400 dark:text-slate-500">
                               <Clock size={11} /> Cập nhật: {new Date(cv.updatedAt).toLocaleString('vi-VN')}
                             </div>
                           </div>
                         </div>
 
                         {/* Action Switch */}
-                        <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between">
+                        <div className="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
                           <button
                             onClick={() => handleSwitchCV(cv)}
-                            className={`w-full py-2 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 ${
+                            className={`w-full py-2 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
                               isActive
-                                ? 'bg-slate-100 text-slate-700 cursor-default'
-                                : 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm'
+                                ? 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-default'
+                                : 'bg-blue-600 dark:bg-indigo-600 text-white hover:bg-blue-700 dark:hover:bg-indigo-700 shadow-sm'
                             }`}
                           >
                             {isActive ? '✓ Đang Mở Bản Này' : 'Mở Chỉnh Sửa Bản Này'}
@@ -490,19 +490,19 @@ export default function CVManagerModal({
           {activeTab === 'create_new' && (
             <form onSubmit={handleCreateSubmit} className="space-y-5">
               {/* Highlight AI JD Creator */}
-              <div className="p-4 rounded-xl bg-gradient-to-r from-purple-50 via-indigo-50 to-blue-50 border border-purple-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="p-4 rounded-xl bg-gradient-to-r from-blue-50 via-sky-50 to-blue-50/60 dark:from-[#131b2e] dark:via-[#16223b] dark:to-[#131b2e] border border-blue-200 dark:border-indigo-900/60 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex items-start sm:items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-indigo-600 text-white flex items-center justify-center shrink-0 shadow-md">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#1e3a8a] to-[#2563eb] text-white flex items-center justify-center shrink-0 shadow-md shadow-blue-500/20">
                     <Sparkles size={20} className="text-yellow-300 animate-pulse" />
                   </div>
                   <div>
-                    <h4 className="text-xs sm:text-sm font-bold text-purple-950 flex items-center gap-2">
+                    <h4 className="text-xs sm:text-sm font-bold text-blue-950 dark:text-indigo-200 flex items-center gap-2">
                       AI Tự Động Tạo CV Khớp JD Tuyển Dụng
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-200 text-purple-800 uppercase tracking-wide">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-100 dark:bg-indigo-900/60 text-blue-800 dark:text-indigo-300 uppercase tracking-wide border border-blue-200 dark:border-indigo-800/80">
                         Khuyên Dùng
                       </span>
                     </h4>
-                    <p className="text-[11px] text-purple-700 mt-0.5">
+                    <p className="text-[11px] text-blue-700 dark:text-slate-300 mt-0.5">
                       Dán tin tuyển dụng (JD), AI Gemini sẽ đọc kỹ năng, đồ án từ Hồ Sơ Cá Nhân và tự động sinh bản CV mục tiêu hoàn chỉnh.
                     </p>
                   </div>
@@ -510,7 +510,7 @@ export default function CVManagerModal({
                 <button
                   type="button"
                   onClick={() => setIsAiJdModalOpen(true)}
-                  className="px-4 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-bold rounded-xl shrink-0 shadow-md transition active:scale-95 flex items-center justify-center gap-2"
+                  className="px-4 py-2.5 bg-gradient-to-r from-[#1e3a8a] to-[#2563eb] hover:from-[#172554] hover:to-[#1d4ed8] text-white text-xs font-bold rounded-xl shrink-0 shadow-md transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Sparkles size={14} className="text-yellow-300" />
                   Tạo Bằng AI Ngay
@@ -518,8 +518,8 @@ export default function CVManagerModal({
               </div>
 
               <div>
-                <h3 className="text-sm font-bold text-slate-900 mb-1">1. Hoặc Chọn Cách Thức Khởi Tạo Thủ Công</h3>
-                <p className="text-xs text-slate-500 mb-3">Bạn có thể kế thừa toàn bộ nội dung từ các CV cũ để tùy chỉnh nhanh cho từng JD.</p>
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-1">1. Hoặc Chọn Cách Thức Khởi Tạo Thủ Công</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">Bạn có thể kế thừa toàn bộ nội dung từ các CV cũ để tùy chỉnh nhanh cho từng JD.</p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {/* Option 1: From Profile */}
@@ -527,8 +527,8 @@ export default function CVManagerModal({
                     onClick={() => setCreationMode('from_profile')}
                     className={`p-3.5 rounded-xl border-2 cursor-pointer transition flex items-start gap-3 ${
                       creationMode === 'from_profile'
-                        ? 'border-blue-600 bg-blue-50/50'
-                        : 'border-slate-200 hover:border-slate-300'
+                        ? 'border-blue-600 dark:border-indigo-500 bg-blue-50/50 dark:bg-indigo-950/30'
+                        : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-[#111728]'
                     }`}
                   >
                     <input
@@ -539,11 +539,11 @@ export default function CVManagerModal({
                       className="mt-1 text-blue-600"
                     />
                     <div>
-                      <div className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-                        <ShieldCheck size={15} className="text-emerald-600" />
+                      <div className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                        <ShieldCheck size={15} className="text-emerald-600 dark:text-emerald-400" />
                         Tự Động Từ Hồ Sơ Sinh Viên
                       </div>
-                      <p className="text-[11px] text-slate-500 mt-1">Nạp toàn bộ đồ án, bằng cấp, kỹ năng từ trang Profile của bạn.</p>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Nạp toàn bộ đồ án, bằng cấp, kỹ năng từ trang Profile của bạn.</p>
                     </div>
                   </label>
 
@@ -552,8 +552,8 @@ export default function CVManagerModal({
                     onClick={() => setCreationMode('from_old_cv')}
                     className={`p-3.5 rounded-xl border-2 cursor-pointer transition flex items-start gap-3 ${
                       creationMode === 'from_old_cv'
-                        ? 'border-blue-600 bg-blue-50/50'
-                        : 'border-slate-200 hover:border-slate-300'
+                        ? 'border-blue-600 dark:border-indigo-500 bg-blue-50/50 dark:bg-indigo-950/30'
+                        : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-[#111728]'
                     }`}
                   >
                     <input
@@ -564,11 +564,11 @@ export default function CVManagerModal({
                       className="mt-1 text-blue-600"
                     />
                     <div>
-                      <div className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-                        <Copy size={15} className="text-blue-600" />
+                      <div className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                        <Copy size={15} className="text-blue-600 dark:text-indigo-400" />
                         Sao Chép / Nhân Bản Từ CV Cũ
                       </div>
-                      <p className="text-[11px] text-slate-500 mt-1">Giữ nguyên các mục đã viết, chỉ sửa đổi tiêu đề và kỹ năng theo JD mới.</p>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Giữ nguyên các mục đã viết, chỉ sửa đổi tiêu đề và kỹ năng theo JD mới.</p>
                     </div>
                   </label>
 
@@ -577,8 +577,8 @@ export default function CVManagerModal({
                     onClick={() => setCreationMode('from_role')}
                     className={`p-3.5 rounded-xl border-2 cursor-pointer transition flex items-start gap-3 ${
                       creationMode === 'from_role'
-                        ? 'border-blue-600 bg-blue-50/50'
-                        : 'border-slate-200 hover:border-slate-300'
+                        ? 'border-blue-600 dark:border-indigo-500 bg-blue-50/50 dark:bg-indigo-950/30'
+                        : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-[#111728]'
                     }`}
                   >
                     <input
@@ -589,11 +589,11 @@ export default function CVManagerModal({
                       className="mt-1 text-blue-600"
                     />
                     <div>
-                      <div className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-                        <Sparkles size={15} className="text-purple-600" />
+                      <div className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                        <Sparkles size={15} className="text-purple-600 dark:text-purple-400" />
                         Theo Mẫu Ngành Nghề (Frontend/Backend/AI)
                       </div>
-                      <p className="text-[11px] text-slate-500 mt-1">Cấu trúc sẵn từ khóa, template và dự án gợi ý chuẩn ngành.</p>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Cấu trúc sẵn từ khóa, template và dự án gợi ý chuẩn ngành.</p>
                     </div>
                   </label>
 
@@ -602,8 +602,8 @@ export default function CVManagerModal({
                     onClick={() => setCreationMode('blank')}
                     className={`p-3.5 rounded-xl border-2 cursor-pointer transition flex items-start gap-3 ${
                       creationMode === 'blank'
-                        ? 'border-blue-600 bg-blue-50/50'
-                        : 'border-slate-200 hover:border-slate-300'
+                        ? 'border-blue-600 dark:border-indigo-500 bg-blue-50/50 dark:bg-indigo-950/30'
+                        : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-[#111728]'
                     }`}
                   >
                     <input
@@ -614,11 +614,11 @@ export default function CVManagerModal({
                       className="mt-1 text-blue-600"
                     />
                     <div>
-                      <div className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-                        <FolderPlus size={15} className="text-slate-600" />
+                      <div className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                        <FolderPlus size={15} className="text-slate-600 dark:text-slate-400" />
                         Tạo CV Trắng Hoàn Toàn
                       </div>
-                      <p className="text-[11px] text-slate-500 mt-1">Bắt đầu từ một khung trống để tự do thiết kế các phần mục.</p>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Bắt đầu từ một khung trống để tự do thiết kế các phần mục.</p>
                     </div>
                   </label>
                 </div>
@@ -626,10 +626,10 @@ export default function CVManagerModal({
 
               {/* Sub-Selection for Old CV Mode */}
               {creationMode === 'from_old_cv' && (
-                <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                  <label className="block text-xs font-bold text-slate-800 mb-2">Chọn Bản CV Cũ Để Sao Chép Toàn Bộ Dữ Liệu:</label>
+                <div className="bg-slate-50 dark:bg-[#161f36] p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                  <label className="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-2">Chọn Bản CV Cũ Để Sao Chép Toàn Bộ Dữ Liệu:</label>
                   {cvList.length === 0 ? (
-                    <p className="text-xs text-rose-600 font-medium">Bạn chưa có bản CV cũ nào. Vui lòng chọn tạo từ Hồ Sơ Sinh Viên.</p>
+                    <p className="text-xs text-rose-600 dark:text-rose-400 font-medium">Bạn chưa có bản CV cũ nào. Vui lòng chọn tạo từ Hồ Sơ Sinh Viên.</p>
                   ) : (
                     <select
                       value={selectedSourceCvId}
@@ -641,7 +641,7 @@ export default function CVManagerModal({
                           setNewRole(source.targetRole);
                         }
                       }}
-                      className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white font-medium focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg text-sm bg-white dark:bg-[#111728] text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-blue-500"
                     >
                       {cvList.map(c => (
                         <option key={c.id} value={c.id}>
@@ -655,8 +655,8 @@ export default function CVManagerModal({
 
               {/* Sub-Selection for Role Template Mode */}
               {creationMode === 'from_role' && (
-                <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                  <label className="block text-xs font-bold text-slate-800 mb-2">Chọn Vị Trí Mục Tiêu Để Tối Ưu:</label>
+                <div className="bg-slate-50 dark:bg-[#161f36] p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                  <label className="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-2">Chọn Vị Trí Mục Tiêu Để Tối Ưu:</label>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     {CAREER_TEMPLATES.map((tpl, idx) => (
                       <div
@@ -668,15 +668,15 @@ export default function CVManagerModal({
                         }}
                         className={`p-2.5 rounded-lg border cursor-pointer transition ${
                           selectedCareerTemplate === idx
-                            ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
-                            : 'bg-white text-slate-800 border-slate-200 hover:border-slate-300'
+                            ? 'bg-blue-600 dark:bg-indigo-600 text-white border-blue-600 dark:border-indigo-500 shadow-sm'
+                            : 'bg-white dark:bg-[#111728] text-slate-800 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
                         }`}
                       >
                         <div className="flex items-center gap-2 font-bold text-xs">
                           <span>{tpl.icon}</span>
                           <span>{tpl.role}</span>
                         </div>
-                        <p className={`text-[10px] mt-1 line-clamp-1 ${selectedCareerTemplate === idx ? 'text-blue-100' : 'text-slate-500'}`}>
+                        <p className={`text-[10px] mt-1 line-clamp-1 ${selectedCareerTemplate === idx ? 'text-blue-100' : 'text-slate-500 dark:text-slate-400'}`}>
                           {tpl.desc}
                         </p>
                       </div>
@@ -697,7 +697,7 @@ export default function CVManagerModal({
                     value={newTitle}
                     onChange={(e) => setNewTitle(e.target.value)}
                     placeholder="Ví dụ: CV Frontend Developer - Ứng Tuyển Công Ty ABC"
-                    className="w-full px-3.5 py-2.5 border border-slate-300 dark:border-slate-700 rounded-xl text-xs sm:text-sm text-slate-900 dark:text-white bg-white dark:bg-slate-900 font-medium placeholder:text-slate-400 placeholder:italic focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
+                    className="w-full px-3.5 py-2.5 border border-slate-300 dark:border-slate-700 rounded-xl text-xs sm:text-sm text-slate-900 dark:text-white bg-white dark:bg-[#161f36] font-medium placeholder:text-slate-400 dark:placeholder:text-slate-500 placeholder:italic focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
                   />
                 </div>
                 <div>
@@ -710,23 +710,23 @@ export default function CVManagerModal({
                     value={newRole}
                     onChange={(e) => setNewRole(e.target.value)}
                     placeholder="Ví dụ: Frontend ReactJS Developer"
-                    className="w-full px-3.5 py-2.5 border border-slate-300 dark:border-slate-700 rounded-xl text-xs sm:text-sm text-slate-900 dark:text-white bg-white dark:bg-slate-900 font-medium placeholder:text-slate-400 placeholder:italic focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
+                    className="w-full px-3.5 py-2.5 border border-slate-300 dark:border-slate-700 rounded-xl text-xs sm:text-sm text-slate-900 dark:text-white bg-white dark:bg-[#161f36] font-medium placeholder:text-slate-400 dark:placeholder:text-slate-500 placeholder:italic focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
                   />
                 </div>
               </div>
 
               {/* Submit Buttons */}
-              <div className="pt-4 border-t border-slate-200 dark:border-slate-750 flex items-center justify-end gap-3">
+              <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setActiveTab('my_cvs')}
-                  className="px-4 py-2 text-slate-600 dark:text-slate-300 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors"
+                  className="px-4 py-2 text-slate-600 dark:text-slate-400 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors cursor-pointer"
                 >
                   Quay Lại
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-md shadow-blue-600/20 flex items-center gap-2 transition-all active:scale-[0.98]"
+                  className="px-5 py-2.5 bg-[#1e3a8a] hover:bg-[#1e40af] dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-md shadow-blue-900/20 flex items-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
                 >
                   <Plus size={16} /> Khởi Tạo & Mở Soạn Thảo
                 </button>
