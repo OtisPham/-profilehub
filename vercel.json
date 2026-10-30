@@ -1,0 +1,11 @@
+{
+  "buildCommand": "cd profilehub && npm install && npm run build",
+  "outputDirectory": "profilehub/dist",
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

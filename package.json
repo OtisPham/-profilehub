@@ -1,0 +1,8 @@
+{
+  "name": "profilehub-monorepo",
+  "private": true,
+  "scripts": {
+    "build": "cd profilehub && npm run build",
+    "dev": "cd profilehub && npm run dev"
+  }
+}
