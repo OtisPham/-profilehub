@@ -316,11 +316,41 @@ export const cvService = {
    * ────────────────────────────────────────────────────────────────────────────*/
 
   /**
-   * Get all managed CVs for a user
+   * Get all managed CVs for a user (Strictly isolates Guest vs Authenticated User)
    */
   getAllCVs(userId?: string): ManagedCVItem[] {
     try {
-      const storageKey = `${MULTI_CV_STORAGE_PREFIX}${userId || 'guest'}`;
+      if (!userId) {
+        const storageKey = `${MULTI_CV_STORAGE_PREFIX}guest`;
+        const raw = localStorage.getItem(storageKey);
+        if (raw !== null) {
+          const items = JSON.parse(raw) as ManagedCVItem[];
+          if (Array.isArray(items)) {
+            return items;
+          }
+        }
+
+        const guestDraft = localStorage.getItem('profilehub_guest_cv_draft') || localStorage.getItem('profilehub_saved_cv_guest');
+        if (guestDraft) {
+          const guestData = JSON.parse(guestDraft) as SavedCVData;
+          const initialCV: ManagedCVItem = {
+            id: `cv_guest_${Date.now()}`,
+            title: 'CV Nháp Khách Vãng Lai',
+            targetRole: guestData.personalInfo?.jobTitle || 'Kỹ Sư Phần Mềm',
+            createdAt: guestData.savedAt || new Date().toISOString(),
+            updatedAt: guestData.savedAt || new Date().toISOString(),
+            isDefault: true,
+            data: guestData,
+          };
+          this.saveAllCVs([initialCV]);
+          this.setActiveCVId(initialCV.id);
+          return [initialCV];
+        }
+        return [];
+      }
+
+      // Authenticated User: strictly isolated to userId, no cross-session leak
+      const storageKey = `${MULTI_CV_STORAGE_PREFIX}${userId}`;
       const raw = localStorage.getItem(storageKey);
       if (raw !== null) {
         const items = JSON.parse(raw) as ManagedCVItem[];
@@ -329,13 +359,13 @@ export const cvService = {
         }
       }
 
-      // Backward compatibility: migrate single saved CV if available
-      const legacyKey = `profilehub_saved_cv_${userId || 'guest'}`;
-      const legacy = localStorage.getItem(legacyKey) || localStorage.getItem('profilehub_saved_cv_latest');
+      // Backward compatibility: ONLY check legacy key of this specific user
+      const userLegacyKey = `profilehub_saved_cv_${userId}`;
+      const legacy = localStorage.getItem(userLegacyKey);
       if (legacy) {
         const legacyData = JSON.parse(legacy) as SavedCVData;
         const initialCV: ManagedCVItem = {
-          id: `cv_default_${Date.now()}`,
+          id: `cv_${userId}_${Date.now()}`,
           title: 'CV Chính (Mặc Định)',
           targetRole: legacyData.personalInfo?.jobTitle || 'Kỹ Sư Phần Mềm',
           createdAt: legacyData.savedAt || new Date().toISOString(),
@@ -517,11 +547,14 @@ export const cvService = {
       }, (err) => console.warn('[cvService] Exception đồng bộ CV:', err));
     }
 
-    // Also update legacy key for compatibility
+    // Update local storage keys with strict separation
     try {
-      const legacyKey = `profilehub_saved_cv_${userId || 'guest'}`;
-      localStorage.setItem(legacyKey, JSON.stringify(updatedItem.data));
-      localStorage.setItem('profilehub_saved_cv_latest', JSON.stringify(updatedItem.data));
+      if (userId) {
+        const userLegacyKey = `profilehub_saved_cv_${userId}`;
+        localStorage.setItem(userLegacyKey, JSON.stringify(updatedItem.data));
+      } else {
+        localStorage.setItem('profilehub_guest_cv_draft', JSON.stringify(updatedItem.data));
+      }
     } catch {
       // Ignore
     }
@@ -580,11 +613,14 @@ export const cvService = {
       }, (err) => console.warn('[cvService] Exception tạo CV:', err));
     }
 
-    // Also update legacy storage keys for maximum compatibility
+    // Update local storage keys with strict separation
     try {
-      const legacyKey = `profilehub_saved_cv_${options.userId || 'guest'}`;
-      localStorage.setItem(legacyKey, JSON.stringify(newCV.data));
-      localStorage.setItem('profilehub_saved_cv_latest', JSON.stringify(newCV.data));
+      if (options.userId) {
+        const userLegacyKey = `profilehub_saved_cv_${options.userId}`;
+        localStorage.setItem(userLegacyKey, JSON.stringify(newCV.data));
+      } else {
+        localStorage.setItem('profilehub_guest_cv_draft', JSON.stringify(newCV.data));
+      }
     } catch {
       // Ignore
     }
@@ -711,11 +747,57 @@ export const cvService = {
         this.setActiveCVId(filtered[0].id, userId);
       } else {
         localStorage.removeItem(`${ACTIVE_CV_ID_PREFIX}${userId || 'guest'}`);
-        localStorage.removeItem(`profilehub_saved_cv_${userId || 'guest'}`);
-        localStorage.removeItem('profilehub_saved_cv_latest');
+        if (userId) {
+          localStorage.removeItem(`profilehub_saved_cv_${userId}`);
+        } else {
+          localStorage.removeItem('profilehub_guest_cv_draft');
+          localStorage.removeItem('profilehub_saved_cv_guest');
+        }
       }
     }
     return true;
+  },
+
+  /**
+   * BUG-03: Dọn sạch hoàn toàn dữ liệu nháp của phiên khách vãng lai (Purge Guest Data)
+   */
+  purgeGuestData(): void {
+    try {
+      localStorage.removeItem('profilehub_guest_cv_draft');
+      localStorage.removeItem('profilehub_saved_cv_guest');
+      localStorage.removeItem('profilehub_saved_cv_latest');
+      localStorage.removeItem(`${MULTI_CV_STORAGE_PREFIX}guest`);
+      localStorage.removeItem(`${ACTIVE_CV_ID_PREFIX}guest`);
+    } catch (e) {
+      console.warn('[cvService] Failed to purge guest data:', e);
+    }
+  },
+
+  /**
+   * BUG-05: Tự động di chuyển bản CV nháp của khách vào tài khoản người dùng sau khi đăng nhập
+   */
+  migrateGuestDraftToUser(userId: string): ManagedCVItem | null {
+    if (!userId) return null;
+    try {
+      const guestDraftRaw = localStorage.getItem('profilehub_guest_cv_draft') || localStorage.getItem('profilehub_saved_cv_guest');
+      if (!guestDraftRaw) return null;
+      const guestData = JSON.parse(guestDraftRaw) as SavedCVData;
+      if (!guestData || !guestData.personalInfo) return null;
+
+      const newCV = this.createNewCV({
+        title: 'CV Nháp (Từ Khách)',
+        targetRole: guestData.personalInfo?.jobTitle || 'Kỹ Sư Phần Mềm',
+        data: guestData,
+        userId,
+        isDefault: true,
+      });
+
+      this.purgeGuestData();
+      return newCV;
+    } catch (e) {
+      console.warn('[cvService] Failed to migrate guest draft:', e);
+      return null;
+    }
   },
 
   /**
@@ -1048,9 +1130,13 @@ export const cvService = {
         this.setActiveCVId(newCV.id, userId);
       }
 
-      const storageKey = `profilehub_saved_cv_${userId || 'guest'}`;
-      localStorage.setItem(storageKey, JSON.stringify(payload));
-      localStorage.setItem('profilehub_saved_cv_latest', JSON.stringify(payload));
+      if (userId) {
+        const userStorageKey = `profilehub_saved_cv_${userId}`;
+        localStorage.setItem(userStorageKey, JSON.stringify(payload));
+      } else {
+        localStorage.setItem('profilehub_guest_cv_draft', JSON.stringify(payload));
+        localStorage.setItem('profilehub_saved_cv_guest', JSON.stringify(payload));
+      }
 
       if (userId) {
         try {
@@ -1070,7 +1156,7 @@ export const cvService = {
   },
 
   /**
-   * Load saved CV data from storage (active or latest)
+   * Load saved CV data from storage (active or latest) - Isolated between Guest & User
    */
   loadSavedCV(userId?: string): SavedCVData | null {
     try {
@@ -1080,10 +1166,17 @@ export const cvService = {
         if (item?.data) return item.data;
       }
 
-      const storageKey = `profilehub_saved_cv_${userId || 'guest'}`;
-      const saved = localStorage.getItem(storageKey) || localStorage.getItem('profilehub_saved_cv_latest');
-      if (saved) {
-        return JSON.parse(saved) as SavedCVData;
+      if (userId) {
+        const storageKey = `profilehub_saved_cv_${userId}`;
+        const saved = localStorage.getItem(storageKey);
+        if (saved) {
+          return JSON.parse(saved) as SavedCVData;
+        }
+      } else {
+        const guestDraft = localStorage.getItem('profilehub_guest_cv_draft') || localStorage.getItem('profilehub_saved_cv_guest');
+        if (guestDraft) {
+          return JSON.parse(guestDraft) as SavedCVData;
+        }
       }
     } catch (error) {
       console.warn('[cvService] Failed to parse saved CV data:', error);

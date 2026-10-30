@@ -424,24 +424,7 @@ export default function Sidebar() {
               </>
             )}
 
-            {!collapsed ? (
-              <div className="ph-section-title" style={{ padding: '14px 16px 4px 16px', fontSize: '10px', color: '#94a3b8', fontWeight: '700', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-                Cơ Hội Việc Làm
-              </div>
-            ) : (
-              <div style={{ margin: '6px 12px', borderTop: '1px solid #f1f5f9' }} />
-            )}
-
-            <Link
-              to="/student/jobs"
-              onClick={() => setMobileOpen(false)}
-              className="ph-nav-link"
-              title={collapsed ? 'Việc Làm & Ứng Tuyển' : undefined}
-              style={getMenuStyles('/student/jobs', collapsed)}
-            >
-              <Briefcase size={17} color={location.pathname.includes('/student/jobs') ? theme.activeIcon : '#3b82f6'} />
-              {!collapsed && <span>Việc Làm & Tuyển Dụng</span>}
-            </Link>
+            {/* Kho Đồ Án & Hồ Sơ đã được ưu tiên ở trên; ẩn menu việc làm theo đặc tả Fix.md BUG-01 */}
           </>
         )}
 

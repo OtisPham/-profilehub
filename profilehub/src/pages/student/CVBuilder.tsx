@@ -105,12 +105,12 @@ export const FONT_OPTIONS = [
 ];
 
 export const TEMPLATES_CONFIG = [
-  { id: 'classic' as CVTemplateType, name: 'ATS Clean Pro (A4)', desc: 'Chuẩn ATS 1 & 2 Cột Chuyên Nghiệp', defaultFontIndex: 1 },
-  { id: 'tech' as CVTemplateType, name: 'Tech Specialist', desc: '2 Cột IT & Dev Stack', defaultFontIndex: 2 },
-  { id: 'pro_split' as CVTemplateType, name: 'TopCV Pro Split', desc: '2 Cột Sidebar Hiện Đại', defaultFontIndex: 0 },
-  { id: 'compact_ats' as CVTemplateType, name: 'Compact ATS', desc: '2 Cột Tối Ưu 1 Trang', defaultFontIndex: 0 },
-  { id: 'minimal' as CVTemplateType, name: 'Minimalist Harvard', desc: '1 Cột Tối Giản Ivy ATS', defaultFontIndex: 0 },
-  { id: 'executive' as CVTemplateType, name: 'Executive Academic', desc: '1 Cột Học Thuật / Serif', defaultFontIndex: 3 },
+  { id: 'classic' as CVTemplateType, name: 'Modern Top-Banner', desc: 'Khối banner màu đậm, thân 2 cột TopCV Pro', defaultFontIndex: 1 },
+  { id: 'minimal' as CVTemplateType, name: 'Minimalist Harvard', desc: '1 cột tối giản học thuật, kẻ hairline Ivy League', defaultFontIndex: 0 },
+  { id: 'tech' as CVTemplateType, name: 'Tech Developer Terminal', desc: 'IT Dev Stack thẻ tag, link GitHub & Bento Card', defaultFontIndex: 2 },
+  { id: 'executive' as CVTemplateType, name: 'Timeline Milestone', desc: 'Trục thời gian kẻ dọc, milestone dots nối sự nghiệp', defaultFontIndex: 3 },
+  { id: 'pro_split' as CVTemplateType, name: 'Left Solid Sidebar', desc: 'Sidebar trái liền khối màu Châu Âu, cột phải trắng', defaultFontIndex: 0 },
+  { id: 'compact_ats' as CVTemplateType, name: 'Compact 1-Page ATS', desc: 'Siêu gọn gàng 1 trang A4, kỹ năng 50-50', defaultFontIndex: 0 },
 ];
 
 export default function CVBuilder() {
@@ -180,6 +180,7 @@ export default function CVBuilder() {
   const [showSaveSuccessToast, setShowSaveSuccessToast] = useState(false);
   const [saveToastSubtitle, setSaveToastSubtitle] = useState<string>('Dữ liệu chỉnh sửa đã được lưu an toàn.');
   const [showGuestSyncModal, setShowGuestSyncModal] = useState(false);
+  const [showQuotaExhaustedModal, setShowQuotaExhaustedModal] = useState(false);
 
   // PERSONAL INFORMATION (HEADER SECTION)
   const [personalInfo, setPersonalInfo] = useState<PersonalInfoData>({
@@ -463,6 +464,11 @@ export default function CVBuilder() {
     const sourceData = await cvService.fetchStudentCVSourceData(user?.id);
     setProfileSourceData(sourceData);
     setRawProjects(sourceData.projects);
+
+    // BUG-05: Tự động chuyển đổi bản CV nháp của khách vào tài khoản khi người dùng đã đăng nhập
+    if (user?.id) {
+      cvService.migrateGuestDraftToUser(user.id);
+    }
 
     // 2. Check multi-CVs list
     const list = cvService.getAllCVs(user?.id);
@@ -824,13 +830,16 @@ export default function CVBuilder() {
       const timeStr = new Date(result.savedAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
       setLastSavedTime(`Đã lưu lúc ${timeStr}`);
 
-      if (user && reverseSyncResult.summary.length > 0) {
-        setSaveToastSubtitle(`Đã đồng bộ vào Hồ sơ: ${reverseSyncResult.summary.join(' • ')}`);
-      } else if (!user) {
-        setSaveToastSubtitle('Đã lưu CV trên máy. Đăng nhập để đồng bộ trực tiếp vào Hồ sơ!');
-        setShowGuestSyncModal(true);
+      if (user) {
+        setShowGuestSyncModal(false);
+        if (reverseSyncResult.summary.length > 0) {
+          setSaveToastSubtitle(`Đã đồng bộ vào Hồ sơ: ${reverseSyncResult.summary.join(' • ')}`);
+        } else {
+          setSaveToastSubtitle('Dữ liệu chỉnh sửa đã được lưu an toàn vào tài khoản.');
+        }
       } else {
-        setSaveToastSubtitle('Dữ liệu chỉnh sửa đã được lưu an toàn.');
+        setSaveToastSubtitle('Đã lưu CV nháp trên máy. Hãy đăng nhập để lưu vĩnh viễn vào tài khoản!');
+        setShowGuestSyncModal(true);
       }
       setShowSaveSuccessToast(true);
       setTimeout(() => {
@@ -1073,11 +1082,18 @@ export default function CVBuilder() {
     }, 5000);
   };
 
-  // Spec v0.4 - Section 3 BR-06: Deduct AI credit
+  // Spec v0.4 - Section 3 BR-06: Deduct AI credit (Chỉ bật modal khi quota chạm đáy)
   const handleDeductAiCredit = useCallback(() => {
+    if (remainingAiCredits <= 0) {
+      setShowQuotaExhaustedModal(true);
+      return;
+    }
     const rem = cvService.deductAiCredit(user?.id);
     setRemainingAiCredits(rem);
-  }, [user]);
+    if (rem <= 0) {
+      setShowQuotaExhaustedModal(true);
+    }
+  }, [user, remainingAiCredits]);
 
   // Spec v0.4 - Section 3 BR-02: Opt-in Sync from Master Profile
   const handleAcceptSyncFromProfile = useCallback(() => {
@@ -1285,6 +1301,10 @@ export default function CVBuilder() {
 
   // 1-Click Actionable Issues Fix (Zero-Modal Instant Polish)
   const handleApplyQuickFix = (type: 'objective' | 'project' | 'skills' | 'contact' | 'full_polish', payload?: any) => {
+    if (remainingAiCredits <= 0) {
+      setShowQuotaExhaustedModal(true);
+      return;
+    }
     const activeDomain = INDUSTRY_DOMAINS[selectedDomainId] || detectIndustryDomain(personalInfo.jobTitle);
 
     let nextSections = [...sections];
@@ -1451,17 +1471,23 @@ export default function CVBuilder() {
             page-break-after: auto !important;
             break-after: auto !important;
           }
+          .cv-paper-elevated {
+            animation: none !important;
+            transform: none !important;
+            box-shadow: none !important;
+          }
+          .cv-shimmer-effect::after {
+            display: none !important;
+          }
+          .cv-section-block, .cv-item-block, tr, li {
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
+          }
           .cv-header-block {
             break-inside: avoid !important;
             page-break-inside: avoid !important;
             break-after: avoid !important;
             page-break-after: avoid !important;
-            height: auto !important;
-            overflow: visible !important;
-          }
-          .cv-section-block {
-            break-inside: auto !important;
-            page-break-inside: auto !important;
             height: auto !important;
             overflow: visible !important;
           }
@@ -1544,15 +1570,6 @@ export default function CVBuilder() {
             >
               <RotateCw className="w-3.5 h-3.5" />
             </button>
-          </div>
-
-          {/* AI Usage Quota Indicator (Spec v0.4 - BR-06 & UC-SYS-003) */}
-          <div
-            className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 dark:bg-indigo-950/60 border border-blue-200 dark:border-indigo-800/80 text-blue-700 dark:text-indigo-300 text-[11px] font-bold shadow-2xs"
-            title="Hạn mức AI theo quy định Spec: 20 lượt tác vụ/ngày"
-          >
-            <Zap className="w-3 h-3 text-blue-600 dark:text-indigo-400 fill-blue-600 dark:fill-indigo-400" />
-            <span>Còn: <strong>{remainingAiCredits}</strong>/20 lượt AI</span>
           </div>
 
           {/* Zoom Ratio 100% */}
@@ -2285,33 +2302,63 @@ export default function CVBuilder() {
         techStack={sections.filter(s => s.type === 'skills').flatMap(s => (s.items as any[]) || []).flatMap(i => i.skills || [i.name || i])}
       />
 
-          {/* GUEST PERSISTENCE MODAL */}
+      {/* AUTH GATE MODAL FOR GUESTS (BUG-05 & BUG-08) */}
       {showGuestSyncModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-blue-950/40 backdrop-blur-xs p-4 animate-in fade-in duration-200">
-          <div className="bg-white border border-slate-200 rounded-2xl max-w-md w-full p-6 shadow-2xl relative text-left">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 mb-4">
-              <CheckCircle2 className="w-6 h-6" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-blue-950/40 dark:bg-black/60 backdrop-blur-xs p-4 animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-[#111728] border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative text-left">
+            <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-indigo-950/50 border border-blue-200 dark:border-indigo-800 flex items-center justify-center text-blue-600 dark:text-indigo-400 mb-4 text-2xl">
+              🔒
             </div>
             
-            <h3 className="text-lg font-bold text-slate-900">
-              Bản CV đã lưu thành công trên máy!
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+              Đăng nhập để lưu vĩnh viễn bản CV
             </h3>
-            <p className="text-sm text-slate-600 mt-2 leading-relaxed">
-              Bạn đang trải nghiệm ở chế độ Khách. Để tự động đồng bộ <strong>Dự án</strong>, <strong>Kỹ năng</strong> và <strong>Thông tin cá nhân</strong> này vào <strong>Hồ sơ năng lực (Profile)</strong> vĩnh viễn trên mọi thiết bị, bạn có thể đăng nhập nhanh bằng GitHub.
+            <p className="text-sm text-slate-600 dark:text-slate-300 mt-2 leading-relaxed">
+              🔒 Đăng nhập để lưu vĩnh viễn bản CV này vào tài khoản của bạn. Không lo mất dữ liệu khi đổi máy tính!
             </p>
 
             <div className="mt-6 flex flex-col gap-2.5">
               <button
-                onClick={() => navigate('/login')}
-                className="w-full py-2.5 px-4 bg-[#1e3a8a] hover:bg-[#1e40af] text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow-sm shadow-blue-900/20 transition-all cursor-pointer"
+                onClick={() => {
+                  setShowGuestSyncModal(false);
+                  navigate('/login', { state: { returnTo: '/student/cv-builder' } });
+                }}
+                className="w-full py-2.5 px-4 bg-[#1e3a8a] hover:bg-[#1e40af] dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow-sm shadow-blue-900/20 transition-all cursor-pointer"
               >
-                <span>Đăng nhập với GitHub để đồng bộ ngay</span>
+                <span>Đăng nhập / Đăng ký ngay</span>
               </button>
               <button
                 onClick={() => setShowGuestSyncModal(false)}
-                className="w-full py-2 px-4 text-slate-500 hover:text-slate-700 rounded-xl text-sm font-medium transition-colors cursor-pointer"
+                className="w-full py-2 px-4 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 rounded-xl text-sm font-medium transition-colors cursor-pointer"
               >
-                Để sau, tiếp tục chỉnh sửa
+                Để sau, tiếp tục soạn nháp
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* AI QUOTA EXHAUSTED MODAL (BUG-08) */}
+      {showQuotaExhaustedModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-blue-950/40 dark:bg-black/60 backdrop-blur-xs p-4 animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-[#111728] border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative text-left">
+            <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800 flex items-center justify-center text-amber-600 dark:text-amber-400 mb-4 text-2xl">
+              ⚡
+            </div>
+            
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+              Hạn mức AI hôm nay đã hết
+            </h3>
+            <p className="text-sm text-slate-600 dark:text-slate-300 mt-2 leading-relaxed">
+              ⚡ Bạn đã sử dụng hết 20 lượt AI miễn phí trong ngày hôm nay. Nâng cấp gói Pro hoặc quay lại vào ngày mai!
+            </p>
+
+            <div className="mt-6 flex flex-col gap-2.5">
+              <button
+                onClick={() => setShowQuotaExhaustedModal(false)}
+                className="w-full py-2.5 px-4 bg-[#1e3a8a] hover:bg-[#1e40af] dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer"
+              >
+                Đã hiểu, tiếp tục chỉnh sửa thủ công
               </button>
             </div>
           </div>

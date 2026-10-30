@@ -300,10 +300,14 @@ export default function InterviewWarRoomModal({
                   <select
                     value={selectedCvId}
                     onChange={e => setSelectedCvId(e.target.value)}
-                    className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#111728] text-slate-900 dark:text-white rounded-xl focus:outline-hidden focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+                    className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#161f36] text-slate-900 dark:text-slate-100 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-indigo-500 cursor-pointer"
                   >
                     {availableCvs.map(cv => (
-                      <option key={cv.id} value={cv.id}>
+                      <option 
+                        key={cv.id} 
+                        value={cv.id}
+                        className="bg-white dark:bg-[#161f36] text-slate-900 dark:text-slate-100 py-1.5"
+                      >
                         {cv.title || 'Bản CV Tiêu Chuẩn'} ({cv.targetRole || 'Chung'}) • Lưu lúc {new Date(cv.updatedAt).toLocaleDateString('vi-VN')}
                       </option>
                     ))}
@@ -365,12 +369,12 @@ export default function InterviewWarRoomModal({
                         <select
                           value={stage}
                           onChange={e => setStage(e.target.value as InterviewStageType)}
-                          className="w-full px-3 py-1.5 text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#111728] rounded-lg text-slate-900 dark:text-white"
+                          className="w-full px-3 py-1.5 text-xs border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#161f36] rounded-lg text-slate-900 dark:text-slate-100"
                         >
-                          <option value="technical">Vòng Kỹ thuật & Live Coding</option>
-                          <option value="hr_screen">Vòng HR & Văn hóa sơ bộ</option>
-                          <option value="culture_final">Vòng Phỏng vấn Giám đốc & Deal Offer</option>
-                          <option value="other">Vòng khác</option>
+                          <option value="technical" className="bg-white dark:bg-[#161f36] text-slate-900 dark:text-slate-100 py-1.5">Vòng Kỹ thuật & Live Coding</option>
+                          <option value="hr_screen" className="bg-white dark:bg-[#161f36] text-slate-900 dark:text-slate-100 py-1.5">Vòng HR & Văn hóa sơ bộ</option>
+                          <option value="culture_final" className="bg-white dark:bg-[#161f36] text-slate-900 dark:text-slate-100 py-1.5">Vòng Phỏng vấn Giám đốc & Deal Offer</option>
+                          <option value="other" className="bg-white dark:bg-[#161f36] text-slate-900 dark:text-slate-100 py-1.5">Vòng khác</option>
                         </select>
                       </div>
 

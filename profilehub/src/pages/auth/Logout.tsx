@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthProvider';
 import { supabase } from '../../services/supabase';
+import { cvService } from '../../services/cvService';
 
 export default function Logout() {
   const { user } = useAuth();
@@ -10,6 +11,11 @@ export default function Logout() {
 
   const handleSignOut = async () => {
     setIsLoggingOut(true);
+    try {
+      cvService.purgeGuestData();
+    } catch {
+      // Ignore
+    }
     await supabase.auth.signOut();
     // Context sẽ tự động cập nhật trạng thái user thành null, 
     // PrivateRoute sẽ tự động đẩy người dùng về trang /login

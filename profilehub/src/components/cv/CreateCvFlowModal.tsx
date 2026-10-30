@@ -48,63 +48,63 @@ export const TEMPLATE_SHOWCASE: Array<{
 }> = [
   {
     id: 'classic',
-    name: 'Classic ATS Pro',
-    badge: 'Chuẩn ATS Cao',
-    badgeColor: 'bg-emerald-100 text-emerald-800 border-emerald-300',
-    desc: 'Bố cục 2 cột cân đối, thanh lịch, dễ đọc với mọi hệ thống ATS tuyển dụng.',
-    columns: '2-col',
-    bestFor: 'Đa ngành nghề, Thực tập sinh, Fresher',
-    defaultFontId: 'inter'
-  },
-  {
-    id: 'tech',
-    name: 'Tech Specialist',
-    badge: 'Dành Cho IT / Dev',
-    badgeColor: 'bg-sky-100 text-sky-800 border-sky-300',
-    desc: 'Tối ưu cho Lập trình viên, làm nổi bật Tech Stack, Đồ án GitHub và Kỹ năng kỹ thuật.',
-    columns: '2-col',
-    bestFor: 'Frontend, Backend, AI, Data Engineer',
-    defaultFontId: 'plus-jakarta'
-  },
-  {
-    id: 'pro_split',
-    name: 'TopCV Modern Split',
-    badge: 'Sidebar Hiện Đại',
+    name: 'Modern Top-Banner',
+    badge: 'TopCV Pro Style',
     badgeColor: 'bg-blue-100 text-blue-800 border-blue-300',
-    desc: 'Cột sidebar màu sắc nổi bật thông tin liên hệ, kỹ năng; cột phải tập trung kinh nghiệm.',
+    desc: 'Khối Header màu đậm trải ngang toàn màn hình trên cùng, Avatar bo tròn, thân chia 2 cột bất đối xứng (35% - 65%).',
     columns: '2-col',
-    bestFor: 'Marketing, UI/UX, Quản trị kinh doanh',
-    defaultFontId: 'be-vietnam-pro'
-  },
-  {
-    id: 'compact_ats',
-    name: 'Compact ATS 1-Trang',
-    badge: 'Tối Ưu 1 Trang',
-    badgeColor: 'bg-amber-100 text-amber-800 border-amber-300',
-    desc: 'Khoảng cách tinh chỉnh gọn gàng, chứa nhiều thông tin nhưng không bị tràn sang trang 2.',
-    columns: '2-col',
-    bestFor: 'Ứng viên có nhiều dự án, tối ưu độ dài',
-    defaultFontId: 'be-vietnam-pro'
+    bestFor: 'Đa ngành nghề, Thực tập sinh, Fresher, Doanh nghiệp lớn',
+    defaultFontId: 'inter'
   },
   {
     id: 'minimal',
     name: 'Minimalist Harvard',
     badge: 'Ivy League / 1 Cột',
     badgeColor: 'bg-slate-100 text-slate-800 border-slate-300',
-    desc: 'Phong cách tối giản kinh điển của các trường Ivy League, 1 cột mạch lạc, sang trọng.',
+    desc: '1 cột thuần túy, font Serif, đường kẻ hairline 0.5px tinh tế, căn lề lùi đầu dòng chuẩn mực Ivy League.',
     columns: '1-col',
     bestFor: 'Tài chính, Ngân hàng, Tư vấn, Học thuật',
-    defaultFontId: 'be-vietnam-pro'
+    defaultFontId: 'lora'
+  },
+  {
+    id: 'tech',
+    name: 'Tech Developer Terminal',
+    badge: 'Dành Cho IT / Dev',
+    badgeColor: 'bg-sky-100 text-sky-800 border-sky-300',
+    desc: 'Khối hiển thị Tech Stack dạng thẻ tag bo góc, hiển thị link GitHub/Commit rõ ràng, chia đồ án Bento Grid.',
+    columns: '2-col',
+    bestFor: 'Frontend, Backend, AI, Data Engineer, Mobile Dev',
+    defaultFontId: 'plus-jakarta'
   },
   {
     id: 'executive',
-    name: 'Executive Academic',
-    badge: 'Học Thuật / Serif',
+    name: 'Timeline Milestone',
+    badge: 'Trục Thời Gian Dọc',
     badgeColor: 'bg-purple-100 text-purple-800 border-purple-300',
-    desc: 'Đường nét trang nhã với phông chữ có chân (Serif), thể hiện chiều sâu nghiên cứu.',
+    desc: 'Trục đường kẻ dọc nối các mốc năm học tập và làm việc bằng các chấm tròn Milestone dots liên tục.',
     columns: '1-col',
-    bestFor: 'Nghiên cứu, Giáo dục, Quản lý cấp cao',
+    bestFor: 'Nghiên cứu, Giáo dục, Ứng viên có quá trình làm việc liên tục',
     defaultFontId: 'lora'
+  },
+  {
+    id: 'pro_split',
+    name: 'Left Solid Sidebar',
+    badge: 'Phong Cách Châu Âu',
+    badgeColor: 'bg-indigo-100 text-indigo-800 border-indigo-300',
+    desc: 'Cột trái có màu nền đồng nhất từ đầu đến chân trang (xanh Navy/xám chì); cột phải nền trắng tinh tế.',
+    columns: '2-col',
+    bestFor: 'Marketing, UI/UX, Quản trị kinh doanh, Khối quốc tế',
+    defaultFontId: 'be-vietnam-pro'
+  },
+  {
+    id: 'compact_ats',
+    name: 'Compact 1-Page ATS',
+    badge: 'Tối Ưu Tuyệt Đối 1 Trang',
+    badgeColor: 'bg-amber-100 text-amber-800 border-amber-300',
+    desc: 'Tối ưu hóa padding/margin siêu gọn gàng, bố cục 2 cột cân xứng 50-50 ở phần kỹ năng, vừa vặn 3 đồ án.',
+    columns: '2-col',
+    bestFor: 'Sinh viên mới tốt nghiệp, ứng viên có nhiều dự án muốn ép 1 trang A4',
+    defaultFontId: 'be-vietnam-pro'
   }
 ];
 

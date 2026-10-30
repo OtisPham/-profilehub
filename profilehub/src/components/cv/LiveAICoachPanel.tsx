@@ -194,7 +194,7 @@ export default function LiveAICoachPanel({
         severity: 'medium',
         title: 'Mục tiêu chưa có chỉ số định lượng',
         description: 'Bổ sung kết quả hoặc chỉ số thực tiễn giúp tăng 35% độ tin cậy với nhà tuyển dụng.',
-        actionLabel: '⚡ Thêm chỉ số STAR vào mục tiêu',
+        actionLabel: '⚡ Thêm số liệu đo lường vào mục tiêu',
         payload: { suggestedText: activeDomain.sampleObjective }
       });
     }
@@ -219,9 +219,9 @@ export default function LiveAICoachPanel({
             id: `issue-proj-${p.id}`,
             type: 'project',
             severity: 'high',
-            title: `Đồ án "${p.projectName || 'Dự án'}" thiếu số liệu STAR`,
+            title: `Đồ án "${p.projectName || 'Dự án'}" thiếu số liệu định lượng`,
             description: 'Thiếu kết quả đo lường định lượng (% tối ưu, lượng người dùng, thời gian load).',
-            actionLabel: '⚡ Thêm số liệu STAR',
+            actionLabel: '⚡ Thêm số liệu & kết quả',
             payload: { projectId: p.id, projectName: p.projectName }
           });
         }
@@ -319,7 +319,7 @@ export default function LiveAICoachPanel({
       onUpdateProjectDescription(selectedProject.id, newDescription, syncToProfile);
     }
 
-    setQuickActionSuccess(`✨ Đã áp dụng câu chuẩn STAR vào "${selectedProject.projectName}"!`);
+    setQuickActionSuccess(`✨ Đã nâng cấp câu văn chuyên nghiệp cho "${selectedProject.projectName}"!`);
     setShowElicitationForm(false);
     setSituationAnswer('');
     setActionAnswer('');
@@ -337,7 +337,7 @@ export default function LiveAICoachPanel({
     },
     {
       id: 'c2',
-      criterion: 'Đồ án chuẩn cấu trúc STAR & Có số liệu định lượng',
+      criterion: 'Đồ án có kết quả đo lường & Số liệu định lượng',
       feedback: 'Định lượng số ca, phần trăm tối ưu, lượng người dùng và công nghệ.',
       passed: !detectedIssues.some(i => i.type === 'project')
     },
@@ -374,7 +374,7 @@ export default function LiveAICoachPanel({
             </div>
             <div>
               <span className="text-xs font-black text-slate-900 dark:text-slate-100 uppercase tracking-wider block leading-tight">
-                AI Copilot Side-Panel
+                🤖 AI Copilot (Trợ Lý Soạn Thảo CV)
               </span>
               <span className="text-[10px] text-slate-400 dark:text-slate-500">Trợ Lý Thông Minh 1-Chạm</span>
             </div>
@@ -393,38 +393,41 @@ export default function LiveAICoachPanel({
         <div className="grid grid-cols-3 gap-1 p-1 bg-slate-100 dark:bg-[#090d16] rounded-xl">
           <button
             onClick={() => handleTabSwitch('ats')}
-            className={`py-1.5 text-center text-xs font-bold rounded-lg transition flex items-center justify-center gap-1.5 cursor-pointer ${
+            className={`py-1.5 text-center text-[11px] font-bold rounded-lg transition flex items-center justify-center gap-1 cursor-pointer ${
               activeTab === 'ats'
                 ? 'bg-white dark:bg-[#1a2338] text-[#1e3a8a] dark:text-indigo-300 shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
+            title="Kiểm Tra Lỗi Chính Tả, Từ Khóa Thiếu & Điểm ATS"
           >
             <ShieldCheck size={13} className={activeTab === 'ats' ? 'text-[#1e3a8a] dark:text-indigo-300' : 'text-slate-400 dark:text-slate-500'} />
-            <span>ATS & Check</span>
+            <span>Lỗi & ATS</span>
           </button>
 
           <button
             onClick={() => handleTabSwitch('star')}
-            className={`py-1.5 text-center text-xs font-bold rounded-lg transition flex items-center justify-center gap-1.5 cursor-pointer ${
+            className={`py-1.5 text-center text-[11px] font-bold rounded-lg transition flex items-center justify-center gap-1 cursor-pointer ${
               activeTab === 'star'
                 ? 'bg-white dark:bg-[#1a2338] text-blue-700 dark:text-indigo-300 shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
+            title="Nâng Cấp Câu Chữ & Số Liệu Định Lượng"
           >
             <Sparkles size={13} className={activeTab === 'star' ? 'text-blue-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500'} />
-            <span>STAR Coach</span>
+            <span>Nâng Cấp Chữ</span>
           </button>
 
           <button
             onClick={() => handleTabSwitch('defense')}
-            className={`py-1.5 text-center text-xs font-bold rounded-lg transition flex items-center justify-center gap-1.5 cursor-pointer ${
+            className={`py-1.5 text-center text-[11px] font-bold rounded-lg transition flex items-center justify-center gap-1 cursor-pointer ${
               activeTab === 'defense'
                 ? 'bg-white dark:bg-[#1a2338] text-purple-700 dark:text-violet-300 shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
+            title="Gợi Ý Bộ Câu Hỏi Phản Biện Đồ Án Trước Nhà Tuyển Dụng"
           >
             <Terminal size={13} className={activeTab === 'defense' ? 'text-purple-600 dark:text-violet-400' : 'text-slate-400 dark:text-slate-500'} />
-            <span>Phòng Thủ</span>
+            <span>Hỏi Phỏng Vấn</span>
           </button>
         </div>
       </div>
@@ -578,7 +581,7 @@ export default function LiveAICoachPanel({
             {/* Project Picker */}
             <div className="p-2.5 bg-white dark:bg-[#111728] rounded-xl border border-slate-200 dark:border-slate-800">
               <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block mb-1">
-                Chọn đồ án cần soi chuẩn STAR:
+                Chọn đồ án cần nâng cấp câu chữ:
               </label>
               <select
                 value={selectedProjectId}
@@ -600,7 +603,7 @@ export default function LiveAICoachPanel({
                   <div className="p-3 bg-white dark:bg-[#111728] rounded-xl border border-slate-200 dark:border-slate-800 space-y-2 text-left">
                     <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-xs font-bold text-slate-800 dark:text-slate-200">Điểm STAR Dự Án:</span>
+                        <span className="text-xs font-bold text-slate-800 dark:text-slate-200">Độ Hoàn Thiện Câu Văn:</span>
                         <span className={`text-xs font-black px-2 py-0.5 rounded-full ${
                           starDiagnosis.score >= 80 ? 'bg-emerald-100 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300' : 'bg-amber-100 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300'
                         }`}>
@@ -608,7 +611,7 @@ export default function LiveAICoachPanel({
                         </span>
                       </div>
                       <span className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold">
-                        {starDiagnosis.isStarCompliant ? 'Đạt chuẩn STAR' : 'Thiếu số liệu'}
+                        {starDiagnosis.isStarCompliant ? 'Đạt chuẩn số liệu' : 'Cần thêm số liệu'}
                       </span>
                     </div>
 
@@ -617,17 +620,17 @@ export default function LiveAICoachPanel({
                       <div className={`p-1.5 rounded-lg border ${
                         starDiagnosis.hasSituation ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/60' : 'bg-slate-50 dark:bg-[#161f36] text-slate-400 dark:text-slate-500 border-slate-200 dark:border-slate-700'
                       }`}>
-                        S - Bối Cảnh
+                        1. Bối Cảnh
                       </div>
                       <div className={`p-1.5 rounded-lg border ${
                         starDiagnosis.hasAction ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/60' : 'bg-slate-50 dark:bg-[#161f36] text-slate-400 dark:text-slate-500 border-slate-200 dark:border-slate-700'
                       }`}>
-                        A - Hành Động
+                        2. Hành Động
                       </div>
                       <div className={`p-1.5 rounded-lg border ${
                         starDiagnosis.hasResult ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/60' : 'bg-slate-50 dark:bg-[#161f36] text-slate-400 dark:text-slate-500 border-slate-200 dark:border-slate-700'
                       }`}>
-                        R - Kết Quả
+                        3. Số Liệu Đo Lường
                       </div>
                     </div>
 
@@ -759,7 +762,7 @@ export default function LiveAICoachPanel({
             {/* Project Picker */}
             <div className="p-2.5 bg-white dark:bg-[#111728] rounded-xl border border-slate-200 dark:border-slate-800">
               <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block mb-1">
-                Phòng thủ kỹ thuật cho đồ án:
+                Gợi ý câu hỏi phỏng vấn cho đồ án:
               </label>
               <select
                 value={selectedDefenseProjectId}
