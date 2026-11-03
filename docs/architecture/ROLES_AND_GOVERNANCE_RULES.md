@@ -26,6 +26,15 @@
 5. **Chi phí Tuyệt đối 0 Đồng (Zero Cost):**  
    100% giải pháp sử dụng công cụ mã nguồn mở và gói miễn phí (Vercel Hobby, Google Drive CLI cá nhân, Telegram Bot API).
 
+6. **Chuẩn Mực Năng Lực Từng Role (Role Excellence Standards):**  
+   Mỗi Role trong chuỗi SDD được trang bị sổ tay kỹ năng chuyên môn chuẩn mực đúc kết từ các repository uy tín hàng đầu trên GitHub (xem chi tiết tại thư mục [roles_skills/](roles_skills/)):
+   - **PO:** [po_skills_handbook.md](roles_skills/po_skills_handbook.md) (INVEST, RICE, Deduplication Guard)
+   - **BA & Tech Lead:** [ba_techlead_skills_handbook.md](roles_skills/ba_techlead_skills_handbook.md) (Arc42, DDD, T1-T2-T3 Decomp)
+   - **Developer:** [developer_skills_handbook.md](roles_skills/developer_skills_handbook.md) (Clean Code JS/TS, SOLID, Pure Functions)
+   - **QA Tester:** [qa_tester_skills_handbook.md](roles_skills/qa_tester_skills_handbook.md) (AAA Testing Pattern, Quality Gate)
+   - **CI/CD DevOps:** [cicd_devops_skills_handbook.md](roles_skills/cicd_devops_skills_handbook.md) (Conventional Commits, Dual Sync)
+   - **Thư ký & Doc Writer:** [doc_writer_skills_handbook.md](roles_skills/doc_writer_skills_handbook.md) (Diátaxis, BM01b Academics)
+
 ---
 
 ## II. MA TRẬN PHÂN VAI & ĐẶC TẢ TỪNG ROLE (ROLE SPECIFICATION)
