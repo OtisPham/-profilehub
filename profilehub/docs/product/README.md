@@ -25,6 +25,7 @@ Tất cả các tài liệu dưới đây đại diện cho hệ thống đang �
 | **13** | [`real_market_salary_spec.md`](./real_market_salary_spec.md) | **AI & Python Crawler Lương Thực Tế** | Đặc tả kiến trúc con bot Python thu thập dữ liệu lương thực tế từ ITviec/TopCV/TopDev, bóc tách Regex/AI và thống kê phân vị P25-P50-P75. | [`server/python/salary_crawler/`](../../server/python/salary_crawler), [`src/services/salaryBenchmarkService.ts`](../../src/services/salaryBenchmarkService.ts) |
 | **14** | [`ui.md`](./ui.md) | **Đặc Tả UI & Motion: Intro 2D Elevated CV** | Thiết kế hoạt họa tờ CV A4 nổi bổng sắc nét (2D Elevated Motion), khử răng cưa font chữ và kịch bản chuyển cảnh tại Modal & Canvas. | [`src/components/cv/CreateCvFlowModal.tsx`](../../src/components/cv/CreateCvFlowModal.tsx), [`src/pages/student/CVBuilder.tsx`](../../src/pages/student/CVBuilder.tsx) |
 | **15** | [`updateui.md`](./updateui.md) | **Kế Hoạch Nâng Cấp Giao Diện & Luồng** | Đặc tả Header 2 trạng thái, luồng bắt buộc đăng nhập (Login-First), tinh giản thanh vẽ CV và khắc phục lỗi hiển thị theo chuẩn SaaS. | [`src/components/layout/HeaderBar.tsx`](../../src/components/layout/HeaderBar.tsx), [`src/pages/student/CVBuilder.tsx`](../../src/pages/student/CVBuilder.tsx) |
+| **16** | [`SO_DO_KY_THUAT_VA_CHUC_NANG_HE_THONG.md`](../architecture/SO_DO_KY_THUAT_VA_CHUC_NANG_HE_THONG.md) | **Kiến Trúc Kỹ Thuật & Phân Rã Chức Năng** | Đặc tả sơ đồ kỹ thuật, luồng xác thực bảo mật Login-First, bộ máy in PDF A4 và sơ đồ phân rã chức năng hệ thống v1.0. | [`docs/architecture/`](../architecture) |
 
 ---
 

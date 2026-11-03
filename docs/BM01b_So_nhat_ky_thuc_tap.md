@@ -324,3 +324,10 @@
 | 08:30 - 12:00 | Báo cáo nghiệm thu giai đoạn với Người hướng dẫn doanh nghiệp và Tổng kết kỳ thực tập. | Trình bày demo toàn bộ các tính năng của nền tảng ProfileHub trước đại diện Công ty TNHH Alpaca Solutions: Nhận đánh giá xuất sắc về tính thực chiến và độ hoàn thiện. | Trải nghiệm thực tập thực tế tại doanh nghiệp giúp chuyển hóa vững chắc kiến thức lý thuyết trên giảng đường thành năng lực xây dựng sản phẩm công nghệ hoàn chỉnh. |
 | 13:00 - 17:00 | Báo cáo nghiệm thu giai đoạn với Người hướng dẫn doanh nghiệp và Tổng kết kỳ thực tập. | Ký nhận sổ theo dõi thực tập hàng tuần, hoàn thiện hồ sơ nghiệm thu thực tập tốt nghiệp và tổng kết kinh nghiệm quý báu đạt được trong suốt 8 tuần. | Trải nghiệm thực tập thực tế tại doanh nghiệp giúp chuyển hóa vững chắc kiến thức lý thuyết trên giảng đường thành năng lực xây dựng sản phẩm công nghệ hoàn chỉnh. |
 
+
+
+| Tuần: 9 Thứ:      2                Ngày: 16/11/2026 <td colspan=4/> |
+| :--- | :--- | :--- | :--- |
+| **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
+| 08:30 - 12:00 | Khảo sát, thiết kế kiến trúc và mô hình dữ liệu cho: Kiểm thử đồng bộ Typography. | Xây dựng hoàn tất đặc tả kiến trúc, khai báo cấu trúc bảng CSDL và models (append_bm01b.py). | Thiết kế schema chặt chẽ ngay từ đầu giúp loại bỏ rủi ro sai lệch dữ liệu và tối ưu hiệu năng truy vấn cho đồ án. |
+| 13:00 - 17:00 | Hiện thực hóa API Controller, nghiệp vụ và kiểm thử cho: Kiểm thử đồng bộ Typography. | Hoàn thiện các endpoint API, xử lý nghiệp vụ, viết bộ kiểm thử Unit Test và commit lên GitHub repository. | Tự động hóa kiểm thử và đồng bộ commit theo từng tính năng giúp đảm bảo chất lượng phần mềm luôn đạt chuẩn ổn định. |

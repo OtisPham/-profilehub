@@ -28,7 +28,7 @@
 ```
 [TRẠNG THÁI 1: CHƯA ĐĂNG NHẬP - PUBLIC LANDING HEADER]
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
-│  [Logo] ProfileHub v1.0   |   Về Chúng Tôi    Tính Năng JEV   |   [Đăng Nhập]  [Đăng Ký Miễn Phí]│
+│  [Logo] ProfileHub v1.0   |   Về Chúng Tôi    Tính Năng Nổi Bật   |   [Đăng Nhập]  [Đăng Ký Miễn Phí]│
 └────────────────────────────────────────────────────────────────────────────────────────┘
 
 [TRẠNG THÁI 2: ĐÃ ĐĂNG NHẬP - CANDIDATE WORKSPACE HEADER]
@@ -40,7 +40,7 @@
 ### 2.1. Trạng thái 1: Khi Chưa Đăng Nhập (Public Landing Page)
 * **Mục tiêu:** Giới thiệu sản phẩm, tạo sự tin cậy và thúc đẩy đăng ký tài khoản.
 * **Bên trái:** Logo ProfileHub + phiên bản `v1.0`.
-* **Ở giữa:** 2 liên kết cuộn trang nhẹ nhàng: *Về Chúng Tôi* và *Tính Năng JEV*.
+* **Ở giữa:** 2 liên kết cuộn trang nhẹ nhàng: *Về Chúng Tôi* và *Tính Năng Nổi Bật*.
 * **Bên phải:** 
   * Nút chữ: `Đăng Nhập`
   * Nút bấm nổi bật (Primary CTA): `[Đăng Ký Miễn Phí]` (hoặc `[Bắt Đầu Ngay]`).
