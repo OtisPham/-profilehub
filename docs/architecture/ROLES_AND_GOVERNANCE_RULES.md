@@ -71,9 +71,12 @@
     - Nếu trùng lặp 100%: Bác bỏ đề xuất (Reject) và yêu cầu chọn tính năng tiếp theo trong roadmap.
     - Nếu trùng lặp 1 phần: Chuyển đổi thành nhiệm vụ **Kế thừa & Mở rộng (Enhance/Refactor)** tệp có sẵn, cấm tạo tệp mới gây phân mảnh.
     - Nếu mới 100%: Phê duyệt triển khai độc lập.
-  - Định nghĩa Epic/User Story chính thức.
-  - Thiết lập bắt buộc **3 Tiêu chí Nghiệm thu (Acceptance Criteria - AC)**: AC1 (Cấu trúc dữ liệu & Tính kế thừa), AC2 (Trải nghiệm UI/UX Responsive), AC3 (Chất lượng kiểm thử Quality Gate).
-* **📤 Đầu ra:** Bản thẩm định đối chiếu trùng lặp + Bản đặc tả Backlog Story kèm 3 tiêu chí AC chuyển giao cho BA & Tech Lead.
+  - **Tự Động Kích Hoạt Bộ 4 Kỹ Năng Nghiệp Vụ PO Chuyên Sâu (Automatic PO Skill Engine):**
+    1. *`define-prioritization-framework`:* Tự động tính điểm **RICE** (Reach, Impact, Confidence, Effort) và gán mức độ ưu tiên (P1/P2).
+    2. *`deliver-user-stories`:* Tự động định dạng User Story chuẩn **INVEST** (`Là một [persona], tôi muốn [action], để [benefit]`).
+    3. *`deliver-acceptance-criteria`:* Tự động thiết lập 3 Tiêu chí Nghiệm thu chuẩn **BDD (Given - When - Then)** độc lập kiểm thử.
+    4. *`deliver-edge-cases`:* Tự động bóc tách kịch bản lỗi biên, rớt mạng (Offline) và trạng thái dữ liệu rỗng (Cold Start).
+* **📤 Đầu ra:** Hồ sơ đặc tả PO hoàn chỉnh (RICE Score + INVEST Story + 3 BDD ACs + Edge Cases) bàn giao cho BA & Tech Lead.
 * **🚫 Quy tắc cấm (Boundaries):**
   - Tuyệt đối cấm phê duyệt tính năng khi chưa thực hiện đối chiếu mã nguồn và lịch sử commit hiện có.
   - Không được tự ý viết mã nguồn kỹ thuật.
