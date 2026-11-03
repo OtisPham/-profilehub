@@ -22,6 +22,7 @@ import CVQualityCheckModal from '../../components/cv/CVQualityCheckModal';
 import AtsParserEyeModal from '../../components/cv/AtsParserEyeModal';
 import SalaryBenchmarkModal from '../../components/student/SalaryBenchmarkModal';
 import AiMockInterviewModal from '../../components/student/AiMockInterviewModal';
+import ReverseSyncToast from '../../components/cv/ReverseSyncToast';
 import { pageBudgetService } from '../../services/pageBudgetService';
 import { evaluateCVQuality } from '../../services/cvQualityCheckService';
 import { auditAtsParseability } from '../../services/atsParserEyeService';
@@ -228,6 +229,12 @@ export default function CVBuilder() {
   const [isPitchModalOpen, setIsPitchModalOpen] = useState(false);
   const [applicationPitch, setApplicationPitch] = useState<string>('');
   const [currentJdText, setCurrentJdText] = useState<string>('');
+
+  // Non-blocking Reverse Sync Toast State (User Story 4 & 5)
+  const [showReverseSyncToast, setShowReverseSyncToast] = useState(false);
+  const [pendingSyncProjects, setPendingSyncProjects] = useState<ProjectItem[]>([]);
+  const [isReverseSyncing, setIsReverseSyncing] = useState(false);
+  const [syncedProjectsCount, setSyncedProjectsCount] = useState(0);
 
   // Fingerprint for Save & Sync Button state (dimmed when synced)
   const [lastSyncedFingerprint, setLastSyncedFingerprint] = useState<string | null>(null);
@@ -913,10 +920,34 @@ export default function CVBuilder() {
       setTimeout(() => {
         setShowSaveSuccessToast(false);
       }, 3500);
+
+      // Check for eligible projects for Non-blocking Reverse Sync Toast (Spec E & User Story 4 & 5)
+      const projectSec = sections.find(s => s.type === 'projects');
+      if (projectSec && Array.isArray(projectSec.items) && user?.id) {
+        const eligible = (projectSec.items as ProjectItem[]).filter(p => p.syncToMasterProfile !== false);
+        if (eligible.length > 0) {
+          setPendingSyncProjects(eligible);
+          setSyncedProjectsCount(0);
+          setShowReverseSyncToast(true);
+        }
+      }
     } catch (err) {
       console.error('Failed to save CV:', err);
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleExecuteReverseSync = async () => {
+    if (!user?.id || pendingSyncProjects.length === 0) return;
+    setIsReverseSyncing(true);
+    try {
+      const res = await cvService.syncCvProjectsToMaster(pendingSyncProjects, user.id);
+      setSyncedProjectsCount(res.syncedProjects.length);
+    } catch (e) {
+      console.error('Lỗi khi đồng bộ ngược dự án:', e);
+    } finally {
+      setIsReverseSyncing(false);
     }
   };
 
@@ -1760,6 +1791,16 @@ export default function CVBuilder() {
             </button>
           </div>
         )}
+
+        {/* Non-blocking Reverse Sync Toast (User Story 4 & 5) */}
+        <ReverseSyncToast
+          isOpen={showReverseSyncToast}
+          projectsToSync={pendingSyncProjects}
+          onSync={handleExecuteReverseSync}
+          onDismiss={() => setShowReverseSyncToast(false)}
+          isSyncing={isReverseSyncing}
+          syncedCount={syncedProjectsCount}
+        />
 
         {/* CENTER PANE: INTERACTIVE A4 CANVAS WITH CANVAS SUB-TOOLBAR */}
         <main className="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col items-center bg-[#f8fafc] dark:bg-[#090d16] transition-colors">
