@@ -205,8 +205,9 @@
 
 1. **Guardrail 1: Cổng Kiểm Soát Người Dùng (Human-in-the-Loop Gateway):**
    - Sau khi CI/CD deploy Vercel thành công, hệ thống bắt buộc dừng lại và hỏi người dùng có viết Báo cáo Google Docs không. Chỉ viết khi người dùng bấm CÓ và chọn file cụ thể.
-2. **Guardrail 2: Cổng Khám Phá Chủ Động (Proactive Discovery Approval Gate):**
-   - Khi chưa có việc mới từ Người dùng, BA được phép đọc Context & Specs để phát hiện tính năng thiếu.
+2. **Guardrail 2: Cổng Khám Phá Chủ Động & Minh Bạch Đề Xuất (Proactive Discovery & Proposal Transparency):**
+   - Khi chưa có việc mới từ Người dùng, BA chủ động đọc `docs/CONTEXT.md` & Specs để phát hiện tính năng thiếu.
+   - **Minh bạch tức thì cho Người dùng:** Trong quá trình chuyển giao sang PO, BA **BẮT BUỘC PHẢI GỬI THÔNG BÁO BẢN ĐỀ XUẤT TÍNH NĂNG VỀ TELEGRAM CHO NGƯỜI DÙNG** (bao gồm: Tên tính năng, Module mục tiêu, Vấn đề giải quyết, Phương án kỹ thuật sơ bộ) để Người dùng luôn biết rõ hệ thống đang chuẩn bị build cái gì.
    - **Tuyệt đối cấm BA tự ý giao việc cho Dev.** Mọi đề xuất bắt buộc phải gửi sang PO Agent để thẩm định, phê duyệt và ban hành 3 Acceptance Criteria (AC) trước khi cho phép Dev bắt tay vào code.
 3. **Guardrail 3: Phản Hồi Tức Thì & Minh Bạch Sự Cố:**
    - Phản hồi nhận việc trong < 0.5s, duy trì trạng thái typing và báo lỗi ngay lập tức kèm chi tiết khi gặp sự cố.
