@@ -1,7 +1,7 @@
 /**
  * calendar.types.ts
  * Khai báo kiểu dữ liệu TypeScript (Strict Mode) - Phục vụ đồ án ProfileHub
- * Nhiệm vụ: Khai báo Schema Types & Interfaces cho Lịch & Sự kiện (Calendar)
+ * Nhiệm vụ: Thiết kế CSDL & Schema Types cho Lịch & Sự kiện (Calendar)
  */
 
 export interface IcalendarItem {
