@@ -58,7 +58,10 @@ export const saveSharedPipeline = (items: CandidatePipelineItem[], userId?: stri
 
 export const addToSharedPipeline = (newItem: CandidatePipelineItem, userId?: string): boolean => {
   const current = getSharedPipeline(userId);
-  const exists = current.some(p => p.student_id === newItem.student_id || (newItem.id && p.id === newItem.id));
+  const exists = current.some(p => 
+    (Boolean(newItem.id) && p.id === newItem.id) || 
+    (Boolean(newItem.job_id) && p.student_id === newItem.student_id && p.job_id === newItem.job_id)
+  );
   if (exists) return false;
   const updated = [newItem, ...current];
   saveSharedPipeline(updated, userId);

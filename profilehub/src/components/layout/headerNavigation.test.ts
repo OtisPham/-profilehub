@@ -3,11 +3,13 @@ import { getHeaderNavLinks, getPendingInterviewNotificationCount } from './heade
 import type { CandidatePipelineItem } from '../../types/database';
 
 describe('HeaderBar Navigation Logic & Role Contracts (updateui.md)', () => {
-  it('TC-HEADER-01: Chưa đăng nhập (Public Landing Page) chỉ hiển thị liên kết Về Chúng Tôi & Tính Năng JEV', () => {
+  it('TC-HEADER-01: Chưa đăng nhập (Public Landing Page) chỉ hiển thị liên kết Về Chúng Tôi & Tính Năng Nổi Bật', () => {
     const publicLinks = getHeaderNavLinks('student', false);
     const paths = publicLinks.map(l => l.path);
+    const labels = publicLinks.map(l => l.label);
 
     expect(paths).toEqual(['/#about', '/#features']);
+    expect(labels).toEqual(['Về Chúng Tôi', 'Tính Năng Nổi Bật']);
     expect(paths).not.toContain('/dashboard');
     expect(paths).not.toContain('/cv-management');
     expect(paths).not.toContain('/student/jobs');

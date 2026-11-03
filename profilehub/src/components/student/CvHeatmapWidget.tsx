@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Eye, Clock, Flame, Users, CheckCircle2, TrendingUp, 
-  Sparkles, Building, ArrowUpRight, BarChart3, RefreshCw
+  Sparkles, Building, ArrowUpRight, BarChart3, RefreshCw, RotateCcw
 } from 'lucide-react';
 import { 
   getTrackingAnalytics, 
   recordCvView, 
+  resetTrackingAnalytics,
   TRACKING_EVENT_NAME, 
   type CvTrackingAnalyticsData 
 } from '../../services/cvTrackingAnalyticsService';
@@ -47,6 +48,24 @@ export default function CvHeatmapWidget({ compact = false }: CvHeatmapWidgetProp
     setTimeout(() => setSimulatedToast(null), 3000);
   };
 
+  const handleReset = () => {
+    const cleared = resetTrackingAnalytics();
+    setAnalytics(cleared);
+    setSimulatedToast('Đã xóa sạch dữ liệu tracking về 0!');
+    setTimeout(() => setSimulatedToast(null), 3000);
+  };
+
+  // Danh sách công ty độc lập ghé thăm thực tế
+  const uniqueCompanies = Array.from(new Set(analytics.recentActivities.map(a => a.company)));
+  const companiesListText = uniqueCompanies.length > 0 
+    ? uniqueCompanies.slice(0, 3).join(', ') + (uniqueCompanies.length > 3 ? '...' : '')
+    : 'Chưa có công ty ghé thăm';
+
+  // Section có thời gian dừng cao nhất (Hotspot)
+  const highestHotspot = analytics.heatmap && analytics.heatmap.length > 0
+    ? analytics.heatmap.reduce((prev, cur) => (cur.dwellSeconds > prev.dwellSeconds ? cur : prev), analytics.heatmap[0])
+    : null;
+
   return (
     <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-xs p-6 relative overflow-hidden transition-colors">
       {/* Toast simulated */}
@@ -79,15 +98,29 @@ export default function CvHeatmapWidget({ compact = false }: CvHeatmapWidgetProp
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={handleSimulateView}
-          className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200/80 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
-          title="Tạo giả lập lượt đọc CV từ nhà tuyển dụng để xem cập nhật thời gian thực"
-        >
-          <RefreshCw className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
-          <span>Mô Phỏng HR Xem CV</span>
-        </button>
+        <div className="flex items-center gap-2">
+          {analytics.totalViews > 0 && (
+            <button
+              type="button"
+              onClick={handleReset}
+              className="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 rounded-xl text-xs font-semibold flex items-center gap-1 transition cursor-pointer"
+              title="Xóa toàn bộ số liệu và đặt lại về 0"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>Đặt Lại Về 0</span>
+            </button>
+          )}
+
+          <button
+            type="button"
+            onClick={handleSimulateView}
+            className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200/80 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+            title="Tạo giả lập lượt đọc CV từ nhà tuyển dụng để xem cập nhật thời gian thực"
+          >
+            <RefreshCw className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
+            <span>Mô Phỏng HR Xem CV</span>
+          </button>
+        </div>
       </div>
 
       {/* 4 Overview Metrics */}
@@ -99,8 +132,8 @@ export default function CvHeatmapWidget({ compact = false }: CvHeatmapWidgetProp
           <div className="text-2xl font-black text-slate-900 dark:text-white mt-1.5">
             {analytics.totalViews}
           </div>
-          <div className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold mt-1">
-            +18% so với tuần trước
+          <div className="text-[11px] text-slate-500 dark:text-slate-400 font-semibold mt-1">
+            {analytics.totalViews > 0 ? 'Lượt xem hồ sơ thực tế' : 'Chưa có lượt xem nào'}
           </div>
         </div>
 
@@ -111,8 +144,8 @@ export default function CvHeatmapWidget({ compact = false }: CvHeatmapWidgetProp
           <div className="text-2xl font-black text-slate-900 dark:text-white mt-1.5">
             {analytics.uniqueRecruiters} <span className="text-xs font-normal text-slate-500 dark:text-slate-400">công ty</span>
           </div>
-          <div className="text-[11px] text-indigo-600 dark:text-indigo-400 font-semibold mt-1">
-            Shopee, FPT, MoMo, Techcombank...
+          <div className="text-[11px] text-indigo-600 dark:text-indigo-400 font-semibold mt-1 truncate" title={companiesListText}>
+            {companiesListText}
           </div>
         </div>
 
@@ -124,7 +157,11 @@ export default function CvHeatmapWidget({ compact = false }: CvHeatmapWidgetProp
             {analytics.avgDwellTimeSeconds} <span className="text-xs font-normal text-slate-500 dark:text-slate-400">giây</span>
           </div>
           <div className="text-[11px] text-amber-700 dark:text-amber-400 font-semibold mt-1">
-            ✓ Đạt chuẩn thẩm định chuyên sâu
+            {analytics.avgDwellTimeSeconds >= 30
+              ? '✓ Đạt chuẩn thẩm định chuyên sâu'
+              : analytics.avgDwellTimeSeconds > 0
+                ? 'Đang đo thời gian dừng đọc'
+                : 'Chưa ghi nhận thời gian đọc'}
           </div>
         </div>
 
@@ -136,7 +173,11 @@ export default function CvHeatmapWidget({ compact = false }: CvHeatmapWidgetProp
             {analytics.readThroughRate}%
           </div>
           <div className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold mt-1">
-            Bố cục 1 trang giữ chân HR xuất sắc
+            {analytics.readThroughRate >= 70
+              ? 'Bố cục 1 trang giữ chân HR xuất sắc'
+              : analytics.readThroughRate > 0
+                ? 'Tỷ lệ cuộn đọc toàn bộ hồ sơ'
+                : 'Chưa có dữ liệu cuộn trang'}
           </div>
         </div>
       </div>
@@ -190,9 +231,15 @@ export default function CvHeatmapWidget({ compact = false }: CvHeatmapWidgetProp
               <Sparkles className="w-4 h-4 text-amber-600 dark:text-amber-400" />
               Góc Nhìn Cố Vấn AI:
             </div>
-            <p className="leading-relaxed text-amber-950 dark:text-amber-200">
-              Nhà tuyển dụng dành đến <strong>75% tổng thời gian</strong> vào 2 mục <em>[Kinh Nghiệm]</em> và <em>[Đồ Án Thực Chiến]</em>. Việc các gạch đầu dòng của bạn đã được chuẩn hóa theo mô hình <strong>STAR/Google XYZ</strong> và đính kèm <strong>Mã QR Live Demo</strong> đã giúp tăng độ tin cậy và thúc đẩy quyết định mời phỏng vấn nhanh hơn 40%.
-            </p>
+            {analytics.totalViews > 0 && highestHotspot && highestHotspot.percentage > 0 ? (
+              <p className="leading-relaxed text-amber-950 dark:text-amber-200">
+                Nhà tuyển dụng đang dành nhiều thời gian nhất (<strong>{highestHotspot.percentage}% tổng thời lượng</strong>) vào mục <em>[{highestHotspot.name}]</em>. Tiếp tục củng cố các minh chứng thực chiến theo chuẩn <strong>STAR/Google XYZ</strong> và đính kèm <strong>Mã QR Live Demo</strong> tại phần này để tăng độ tin cậy và thúc đẩy quyết định mời phỏng vấn nhanh hơn.
+              </p>
+            ) : (
+              <p className="leading-relaxed text-slate-700 dark:text-slate-300">
+                Hệ thống chưa ghi nhận lượt xem nào từ nhà tuyển dụng. Hãy chia sẻ đường dẫn <strong>Showcase / Portfolio công khai</strong> của bạn tới các nhà tuyển dụng hoặc đính kèm vào CV để hệ thống tự động ghi nhận số liệu và vẽ bản đồ nhiệt tương tác thực tế.
+              </p>
+            )}
           </div>
         </div>
 
@@ -205,33 +252,43 @@ export default function CvHeatmapWidget({ compact = false }: CvHeatmapWidgetProp
             </div>
 
             <div className="space-y-2.5 max-h-[300px] overflow-y-auto pr-1">
-              {analytics.recentActivities.map(log => (
-                <div key={log.id} className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700 text-xs">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-indigo-600 text-white font-bold text-[11px] flex items-center justify-center">
-                        {log.logoText}
+              {analytics.recentActivities.length > 0 ? (
+                analytics.recentActivities.map(log => (
+                  <div key={log.id} className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700 text-xs">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-lg bg-indigo-600 text-white font-bold text-[11px] flex items-center justify-center">
+                          {log.logoText}
+                        </div>
+                        <div>
+                          <div className="font-bold text-slate-900 dark:text-white">{log.company}</div>
+                          <div className="text-[10px] text-slate-500 dark:text-slate-400">{log.recruiterName}</div>
+                        </div>
                       </div>
-                      <div>
-                        <div className="font-bold text-slate-900 dark:text-white">{log.company}</div>
-                        <div className="text-[10px] text-slate-500 dark:text-slate-400">{log.recruiterName}</div>
-                      </div>
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 font-medium">
+                        {log.viewedAt}
+                      </span>
                     </div>
-                    <span className="text-[10px] text-slate-400 dark:text-slate-500 font-medium">
-                      {log.viewedAt}
-                    </span>
-                  </div>
 
-                  <div className="mt-2 pt-1.5 border-t border-slate-200/60 dark:border-slate-700 flex items-center justify-between text-[11px] text-slate-600 dark:text-slate-400">
-                    <span className="truncate max-w-[190px]">
-                      🎯 Chú ý: {log.focusedSection}
-                    </span>
-                    <span className="font-mono font-semibold text-indigo-700 dark:text-indigo-300 shrink-0">
-                      {log.durationSeconds}s
-                    </span>
+                    <div className="mt-2 pt-1.5 border-t border-slate-200/60 dark:border-slate-700 flex items-center justify-between text-[11px] text-slate-600 dark:text-slate-400">
+                      <span className="truncate max-w-[190px]">
+                        🎯 Chú ý: {log.focusedSection}
+                      </span>
+                      <span className="font-mono font-semibold text-indigo-700 dark:text-indigo-300 shrink-0">
+                        {log.durationSeconds}s
+                      </span>
+                    </div>
                   </div>
+                ))
+              ) : (
+                <div className="py-12 px-4 text-center border border-dashed border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50/50 dark:bg-slate-800/30">
+                  <Clock className="w-8 h-8 mx-auto mb-2 text-slate-300 dark:text-slate-600" />
+                  <p className="text-xs font-bold text-slate-600 dark:text-slate-300">Chưa có nhật ký ghé thăm</p>
+                  <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 max-w-[220px] mx-auto">
+                    Nhật ký xem hồ sơ từ các nhà tuyển dụng sẽ tự động hiển thị ở đây theo thời gian thực khi có người truy cập link Portfolio.
+                  </p>
                 </div>
-              ))}
+              )}
             </div>
           </div>
 

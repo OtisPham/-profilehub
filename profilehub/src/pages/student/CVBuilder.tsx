@@ -229,6 +229,39 @@ export default function CVBuilder() {
   const [applicationPitch, setApplicationPitch] = useState<string>('');
   const [currentJdText, setCurrentJdText] = useState<string>('');
 
+  // Fingerprint for Save & Sync Button state (dimmed when synced)
+  const [lastSyncedFingerprint, setLastSyncedFingerprint] = useState<string | null>(null);
+
+  const currentFingerprint = useMemo(() => {
+    try {
+      return JSON.stringify({
+        personalInfo,
+        sections,
+        selectedTemplate,
+        primaryColor,
+        fontId: selectedFont?.id,
+        spacingDensity,
+        fontSizeLevel,
+        applicationPitch: applicationPitch || '',
+        currentJdText: currentJdText || ''
+      });
+    } catch {
+      return '';
+    }
+  }, [
+    personalInfo,
+    sections,
+    selectedTemplate,
+    primaryColor,
+    selectedFont,
+    spacingDensity,
+    fontSizeLevel,
+    applicationPitch,
+    currentJdText
+  ]);
+
+  const isAlreadySynced = Boolean(lastSyncedFingerprint && lastSyncedFingerprint === currentFingerprint);
+
   // STAR Diagnostic & Guided Elicitation Modal State
   const [isStarDiagnosticModalOpen, setIsStarDiagnosticModalOpen] = useState(false);
 
@@ -445,6 +478,23 @@ export default function CVBuilder() {
         domainId: detectIndustryDomain(cv.data.personalInfo?.jobTitle).id
       });
       setActiveEvaluation(initialEval);
+
+      try {
+        const switchFp = JSON.stringify({
+          personalInfo: cv.data.personalInfo || personalInfo,
+          sections: cv.data.sections || [],
+          selectedTemplate: cv.data.selectedTemplate || 'standard',
+          primaryColor: cv.data.primaryColor || '#1e3a8a',
+          fontId: cv.data.selectedFontId || 'font-inter',
+          spacingDensity: cv.data.spacingDensity || 'normal',
+          fontSizeLevel: cv.data.fontSizeLevel || 'md',
+          applicationPitch: cv.data.applicationPitch || '',
+          currentJdText: cv.data.targetJdText || ''
+        });
+        setLastSyncedFingerprint(switchFp);
+      } catch {
+        // ignore
+      }
     }
   };
 
@@ -513,6 +563,23 @@ export default function CVBuilder() {
         setActiveEvaluation(initialEval);
         const fullEval = evaluateFullCv(activeCV.data.personalInfo, activeCV.data.sections, detectedDom);
         setOverallScore(fullEval.overallScore);
+
+        try {
+          const initFp = JSON.stringify({
+            personalInfo: activeCV.data.personalInfo || personalInfo,
+            sections: activeCV.data.sections,
+            selectedTemplate: activeCV.data.selectedTemplate || 'classic',
+            primaryColor: activeCV.data.primaryColor || '#1e3a8a',
+            fontId: activeCV.data.selectedFontId || FONT_OPTIONS[0].id,
+            spacingDensity: activeCV.data.spacingDensity || 'standard',
+            fontSizeLevel: activeCV.data.fontSizeLevel || 'medium',
+            applicationPitch: activeCV.data.applicationPitch || '',
+            currentJdText: activeCV.data.targetJdText || locationState?.targetJd || ''
+          });
+          setLastSyncedFingerprint(initFp);
+        } catch {
+          // ignore
+        }
 
         // Spec v0.4 BR-02: Check for Profile Drift
         if (activeCV.data.personalInfo && sourceData.profile) {
@@ -829,6 +896,7 @@ export default function CVBuilder() {
 
       const timeStr = new Date(result.savedAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
       setLastSavedTime(`Đã lưu lúc ${timeStr}`);
+      setLastSyncedFingerprint(currentFingerprint);
 
       if (user) {
         setShowGuestSyncModal(false);
@@ -1614,21 +1682,35 @@ export default function CVBuilder() {
             <span className="hidden sm:inline">Pitch Letter</span>
           </button>
 
-          {/* Main CTA: Xuất PDF */}
+          {/* Main CTA: Lưu & Đồng bộ */}
           <button
             id="btn-save-sync-profile"
             onClick={handleSaveCV}
-            disabled={isSaving}
-            className="px-3.5 py-2 bg-[#1e3a8a] hover:bg-[#1e40af] dark:bg-indigo-600 dark:hover:bg-indigo-700 active:scale-95 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-sm transition-all cursor-pointer disabled:opacity-50"
-            title="Lưu bản CV và tự động đồng bộ Họ tên, Kỹ năng, Dự án vào Hồ sơ cá nhân (Ctrl + S)"
+            disabled={isSaving || isAlreadySynced}
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all duration-300 ${
+              isAlreadySynced
+                ? 'opacity-40 bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-300 dark:border-slate-700 cursor-default shadow-none pointer-events-none'
+                : 'bg-[#1e3a8a] hover:bg-[#1e40af] dark:bg-indigo-600 dark:hover:bg-indigo-700 active:scale-95 text-white shadow-sm cursor-pointer'
+            }`}
+            title={
+              isAlreadySynced
+                ? 'Tất cả thay đổi đã được lưu và đồng bộ mới nhất vào tài khoản (Không có thay đổi chưa lưu)'
+                : 'Lưu bản CV và tự động đồng bộ Họ tên, Kỹ năng, Dự án vào Hồ sơ cá nhân (Ctrl + S)'
+            }
           >
             {isSaving ? (
               <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+            ) : isAlreadySynced ? (
+              <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
             ) : (
               <Save className="w-3.5 h-3.5" />
             )}
-            <span className="hidden sm:inline">Lưu & Đồng bộ</span>
-            <span className="sm:hidden">Lưu</span>
+            <span className="hidden sm:inline">
+              {isAlreadySynced ? 'Đã lưu & đồng bộ' : 'Lưu & Đồng bộ'}
+            </span>
+            <span className="sm:hidden">
+              {isAlreadySynced ? 'Đã lưu' : 'Lưu'}
+            </span>
           </button>
 
           <button

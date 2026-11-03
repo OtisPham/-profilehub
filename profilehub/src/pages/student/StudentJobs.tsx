@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthProvider';
 import { getSharedJobs, getRecruiterCompanyProfile } from '../../utils/jobSync';
-import { addToSharedPipeline } from '../../utils/pipelineSync';
+import { addToSharedPipeline, getSharedPipeline } from '../../utils/pipelineSync';
 import RecruiterCompanyModal from '../../components/student/RecruiterCompanyModal';
 import GenerateCvFromJdModal from '../../components/cv/GenerateCvFromJdModal';
 import { 
@@ -76,6 +76,31 @@ ${skillsList}`;
       } catch (err) {
         // Fallback local
       }
+      // 3. Tải danh sách công việc đã nộp hồ sơ
+      try {
+        const localPipeline = getSharedPipeline(user?.id);
+        const myApplied = localPipeline
+          .filter(p => !user?.id || p.student_id === user.id || p.student?.id === user.id)
+          .map(p => p.job_id)
+          .filter(Boolean) as string[];
+
+        if (user?.id) {
+          const { data: dbPipeline } = await supabase
+            .from('candidate_pipeline')
+            .select('job_id')
+            .eq('student_id', user.id);
+          if (dbPipeline) {
+            const dbApplied = dbPipeline.map(p => p.job_id).filter(Boolean) as string[];
+            setAppliedJobIds(Array.from(new Set([...myApplied, ...dbApplied])));
+          } else {
+            setAppliedJobIds(Array.from(new Set(myApplied)));
+          }
+        } else {
+          setAppliedJobIds(Array.from(new Set(myApplied)));
+        }
+      } catch (err) {
+        // Fallback
+      }
     };
 
     loadJobs();
@@ -85,7 +110,7 @@ ${skillsList}`;
       window.removeEventListener('storage', loadJobs);
       window.removeEventListener('focus', loadJobs);
     };
-  }, []);
+  }, [user]);
 
   const handleApplyJob = async (job: JobPost) => {
     // Thu thập bản CV đang kích hoạt (Active CV) hoặc CV mặc định của sinh viên

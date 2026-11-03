@@ -24,7 +24,7 @@ export function getHeaderNavLinks(
   if (!isAuthenticated) {
     return [
       { label: 'Về Chúng Tôi', path: '/#about' },
-      { label: 'Tính Năng JEV', path: '/#features' },
+      { label: 'Tính Năng Nổi Bật', path: '/#features' },
     ];
   }
 

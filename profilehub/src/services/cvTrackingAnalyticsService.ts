@@ -32,94 +32,53 @@ const STORAGE_KEY = 'profilehub_cv_view_analytics_data';
 export const TRACKING_EVENT_NAME = 'profilehub_tracking_updated';
 
 const DEFAULT_ANALYTICS_DATA: CvTrackingAnalyticsData = {
-  totalViews: 48,
-  uniqueRecruiters: 14,
-  avgDwellTimeSeconds: 46,
-  readThroughRate: 84,
+  totalViews: 0,
+  uniqueRecruiters: 0,
+  avgDwellTimeSeconds: 0,
+  readThroughRate: 0,
   heatmap: [
     {
       sectionId: 'experience',
       name: 'Kinh Nghiệm Làm Việc',
-      percentage: 42,
-      dwellSeconds: 19.3,
-      isHotspot: true,
-      intensityColor: '#ef4444' // Đỏ rực - Hotspot #1
+      percentage: 0,
+      dwellSeconds: 0,
+      isHotspot: false,
+      intensityColor: '#ef4444' // Đỏ rực
     },
     {
       sectionId: 'projects',
       name: 'Đồ Án & Bằng Chứng Thực Chiến',
-      percentage: 33,
-      dwellSeconds: 15.2,
-      isHotspot: true,
-      intensityColor: '#f97316' // Cam - Hotspot #2
+      percentage: 0,
+      dwellSeconds: 0,
+      isHotspot: false,
+      intensityColor: '#f97316' // Cam
     },
     {
       sectionId: 'skills',
       name: 'Kỹ Năng & Tech Stack',
-      percentage: 14,
-      dwellSeconds: 6.4,
+      percentage: 0,
+      dwellSeconds: 0,
       isHotspot: false,
       intensityColor: '#8b5cf6' // Tím
     },
     {
       sectionId: 'education',
       name: 'Học Vấn & GPA',
-      percentage: 7,
-      dwellSeconds: 3.2,
+      percentage: 0,
+      dwellSeconds: 0,
       isHotspot: false,
       intensityColor: '#3b82f6' // Xanh lam
     },
     {
       sectionId: 'certifications',
       name: 'Chứng Chỉ & Ngoại Ngữ',
-      percentage: 4,
-      dwellSeconds: 1.9,
+      percentage: 0,
+      dwellSeconds: 0,
       isHotspot: false,
       intensityColor: '#10b981' // Xanh lá
     }
   ],
-  recentActivities: [
-    {
-      id: 'act-1',
-      recruiterName: 'Lê Thu Hương (Senior Tech Recruiter)',
-      company: 'Shopee Vietnam',
-      logoText: 'SP',
-      viewedAt: '15 phút trước',
-      durationSeconds: 58,
-      focusedSection: 'Đồ Án: Microservices High-Throughput Platform',
-      status: 'shortlisted'
-    },
-    {
-      id: 'act-2',
-      recruiterName: 'Trần Minh Quân (Head of Engineering)',
-      company: 'Techcombank Digital Lab',
-      logoText: 'TCB',
-      viewedAt: '2 giờ trước',
-      durationSeconds: 64,
-      focusedSection: 'Kinh nghiệm: Thiết kế RESTful API & PostgreSQL Index',
-      status: 'contacted'
-    },
-    {
-      id: 'act-3',
-      recruiterName: 'Nguyễn Phương Thảo (Talent Acquisition)',
-      company: 'Viettel Solutions',
-      logoText: 'VTS',
-      viewedAt: 'Hôm qua, 14:30',
-      durationSeconds: 39,
-      focusedSection: 'Kỹ năng: React, Node.js, Docker, CI/CD',
-      status: 'viewed'
-    },
-    {
-      id: 'act-4',
-      recruiterName: 'Phạm Đức Trọng (Engineering Lead)',
-      company: 'FPT Software Global',
-      logoText: 'FPT',
-      viewedAt: '2 ngày trước',
-      durationSeconds: 42,
-      focusedSection: 'Đồ Án: Realtime Collaborative Canvas',
-      status: 'viewed'
-    }
-  ],
+  recentActivities: [],
   lastUpdated: new Date().toISOString()
 };
 
@@ -134,11 +93,37 @@ export function getTrackingAnalytics(): CvTrackingAnalyticsData {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_ANALYTICS_DATA));
       return DEFAULT_ANALYTICS_DATA;
     }
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    
+    // Tự động dọn sạch nếu dữ liệu cũ còn mang các số liệu tĩnh giả lập (48 lượt xem, 14 công ty, 46 giây, 84% đọc hết)
+    if (
+      parsed.totalViews === 48 &&
+      parsed.avgDwellTimeSeconds === 46 &&
+      parsed.uniqueRecruiters === 14 &&
+      parsed.readThroughRate === 84
+    ) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_ANALYTICS_DATA));
+      return DEFAULT_ANALYTICS_DATA;
+    }
+
+    return parsed;
   } catch (err) {
     console.warn('Lỗi đọc dữ liệu CV tracking:', err);
     return DEFAULT_ANALYTICS_DATA;
   }
+}
+
+/**
+ * Đặt lại toàn bộ dữ liệu đo lường tracking về trạng thái sạch ban đầu (0)
+ */
+export function resetTrackingAnalytics(): CvTrackingAnalyticsData {
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_ANALYTICS_DATA));
+  }
+  if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
+    window.dispatchEvent(new CustomEvent(TRACKING_EVENT_NAME, { detail: DEFAULT_ANALYTICS_DATA }));
+  }
+  return DEFAULT_ANALYTICS_DATA;
 }
 
 /**
@@ -173,12 +158,21 @@ export function recordCvView(params?: {
     status: 'viewed'
   };
 
+  const updatedActivities = [newLog, ...current.recentActivities.slice(0, 7)];
+  const uniqueCompanies = new Set(updatedActivities.map(a => a.company));
+  const newUniqueRecruiters = uniqueCompanies.size;
+
+  // Tính tỷ lệ đọc hết trang: dựa trên các lượt đọc thực tế có thời lượng >= 35s
+  const completedReads = updatedActivities.filter(a => a.durationSeconds >= 35).length;
+  const newReadThroughRate = Math.min(100, Math.round((completedReads / updatedActivities.length) * 100));
+
   const updated: CvTrackingAnalyticsData = {
     ...current,
     totalViews: newTotalViews,
-    uniqueRecruiters: params?.recruiterCompany ? current.uniqueRecruiters + 1 : current.uniqueRecruiters,
+    uniqueRecruiters: newUniqueRecruiters,
     avgDwellTimeSeconds: newAvgDwell,
-    recentActivities: [newLog, ...current.recentActivities.slice(0, 8)],
+    readThroughRate: newReadThroughRate,
+    recentActivities: updatedActivities,
     lastUpdated: new Date().toISOString()
   };
 
@@ -209,9 +203,11 @@ export function recordSectionDwellTime(sectionId: string, durationSeconds: numbe
 
   // Tính lại tổng và tỷ lệ %
   const totalSeconds = updatedHeatmap.reduce((acc, i) => acc + i.dwellSeconds, 0);
+  const maxDwell = Math.max(...updatedHeatmap.map(i => i.dwellSeconds), 0);
   const rebalanced = updatedHeatmap.map(item => ({
     ...item,
-    percentage: totalSeconds > 0 ? Math.round((item.dwellSeconds / totalSeconds) * 100) : item.percentage
+    percentage: totalSeconds > 0 ? Math.round((item.dwellSeconds / totalSeconds) * 100) : 0,
+    isHotspot: totalSeconds > 0 && item.dwellSeconds === maxDwell && item.dwellSeconds >= 5
   }));
 
   const updated: CvTrackingAnalyticsData = {

@@ -45,6 +45,7 @@ import { QRCodeSVG } from 'qrcode.react';
 import { cvService } from '../../services/cvService';
 import StarDiffReviewModal from './StarDiffReviewModal';
 import ProjectDefenseModal from './ProjectDefenseModal';
+import PageBudgetGuardBar from './PageBudgetGuardBar';
 import type { CVTemplateType } from './CVTemplates';
 import InlineEditPopover from './InlineEditPopover';
 import type {
@@ -89,6 +90,7 @@ interface InteractiveCVCanvasProps {
   template: CVTemplateType;
   fontFamily: string;
   spacingDensity?: 'compact' | 'standard' | 'relaxed';
+  onDensityChange?: (density: 'compact' | 'standard' | 'relaxed') => void;
   fontSizeLevel?: 'small' | 'medium' | 'large';
   activeSectionId: string | null;
   isEditorMode?: boolean;
@@ -184,6 +186,7 @@ export default function InteractiveCVCanvas({
   template,
   fontFamily,
   spacingDensity = 'standard',
+  onDensityChange,
   fontSizeLevel = 'medium',
   activeSectionId,
   isEditorMode = true,
@@ -213,6 +216,11 @@ export default function InteractiveCVCanvas({
   onOpenProfilePicker
 }: InteractiveCVCanvasProps) {
   const [draggedSectionId, setDraggedSectionId] = useState<string | null>(null);
+  const [currentDensity, setCurrentDensity] = useState<'compact' | 'standard' | 'relaxed'>(spacingDensity);
+
+  useEffect(() => {
+    setCurrentDensity(spacingDensity);
+  }, [spacingDensity]);
   const canvasRef = useRef<HTMLDivElement>(null);
   const measureContainerRef = useRef<HTMLDivElement>(null);
   const [pages, setPages] = useState<CVPage[]>([{ pageNumber: 1, hasHeader: true, sections: [] }]);
@@ -1827,6 +1835,26 @@ export default function InteractiveCVCanvas({
           </div>
         ))}
       </div>
+
+      {/* Real-Time Page Budget Guard Bar (SDD Spec E) */}
+      {isEditorMode && (
+        <div className="w-full max-w-[210mm] print:hidden">
+          <PageBudgetGuardBar
+            sections={sections}
+            personalInfo={personalInfo}
+            spacingDensity={currentDensity}
+            onDensityChange={(d) => {
+              setCurrentDensity(d);
+              if (onDensityChange) onDensityChange(d);
+            }}
+            onApplyAutoCondense={(condensedSections) => {
+              condensedSections.forEach(sec => {
+                onUpdateSection(sec.id, sec);
+              });
+            }}
+          />
+        </div>
+      )}
 
       {/* Dynamic Page Counter Badge */}
       <div className="mb-4 px-3.5 py-1 bg-white dark:bg-slate-850 border border-slate-200 dark:border-slate-700 rounded-full shadow-xs text-xs font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-2 print:hidden">

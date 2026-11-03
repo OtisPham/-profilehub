@@ -1,5 +1,10 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { getInitialTheme } from './ThemeContext';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
+import { 
+  getInitialTheme, 
+  getInitialPreference, 
+  THEME_STORAGE_KEY, 
+  THEME_PREFERENCE_KEY 
+} from './ThemeContext';
 
 class LocalStorageMock {
   private store: Record<string, string> = {};
@@ -46,18 +51,24 @@ describe('Theme Management & Mode Switching Logic', () => {
   beforeEach(() => {
     mockStorage.clear();
     classListStore.clear();
+    vi.useRealTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it('TC-THEME-01: getInitialTheme trả về theme đã lưu trong localStorage nếu hợp lệ', () => {
-    mockStorage.setItem('profilehub_theme', 'dark');
+    mockStorage.setItem(THEME_STORAGE_KEY, 'dark');
     expect(getInitialTheme()).toBe('dark');
 
-    mockStorage.setItem('profilehub_theme', 'light');
+    mockStorage.setItem(THEME_STORAGE_KEY, 'light');
     expect(getInitialTheme()).toBe('light');
   });
 
-  it('TC-THEME-02: getInitialTheme mặc định là light khi chưa có dữ liệu lưu', () => {
-    mockStorage.removeItem('profilehub_theme');
+  it('TC-THEME-02: getInitialTheme mặc định là light hoặc dark hợp lệ khi chưa có dữ liệu lưu', () => {
+    mockStorage.removeItem(THEME_STORAGE_KEY);
+    mockStorage.removeItem(THEME_PREFERENCE_KEY);
     const theme = getInitialTheme();
     expect(['light', 'dark']).toContain(theme);
   });
@@ -83,5 +94,36 @@ describe('Theme Management & Mode Switching Logic', () => {
     expect(event.detail.theme).toBe('dark');
 
     window.removeEventListener('profilehub_theme_change', listener as EventListener);
+  });
+
+  it('TC-THEME-05: getInitialPreference mặc định là solar (tự động theo thời gian mặt trời)', () => {
+    mockStorage.removeItem(THEME_PREFERENCE_KEY);
+    expect(getInitialPreference()).toBe('solar');
+  });
+
+  it('TC-THEME-06: Chế độ solar tự động chọn light mode khi trời sáng (10:00 sáng)', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 10, 3, 10, 0, 0)); // 10:00 sáng
+
+    mockStorage.setItem(THEME_PREFERENCE_KEY, 'solar');
+    expect(getInitialTheme()).toBe('light');
+  });
+
+  it('TC-THEME-07: Chế độ solar tự động chọn dark mode sau khi mặt trời lặn (20:00 tối)', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 10, 3, 20, 0, 0)); // 20:00 tối
+
+    mockStorage.setItem(THEME_PREFERENCE_KEY, 'solar');
+    expect(getInitialTheme()).toBe('dark');
+  });
+
+  it('TC-THEME-08: Preference ghi đè thủ công (manual light/dark) được tôn trọng', () => {
+    mockStorage.setItem(THEME_PREFERENCE_KEY, 'dark');
+    expect(getInitialPreference()).toBe('dark');
+    expect(getInitialTheme()).toBe('dark');
+
+    mockStorage.setItem(THEME_PREFERENCE_KEY, 'light');
+    expect(getInitialPreference()).toBe('light');
+    expect(getInitialTheme()).toBe('light');
   });
 });
