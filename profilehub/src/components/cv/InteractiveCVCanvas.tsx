@@ -46,6 +46,7 @@ import { cvService } from '../../services/cvService';
 import StarDiffReviewModal from './StarDiffReviewModal';
 import ProjectDefenseModal from './ProjectDefenseModal';
 import PageBudgetGuardBar from './PageBudgetGuardBar';
+import ColdStartProjectModal from './ColdStartProjectModal';
 import type { CVTemplateType } from './CVTemplates';
 import InlineEditPopover from './InlineEditPopover';
 import type {
@@ -217,6 +218,7 @@ export default function InteractiveCVCanvas({
 }: InteractiveCVCanvasProps) {
   const [draggedSectionId, setDraggedSectionId] = useState<string | null>(null);
   const [currentDensity, setCurrentDensity] = useState<'compact' | 'standard' | 'relaxed'>(spacingDensity);
+  const [isColdStartOpen, setIsColdStartOpen] = useState(false);
 
   useEffect(() => {
     setCurrentDensity(spacingDensity);
@@ -938,8 +940,29 @@ export default function InteractiveCVCanvas({
   // 4. PROJECTS SECTION (Snug, Document Flow, Auto Height)
   const renderProjectsContent = (section: CVSection, overrideItems?: ProjectItem[], showAddBtn: boolean = true) => {
     const items = overrideItems || (section.items as ProjectItem[]) || [];
+    const hasNoProjects = items.length === 0;
     return (
       <div className="space-y-2.5" style={{ height: 'auto' }}>
+        {hasNoProjects && isEditorMode && (
+          <div className="print:hidden p-3 rounded-xl bg-indigo-50/70 dark:bg-indigo-950/40 border border-dashed border-indigo-300 dark:border-indigo-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-left">
+            <div>
+              <div className="text-xs font-bold text-indigo-900 dark:text-indigo-200 flex items-center gap-1.5">
+                <Sparkles className="w-4 h-4 text-amber-500" />
+                Chưa Có Đồ Án Nào Trong Bản CV Này?
+              </div>
+              <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-0.5">
+                Sử dụng Trợ lý Khởi tạo Dự Án để chọn Khung dự án theo chuyên ngành (React, Node, Mobile, AI) hoặc quét từ GitHub để có ngay đồ án chuẩn STAR!
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsColdStartOpen(true)}
+              className="text-xs font-semibold px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-xs transition-all shrink-0 cursor-pointer"
+            >
+              🚀 Khởi Tạo Mẫu
+            </button>
+          </div>
+        )}
         {items.map((item) => (
           <div
             key={item.id}
@@ -1244,6 +1267,15 @@ export default function InteractiveCVCanvas({
                 <span>📥 Kéo Từ Hồ Sơ</span>
               </button>
             )}
+            <button
+              type="button"
+              onClick={() => setIsColdStartOpen(true)}
+              className="py-1 px-3 border border-dashed border-indigo-300 bg-indigo-50/60 hover:bg-indigo-100 text-indigo-700 rounded text-[11px] font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+              title="Khởi tạo đồ án chuẩn mực từ mẫu chuyên ngành hoặc GitHub"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+              <span>Khởi Tạo Mẫu [🚀]</span>
+            </button>
           </div>
         )}
       </div>
@@ -2407,6 +2439,21 @@ export default function InteractiveCVCanvas({
           )}
         </div>
       )}
+      {/* Cold-Start Project Onboarding Modal (User Story 6) */}
+      <ColdStartProjectModal
+        isOpen={isColdStartOpen}
+        onClose={() => setIsColdStartOpen(false)}
+        onApplyStarterProject={(newProj) => {
+          const projectSec = sections.find(s => s.type === 'projects');
+          if (projectSec) {
+            const currentItems = (projectSec.items as ProjectItem[]) || [];
+            onUpdateSection(projectSec.id, {
+              items: [...currentItems, newProj]
+            });
+          }
+        }}
+        targetRole={personalInfo?.jobTitle}
+      />
     </div>
   );
 }
