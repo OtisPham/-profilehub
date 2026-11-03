@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 /**
  * LichSuKienCalendarWidget.tsx
  * Giao diện hiển thị trực tiếp trên Vercel - Được sinh tự động bởi Antigravity Agent
- * Nhiệm vụ: Xây dựng Component React UI hiển thị dữ liệu cho Lịch & Sự kiện (Calendar)
+ * Nhiệm vụ: Xây dựng Component Giao diện & Hiển thị dữ liệu cho Lịch & Sự kiện (Calendar)
  */
 
 export interface LichSuKienCalendarWidgetProps {
@@ -12,7 +12,7 @@ export interface LichSuKienCalendarWidgetProps {
 }
 
 export const LichSuKienCalendarWidget: React.FC<LichSuKienCalendarWidgetProps> = ({
-  title = "Xây dựng Component React UI hiển thị dữ liệu cho Lịch & Sự kiện (Calendar)",
+  title = "Xây dựng Component Giao diện & Hiển thị dữ liệu cho Lịch & Sự kiện (Calendar)",
   className = ""
 }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'details'>('overview');
