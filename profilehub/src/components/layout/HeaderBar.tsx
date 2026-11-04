@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthProvider';
 import type { UserRole, CandidatePipelineItem } from '../../types/database';
 import { 
   Menu, X, Sparkles, Bell, ChevronDown, LogOut, 
-  User, CheckCircle2, Video, Globe
+  User, CheckCircle2, Video, Globe, Building2, Briefcase, Plus, ArrowRightLeft
 } from 'lucide-react';
 import { getHeaderNavLinks, getPendingInterviewNotificationCount } from './headerNavigation';
 import { getSharedPipeline, updateInterviewStatusByStudent } from '../../utils/pipelineSync';
@@ -73,7 +73,8 @@ export default function HeaderBar() {
 
   const handleSwitchRole = (newRole: UserRole) => {
     localStorage.setItem('profilehub_demo_role', newRole);
-    window.location.reload();
+    localStorage.setItem('profilehub_demo_mode', 'true');
+    window.location.href = newRole === 'recruiter' ? '/recruiter/dashboard' : '/dashboard';
   };
 
   // Xử lý cuộn mượt đến anchor trên trang chủ (updateui.md Section 2.1)
@@ -96,7 +97,7 @@ export default function HeaderBar() {
         <div className="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
           
           {/* 1. Khu vực Trái: Logo & Dual-State Branding Badge (updateui.md Section 2) */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <Link 
               to="/" 
               className="flex items-center gap-2 group transition-transform active:scale-95"
@@ -116,8 +117,12 @@ export default function HeaderBar() {
                       v1.0
                     </span>
                   ) : (
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 border border-blue-200/70 dark:border-blue-800/80">
-                      {userRole === 'recruiter' ? 'Nhà Tuyển Dụng' : 'Ứng Viên'}
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                      userRole === 'recruiter' 
+                        ? 'bg-blue-50 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 border-blue-200/70 dark:border-blue-800/80' 
+                        : 'bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300 border-indigo-200/70 dark:border-indigo-800/80'
+                    }`}>
+                      {userRole === 'recruiter' ? '🏢 Nhà Tuyển Dụng' : '🎓 Ứng Viên'}
                     </span>
                   )}
                 </div>
@@ -126,6 +131,19 @@ export default function HeaderBar() {
                 </span>
               </div>
             </Link>
+
+            {/* Nút Chuyển Vai Trò Nhanh Trực Tiếp Trên Header */}
+            {isAuthenticated && (
+              <button
+                type="button"
+                onClick={() => handleSwitchRole(userRole === 'recruiter' ? 'student' : 'recruiter')}
+                className="hidden lg:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300/80 dark:border-slate-700 transition cursor-pointer active:scale-95 shadow-2xs"
+                title={`Click để chuyển tức thì sang giao diện ${userRole === 'recruiter' ? 'Ứng Viên' : 'Nhà Tuyển Dụng'}`}
+              >
+                <ArrowRightLeft className="w-3 h-3 text-indigo-500 shrink-0" />
+                <span>{userRole === 'recruiter' ? 'Sang Ứng Viên' : 'Sang Tuyển Dụng'}</span>
+              </button>
+            )}
           </div>
 
           {/* 2. Khu vực Giữa: Navigation Bar 2 Trạng Thái (updateui.md Section 2.1 & 2.2) */}
@@ -163,6 +181,16 @@ export default function HeaderBar() {
             {/* TRẠNG THÁI 1: CHƯA ĐĂNG NHẬP (PUBLIC LANDING HEADER) */}
             {!isAuthenticated ? (
               <div className="hidden sm:flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleSwitchRole('recruiter')}
+                  className="px-3 py-1.5 rounded-xl text-xs font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/70 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 border border-indigo-200/70 dark:border-indigo-800/70 transition-all cursor-pointer flex items-center gap-1.5"
+                  title="Trải nghiệm nhanh giao diện dành cho Nhà tuyển dụng"
+                >
+                  <Building2 className="w-3.5 h-3.5" />
+                  <span>Cổng Doanh Nghiệp</span>
+                </button>
+
                 <Link
                   to="/login"
                   className="px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100/70 dark:hover:bg-slate-800/70 transition-colors"
@@ -178,10 +206,18 @@ export default function HeaderBar() {
                 </Link>
               </div>
             ) : (
-              /* TRẠNG THÁI 2: ĐÃ ĐĂNG NHẬP (CANDIDATE WORKSPACE HEADER) */
+              /* TRẠNG THÁI 2: ĐÃ ĐĂNG NHẬP (CANDIDATE & RECRUITER WORKSPACE HEADER) */
               <>
-                {/* Nút Tạo CV Mới Nhanh (Dành cho Sinh viên/Ứng viên) */}
-                {userRole !== 'recruiter' && (
+                {/* Nút Hành Động Nhanh Phân Quyền Theo Vai Trò */}
+                {userRole === 'recruiter' ? (
+                  <Link
+                    to="/recruiter/jobs"
+                    className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-blue-700 via-indigo-600 to-blue-600 hover:from-blue-800 hover:to-indigo-700 text-white font-bold text-xs shadow-xs hover:shadow-md transition-all active:scale-95 cursor-pointer"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>+ Đăng Tin Tuyển</span>
+                  </Link>
+                ) : (
                   <button
                     type="button"
                     onClick={() => setIsCreateCvModalOpen(true)}
@@ -263,7 +299,7 @@ export default function HeaderBar() {
                   )}
                 </div>
 
-                {/* Avatar Ứng Viên & Menu Dropdown Chuẩn Hóa (updateui.md Section 2.2) */}
+                {/* Avatar Ứng Viên / Nhà Tuyển Dụng & Menu Dropdown Chuẩn Hóa */}
                 <div className="relative" ref={profileRef}>
                   <button
                     type="button"
@@ -271,12 +307,16 @@ export default function HeaderBar() {
                     className="flex items-center gap-2 p-1 pl-1.5 pr-2 rounded-xl hover:bg-slate-100/80 dark:hover:bg-slate-800/80 transition cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
                     aria-label="Tài khoản người dùng"
                   >
-                    <div className="w-7 h-7 rounded-lg bg-indigo-600 text-white font-bold text-xs flex items-center justify-center shadow-xs">
-                      {user?.email ? user.email.charAt(0).toUpperCase() : 'U'}
+                    <div className={`w-7 h-7 rounded-lg text-white font-bold text-xs flex items-center justify-center shadow-xs ${
+                      userRole === 'recruiter'
+                        ? 'bg-gradient-to-tr from-blue-700 to-indigo-600'
+                        : 'bg-indigo-600'
+                    }`}>
+                      {userRole === 'recruiter' ? <Building2 className="w-3.5 h-3.5" /> : (user?.email ? user.email.charAt(0).toUpperCase() : 'U')}
                     </div>
                     <div className="hidden lg:flex flex-col text-left">
                       <span className="text-xs font-bold text-slate-800 dark:text-slate-200 leading-tight">
-                        {user?.email?.split('@')[0] || 'Ứng viên'}
+                        {user?.user_metadata?.full_name || user?.email?.split('@')[0] || (userRole === 'recruiter' ? 'Nhà tuyển dụng' : 'Ứng viên')}
                       </span>
                       <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 leading-none">
                         {userRole === 'recruiter' ? 'Nhà tuyển dụng' : 'Ứng viên'}
@@ -290,37 +330,76 @@ export default function HeaderBar() {
                     <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-[#111728] rounded-2xl shadow-xl dark:shadow-[0_12px_40px_rgba(0,0,0,0.7)] border border-slate-200/80 dark:border-slate-700/80 p-2 z-50 animate-in fade-in duration-150">
                       <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800">
                         <p className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">
-                          {user?.email || 'Tài khoản Ứng viên'}
+                          {user?.user_metadata?.full_name || user?.email || (userRole === 'recruiter' ? 'Nhà Tuyển Dụng Alpaca' : 'Tài khoản Ứng viên')}
                         </p>
-                        <p className="text-[10px] text-slate-500 dark:text-slate-400 capitalize">
-                          Vai trò: {userRole === 'recruiter' ? 'Nhà Tuyển Dụng' : 'Ứng Viên'}
+                        <p className="text-[10px] text-slate-500 dark:text-slate-400">
+                          Vai trò: <strong className="text-indigo-600 dark:text-indigo-400">{userRole === 'recruiter' ? '🏢 Nhà Tuyển Dụng' : '🎓 Ứng Viên'}</strong>
                         </p>
                       </div>
 
-                      {/* Các lối tắt cá nhân hóa (updateui.md Section 2.2) */}
+                      {/* Các lối tắt cá nhân hóa theo vai trò */}
                       <div className="py-1 border-b border-slate-100 dark:border-slate-800 space-y-0.5">
-                        <Link
-                          to="/my-profile"
-                          onClick={() => setProfileDropdownOpen(false)}
-                          className="w-full text-left px-3 py-2 rounded-lg text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center gap-2 transition"
-                        >
-                          <User className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
-                          <span>👤 Hồ Sơ Năng Lực Gốc</span>
-                        </Link>
-                        <Link
-                          to="/showcase"
-                          onClick={() => setProfileDropdownOpen(false)}
-                          className="w-full text-left px-3 py-2 rounded-lg text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center gap-2 transition"
-                        >
-                          <Globe className="w-3.5 h-3.5 text-blue-500 shrink-0" />
-                          <span>🌐 Xem Trang Portfolio Công Khai</span>
-                        </Link>
+                        {userRole === 'recruiter' ? (
+                          <>
+                            <Link
+                              to="/recruiter/profile"
+                              onClick={() => setProfileDropdownOpen(false)}
+                              className="w-full text-left px-3 py-2 rounded-lg text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center gap-2 transition"
+                            >
+                              <Building2 className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+                              <span>🏢 Hồ Sơ Doanh Nghiệp</span>
+                            </Link>
+                            <Link
+                              to="/recruiter/jobs"
+                              onClick={() => setProfileDropdownOpen(false)}
+                              className="w-full text-left px-3 py-2 rounded-lg text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center gap-2 transition"
+                            >
+                              <Briefcase className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+                              <span>💼 Quản Lý Tin Tuyển Dụng</span>
+                            </Link>
+                            <Link
+                              to="/recruiter/ai-assistant"
+                              onClick={() => setProfileDropdownOpen(false)}
+                              className="w-full text-left px-3 py-2 rounded-lg text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center gap-2 transition"
+                            >
+                              <Sparkles className="w-3.5 h-3.5 text-purple-500 shrink-0" />
+                              <span>🤖 Trợ Lý Tuyển Dụng AI</span>
+                            </Link>
+                            <Link
+                              to="/showcase"
+                              onClick={() => setProfileDropdownOpen(false)}
+                              className="w-full text-left px-3 py-2 rounded-lg text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center gap-2 transition"
+                            >
+                              <Globe className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                              <span>🌐 Xem Kho Showcase Sinh Viên</span>
+                            </Link>
+                          </>
+                        ) : (
+                          <>
+                            <Link
+                              to="/my-profile"
+                              onClick={() => setProfileDropdownOpen(false)}
+                              className="w-full text-left px-3 py-2 rounded-lg text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center gap-2 transition"
+                            >
+                              <User className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+                              <span>👤 Hồ Sơ Năng Lực Gốc</span>
+                            </Link>
+                            <Link
+                              to="/showcase"
+                              onClick={() => setProfileDropdownOpen(false)}
+                              className="w-full text-left px-3 py-2 rounded-lg text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center gap-2 transition"
+                            >
+                              <Globe className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+                              <span>🌐 Xem Trang Portfolio Công Khai</span>
+                            </Link>
+                          </>
+                        )}
                       </div>
 
                       {/* Chuyển đổi vai trò demo */}
                       <div className="py-1">
                         <div className="text-[10px] font-bold text-slate-400 dark:text-slate-500 px-3 py-1 uppercase tracking-wider">
-                          Chuyển Vai Trò Demo
+                          Chuyển Vai Trò Thử Nghiệm
                         </div>
                         <button
                           type="button"
@@ -331,7 +410,7 @@ export default function HeaderBar() {
                               : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
                           }`}
                         >
-                          <span>Ứng Viên (Student)</span>
+                          <span className="flex items-center gap-1.5">🎓 Ứng Viên (Student)</span>
                           {userRole !== 'recruiter' && <CheckCircle2 className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />}
                         </button>
                         <button
@@ -339,12 +418,12 @@ export default function HeaderBar() {
                           onClick={() => handleSwitchRole('recruiter')}
                           className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium flex items-center justify-between cursor-pointer ${
                             userRole === 'recruiter' 
-                              ? 'bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300 font-bold' 
+                              ? 'bg-blue-50 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 font-bold' 
                               : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
                           }`}
                         >
-                          <span>Nhà Tuyển Dụng (HR)</span>
-                          {userRole === 'recruiter' && <CheckCircle2 className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />}
+                          <span className="flex items-center gap-1.5">🏢 Nhà Tuyển Dụng (HR)</span>
+                          {userRole === 'recruiter' && <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />}
                         </button>
                       </div>
 
@@ -404,6 +483,17 @@ export default function HeaderBar() {
             {/* Quick Actions Mobile */}
             {!isAuthenticated ? (
               <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileOpen(false);
+                    handleSwitchRole('recruiter');
+                  }}
+                  className="w-full py-2 text-center text-xs font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-200/70 dark:border-indigo-800/70 rounded-xl hover:bg-indigo-100 dark:hover:bg-indigo-900/60 flex items-center justify-center gap-2"
+                >
+                  <Building2 className="w-4 h-4" />
+                  <span>Trải Nghiệm Cổng Doanh Nghiệp (HR)</span>
+                </button>
                 <Link
                   to="/login"
                   onClick={() => setMobileOpen(false)}
@@ -421,7 +511,17 @@ export default function HeaderBar() {
               </div>
             ) : (
               <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-2">
-                {userRole !== 'recruiter' && (
+                {/* Nút hành động nhanh mobile theo vai trò */}
+                {userRole === 'recruiter' ? (
+                  <Link
+                    to="/recruiter/jobs"
+                    onClick={() => setMobileOpen(false)}
+                    className="w-full py-2 bg-gradient-to-r from-blue-700 to-indigo-600 hover:from-blue-800 hover:to-indigo-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-xs cursor-pointer"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>+ Đăng Tin Tuyển Mới</span>
+                  </Link>
+                ) : (
                   <button
                     type="button"
                     onClick={() => {
@@ -435,13 +535,34 @@ export default function HeaderBar() {
                   </button>
                 )}
 
-                <Link
-                  to="/my-profile"
-                  onClick={() => setMobileOpen(false)}
-                  className="block px-3 py-2 rounded-lg text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
-                >
-                  👤 Hồ Sơ Năng Lực Gốc
-                </Link>
+                {/* Các menu cá nhân mobile theo vai trò */}
+                {userRole === 'recruiter' ? (
+                  <>
+                    <Link
+                      to="/recruiter/profile"
+                      onClick={() => setMobileOpen(false)}
+                      className="block px-3 py-2 rounded-lg text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
+                    >
+                      🏢 Hồ Sơ Doanh Nghiệp
+                    </Link>
+                    <Link
+                      to="/recruiter/ai-assistant"
+                      onClick={() => setMobileOpen(false)}
+                      className="block px-3 py-2 rounded-lg text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
+                    >
+                      🤖 Trợ Lý Tuyển Dụng AI
+                    </Link>
+                  </>
+                ) : (
+                  <Link
+                    to="/my-profile"
+                    onClick={() => setMobileOpen(false)}
+                    className="block px-3 py-2 rounded-lg text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
+                  >
+                    👤 Hồ Sơ Năng Lực Gốc
+                  </Link>
+                )}
+
                 <Link
                   to="/showcase"
                   onClick={() => setMobileOpen(false)}
@@ -449,6 +570,20 @@ export default function HeaderBar() {
                 >
                   🌐 Xem Trang Portfolio Công Khai
                 </Link>
+
+                {/* Đổi vai trò mobile */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileOpen(false);
+                    handleSwitchRole(userRole === 'recruiter' ? 'student' : 'recruiter');
+                  }}
+                  className="w-full text-left px-3 py-2 rounded-lg text-xs font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50/70 dark:bg-indigo-950/40 flex items-center justify-between"
+                >
+                  <span>Chuyển sang {userRole === 'recruiter' ? '🎓 Ứng Viên' : '🏢 Nhà Tuyển Dụng'}</span>
+                  <ArrowRightLeft className="w-3.5 h-3.5" />
+                </button>
+
                 <Link
                   to="/logout"
                   onClick={() => setMobileOpen(false)}

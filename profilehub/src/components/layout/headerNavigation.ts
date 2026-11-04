@@ -31,10 +31,11 @@ export function getHeaderNavLinks(
   // Trạng thái 2: Khi đã đăng nhập - Nhà tuyển dụng (Recruiter Workspace)
   if (role === 'recruiter') {
     return [
-      { label: 'Bảng Tin Tuyển Dụng', path: '/recruiter/dashboard' },
-      { label: 'Tin Tuyển Dụng', path: '/recruiter/jobs' },
-      { label: 'Tìm Ứng Viên', path: '/recruiter/candidates' },
-      { label: 'Pipeline Phỏng Vấn', path: '/recruiter/pipeline' },
+      { label: '📊 Tổng Quan Tuyển Dụng', path: '/recruiter/dashboard' },
+      { label: '💼 Tin Tuyển Dụng', path: '/recruiter/jobs' },
+      { label: '🔍 Tìm Ứng Viên', path: '/recruiter/candidates' },
+      { label: '📌 Pipeline Phỏng Vấn', path: '/recruiter/pipeline' },
+      { label: '✨ Trợ Lý AI', path: '/recruiter/ai-assistant' },
     ];
   }
 
