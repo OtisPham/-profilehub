@@ -4,6 +4,8 @@ import { getSharedJobs, getRecruiterCompanyProfile } from '../../utils/jobSync';
 import { addToSharedPipeline, getSharedPipeline } from '../../utils/pipelineSync';
 import RecruiterCompanyModal from '../../components/student/RecruiterCompanyModal';
 import GenerateCvFromJdModal from '../../components/cv/GenerateCvFromJdModal';
+import ApplicationKanbanBoard from '../../components/student/ApplicationKanbanBoard';
+import { applicationTrackerService } from '../../services/applicationTrackerService';
 import { 
   Search, 
   Briefcase, 
@@ -13,7 +15,8 @@ import {
   Info, 
   CheckCircle2, 
   ShieldCheck,
-  Sparkles
+  Sparkles,
+  FolderKanban
 } from 'lucide-react';
 import type { JobPost } from '../../types/database';
 import { supabase } from '../../services/supabase';
@@ -21,6 +24,7 @@ import { cvService } from '../../services/cvService';
 
 export default function StudentJobs() {
   const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState<'jobs' | 'pipeline'>('jobs');
   const [jobs, setJobs] = useState<JobPost[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedJobForModal, setSelectedJobForModal] = useState<JobPost | null>(null);
@@ -162,7 +166,29 @@ ${skillsList}`;
     // 2. Đồng thời lưu local cache để tương thích với các tab đang mở
     addToSharedPipeline(newItem, job.recruiter_id);
     setAppliedJobIds(prev => [...prev, job.id]);
-    alert(`🎉 Ứng tuyển thành công vị trí: ${job.title}!\nBản CV "${activeCv?.title || 'CV Mặc Định'}" của bạn đã được chuyển tới Nhà tuyển dụng.`);
+
+    // 3. Tự động đồng bộ vào Bảng Kanban Tiến Trình Ứng Tuyển của sinh viên
+    try {
+      const recruiterProfile = getRecruiterCompanyProfile(job.recruiter_id);
+      const companyTitle = recruiterProfile?.companyName || 'Doanh Nghiệp Tuyển Dụng';
+      applicationTrackerService.createApplication({
+        userId: user?.id || 'default',
+        companyName: companyTitle,
+        roleTitle: job.title,
+        salaryExpectation: (job as any).salary_range || undefined,
+        jobLocation: job.location || undefined,
+        applicationSource: 'profilehub',
+        stage: 'applied',
+        linkedCvId: activeCv?.id,
+        linkedCvTitle: activeCv?.title || activeCv?.targetRole || 'Bản CV đã lưu',
+        appliedDate: new Date().toISOString().split('T')[0],
+        notes: `Nộp trực tiếp từ tin tuyển dụng trên ProfileHub: ${job.title}`
+      }, user?.id);
+    } catch (err) {
+      console.warn('[StudentJobs] Lỗi ghi applicationTrackerService:', err);
+    }
+
+    alert(`🎉 Ứng tuyển thành công vị trí: ${job.title}!\nBản CV "${activeCv?.title || 'CV Mặc Định'}" của bạn đã được chuyển tới Nhà tuyển dụng và đưa vào Bảng Kanban theo dõi.`);
   };
 
   const filteredJobs = jobs.filter(job =>
@@ -181,7 +207,7 @@ ${skillsList}`;
         padding: '24px 28px',
         border: '1px solid #e2e8f0',
         boxShadow: '0 2px 6px rgba(0,0,0,0.02)',
-        marginBottom: '25px',
+        marginBottom: '20px',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -190,10 +216,10 @@ ${skillsList}`;
       }}>
         <div>
           <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 6px 0', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            💼 Khám Phá Cơ Hội Việc Làm & Ứng Tuyển
+            💼 Việc Làm & Tiến Trình Tuyển Dụng
           </h1>
           <p style={{ color: '#64748b', margin: 0, fontSize: '14px' }}>
-            Xem danh sách bài đăng tuyển dụng từ doanh nghiệp đối tác và nộp hồ sơ ứng tuyển trực tiếp.
+            Khám phá cơ hội việc làm doanh nghiệp và quản lý toàn bộ phễu tuyển dụng cá nhân theo chuẩn Kanban.
           </p>
         </div>
         <div style={{ fontSize: '13px', fontWeight: 'bold', backgroundColor: '#eff6ff', color: '#1d4ed8', padding: '8px 16px', borderRadius: '12px', border: '1px solid #bfdbfe', display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -201,7 +227,38 @@ ${skillsList}`;
         </div>
       </div>
 
-      {/* Search Bar */}
+      {/* Tab Switcher */}
+      <div className="flex items-center gap-2 mb-6 p-1.5 bg-slate-100 dark:bg-slate-800/80 rounded-2xl w-fit border border-slate-200 dark:border-slate-700">
+        <button
+          onClick={() => setActiveTab('jobs')}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs transition-all ${
+            activeTab === 'jobs'
+              ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+          }`}
+        >
+          <Briefcase size={15} />
+          <span>Khám Phá Việc Làm ({filteredJobs.length})</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('pipeline')}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs transition-all ${
+            activeTab === 'pipeline'
+              ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+          }`}
+        >
+          <FolderKanban size={15} />
+          <span>Tiến Trình Ứng Tuyển (Kanban)</span>
+        </button>
+      </div>
+
+      {activeTab === 'pipeline' ? (
+        <ApplicationKanbanBoard />
+      ) : (
+        <>
+          {/* Search Bar */}
       <div style={{ position: 'relative', marginBottom: '25px' }}>
         <Search size={18} color="#94a3b8" style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)' }} />
         <input
@@ -367,6 +424,8 @@ ${skillsList}`;
           })
         )}
       </div>
+      </>
+      )}
 
       {/* Recruiter / Company Profile Modal */}
       {selectedJobForModal && (
