@@ -25,3 +25,38 @@ export interface IprojectsResponse {
   data: IprojectsItem[];
   total: number;
 }
+
+/**
+ * PublicVerifiedProjectRecord
+ * DTO dữ liệu công khai trên Cổng tra cứu bảo chứng đồ án (/verify/:code).
+ * Đã qua rào chắn Zero Data Leak (tuyệt đối không chứa GPA, SĐT, Email cá nhân).
+ */
+export interface PublicVerifiedProjectRecord {
+  verificationCode: string;
+  verificationHash: string;
+  verifiedAt: string;
+  project: {
+    id: string;
+    title: string;
+    projectType: string;
+    description: string;
+    tags: string[];
+    demoUrl?: string;
+    githubUrl?: string;
+    figmaUrl?: string;
+    docUrl?: string;
+  };
+  student: {
+    name: string;
+    university: string;
+    faculty?: string;
+    avatarUrl?: string;
+  };
+  instructor: {
+    name: string;
+    title: string;
+    department?: string;
+  };
+  isValid: boolean;
+}
+
