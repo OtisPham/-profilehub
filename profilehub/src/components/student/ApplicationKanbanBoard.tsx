@@ -24,6 +24,7 @@ import AddApplicationModal from './AddApplicationModal';
 import ApplicationAnalyticsWidget from './ApplicationAnalyticsWidget';
 import CvQuickViewModal from '../cv/CvQuickViewModal';
 import AiMockInterviewModal from './AiMockInterviewModal';
+import CoverLetterModal from './CoverLetterModal';
 import { cvService, type ManagedCVItem } from '../../services/cvService';
 import { useAuth } from '../../context/AuthProvider';
 
@@ -106,6 +107,28 @@ export default function ApplicationKanbanBoard() {
     companyName: '',
     roleTitle: ''
   });
+
+  const [coverLetterData, setCoverLetterData] = useState<{
+    isOpen: boolean;
+    applicationId?: string;
+    companyName: string;
+    roleTitle: string;
+    linkedCvId?: string;
+  }>({
+    isOpen: false,
+    companyName: '',
+    roleTitle: ''
+  });
+
+  const handleOpenCoverLetter = (app: CandidateApplicationItem) => {
+    setCoverLetterData({
+      isOpen: true,
+      applicationId: app.id,
+      companyName: app.companyName,
+      roleTitle: app.roleTitle,
+      linkedCvId: app.linkedCvId
+    });
+  };
 
   const loadData = useCallback(() => {
     const list = applicationTrackerService.getApplications(user?.id);
@@ -270,6 +293,7 @@ export default function ApplicationKanbanBoard() {
                         application={app}
                         onViewCv={handleViewCv}
                         onPracticeAi={handlePracticeAi}
+                        onOpenCoverLetter={handleOpenCoverLetter}
                         onUpdateStage={handleUpdateStage}
                         onDelete={handleDelete}
                       />
@@ -296,7 +320,12 @@ export default function ApplicationKanbanBoard() {
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         defaultStage={addModalDefaultStage}
-        onCreated={() => loadData()}
+        onCreated={(newApp, openCoverLetter) => {
+          loadData();
+          if (openCoverLetter && newApp) {
+            handleOpenCoverLetter(newApp);
+          }
+        }}
       />
 
       {/* Linked CV Quick View Modal */}
@@ -315,6 +344,18 @@ export default function ApplicationKanbanBoard() {
         companyName={mockInterviewData.companyName}
         roleTitle={mockInterviewData.roleTitle}
       />
+
+      {/* Cover Letter & Outbound Email Modal */}
+      {coverLetterData.isOpen && (
+        <CoverLetterModal
+          isOpen={coverLetterData.isOpen}
+          onClose={() => setCoverLetterData(prev => ({ ...prev, isOpen: false }))}
+          applicationId={coverLetterData.applicationId}
+          companyName={coverLetterData.companyName}
+          roleTitle={coverLetterData.roleTitle}
+          linkedCvId={coverLetterData.linkedCvId}
+        />
+      )}
     </div>
   );
 }

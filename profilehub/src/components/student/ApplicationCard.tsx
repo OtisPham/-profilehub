@@ -6,6 +6,7 @@ import {
   Calendar, 
   FileText, 
   Mic, 
+  Mail,
   Trash2, 
   ChevronRight, 
   ChevronLeft,
@@ -18,6 +19,7 @@ interface ApplicationCardProps {
   application: CandidateApplicationItem;
   onViewCv: (app: CandidateApplicationItem) => void;
   onPracticeAi: (app: CandidateApplicationItem) => void;
+  onOpenCoverLetter?: (app: CandidateApplicationItem) => void;
   onUpdateStage: (id: string, newStage: ApplicationStage) => void;
   onDelete: (id: string) => void;
   onEdit?: (app: CandidateApplicationItem) => void;
@@ -46,6 +48,7 @@ export default function ApplicationCard({
   application,
   onViewCv,
   onPracticeAi,
+  onOpenCoverLetter,
   onUpdateStage,
   onDelete,
   onEdit
@@ -158,6 +161,17 @@ export default function ApplicationCard({
             <span>Luyện AI</span>
           </button>
         </div>
+
+        {onOpenCoverLetter && (
+          <button
+            onClick={() => onOpenCoverLetter(application)}
+            className="w-full flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 transition-colors border border-emerald-200/60 dark:border-emerald-800/60"
+            title="Tạo Thư Ứng Tuyển & Mẫu Email Gửi HR"
+          >
+            <Mail size={12} />
+            <span>Thư Ứng Tuyển & Email HR</span>
+          </button>
+        )}
 
         {/* Stage transition arrows & delete */}
         <div className="flex items-center justify-between text-xs text-slate-400 pt-1">

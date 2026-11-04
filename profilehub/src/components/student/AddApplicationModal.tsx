@@ -7,7 +7,7 @@ import { useAuth } from '../../context/AuthProvider';
 interface AddApplicationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreated: (item: CandidateApplicationItem) => void;
+  onCreated: (item: CandidateApplicationItem, openCoverLetter?: boolean) => void;
   defaultStage?: ApplicationStage;
 }
 
@@ -29,6 +29,7 @@ export default function AddApplicationModal({
   const [selectedCvId, setSelectedCvId] = useState('');
   const [interviewDate, setInterviewDate] = useState('');
   const [notes, setNotes] = useState('');
+  const [openCoverLetterAfterSave, setOpenCoverLetterAfterSave] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -73,7 +74,7 @@ export default function AddApplicationModal({
       notes: notes.trim() || undefined
     };
 
-    onCreated(newItem as CandidateApplicationItem);
+    onCreated(newItem as CandidateApplicationItem, openCoverLetterAfterSave);
     onClose();
 
     // Reset form
@@ -82,6 +83,7 @@ export default function AddApplicationModal({
     setSalaryExpectation('');
     setNotes('');
     setInterviewDate('');
+    setOpenCoverLetterAfterSave(false);
   };
 
   return (
@@ -285,6 +287,19 @@ export default function AddApplicationModal({
               className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 text-xs resize-none"
             />
           </div>
+
+          {/* Quick Open Cover Letter Checkbox */}
+          <label className="flex items-center gap-2 p-3 rounded-xl bg-emerald-50/60 dark:bg-emerald-950/20 border border-emerald-200/60 dark:border-emerald-900/40 cursor-pointer text-xs text-slate-700 dark:text-slate-300">
+            <input
+              type="checkbox"
+              checked={openCoverLetterAfterSave}
+              onChange={e => setOpenCoverLetterAfterSave(e.target.checked)}
+              className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300 dark:border-slate-700"
+            />
+            <span className="font-semibold text-emerald-800 dark:text-emerald-300">
+              ✉️ Mở ngay Thư Ứng Tuyển & Email May Đo sau khi lưu
+            </span>
+          </label>
 
           {/* Submit buttons */}
           <div className="pt-2 flex items-center justify-end gap-3">
