@@ -13,7 +13,8 @@ export default function ProjectQRCodeModal({ project, onClose }: ProjectQRCodeMo
   const [copied, setCopied] = useState(false);
 
   const baseUrl = import.meta.env.VITE_APP_URL || window.location.origin;
-  const publicUrl = project.demo_url || project.github_url || `${baseUrl}/projects`;
+  const verificationCode = (project as any).verification_code || (project as any).verificationCode || `PH-VER-${(project.id || 'A8B9C2').replace(/[^a-zA-Z0-9]/g, '').slice(0, 6).toUpperCase()}`;
+  const publicUrl = `${baseUrl}/verify/${verificationCode}`;
 
   const handleDownloadPNG = () => {
     const canvas = canvasRef.current?.querySelector('canvas');
@@ -55,7 +56,7 @@ export default function ProjectQRCodeModal({ project, onClose }: ProjectQRCodeMo
           
           <div style={{ display: 'inline-block', backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', color: '#166534', padding: '6px 14px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold', marginBottom: '20px' }}>
             <ShieldCheck size={14} style={{ verticalAlign: 'middle', marginRight: '4px' }} />
-            EVIDENCE LINKED • {project.id.slice(0, 8)}
+            VERIFIED PROOF • {verificationCode}
           </div>
 
           <h4 style={{ fontSize: '16px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 16px', lineHeight: '1.4' }}>
@@ -73,7 +74,7 @@ export default function ProjectQRCodeModal({ project, onClose }: ProjectQRCodeMo
           </div>
 
           <p style={{ fontSize: '12px', color: '#64748b', margin: '0 0 20px', lineHeight: '1.5' }}>
-            Dán mã QR này vào <strong>CV PDF, Slide thuyết trình</strong> hoặc Portfolio. Nhà tuyển dụng quét mã để truy cập trực tiếp demo, minh chứng hoặc mã nguồn dự án.
+            Dán mã QR này vào <strong>CV PDF, Slide thuyết trình</strong> hoặc Portfolio. Nhà tuyển dụng quét mã để truy cập ngay Cổng tra cứu bảo chứng số và mã băm SHA-256 toàn vẹn của đồ án.
           </p>
 
           {/* Action Buttons */}
@@ -90,7 +91,7 @@ export default function ProjectQRCodeModal({ project, onClose }: ProjectQRCodeMo
               style={{ width: '100%', backgroundColor: '#f1f5f9', color: '#334155', border: '1px solid #cbd5e1', padding: '10px', borderRadius: '10px', fontWeight: '600', fontSize: '13px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
             >
               {copied ? <Check size={16} color="#10b981" /> : <Copy size={16} />}
-              {copied ? 'Đã Sao Chép Link!' : 'Sao Chép Link Minh Chứng'}
+              {copied ? 'Đã Sao Chép Link Bảo Chứng!' : 'Sao Chép Link Bảo Chứng (/verify)'}
             </button>
 
             <a 

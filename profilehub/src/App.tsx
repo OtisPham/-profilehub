@@ -8,6 +8,7 @@ import Register from './pages/auth/Register';
 import Logout from './pages/auth/Logout';
 import HomePage from './pages/public/HomePage';
 import PublicShowcase from './pages/public/PublicShowcase';
+import PublicVerificationView from './pages/public/PublicVerificationView';
 
 import Dashboard from './pages/student/Dashboard';
 import MyProfile from './pages/student/MyProfile';
@@ -92,6 +93,9 @@ function App() {
       <Route path="/showcase/:id" element={<PublicShowcase />} />
       <Route path="/p/:id" element={<PublicShowcase />} />
       <Route path="/portfolio/:id" element={<PublicShowcase />} />
+
+      {/* Cổng tra cứu bảo chứng đồ án công khai & QR Proof (Độc lập, không yêu cầu đăng nhập) */}
+      <Route path="/verify/:code" element={<PublicVerificationView />} />
 
       {/* Layout SaaS toàn cục có HeaderBar kính mờ & Footer */}
       <Route element={<MainLayout />}>
