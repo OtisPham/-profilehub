@@ -35,6 +35,7 @@ import {
   AlertCircle,
   FolderKanban,
   Edit3,
+  Shield,
   ShieldAlert,
   Scissors,
   Loader2,
@@ -45,6 +46,7 @@ import { QRCodeSVG } from 'qrcode.react';
 import { cvService } from '../../services/cvService';
 import StarDiffReviewModal from './StarDiffReviewModal';
 import ProjectDefenseModal from './ProjectDefenseModal';
+import StarDefenseModal from './StarDefenseModal';
 import PageBudgetGuardBar from './PageBudgetGuardBar';
 import ColdStartProjectModal from './ColdStartProjectModal';
 import type { CVTemplateType } from './CVTemplates';
@@ -345,6 +347,14 @@ export default function InteractiveCVCanvas({
 
   // Project Technical Defense Modal State (Trụ Cột 3)
   const [defenseProjectToReview, setDefenseProjectToReview] = useState<ProjectItem | null>(null);
+
+  // STAR Defense Cheat-Sheet Target State
+  const [starDefenseTarget, setStarDefenseTarget] = useState<{
+    bulletText: string;
+    projectName?: string;
+    projectId?: string;
+    technologies?: string[];
+  } | null>(null);
 
   // Spacing presets
   const paddingMap = {
@@ -1031,6 +1041,26 @@ export default function InteractiveCVCanvas({
                   <ShieldAlert className="w-2.5 h-2.5" />
                   <span>Phòng thủ [🛡️]</span>
                 </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const rawLines = (item.bullets && item.bullets.length > 0)
+                      ? item.bullets
+                      : (item.description || '').split('\n').map(l => l.replace(/^[•\-\*]\s*/, '').trim()).filter(Boolean);
+                    const targetLine = rawLines.find(l => /(\d+(\.\d+)?%|\d+\s*(ms|s|giây))/i.test(l)) || rawLines[0] || `Phát triển ${item.projectName}`;
+                    setStarDefenseTarget({
+                      bulletText: targetLine,
+                      projectName: item.projectName,
+                      projectId: item.id,
+                      technologies: item.technologies
+                    });
+                  }}
+                  className="px-1.5 py-0.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded flex items-center gap-1 transition text-[10px]"
+                  title="Phao Cứu Sinh Phỏng Vấn (Giải trình số liệu & kịch bản 30s) [🛡️ Phao]"
+                >
+                  <Shield className="w-2.5 h-2.5" />
+                  <span>Phao [🛡️]</span>
+                </button>
                 {onDuplicateItemInSection && (
                   <button onClick={() => onDuplicateItemInSection(section.id, item.id)} title="Nhân bản" className="p-0.5 hover:text-blue-300">
                     <Copy className="w-2.5 h-2.5" />
@@ -1211,6 +1241,32 @@ export default function InteractiveCVCanvas({
               className={`${baseTextSize} text-slate-600 dark:text-slate-300`}
               readOnly={!isEditorMode}
             />
+
+            {/* Quick STAR Defense Helper Pills (Print hidden) */}
+            {isEditorMode && item.description && (
+              <div className="print:hidden my-1 flex flex-wrap items-center gap-1.5">
+                {(item.bullets && item.bullets.length > 0
+                  ? item.bullets
+                  : item.description.split('\n').map(l => l.replace(/^[•\-\*]\s*/, '').trim()).filter(Boolean)
+                ).filter(line => /(\d+(\.\d+)?%|\d+\s*(ms|s|giây))/i.test(line)).map((mLine, mIdx) => (
+                  <button
+                    key={mIdx}
+                    type="button"
+                    onClick={() => setStarDefenseTarget({
+                      bulletText: mLine,
+                      projectName: item.projectName,
+                      projectId: item.id,
+                      technologies: item.technologies
+                    })}
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/60 dark:hover:bg-blue-900/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 transition cursor-pointer shadow-2xs"
+                    title="Mở phao cứu sinh giải trình số liệu cho câu này"
+                  >
+                    <Shield className="w-2.5 h-2.5 text-blue-600 dark:text-blue-400" />
+                    <span>Phao số liệu: "{mLine.slice(0, 28)}..."</span>
+                  </button>
+                ))}
+              </div>
+            )}
 
             {/* Evidence Showcase Pills & Print-Only Smart Quick-Verify QR (Ticket 06) */}
             {(item.projectUrl || item.githubUrl) && (
@@ -2422,6 +2478,18 @@ export default function InteractiveCVCanvas({
           onClose={() => setDefenseProjectToReview(null)}
           project={defenseProjectToReview}
           targetRole={personalInfo?.jobTitle}
+        />
+      )}
+
+      {/* STAR Defense Cheat-Sheet Modal */}
+      {starDefenseTarget && (
+        <StarDefenseModal
+          isOpen={Boolean(starDefenseTarget)}
+          onClose={() => setStarDefenseTarget(null)}
+          bulletText={starDefenseTarget.bulletText}
+          projectName={starDefenseTarget.projectName}
+          projectId={starDefenseTarget.projectId}
+          technologies={starDefenseTarget.technologies}
         />
       )}
 

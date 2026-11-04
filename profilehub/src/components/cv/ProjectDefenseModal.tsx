@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import {
   X,
+  Shield,
   ShieldAlert,
   HelpCircle,
   Scale,
@@ -14,6 +15,7 @@ import {
 } from 'lucide-react';
 import type { ProjectItem } from '../../types/cvSection';
 import { projectDefenseService, type ProjectDefensePlan } from '../../services/projectDefenseService';
+import { starDefenseService } from '../../services/starDefenseService';
 
 interface ProjectDefenseModalProps {
   isOpen: boolean;
@@ -30,7 +32,7 @@ export default function ProjectDefenseModal({
   projects,
   targetRole
 }: ProjectDefenseModalProps) {
-  const [activeTab, setActiveTab] = useState<'trap' | 'tradeoff' | 'debug' | 'limitations'>('trap');
+  const [activeTab, setActiveTab] = useState<'trap' | 'tradeoff' | 'debug' | 'limitations' | 'metric_defense'>('trap');
   const [isCopied, setIsCopied] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState<string>(project?.id || (projects && projects[0]?.id) || '');
 
@@ -54,6 +56,11 @@ export default function ProjectDefenseModal({
     if (!activeProject) return null;
     return projectDefenseService.generateDefenseBriefing(activeProject, targetRole);
   }, [activeProject, targetRole]);
+
+  const starDefenseOverview = useMemo(() => {
+    if (!activeProject) return null;
+    return starDefenseService.generateProjectDefenseOverview(activeProject);
+  }, [activeProject]);
 
   if (!isOpen) return null;
 
@@ -270,6 +277,23 @@ export default function ProjectDefenseModal({
             <AlertTriangle className="w-4 h-4" />
             <span>Điểm Hạn Chế Nên Thừa Nhận</span>
           </button>
+
+          <button
+            onClick={() => setActiveTab('metric_defense')}
+            className={`py-3 px-3 border-b-2 flex items-center gap-1.5 transition-all ${
+              activeTab === 'metric_defense'
+                ? 'border-blue-600 text-blue-600 dark:text-blue-400'
+                : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+            }`}
+          >
+            <Shield className="w-4 h-4 text-emerald-500" />
+            <span className="flex items-center gap-1">
+              Phao Giải Trình STAR
+              <span className="px-1.5 py-0.5 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 text-[9px] rounded font-extrabold uppercase">
+                Mới
+              </span>
+            </span>
+          </button>
         </div>
 
         {/* Content Body */}
@@ -408,6 +432,115 @@ export default function ProjectDefenseModal({
                   >
                     <span className="font-bold text-amber-600 shrink-0">•</span>
                     <span>{lim}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* TAB 5: STAR METRIC DEFENSE CHEAT-SHEET */}
+          {activeTab === 'metric_defense' && starDefenseOverview && (
+            <div className="space-y-4">
+              {/* Readiness Score Bar */}
+              <div className="p-4 bg-gradient-to-r from-blue-50/70 via-indigo-50/40 to-emerald-50/50 dark:from-slate-800 dark:via-indigo-950/30 dark:to-emerald-950/20 rounded-2xl border border-blue-100 dark:border-slate-700 flex flex-wrap items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="font-extrabold text-slate-900 dark:text-white text-sm">
+                      Độ Sẵn Sàng Phòng Thủ Đồ Án
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300">
+                      {starDefenseOverview.overallReadinessScore}% Sẵn Sàng
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Đã rà soát {starDefenseOverview.defenseItems.length} gạch đầu dòng, phát hiện {starDefenseOverview.totalTrapQuestions} câu hỏi bẫy và {starDefenseOverview.highRiskCount} cảnh báo câu từ.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div className="text-center px-3 py-1.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
+                    <span className="text-[10px] uppercase font-bold text-slate-400 block">Câu hỏi bẫy</span>
+                    <span className="text-sm font-extrabold text-indigo-600 dark:text-indigo-400">{starDefenseOverview.totalTrapQuestions}</span>
+                  </div>
+                  <div className="text-center px-3 py-1.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
+                    <span className="text-[10px] uppercase font-bold text-slate-400 block">Từ nhạy cảm</span>
+                    <span className="text-sm font-extrabold text-rose-600 dark:text-rose-400">{starDefenseOverview.highRiskCount}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Items List */}
+              <div className="space-y-4">
+                {starDefenseOverview.defenseItems.map((item, bIdx) => (
+                  <div
+                    key={item.id || bIdx}
+                    className="p-4 bg-white dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-xs space-y-3"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-start gap-2">
+                        <span className="w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">
+                          {bIdx + 1}
+                        </span>
+                        <div>
+                          <p className="font-semibold text-slate-900 dark:text-slate-100 text-xs sm:text-sm">
+                            "{item.bulletText}"
+                          </p>
+                          {item.metricBasis && (
+                            <span className="text-[11px] text-blue-600 dark:text-blue-400 font-medium">
+                              🛠️ Đo đạc bằng: {item.metricBasis.measurementTool}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {item.metricBasis && (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                        <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800">
+                          <span className="text-[10px] font-bold text-slate-400 uppercase block">Trước khi tối ưu:</span>
+                          <span className="text-slate-600 dark:text-slate-400">{item.metricBasis.beforeMetric}</span>
+                        </div>
+                        <div className="p-2.5 rounded-lg bg-emerald-50/60 dark:bg-emerald-950/20 border border-emerald-200/60 dark:border-emerald-900/40">
+                          <span className="text-[10px] font-bold text-emerald-600 uppercase block">Sau khi tối ưu:</span>
+                          <span className="text-emerald-700 dark:text-emerald-300 font-medium">{item.metricBasis.afterMetric}</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {item.redFlags.length > 0 && (
+                      <div className="p-2.5 rounded-lg bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 text-xs space-y-1">
+                        <span className="font-bold text-rose-700 dark:text-rose-400 block text-[11px]">
+                          ⚠️ Cảnh báo từ ngữ: "{item.redFlags[0].term}"
+                        </span>
+                        <p className="text-slate-600 dark:text-slate-400 text-[11px]">
+                          {item.redFlags[0].reason}
+                        </p>
+                        <p className="text-emerald-700 dark:text-emerald-400 text-[11px] font-medium">
+                          💡 Thay thế bằng: "{item.redFlags[0].suggestedReplacement}"
+                        </p>
+                      </div>
+                    )}
+
+                    {item.trapQuestions.length > 0 && (
+                      <div className="space-y-2 pt-1 border-t border-slate-100 dark:border-slate-700/60">
+                        <span className="text-[11px] font-bold text-indigo-700 dark:text-indigo-400 uppercase tracking-wider block">
+                          Top Câu Hỏi Bẫy & Kịch Bản 30 Giây:
+                        </span>
+                        {item.trapQuestions.map((tq, qIdx) => (
+                          <div key={qIdx} className="p-3 bg-slate-50/80 dark:bg-slate-900/50 rounded-xl space-y-1.5 border border-slate-200/60 dark:border-slate-800">
+                            <h5 className="font-bold text-slate-900 dark:text-white text-xs">
+                              ❓ "{tq.question}"
+                            </h5>
+                            <div className="p-2 rounded bg-indigo-50/50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/40 text-[11px] text-slate-800 dark:text-slate-200 italic">
+                              <strong>Kịch bản 30s:</strong> "{tq.modelAnswer}"
+                            </div>
+                            <span className="text-[10.5px] text-rose-600 dark:text-rose-400 block font-medium">
+                              ❌ <strong>Tránh:</strong> {tq.pitfallToAvoid}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
