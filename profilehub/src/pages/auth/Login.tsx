@@ -12,8 +12,7 @@ import {
   AlertCircle, 
   X,
   User,
-  Building2,
-  Sparkles
+  Building2
 } from 'lucide-react';
 
 export default function Login() {
@@ -139,7 +138,7 @@ export default function Login() {
       </div>
 
       {/* Role Switcher Tabs */}
-      <div className="mb-4">
+      <div className="mb-5">
         <div className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">Vai trò của bạn:</div>
         <div className="p-1 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 grid grid-cols-2 gap-1">
           <button
@@ -165,45 +164,6 @@ export default function Login() {
           >
             <Building2 size={14} />
             <span>Nhà Tuyển Dụng</span>
-          </button>
-        </div>
-      </div>
-
-      {/* 1-Click Fast Demo Testing */}
-      <div className="mb-5 p-3 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/40 border border-blue-200/80 dark:border-blue-900/60">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-[11px] font-bold text-blue-900 dark:text-blue-200 flex items-center gap-1.5">
-            <Sparkles size={14} className="text-blue-600 dark:text-blue-400" />
-            <span>Trải Nghiệm Nhanh Bản Demo</span>
-          </span>
-          <span className="text-[10px] text-blue-600 dark:text-blue-400 font-semibold bg-white/80 dark:bg-slate-900/80 px-2 py-0.5 rounded-full border border-blue-200 dark:border-blue-800">
-            1-Click Test
-          </span>
-        </div>
-        <div className="grid grid-cols-2 gap-2">
-          <button
-            type="button"
-            onClick={() => {
-              localStorage.setItem('profilehub_demo_role', 'student');
-              localStorage.setItem('profilehub_demo_mode', 'true');
-              window.location.href = '/dashboard';
-            }}
-            className="py-1.5 px-2.5 rounded-lg bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-semibold border border-slate-200 dark:border-slate-700 shadow-2xs flex items-center justify-center gap-1.5 transition active:scale-95 cursor-pointer"
-          >
-            <User size={13} className="text-indigo-500" />
-            <span>Demo Ứng Viên</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              localStorage.setItem('profilehub_demo_role', 'recruiter');
-              localStorage.setItem('profilehub_demo_mode', 'true');
-              window.location.href = '/recruiter/dashboard';
-            }}
-            className="py-1.5 px-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-2xs flex items-center justify-center gap-1.5 transition active:scale-95 cursor-pointer"
-          >
-            <Building2 size={13} className="text-white" />
-            <span>Demo Tuyển Dụng</span>
           </button>
         </div>
       </div>

@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthProvider';
 import type { UserRole, CandidatePipelineItem } from '../../types/database';
 import { 
   Menu, X, Sparkles, Bell, ChevronDown, LogOut, 
-  User, CheckCircle2, Video, Globe, Building2, Briefcase, Plus, ArrowRightLeft
+  User, CheckCircle2, Video, Globe, Building2, Briefcase, Plus
 } from 'lucide-react';
 import { getHeaderNavLinks, getPendingInterviewNotificationCount } from './headerNavigation';
 import { getSharedPipeline, updateInterviewStatusByStudent } from '../../utils/pipelineSync';
@@ -71,12 +71,6 @@ export default function HeaderBar() {
     }
   };
 
-  const handleSwitchRole = (newRole: UserRole) => {
-    localStorage.setItem('profilehub_demo_role', newRole);
-    localStorage.setItem('profilehub_demo_mode', 'true');
-    window.location.href = newRole === 'recruiter' ? '/recruiter/dashboard' : '/dashboard';
-  };
-
   // Xử lý cuộn mượt đến anchor trên trang chủ (updateui.md Section 2.1)
   const handleAnchorClick = (e: React.MouseEvent, path: string) => {
     if (path.startsWith('/#')) {
@@ -131,19 +125,6 @@ export default function HeaderBar() {
                 </span>
               </div>
             </Link>
-
-            {/* Nút Chuyển Vai Trò Nhanh Trực Tiếp Trên Header */}
-            {isAuthenticated && (
-              <button
-                type="button"
-                onClick={() => handleSwitchRole(userRole === 'recruiter' ? 'student' : 'recruiter')}
-                className="hidden lg:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300/80 dark:border-slate-700 transition cursor-pointer active:scale-95 shadow-2xs"
-                title={`Click để chuyển tức thì sang giao diện ${userRole === 'recruiter' ? 'Ứng Viên' : 'Nhà Tuyển Dụng'}`}
-              >
-                <ArrowRightLeft className="w-3 h-3 text-indigo-500 shrink-0" />
-                <span>{userRole === 'recruiter' ? 'Sang Ứng Viên' : 'Sang Tuyển Dụng'}</span>
-              </button>
-            )}
           </div>
 
           {/* 2. Khu vực Giữa: Navigation Bar 2 Trạng Thái (updateui.md Section 2.1 & 2.2) */}
@@ -181,16 +162,6 @@ export default function HeaderBar() {
             {/* TRẠNG THÁI 1: CHƯA ĐĂNG NHẬP (PUBLIC LANDING HEADER) */}
             {!isAuthenticated ? (
               <div className="hidden sm:flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => handleSwitchRole('recruiter')}
-                  className="px-3 py-1.5 rounded-xl text-xs font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/70 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 border border-indigo-200/70 dark:border-indigo-800/70 transition-all cursor-pointer flex items-center gap-1.5"
-                  title="Trải nghiệm nhanh giao diện dành cho Nhà tuyển dụng"
-                >
-                  <Building2 className="w-3.5 h-3.5" />
-                  <span>Cổng Doanh Nghiệp</span>
-                </button>
-
                 <Link
                   to="/login"
                   className="px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100/70 dark:hover:bg-slate-800/70 transition-colors"
@@ -396,37 +367,6 @@ export default function HeaderBar() {
                         )}
                       </div>
 
-                      {/* Chuyển đổi vai trò demo */}
-                      <div className="py-1">
-                        <div className="text-[10px] font-bold text-slate-400 dark:text-slate-500 px-3 py-1 uppercase tracking-wider">
-                          Chuyển Vai Trò Thử Nghiệm
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => handleSwitchRole('student')}
-                          className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium flex items-center justify-between cursor-pointer ${
-                            userRole !== 'recruiter' 
-                              ? 'bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300 font-bold' 
-                              : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
-                          }`}
-                        >
-                          <span className="flex items-center gap-1.5">🎓 Ứng Viên (Student)</span>
-                          {userRole !== 'recruiter' && <CheckCircle2 className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleSwitchRole('recruiter')}
-                          className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium flex items-center justify-between cursor-pointer ${
-                            userRole === 'recruiter' 
-                              ? 'bg-blue-50 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 font-bold' 
-                              : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
-                          }`}
-                        >
-                          <span className="flex items-center gap-1.5">🏢 Nhà Tuyển Dụng (HR)</span>
-                          {userRole === 'recruiter' && <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />}
-                        </button>
-                      </div>
-
                       {/* Đăng xuất */}
                       <div className="pt-1 border-t border-slate-100 dark:border-slate-800">
                         <Link
@@ -483,17 +423,6 @@ export default function HeaderBar() {
             {/* Quick Actions Mobile */}
             {!isAuthenticated ? (
               <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMobileOpen(false);
-                    handleSwitchRole('recruiter');
-                  }}
-                  className="w-full py-2 text-center text-xs font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-200/70 dark:border-indigo-800/70 rounded-xl hover:bg-indigo-100 dark:hover:bg-indigo-900/60 flex items-center justify-center gap-2"
-                >
-                  <Building2 className="w-4 h-4" />
-                  <span>Trải Nghiệm Cổng Doanh Nghiệp (HR)</span>
-                </button>
                 <Link
                   to="/login"
                   onClick={() => setMobileOpen(false)}
@@ -570,19 +499,6 @@ export default function HeaderBar() {
                 >
                   🌐 Xem Trang Portfolio Công Khai
                 </Link>
-
-                {/* Đổi vai trò mobile */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMobileOpen(false);
-                    handleSwitchRole(userRole === 'recruiter' ? 'student' : 'recruiter');
-                  }}
-                  className="w-full text-left px-3 py-2 rounded-lg text-xs font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50/70 dark:bg-indigo-950/40 flex items-center justify-between"
-                >
-                  <span>Chuyển sang {userRole === 'recruiter' ? '🎓 Ứng Viên' : '🏢 Nhà Tuyển Dụng'}</span>
-                  <ArrowRightLeft className="w-3.5 h-3.5" />
-                </button>
 
                 <Link
                   to="/logout"

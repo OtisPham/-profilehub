@@ -6,42 +6,55 @@
 * **Ngành:** CÔNG NGHỆ THÔNG TIN
 * **Đơn vị thực tập:** CÔNG TY TNHH ALPACA SOLUTIONS
 * **Dự án thực hiện:** PROFILEHUB - Project-Driven AI CV Builder & Portfolio Platform
-* **Thời gian ghi nhật ký:** 21/09/2026 – 20/11/2026 (4 tuần đầu làm Thứ Hai đến Thứ Bảy; từ tuần 5 chỉ làm Thứ Hai đến Thứ Sáu)
+* **Thời gian ghi nhật ký:** 18/09/2026 – 20/11/2026 (Bắt đầu từ 18/09/2026; 4 tuần đầu có Thứ Bảy; từ tuần 5 chỉ làm Thứ Hai đến Thứ Sáu)
 
 ---
 
 ## 📌 TÓM TẮT ĐỊNH HƯỚNG CHIẾN LƯỢC & BƯỚC NGOẶT KIẾN TRÚC (PIVOT)
-Trong 9 tuần phát triển dự án (21/09/2026 – 20/11/2026), **ProfileHub** đã trải qua các giai đoạn hoàn thiện vượt bậc:
-1. **Dũng cảm cắt bỏ các tính năng rườm rà (Pruned Over-Engineering - Tuần 4):**
+Trong 10 tuần phát triển dự án (18/09/2026 – 20/11/2026), **ProfileHub** đã trải qua các giai đoạn hoàn thiện vượt bậc:
+1. **Khởi tạo và xây dựng nền tảng (Tuần 1 – Tuần 4):**
+   - Khởi tạo kiến trúc dự án từ ngày 18/09/2026 với React 18, TypeScript (Strict Mode) và Supabase.
+   - Xây dựng các module cốt lõi: Quản lý đồ án (MyProjects), Quản lý chứng chỉ (Certificates), tương tác Canvas WYSIWYG.
+2. **Dũng cảm cắt bỏ các tính năng rườm rà (Pruned Over-Engineering - Tuần 5):**
    - ❌ **Cắt bỏ Microservice Python Chatbot (`chatbot_service/`):** Chuyển toàn bộ logic khai phá từ khóa sang TypeScript native service trên 1 codebase duy nhất, loại bỏ hạ tầng triển khai cồng kềnh.
    - ❌ **Cắt bỏ Xác thực Giảng viên (`Teacher Verification` / `is_verified`):** Loại bỏ toàn bộ controller/route/view chấm điểm của giảng viên do tạo nút thắt cổ chai lớn trong thực tế. Thay thế bằng **Bằng chứng thực chiến (Evidence-Based)**: Link Live Demo, GitHub Repo và mã QR quét mở demo sản phẩm trực tiếp.
    - ❌ **Cắt bỏ Khảo sát MBTI & Chatbot phỏng vấn dài dòng:** Dồn 100% nguồn lực vào bài toán thực dụng: đưa dự án vào CV và tối ưu tương thích JD tuyển dụng.
-2. **Hiện thực hóa Kiến trúc ADR 0001 & Bộ 6 Tracer-Bullet Tickets:**
+3. **Hiện thực hóa Kiến trúc ADR 0001 & Bộ 6 Tracer-Bullet Tickets (Tuần 5 – Tuần 6):**
    - Hoàn thành trọn vẹn luồng **Project-Driven CV Builder**: Tách biệt dự án trong CV (`CV Project Instance`) và dự án gốc (`Master Project`), hỗ trợ Reverse Sync thông minh, Scoped Contribution (nhóm vs cá nhân), Project Fit Explainer xếp hạng theo JD, STAR Diff Review có kiểm định Anti-Hallucination, Page-Budget Guard đo lường khổ in A4 với 1-Click Auto-Condense, và Evidence Showcase QR.
-3. **Mở rộng các Module nâng cao (Tuần 5 – Tuần 7):**
+4. **Mở rộng các Module nâng cao (Tuần 6 – Tuần 8):**
    - **STAR Diagnostic Engine & Rewrite:** Phân tích cấu trúc viên đạn theo phương pháp STAR, cung cấp gợi ý viết lại có số liệu định lượng.
    - **ATS Eye-View Heatmap:** Mô phỏng góc nhìn hệ thống Applicant Tracking System và nhà tuyển dụng (F-pattern scan).
    - **Interview War Room & Audio Simulation:** Luyện tập phỏng vấn kỹ thuật bám sát kinh nghiệm dự án thực tế.
    - **Real-time Salary Benchmark:** Khảo sát dải lương thị trường dựa trên tổ hợp kỹ năng và level của ứng viên.
    - **Application Tracker & Kanban Pipeline:** Quản lý vòng đời ứng tuyển từ Applied đến Offer.
-4. **Tối ưu hiệu suất, Bảo mật & Vận hành Sprint liên tục (Tuần 8 – Tuần 9):**
+5. **Tối ưu hiệu suất, Bảo mật & Vận hành Sprint liên tục (Tuần 9 – Tuần 10):**
    - Tối ưu hóa hiệu năng chuyên sâu: Caching (Redis + IndexedDB), Service Worker offline cache, Bundle Splitting (giảm từ 1.2MB xuống 280KB Gzip).
    - Kiểm thử toàn diện: Unit Test & Integration Test (Vitest 100% pass), End-to-End Test (Playwright).
    - Tích hợp Sentry giám sát lỗi thời gian thực, duy trì họp Sprint Review định kỳ với Mentor doanh nghiệp để liên tục mở rộng sản phẩm (kỳ thực tập tiếp tục diễn ra theo kế hoạch).
 
 ---
 
-## 📅 TUẦN 1: KHẢO SÁT, THIẾT KẾ CSDL & MODULE HỒ SƠ DỰ ÁN CỐT LÕI (21/09/2026 – 26/09/2026)
+## 📅 TUẦN 1: KHỞI TẠO DỰ ÁN, PHÂN TÍCH YÊU CẦU & THIẾT LẬP TECH STACK (18/09/2026 – 19/09/2026)
+
+### 🔴 Thứ 6 (18/09/2026)
+* **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
+* **Công việc được giao:** Khảo sát bài toán nghiệp vụ & Phân tích yêu cầu hệ thống quản lý hồ sơ sinh viên (UniPortfolio).
+* **Kết quả thực hiện:**
+  * Sáng (08:30 - 12:00): Tìm hiểu thực trạng hồ sơ ứng tuyển của sinh viên CNTT, phân tích 3 trụ cột lớn: Đồ án thực tế (Project-Driven), Khớp nối bằng chứng (Evidence-Based Matching), và Luyện phỏng vấn AI.
+  * Chiều (13:00 - 17:00): Lập sơ đồ phân rã chức năng (WBS) và chia lộ trình phát triển dự án thành các giai đoạn trọng tâm cô đọng.
+* **Kinh nghiệm rút ra:** Phân tích kỹ yêu cầu nghiệp vụ thực tế giúp định hình đúng cấu trúc hệ thống và tránh phải refactor nhiều ở các giai đoạn sau.
+
+### 🔴 Thứ 7 (19/09/2026)
+* **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
+* **Công việc được giao:** Lựa chọn Tech Stack & Khởi tạo mã nguồn cơ sở (Base Code Setup).
+* **Kết quả thực hiện:**
+  * Sáng (08:30 - 12:00): Đánh giá công nghệ, chốt Tech Stack: React 18, TypeScript (Strict Mode), Vite, Tailwind CSS, Lucide Icons, kết nối Supabase (PostgreSQL + Auth + Storage).
+  * Chiều (13:00 - 17:00): Cấu hình ESLint, Prettier, cấu trúc thư mục chuẩn mô hình Feature-driven và kiểm tra kết nối CSDL Supabase.
+* **Kinh nghiệm rút ra:** Chuẩn hóa quy chuẩn mã nguồn và TypeScript Strict Mode ngay từ đầu giúp loại bỏ 80% lỗi tiềm ẩn trong quá trình phát triển.
+
+## 📅 TUẦN 2: THIẾT KẾ CSDL POSTGRESQL & MODULE HỒ SƠ DỰ ÁN CỐT LÕI (21/09/2026 – 26/09/2026)
 
 ### 🔴 Thứ 2 (21/09/2026)
-* **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Khảo sát nghiệp vụ bài toán tạo CV của sinh viên CNTT, thiết lập Base Code Architecture.
-* **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Khảo sát thực trạng sinh viên gặp khó khăn khi mô tả dự án học tập vào CV; xác lập mục tiêu xây dựng nền tảng CV định hướng đồ án thực tế (Project-Driven AI CV Builder).
-  * Chiều (13:00 - 17:00): Cấu hình môi trường phát triển: React 18, TypeScript (Strict Mode), Vite, Tailwind CSS, Lucide Icons, kết nối Supabase (PostgreSQL + Auth + Storage).
-* **Kinh nghiệm rút ra:** Thiết lập TypeScript Strict Mode ngay từ ngày đầu giúp kiểm soát type-safety chặt chẽ, loại bỏ hoàn toàn các lỗi undefined tiềm ẩn.
-
-### 🔴 Thứ 3 (22/09/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
 * **Công việc được giao:** Thiết kế lược đồ CSDL PostgreSQL trên Supabase & Cấu hình Row Level Security (RLS).
 * **Kết quả thực hiện:**
@@ -49,7 +62,7 @@ Trong 9 tuần phát triển dự án (21/09/2026 – 20/11/2026), **ProfileHub*
   * Chiều (13:00 - 17:00): Kích hoạt chính sách RLS cho từng bảng dữ liệu, cấu hình Supabase Storage Bucket portfolio_files lưu trữ tài liệu PDF và hình ảnh minh chứng.
 * **Kinh nghiệm rút ra:** Áp dụng RLS ở tầng CSDL là cách bảo mật dữ liệu sinh viên đa người dùng chuẩn mực nhất mà không làm phình to backend code.
 
-### 🔴 Thứ 4 (23/09/2026)
+### 🔴 Thứ 3 (22/09/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
 * **Công việc được giao:** Xây dựng Module Quản lý Đồ Án Sinh Viên (MyProjects.tsx) – Toàn trình CRUD.
 * **Kết quả thực hiện:**
@@ -57,7 +70,7 @@ Trong 9 tuần phát triển dự án (21/09/2026 – 20/11/2026), **ProfileHub*
   * Chiều (13:00 - 17:00): Phát triển Form Modal Thêm/Sửa đồ án, hỗ trợ trường Live Demo URL, GitHub Repo URL, tài liệu PDF đính kèm và modal xác nhận xóa an toàn.
 * **Kinh nghiệm rút ra:** Quản lý state form chặt chẽ giúp sinh viên dễ dàng cập nhật thông tin dự án nhiều giai đoạn mà không gây mất mát dữ liệu.
 
-### 🔴 Thứ 5 (24/09/2026)
+### 🔴 Thứ 4 (23/09/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
 * **Công việc được giao:** Xây dựng Module Quản lý Chứng Chỉ (Certificates.tsx) & In-App Document Reader.
 * **Kết quả thực hiện:**
@@ -65,13 +78,21 @@ Trong 9 tuần phát triển dự án (21/09/2026 – 20/11/2026), **ProfileHub*
   * Chiều (13:00 - 17:00): Phát triển Modal xem trước file PDF/Ảnh nội tuyến (In-app Document Reader) giúp nhà tuyển dụng xem ngay chứng chỉ mà không cần tải về.
 * **Kinh nghiệm rút ra:** Trải nghiệm xem trước tài liệu tức thì (sandbox iframe) giúp tăng tính chuyên nghiệp của nền tảng.
 
-### 🔴 Thứ 6 (25/09/2026)
+### 🔴 Thứ 5 (24/09/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
 * **Công việc được giao:** Dựng khung hiển thị tương tác WYSIWYG trên Canvas A4 và cơ chế render linh hoạt.
 * **Kết quả thực hiện:**
   * Sáng (08:30 - 12:00): Phân tích thông số kỹ thuật in ấn: A4 Portrait ở độ phân giải 96 DPI (chiều cao 1122.5px), tính toán khoảng cách dòng, lề trang tiêu chuẩn.
   * Chiều (13:00 - 17:00): Phát triển InteractiveCVCanvas.tsx hỗ trợ chỉnh sửa inline trên từng dòng text, cập nhật state tức thì khi người dùng gõ phím.
 * **Kinh nghiệm rút ra:** Cố định tỷ lệ hiển thị canvas theo đúng tỷ lệ in ấn thực tế loại bỏ hoàn toàn sự sai lệch giữa màn hình và file in PDF.
+
+### 🔴 Thứ 6 (25/09/2026)
+* **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
+* **Công việc được giao:** Tối ưu hóa UI/UX Canvas, xử lý responsive và đồng bộ state tức thì.
+* **Kết quả thực hiện:**
+  * Sáng (08:30 - 12:00): Tối ưu hóa các thao tác chỉnh sửa trực tiếp trên Canvas, chống hiện tượng nhảy layout khi gõ nội dung dài.
+  * Chiều (13:00 - 17:00): Kiểm thử tương thích trên các kích thước màn hình từ 13 inch đến 27 inch, đảm bảo canvas luôn căn giữa hoàn hảo.
+* **Kinh nghiệm rút ra:** Đảm bảo trải nghiệm trực quan (WYSIWYG) mượt mà là chìa khóa giúp giữ chân người dùng trong các ứng dụng biên tập tài liệu.
 
 ### 🔴 Thứ 7 (26/09/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
@@ -81,11 +102,11 @@ Trong 9 tuần phát triển dự án (21/09/2026 – 20/11/2026), **ProfileHub*
   * Chiều (13:00 - 17:00): Thiết lập bộ đệm LocalStorage lưu trữ tạm thời phiên soạn thảo, chống mất dữ liệu khi mất mạng hoặc reload trang đột ngột.
 * **Kinh nghiệm rút ra:** Cơ chế Fallback hai lớp (Cloud + LocalStorage) giúp ứng viên an tâm tuyệt đối khi thao tác soạn thảo nội dung dài.
 
-## 📅 TUẦN 2: MODULE TẠO CV DỰ ÁN, CHATBOT NLP THỰC CHIẾN & KHẢO SÁT PHỎNG VẤN (28/09/2026 – 03/10/2026)
+## 📅 TUẦN 3: MODULE TẠO CV DỰ ÁN, CHATBOT NLP THỰC CHIẾN & KHẢO SÁT PHỎNG VẤN (28/09/2026 – 03/10/2026)
 
 ### 🔴 Thứ 2 (28/09/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Họp Review tiến độ tuần 1, đánh giá kiến trúc hệ thống & Lập kế hoạch tinh gọn (Lean MVP).
+* **Công việc được giao:** Họp Review tiến độ, đánh giá kiến trúc hệ thống & Lập kế hoạch tinh gọn (Lean MVP).
 * **Kết quả thực hiện:**
   * Sáng (08:30 - 12:00): Đo lường tài nguyên hệ thống, họp kỹ thuật với Tech Lead và thống nhất chiến lược "Lean MVP": Cắt giảm ngay các tính năng ngoài lề để dồn sức cho giá trị cốt lõi.
   * Chiều (13:00 - 17:00): Rà soát toàn bộ cây thư mục mã nguồn, lập danh sách các module dư thừa cần loại bỏ để tối ưu hiệu năng và tinh giản trải nghiệm.
@@ -131,7 +152,7 @@ Trong 9 tuần phát triển dự án (21/09/2026 – 20/11/2026), **ProfileHub*
   * Chiều (13:00 - 17:00): Kiểm tra lại toàn bộ liên kết nội bộ, đảm bảo chuyển trang mượt mà không có lỗi 404 hoặc warning console.
 * **Kinh nghiệm rút ra:** Tinh gọn thanh điều hướng giúp người dùng tập trung tối đa vào các thao tác chính.
 
-## 📅 TUẦN 3: MODULE GIẢNG VIÊN ĐÁNH GIÁ, CỔNG CHỨNG THỰC & KHẢO SÁT PHẢN HỒI (05/10/2026 – 10/10/2026)
+## 📅 TUẦN 4: MODULE GIẢNG VIÊN ĐÁNH GIÁ, CỔNG CHỨNG THỰC & KHẢO SÁT PHẢN HỒI (05/10/2026 – 10/10/2026)
 
 ### 🔴 Thứ 2 (05/10/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
@@ -181,7 +202,7 @@ Trong 9 tuần phát triển dự án (21/09/2026 – 20/11/2026), **ProfileHub*
   * Chiều (13:00 - 17:00): Kiểm tra npm run build, xác nhận TypeScript biên dịch không lỗi và hệ thống hoàn toàn sẵn sàng cho tuần cao điểm phát triển tính năng mới.
 * **Kinh nghiệm rút ra:** TDD mang lại sự tự tin tuyệt đối trước khi bước vào giai đoạn thiết kế tính năng mới.
 
-## 📅 TUẦN 4: TÁI THIẾT KẾ KIẾN TRÚC (PIVOT), CẮT BỎ OVER-ENGINEERING & TRIỂN KHAI 6 TRACER-BULLET TICKETS (12/10/2026 – 17/10/2026)
+## 📅 TUẦN 5: TÁI THIẾT KẾ KIẾN TRÚC (PIVOT), CẮT BỎ OVER-ENGINEERING & TRIỂN KHAI 6 TRACER-BULLET TICKETS (12/10/2026 – 16/10/2026)
 
 ### 🔴 Thứ 2 (12/10/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
@@ -223,23 +244,15 @@ Trong 9 tuần phát triển dự án (21/09/2026 – 20/11/2026), **ProfileHub*
   * Chiều (13:00 - 17:00): Xây dựng starBulletService.adaptProjectBulletsWithStar chuẩn hóa mô tả STAR có số liệu định lượng. Xây dựng StarDiffReviewModal.tsx và tích hợp Anti-Hallucination Guard chặn AI tự bịa công nghệ. Viết test (3/3 pass).
 * **Kinh nghiệm rút ra:** Minh bạch hóa lý do đề xuất của AI và cung cấp bảng Diff Review giúp ứng viên làm chủ hoàn toàn nội dung trên CV của mình.
 
-### 🔴 Thứ 7 (17/10/2026)
-* **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Hiện thực hóa Ticket 05 (Page-Budget Guard & Layout Switcher) & Ticket 06 (Evidence Showcase & QR).
-* **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Xây dựng pageBudgetService đo chiều cao render so với khổ A4, hiển thị huy hiệu 📊 XX% A4 trên toolbar. Phát triển 1-Click AI Auto-Condense co vừa 1 trang A4. Bổ sung nút chuyển bố cục 1 cột và 2 cột. Viết test (3/3 pass).
-  * Chiều (13:00 - 17:00): Render link Live Demo và GitHub Repo chuẩn ATS. Tích hợp qrcode.react tự động sinh mã QR thu nhỏ 28px in trên A4 quét demo sản phẩm. Viết test (3/3 pass). Lắp ráp hoàn chỉnh vào CVBuilder.tsx và Canvas.
-* **Kinh nghiệm rút ra:** Đảm bảo CV vừa vặn đúng 1 trang A4 và có mã QR quét demo là hai yếu tố ghi điểm cực mạnh trong mắt các nhà tuyển dụng thực tế.
-
-## 📅 TUẦN 5: MỞ RỘNG TÍNH NĂNG NÂNG CAO — STAR DIAGNOSTIC ENGINE & ATS EYE-VIEW HEATMAP (19/10/2026 – 23/10/2026)
+## 📅 TUẦN 6: MỞ RỘNG TÍNH NĂNG NÂNG CAO — STAR DIAGNOSTIC ENGINE & ATS EYE-VIEW HEATMAP (19/10/2026 – 23/10/2026)
 
 ### 🔴 Thứ 2 (19/10/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Rà soát hoàn thiện ProfileHub v1, tổng kết 6 tickets và khởi động nghiên cứu Trụ cột 2 & 3.
+* **Công việc được giao:** Hiện thực hóa Ticket 05 (Page-Budget Guard) & Ticket 06 (Evidence Showcase QR), nghiệm thu v1.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Rà soát micro-interactions, phím tắt Ctrl + S/P/B, chạy toàn bộ 11/11 test suites (38/38 tests pass 100%) và đóng gói npm run build sạch sẽ, nghiệm thu bàn giao ProfileHub v1.
-  * Chiều (13:00 - 17:00): Khởi động nghiên cứu kiến trúc mở rộng: Contextual Application Pitch (thay thế Cover Letter truyền thống) và Project Technical Defense Briefing.
-* **Kinh nghiệm rút ra:** Quy trình đóng gói nghiệm thu định kỳ giúp kiểm soát chất lượng phần mềm chặt chẽ và tạo đà cho các tính năng mở rộng tiếp theo.
+  * Sáng (08:30 - 12:00): Xây dựng pageBudgetService đo chiều cao render khổ A4, hiển thị huy hiệu 📊 XX% A4, phát triển 1-Click Auto-Condense co vừa 1 trang A4, bổ sung đổi bố cục 1/2 cột (3/3 test pass).
+  * Chiều (13:00 - 17:00): Render link Live Demo và GitHub Repo chuẩn ATS, tích hợp qrcode.react sinh mã QR 28px in trên A4 quét demo (3/3 test pass); chạy toàn bộ 11/11 test suites pass 100% và đóng gói build nghiệm thu v1.
+* **Kinh nghiệm rút ra:** Đảm bảo CV vừa vặn đúng 1 trang A4 và có mã QR quét demo là hai yếu tố ghi điểm cực mạnh trong mắt nhà tuyển dụng.
 
 ### 🔴 Thứ 3 (20/10/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
@@ -273,7 +286,7 @@ Trong 9 tuần phát triển dự án (21/09/2026 – 20/11/2026), **ProfileHub*
   * Chiều (13:00 - 17:00): Cấu hình CI/CD GitHub Actions (.github/workflows/3dwebsite-ci.yml, deploy, release, rollback), chạy kiểm thử hồi quy 14/14 test suites (51/51 tests pass) và kiểm tra hiệu năng đóng gói build sạch.
 * **Kinh nghiệm rút ra:** Gom việc tích hợp giao diện STAR Wizard với quy trình kiểm thử hiệu năng CI/CD vào ngày thứ 6 giúp đảm bảo tính ổn định cao của mã nguồn trước khi sang tuần mới.
 
-## 📅 TUẦN 6: INTERVIEW WAR ROOM, SALARY BENCHMARK & MULTI-VERSION CV MANAGEMENT (26/10/2026 – 30/10/2026)
+## 📅 TUẦN 7: INTERVIEW WAR ROOM, SALARY BENCHMARK & MULTI-VERSION CV MANAGEMENT (26/10/2026 – 30/10/2026)
 
 ### 🔴 Thứ 2 (26/10/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
@@ -312,10 +325,10 @@ Trong 9 tuần phát triển dự án (21/09/2026 – 20/11/2026), **ProfileHub*
 * **Công việc được giao:** Xây dựng Module Quản lý Đa Phiên Bản CV (Multi-Version CVs) & Tối ưu hiệu năng.
 * **Kết quả thực hiện:**
   * Sáng (08:30 - 12:00): Mở rộng lược đồ CSDL cho phép một sinh viên tạo và quản lý nhiều bản CV may đo riêng cho từng vị trí ứng tuyển (Frontend CV, Backend CV, Fullstack CV).
-  * Chiều (13:00 - 17:00): Phát triển giao diện quản lý phiên bản CV dạng lưới thẻ, hỗ trợ nhân bản (clone), gắn nhãn trạng thái và kiểm tra hiệu năng đóng gói hoàn tất tuần 6.
+  * Chiều (13:00 - 17:00): Phát triển giao diện quản lý phiên bản CV dạng lưới thẻ, hỗ trợ nhân bản (clone), gắn nhãn trạng thái và kiểm tra hiệu năng đóng gói hoàn tất tuần 7.
 * **Kinh nghiệm rút ra:** May đo CV riêng cho từng vị trí tuyển dụng làm tăng cơ hội được mời phỏng vấn lên gấp 3 lần so với việc dùng một bản CV chung cho mọi công ty.
 
-## 📅 TUẦN 7: APPLICATION TRACKER, COVER LETTER GENERATOR & REVERSE RECRUITING HUB (02/11/2026 – 06/11/2026)
+## 📅 TUẦN 8: APPLICATION TRACKER, COVER LETTER GENERATOR & REVERSE RECRUITING HUB (02/11/2026 – 06/11/2026)
 
 ### 🔴 Thứ 2 (02/11/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
@@ -357,7 +370,7 @@ Trong 9 tuần phát triển dự án (21/09/2026 – 20/11/2026), **ProfileHub*
   * Chiều (13:00 - 17:00): Kiểm thử luồng người dùng toàn trình: Từ tạo thẻ Kanban, sinh thư ứng tuyển, cập nhật trạng thái đến lưu trữ lịch sử phỏng vấn, kiểm tra build sạch.
 * **Kinh nghiệm rút ra:** Gom việc kiểm thử đơn vị và tích hợp luồng vào ngày thứ 6 giúp xác nhận độ tin cậy tuyệt đối của tính năng trước khi bước sang tuần tối ưu sâu.
 
-## 📅 TUẦN 8: ADVANCED CACHING, HYDRATION OPTIMIZATION, E2E TESTING & SECURITY AUDIT (09/11/2026 – 13/11/2026)
+## 📅 TUẦN 9: ADVANCED CACHING, HYDRATION OPTIMIZATION, E2E TESTING & SECURITY AUDIT (09/11/2026 – 13/11/2026)
 
 ### 🔴 Thứ 2 (09/11/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
@@ -399,7 +412,7 @@ Trong 9 tuần phát triển dự án (21/09/2026 – 20/11/2026), **ProfileHub*
   * Chiều (13:00 - 17:00): Giảm dung lượng file bundle chính từ 1.2MB xuống còn 280KB (Gzipped), thực hiện test tải cục bộ và xác nhận thời gian First Contentful Paint (FCP) < 0.8s.
 * **Kinh nghiệm rút ra:** Gom việc tối ưu hóa bundle size và kiểm thử tốc độ tải vào ngày thứ 6 giúp chốt hạ tuần tăng tốc hiệu năng một cách mỹ mãn.
 
-## 📅 TUẦN 9: TYPOGRAPHY STANDARDIZATION, HR INTEGRATION & SPRINT REVIEW ROADMAP (16/11/2026 – 20/11/2026)
+## 📅 TUẦN 10: TYPOGRAPHY STANDARDIZATION, HR INTEGRATION & SPRINT REVIEW ROADMAP (16/11/2026 – 20/11/2026)
 
 ### 🔴 Thứ 2 (16/11/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
