@@ -17,24 +17,24 @@
 ### PHIẾU THEO DÕI TIẾN ĐỘ THỰC TẬP TỐT NGHIỆP
 | Tuần | Từ ngày đến ngày | Họ tên và chữ ký của người hướng dẫn |
 | :---: | :---: | :---: |
-| 1 | 21/09/2026 - 26/09/2026 | |
-| 2 | 28/09/2026 - 03/10/2026 | |
-| 3 | 05/10/2026 - 10/10/2026 | |
-| 4 | 12/10/2026 - 17/10/2026 | |
-| 5 | 19/10/2026 - 24/10/2026 | |
-| 6 | 26/10/2026 - 31/10/2026 | |
-| 7 | 02/11/2026 - 07/11/2026 | |
-| 8 | 09/11/2026 - 14/11/2026 | |
-| 9 | 16/11/2026 - 21/11/2026 | |
-| 10 | 23/11/2026 - 28/11/2026 | |
-| 11 | 30/11/2026 - 05/12/2026 | |
-| 12 | 07/12/2026 - 12/12/2026 | |
-| 13 | 14/12/2026 - 19/12/2026 | |
-| 14 | 21/12/2026 - 26/12/2026 | |
+| 1 | 21/09/2026 - 25/09/2026 | |
+| 2 | 28/09/2026 - 02/10/2026 | |
+| 3 | 05/10/2026 - 09/10/2026 | |
+| 4 | 12/10/2026 - 16/10/2026 | |
+| 5 | 19/10/2026 - 23/10/2026 | |
+| 6 | 26/10/2026 - 30/10/2026 | |
+| 7 | 02/11/2026 - 06/11/2026 | |
+| 8 | 09/11/2026 - 13/11/2026 | |
+| 9 | 16/11/2026 - 20/11/2026 | |
+| 10 | 23/11/2026 - 27/11/2026 | |
+| 11 | 30/11/2026 - 04/12/2026 | |
+| 12 | 07/12/2026 - 11/12/2026 | |
+| 13 | 14/12/2026 - 18/12/2026 | |
+| 14 | 21/12/2026 - 25/12/2026 | |
 
 ---
 
-### NỘI DUNG NHẬT KÝ CHI TIẾT THEO NGÀY (48 NGÀY LÀM VIỆC — 8 TUẦN)
+### NỘI DUNG NHẬT KÝ CHI TIẾT THEO NGÀY (45 NGÀY LÀM VIỆC — THỨ 2 ĐẾN THỨ 6)
 
 | Tuần: 1 Thứ:      2                Ngày: 21/09/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
@@ -63,26 +63,20 @@
 | Tuần: 1 Thứ:      6                Ngày: 25/09/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
 | **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Dựng khung hiển thị tương tác WYSIWYG ban đầu cho trình soạn thảo CV trên khổ giấy chuẩn A4. | Phân tích thông số kỹ thuật in ấn: A4 Portrait ở độ phân giải 96 DPI tương đương chiều cao 1122.5px, xác lập lề trang và nhịp ngắt trang trực quan. | Cố định tỷ lệ hiển thị canvas theo đúng tỷ lệ in ấn thực tế loại bỏ hoàn toàn sự sai lệch giữa màn hình và file in PDF. |
-| 13:00 - 17:00 | Dựng khung hiển thị tương tác WYSIWYG ban đầu cho trình soạn thảo CV trên khổ giấy chuẩn A4. | Phát triển InteractiveCVCanvas.tsx render trực tiếp cấu trúc CV, hỗ trợ chỉnh sửa inline trên từng dòng text. | Cố định tỷ lệ hiển thị canvas theo đúng tỷ lệ in ấn thực tế loại bỏ hoàn toàn sự sai lệch giữa màn hình và file in PDF. |
-
-| Tuần: 1 Thứ:      7                Ngày: 26/09/2026 <td colspan=4/> |
-| :--- | :--- | :--- | :--- |
-| **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Cấu hình cơ chế lưu trữ hai lớp (Supabase Cloud Backup + Local Storage Fallback). | Viết các hàm đồng bộ trong cvService.ts kết nối với bảng student_cvs trên Supabase để tự động lưu trạng thái CV. | Cơ chế Fallback hai lớp (Cloud + LocalStorage) giúp ứng viên an tâm tuyệt đối khi thao tác soạn thảo nội dung dài. |
-| 13:00 - 17:00 | Cấu hình cơ chế lưu trữ hai lớp (Supabase Cloud Backup + Local Storage Fallback). | Thiết lập bộ đệm LocalStorage lưu trữ tạm thời phiên soạn thảo, chống mất dữ liệu khi mất mạng hoặc reload trang đột ngột. | Cơ chế Fallback hai lớp (Cloud + LocalStorage) giúp ứng viên an tâm tuyệt đối khi thao tác soạn thảo nội dung dài. |
+| 08:30 - 12:00 | Dựng khung hiển thị tương tác WYSIWYG trên Canvas A4 & Cơ chế lưu trữ 2 lớp. | Phân tích thông số kỹ thuật in ấn: A4 Portrait ở độ phân giải 96 DPI (chiều cao 1122.5px), phát triển InteractiveCVCanvas.tsx hỗ trợ chỉnh sửa inline trên từng dòng text. | Cố định tỷ lệ hiển thị canvas theo đúng tỷ lệ in ấn thực tế loại bỏ hoàn toàn sự sai lệch giữa màn hình và file in PDF; cơ chế lưu trữ hai lớp mang lại độ an toàn cao. |
+| 13:00 - 17:00 | Dựng khung hiển thị tương tác WYSIWYG trên Canvas A4 & Cơ chế lưu trữ 2 lớp. | Cấu hình cơ chế lưu trữ hai lớp (Supabase Cloud Backup + Local Storage Fallback), thiết lập bộ đệm LocalStorage lưu trữ tạm thời chống mất dữ liệu khi mất mạng. | Cố định tỷ lệ hiển thị canvas theo đúng tỷ lệ in ấn thực tế loại bỏ hoàn toàn sự sai lệch giữa màn hình và file in PDF; cơ chế lưu trữ hai lớp mang lại độ an toàn cao. |
 
 | Tuần: 2 Thứ:      2                Ngày: 28/09/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
 | **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Họp Review tiến độ, đánh giá hiệu năng hệ thống và mức độ phức tạp của codebase. | Đo lường tài nguyên: Nhận thấy kiến trúc đang phải gánh một microservice Python độc lập và nhiều luồng khảo sát phụ rườm rà. | Dũng cảm cắt bỏ tính năng không hiệu quả là yếu tố sống còn giúp dự án về đích đúng hạn và đạt chất lượng cao. |
-| 13:00 - 17:00 | Họp Review tiến độ, đánh giá hiệu năng hệ thống và mức độ phức tạp của codebase. | Họp kỹ thuật với Tech Lead và thống nhất chiến lược "Lean MVP": Cắt giảm ngay các tính năng ngoài lề để tập trung 100% vào giá trị cốt lõi là tạo CV theo dự án. | Dũng cảm cắt bỏ tính năng không hiệu quả là yếu tố sống còn giúp dự án về đích đúng hạn và đạt chất lượng cao. |
+| 08:30 - 12:00 | Họp Review tiến độ tuần 1, đánh giá kiến trúc hệ thống & Tối ưu hóa Single-Layout. | Đo lường tài nguyên hệ thống, họp kỹ thuật với Tech Lead và thống nhất chiến lược "Lean MVP": Cắt giảm ngay các tính năng ngoài lề để dồn sức cho giá trị cốt lõi. | Dũng cảm cắt bỏ tính năng không hiệu quả và gom việc đánh giá hiệu năng cùng tái cấu trúc layout vào một ngày giúp codebase luôn ngăn nắp và tiết kiệm thời gian. |
+| 13:00 - 17:00 | Họp Review tiến độ tuần 1, đánh giá kiến trúc hệ thống & Tối ưu hóa Single-Layout. | Tối ưu hóa Single-Layout: Refactor lại MainLayout.tsx và Sidebar.tsx, gỡ bỏ các route mồ côi (dead routes) và kiểm tra lại toàn bộ liên kết nội bộ không có lỗi 404. | Dũng cảm cắt bỏ tính năng không hiệu quả và gom việc đánh giá hiệu năng cùng tái cấu trúc layout vào một ngày giúp codebase luôn ngăn nắp và tiết kiệm thời gian. |
 
 | Tuần: 2 Thứ:      3                Ngày: 29/09/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
 | **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | [CẮT BỎ] Xóa bỏ hoàn toàn Microservice Python Chatbot phụ (chatbot_service/) & Chuyển sang TypeScript. | Xóa bỏ thư mục profilehub/chatbot_service gồm app.py, skill_mining.py, requirements.txt, knowledge_base.json. | TypeScript native execution nhanh gấp 3 lần việc gọi HTTP API sang một tiến trình Python riêng lẻ và loại bỏ hoàn toàn gánh nặng cài đặt môi trường. |
-| 13:00 - 17:00 | [CẮT BỎ] Xóa bỏ hoàn toàn Microservice Python Chatbot phụ (chatbot_service/) & Chuyển sang TypeScript. | Viết lại thuật toán nhận diện từ khóa kỹ thuật (Tech Dictionary) bằng TypeScript native module trong src/services/aiCvService.ts. | TypeScript native execution nhanh gấp 3 lần việc gọi HTTP API sang một tiến trình Python riêng lẻ và loại bỏ hoàn toàn gánh nặng cài đặt môi trường. |
+| 08:30 - 12:00 | [CẮT BỎ] Xóa bỏ hoàn toàn Microservice Python Chatbot phụ & Viết lại sang TypeScript. | Xóa bỏ thư mục profilehub/chatbot_service gồm app.py, skill_mining.py, requirements.txt, knowledge_base.json, loại bỏ hạ tầng triển khai cồng kềnh. | TypeScript native execution nhanh gấp 3 lần việc gọi HTTP API sang một tiến trình Python riêng lẻ và loại bỏ hoàn toàn gánh nặng cài đặt môi trường. |
+| 13:00 - 17:00 | [CẮT BỎ] Xóa bỏ hoàn toàn Microservice Python Chatbot phụ & Viết lại sang TypeScript. | Viết lại thuật toán nhận diện từ khóa kỹ thuật (Tech Dictionary) bằng TypeScript native module trực tiếp trong src/services/aiCvService.ts. | TypeScript native execution nhanh gấp 3 lần việc gọi HTTP API sang một tiến trình Python riêng lẻ và loại bỏ hoàn toàn gánh nặng cài đặt môi trường. |
 
 | Tuần: 2 Thứ:      4                Ngày: 30/09/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
@@ -101,12 +95,6 @@
 | **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
 | 08:30 - 12:00 | Xây dựng tính năng Nạp Hàng Loạt 100 CV từ Excel (BulkCvImportModal.tsx). | Tích hợp thư viện xlsx đọc dữ liệu hàng loạt từ file mẫu Mau_100_CV_ProfileHub.xlsx, bóc tách thông tin sinh viên, trường, GPA, kỹ năng và đồ án. | Chuẩn bị bộ dữ liệu mẫu phong phú giúp việc kiểm thử giao diện và thuật toán phản ánh chính xác dữ liệu thực tế. |
 | 13:00 - 17:00 | Xây dựng tính năng Nạp Hàng Loạt 100 CV từ Excel (BulkCvImportModal.tsx). | Phát triển hàm convertImportedCvToCvBuilderState cho phép nạp 1 click toàn bộ 100 CV mẫu vào CV Builder để phục vụ test tính năng và stress-test. | Chuẩn bị bộ dữ liệu mẫu phong phú giúp việc kiểm thử giao diện và thuật toán phản ánh chính xác dữ liệu thực tế. |
-
-| Tuần: 2 Thứ:      7                Ngày: 03/10/2026 <td colspan=4/> |
-| :--- | :--- | :--- | :--- |
-| **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Tối ưu hóa Single-Layout & Dọn sạch Router toàn hệ thống. | Refactor lại MainLayout.tsx và Sidebar.tsx, gỡ bỏ các route mồ côi (dead routes) sau khi cắt bỏ các module thừa. | Tinh gọn thanh điều hướng giúp người dùng tập trung tối đa vào các thao tác chính. |
-| 13:00 - 17:00 | Tối ưu hóa Single-Layout & Dọn sạch Router toàn hệ thống. | Kiểm tra lại toàn bộ liên kết nội bộ, đảm bảo chuyển trang mượt mà không có lỗi 404 hoặc warning console. | Tinh gọn thanh điều hướng giúp người dùng tập trung tối đa vào các thao tác chính. |
 
 | Tuần: 3 Thứ:      2                Ngày: 05/10/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
@@ -135,14 +123,8 @@
 | Tuần: 3 Thứ:      6                Ngày: 09/10/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
 | **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Phát hiện và vá dứt điểm lỗi nghiêm trọng "Zombie CV" trong cvService.ts. | Phát hiện bug: Khi ứng viên chủ động xóa sạch tất cả CV trong danh sách, mảng rỗng [] bị điều kiện if (!raw || raw.length === 0) đánh đồng với người dùng mới, tự ý sinh lại CV mặc định. | Phân biệt rõ giữa trạng thái "chưa có dữ liệu" (null/undefined) và "dữ liệu rỗng có chủ đích" ([]) là nguyên tắc bất biến trong lập trình CSDL. |
-| 13:00 - 17:00 | Phát hiện và vá dứt điểm lỗi nghiêm trọng "Zombie CV" trong cvService.ts. | Sửa điều kiện kiểm tra raw !== null để tôn trọng quyết định xóa của người dùng. Viết bộ test cvManagement.test.ts bảo vệ bất biến vòng đời CV. | Phân biệt rõ giữa trạng thái "chưa có dữ liệu" (null/undefined) và "dữ liệu rỗng có chủ đích" ([]) là nguyên tắc bất biến trong lập trình CSDL. |
-
-| Tuần: 3 Thứ:      7                Ngày: 10/10/2026 <td colspan=4/> |
-| :--- | :--- | :--- | :--- |
-| **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Kiểm thử toàn diện các tầng dịch vụ cốt lõi (TDD Green Check) & Typecheck. | Chạy 5 test suites ban đầu: aiCvService.test.ts, cvManagement.test.ts, aiCvGeneration.test.ts, aiCvCoachService.test.ts, markdownExporter.test.ts. Đạt 20/20 tests pass 100%. | TDD mang lại sự tự tin tuyệt đối trước khi bước vào giai đoạn thiết kế tính năng mới. |
-| 13:00 - 17:00 | Kiểm thử toàn diện các tầng dịch vụ cốt lõi (TDD Green Check) & Typecheck. | Kiểm tra npm run build, xác nhận TypeScript biên dịch không lỗi và hệ thống hoàn toàn sẵn sàng cho tuần cao điểm phát triển tính năng mới. | TDD mang lại sự tự tin tuyệt đối trước khi bước vào giai đoạn thiết kế tính năng mới. |
+| 08:30 - 12:00 | Vá lỗi "Zombie CV" trong cvService.ts & Kiểm thử toàn diện TDD Green Check. | Phát hiện và sửa điều kiện kiểm tra raw !== null trong cvService.ts để tôn trọng quyết định xóa của người dùng. Viết bộ test cvManagement.test.ts bảo vệ bất biến vòng đời CV. | Gom việc vá lỗi logic CSDL và kiểm thử hồi quy toàn diện vào chiều thứ 6 giúp khép lại tuần làm việc với trạng thái All-Green an tâm tuyệt đối. |
+| 13:00 - 17:00 | Vá lỗi "Zombie CV" trong cvService.ts & Kiểm thử toàn diện TDD Green Check. | Chạy 5 test suites ban đầu (aiCvService, cvManagement, aiCvGeneration, aiCvCoach, markdownExporter) đạt 20/20 tests pass 100%, kiểm tra npm run build xác nhận TypeScript biên dịch không lỗi. | Gom việc vá lỗi logic CSDL và kiểm thử hồi quy toàn diện vào chiều thứ 6 giúp khép lại tuần làm việc với trạng thái All-Green an tâm tuyệt đối. |
 
 | Tuần: 4 Thứ:      2                Ngày: 12/10/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
@@ -174,17 +156,11 @@
 | 08:30 - 12:00 | Hiện thực hóa Ticket 03 (Project Fit Explainer) & Ticket 04 (STAR Bullet & Anti-Hallucination Guard). | Xây dựng projectFitService.evaluateProjectFit: Đối chiếu đồ án với JD, tính % tương thích, chip từ khóa trùng khớp/thiếu. Xây dựng ProjectFitExplainerModal.tsx chọn đồ án phù hợp vào CV 1-click. Viết test (3/3 pass). | Minh bạch hóa lý do đề xuất của AI và cung cấp bảng Diff Review giúp ứng viên làm chủ hoàn toàn nội dung trên CV của mình. |
 | 13:00 - 17:00 | Hiện thực hóa Ticket 03 (Project Fit Explainer) & Ticket 04 (STAR Bullet & Anti-Hallucination Guard). | Xây dựng starBulletService.adaptProjectBulletsWithStar chuẩn hóa mô tả STAR có số liệu định lượng. Xây dựng StarDiffReviewModal.tsx và tích hợp Anti-Hallucination Guard chặn AI tự bịa công nghệ. Viết test (3/3 pass). | Minh bạch hóa lý do đề xuất của AI và cung cấp bảng Diff Review giúp ứng viên làm chủ hoàn toàn nội dung trên CV của mình. |
 
-| Tuần: 4 Thứ:      7                Ngày: 17/10/2026 <td colspan=4/> |
-| :--- | :--- | :--- | :--- |
-| **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Hiện thực hóa Ticket 05 (Page-Budget Guard & Layout Switcher) & Ticket 06 (Evidence Showcase & QR). | Xây dựng pageBudgetService đo chiều cao render so với khổ A4, hiển thị huy hiệu 📊 XX% A4 trên toolbar. Phát triển 1-Click AI Auto-Condense co vừa 1 trang A4. Bổ sung nút chuyển bố cục 1 cột và 2 cột. Viết test (3/3 pass). | Đảm bảo CV vừa vặn đúng 1 trang A4 và có mã QR quét demo là hai yếu tố ghi điểm cực mạnh trong mắt các nhà tuyển dụng thực tế. |
-| 13:00 - 17:00 | Hiện thực hóa Ticket 05 (Page-Budget Guard & Layout Switcher) & Ticket 06 (Evidence Showcase & QR). | Render link Live Demo và GitHub Repo chuẩn ATS. Tích hợp qrcode.react tự động sinh mã QR thu nhỏ 28px in trên A4 quét demo sản phẩm. Viết test (3/3 pass). Lắp ráp hoàn chỉnh vào CVBuilder.tsx và Canvas. | Đảm bảo CV vừa vặn đúng 1 trang A4 và có mã QR quét demo là hai yếu tố ghi điểm cực mạnh trong mắt các nhà tuyển dụng thực tế. |
-
 | Tuần: 5 Thứ:      2                Ngày: 19/10/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
 | **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Rà soát Micro-interactions, Chạy Toàn bộ Test Suite, Build Clean, Cập nhật Tickets & Bàn giao v1. | Rà soát các phím tắt Ctrl + S (Lưu & Đồng bộ ngược), Ctrl + P (Xuất in PDF chuẩn A4), kiểm tra giao diện Dark/Light mode và độ phản hồi khi gõ phím. Chạy 11/11 Test Suites Pass 100% (38/38 Tests) không có lỗi. | Quy trình kiểm thử nghiêm ngặt kết hợp tài liệu rõ ràng tạo sự an tâm tuyệt đối khi bàn giao sản phẩm cho doanh nghiệp. |
-| 13:00 - 17:00 | Rà soát Micro-interactions, Chạy Toàn bộ Test Suite, Build Clean, Cập nhật Tickets & Bàn giao v1. | Thực thi npm run build (tsc && vite build) thành công, bundle sạch sẽ 100%. Cập nhật toàn bộ trạng thái 6 Tracer-Bullet Tickets sang Status: completed. Hoàn tất bàn giao dự án ProfileHub v1 chính thức. | Quy trình kiểm thử nghiêm ngặt kết hợp tài liệu rõ ràng tạo sự an tâm tuyệt đối khi bàn giao sản phẩm cho doanh nghiệp. |
+| 08:30 - 12:00 | Hiện thực hóa Ticket 05, Ticket 06 & Nghiệm thu toàn diện ProfileHub v1. | Hoàn thiện Ticket 05 (Page-Budget Guard đo chiều cao khổ A4, 1-Click Auto-Condense, đổi layout 1/2 cột) và Ticket 06 (Evidence Showcase render link demo/repo và mã QR 28px in A4); viết test pass 100%. | Gom việc hoàn tất 2 ticket cuối cùng với quy trình đóng gói nghiệm thu giúp khép lại phiên bản v1 một cách trọn vẹn và đúng tiến độ. |
+| 13:00 - 17:00 | Hiện thực hóa Ticket 05, Ticket 06 & Nghiệm thu toàn diện ProfileHub v1. | Rà soát micro-interactions, phím tắt Ctrl + S/P/B, chạy toàn bộ 11/11 test suites (38/38 tests pass 100%) và đóng gói npm run build sạch sẽ, nghiệm thu bàn giao ProfileHub v1. | Gom việc hoàn tất 2 ticket cuối cùng với quy trình đóng gói nghiệm thu giúp khép lại phiên bản v1 một cách trọn vẹn và đúng tiến độ. |
 
 | Tuần: 5 Thứ:      3                Ngày: 20/10/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
@@ -201,20 +177,14 @@
 | Tuần: 5 Thứ:      5                Ngày: 22/10/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
 | **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Nghiên cứu nguyên tắc "Zero Fake Metrics" & Xác lập 4 nguồn số liệu kỹ thuật tái hiện được. | Khẳng định nguyên tắc chống bịa đặt số liệu kinh doanh viển vông; xác lập 4 nguồn số liệu kỹ thuật thực tế: EXPLAIN query cost, load test throughput (req/s), Lighthouse performance và Vitest coverage. | Số liệu trong CV công nghệ phải có bằng chứng kỹ thuật kiểm chứng được, tránh việc ứng viên bị Tech Lead đánh trượt vì thiếu trung thực (Dishonesty) khi bị truy vấn sâu. |
-| 13:00 - 17:00 | Nghiên cứu nguyên tắc "Zero Fake Metrics" & Xác lập 4 nguồn số liệu kỹ thuật tái hiện được. | Soạn thảo kế hoạch thực thi kỹ thuật docs/superpowers/plans/2026-10-21-star-cv-diagnostic.md và thiết kế barem chấm điểm STAR Score (0-100). | Số liệu trong CV công nghệ phải có bằng chứng kỹ thuật kiểm chứng được, tránh việc ứng viên bị Tech Lead đánh trượt vì thiếu trung thực (Dishonesty) khi bị truy vấn sâu. |
+| 08:30 - 12:00 | Nghiên cứu nguyên tắc "Zero Fake Metrics" & Xây dựng công cụ "Soi CV Chuẩn STAR". | Khẳng định nguyên tắc chống bịa đặt số liệu viển vông; xác lập 4 nguồn số liệu kỹ thuật thực tế: EXPLAIN query cost, k6 load test throughput (req/s), Lighthouse performance và Vitest test coverage. | Số liệu trong CV công nghệ phải có bằng chứng kỹ thuật kiểm chứng được, tránh việc ứng viên bị Tech Lead đánh trượt vì thiếu trung thực (Dishonesty) khi bị truy vấn sâu. |
+| 13:00 - 17:00 | Nghiên cứu nguyên tắc "Zero Fake Metrics" & Xây dựng công cụ "Soi CV Chuẩn STAR". | Xây dựng starDiagnosticService.ts: Bắt lỗi từ ngữ thụ động ("tham gia", "hỗ trợ"), chấm điểm STAR Score (0-100), tự động sinh câu hỏi gợi mở khơi sâu trải nghiệm thực tế. | Số liệu trong CV công nghệ phải có bằng chứng kỹ thuật kiểm chứng được, tránh việc ứng viên bị Tech Lead đánh trượt vì thiếu trung thực (Dishonesty) khi bị truy vấn sâu. |
 
 | Tuần: 5 Thứ:      6                Ngày: 23/10/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
 | **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Phát triển công cụ "Soi CV Chuẩn STAR" (Chế độ Soi CV Sẵn Có & Dán Văn Bản Thô). | Xây dựng starDiagnosticService.ts phát hiện động từ bị động ("tham gia", "hỗ trợ"), nhận diện chỉ số kỹ thuật thực tế và tự động sinh câu hỏi gợi mở khơi sâu trải nghiệm. | Tự động hóa phát hiện từ ngữ mơ hồ giúp ứng viên lập tức nhận biết các điểm yếu chí mạng trong cách diễn đạt dự án của mình. |
-| 13:00 - 17:00 | Phát triển công cụ "Soi CV Chuẩn STAR" (Chế độ Soi CV Sẵn Có & Dán Văn Bản Thô). | Xây dựng giao diện Chế độ 1 trong StarCvDiagnosticModal.tsx: Phân tích sức khỏe từng đồ án, hiển thị danh sách điểm yếu kỹ thuật cần khắc phục và nút kích hoạt phỏng vấn nhanh. | Tự động hóa phát hiện từ ngữ mơ hồ giúp ứng viên lập tức nhận biết các điểm yếu chí mạng trong cách diễn đạt dự án của mình. |
-
-| Tuần: 5 Thứ:      7                Ngày: 24/10/2026 <td colspan=4/> |
-| :--- | :--- | :--- | :--- |
-| **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Hoàn thiện "STAR Wizard Từ Trang Giấy Trắng" & Tích hợp 1-Click Đưa Vào Canvas. | Xây dựng Chế độ 2 (STAR Wizard) dẫn dắt ứng viên qua 3 bước (Bối cảnh -> Hành động -> Kết quả đo lường) với các chip gợi ý kỹ thuật thực tế; viết 5 bài test tự động pass 100%. | Đặt đúng câu hỏi gợi mở theo mô hình STAR giúp ứng viên tự khai phá những thành tựu kỹ thuật có thật mà chính họ đã làm nhưng chưa biết cách diễn đạt. |
-| 13:00 - 17:00 | Hoàn thiện "STAR Wizard Từ Trang Giấy Trắng" & Tích hợp 1-Click Đưa Vào Canvas. | Tích hợp nút tác vụ "Soi & Khai Thác STAR" trên thanh công cụ CVBuilder.tsx, hỗ trợ 1-Click đưa vào Canvas; toàn bộ 14/14 test suites (51/51 tests) pass 100%. | Đặt đúng câu hỏi gợi mở theo mô hình STAR giúp ứng viên tự khai phá những thành tựu kỹ thuật có thật mà chính họ đã làm nhưng chưa biết cách diễn đạt. |
+| 08:30 - 12:00 | Hoàn thiện STAR Wizard, Tích hợp Canvas & Thiết lập CI/CD GitHub Actions. | Xây dựng modal StarCvDiagnosticModal.tsx hỗ trợ cả 2 chế độ: "Soi CV Sẵn Có" và "STAR Wizard Từ Trang Giấy Trắng", tích hợp nút tác vụ 1-click đưa vào CV Canvas (5 bài test pass 100%). | Gom việc tích hợp giao diện STAR Wizard với quy trình kiểm thử hiệu năng CI/CD vào ngày thứ 6 giúp đảm bảo tính ổn định cao của mã nguồn trước khi sang tuần mới. |
+| 13:00 - 17:00 | Hoàn thiện STAR Wizard, Tích hợp Canvas & Thiết lập CI/CD GitHub Actions. | Cấu hình CI/CD GitHub Actions (.github/workflows/3dwebsite-ci.yml, deploy, release, rollback), chạy kiểm thử hồi quy 14/14 test suites (51/51 tests pass) và kiểm tra hiệu năng đóng gói build sạch. | Gom việc tích hợp giao diện STAR Wizard với quy trình kiểm thử hiệu năng CI/CD vào ngày thứ 6 giúp đảm bảo tính ổn định cao của mã nguồn trước khi sang tuần mới. |
 
 | Tuần: 6 Thứ:      2                Ngày: 26/10/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
@@ -225,122 +195,114 @@
 | Tuần: 6 Thứ:      3                Ngày: 27/10/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
 | **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Thiết lập quy trình CI/CD GitHub Actions và Khảo sát khoảng trống thị trường CV công nghệ. | Cấu hình các workflow .github/workflows/: 3dwebsite-ci.yml, 3dwebsite-deploy.yml, 3dwebsite-release.yml, 3dwebsite-rollback.yml kiểm soát chất lượng code tự động. | Tự động hóa kiểm tra mã nguồn (lint, typecheck, unit test) qua CI pipeline giúp phát hiện lỗi từ sớm và ngăn chặn code lỗi được merge vào nhánh chính. |
-| 13:00 - 17:00 | Thiết lập quy trình CI/CD GitHub Actions và Khảo sát khoảng trống thị trường CV công nghệ. | Khảo sát các khoảng trống thị trường (TopCV, ITviec, Canva): bẫy máy quét ATS quốc tế làm vỡ layout 2 cột, thiếu chỉ số định lượng, không có phản hồi HR; soạn thảo DANH_GIA_TINH_NANG_CV_PROFILEHUB.md. | Tự động hóa kiểm tra mã nguồn (lint, typecheck, unit test) qua CI pipeline giúp phát hiện lỗi từ sớm và ngăn chặn code lỗi được merge vào nhánh chính. |
+| 08:30 - 12:00 | Xây dựng Bộ Quy Tắc Kiểm Định Chất Lượng CV & Nâng cấp CV Canvas linh hoạt. | Phát triển cvQualityCheckService.ts kiểm tra 10 tiêu chí chất lượng CV (độ dài lý tưởng, tỷ lệ định lượng, từ khóa kỹ thuật) và modal CVQualityCheckModal.tsx (5 bài test pass 100%). | Tự động hóa việc chấm điểm chất lượng CV kết hợp tùy biến khối thông tin linh hoạt giúp ứng viên may đo hồ sơ đạt độ hoàn thiện cao nhất. |
+| 13:00 - 17:00 | Xây dựng Bộ Quy Tắc Kiểm Định Chất Lượng CV & Nâng cấp CV Canvas linh hoạt. | Xây dựng InlineEditPopover.tsx, SectionSettingsModal.tsx, ReorderSectionsModal.tsx cho phép kéo thả sắp xếp lại các phần; tích hợp GitHubQuickImportBar.tsx kéo repo từ GitHub vào thẳng CV. | Tự động hóa việc chấm điểm chất lượng CV kết hợp tùy biến khối thông tin linh hoạt giúp ứng viên may đo hồ sơ đạt độ hoàn thiện cao nhất. |
 
 | Tuần: 6 Thứ:      4                Ngày: 28/10/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
 | **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Xây dựng Bộ Quy Tắc Kiểm Định Chất Lượng CV (cvQualityCheckService.ts) & Thanh Nhập GitHub. | Phát triển bộ quy tắc kiểm tra 10 tiêu chí chất lượng CV (độ dài lý tưởng, tỷ lệ câu định lượng, mật độ từ khóa kỹ thuật); xây dựng CVQualityCheckModal.tsx và viết 5 bài test pass 100%. | Tự động hóa việc chấm điểm chất lượng CV giúp người dùng tự tin chỉnh sửa bản CV đạt độ hoàn thiện cao nhất trước khi gửi đi. |
-| 13:00 - 17:00 | Xây dựng Bộ Quy Tắc Kiểm Định Chất Lượng CV (cvQualityCheckService.ts) & Thanh Nhập GitHub. | Tích hợp GitHubQuickImportBar.tsx cho phép kéo repository từ GitHub vào thẳng dự án CV; xây dựng InlineEditPopover.tsx hỗ trợ chỉnh sửa nội tuyến tức thì. | Tự động hóa việc chấm điểm chất lượng CV giúp người dùng tự tin chỉnh sửa bản CV đạt độ hoàn thiện cao nhất trước khi gửi đi. |
+| 08:30 - 12:00 | Tái cấu trúc giao diện sang Consumer SaaS & Hiện thực hóa "Mắt Thần ATS". | Loại bỏ Sidebar cố định 240px trong MainLayout.tsx giải phóng 100% không gian ngang cho màn hình soạn thảo CV; xây dựng HeaderBar.tsx kính mờ, Footer.tsx và trang chủ HomePage.tsx tại /. | Chuyển sang bố cục HeaderBar tối giản giúp giao diện hiện đại chuẩn SaaS và hiểu rõ cơ chế máy quét ATS quốc tế bảo vệ hồ sơ không bị loại oan. |
+| 13:00 - 17:00 | Tái cấu trúc giao diện sang Consumer SaaS & Hiện thực hóa "Mắt Thần ATS". | Hoàn thành atsParserEyeService.ts & AtsParserEyeModal.tsx hiển thị chuỗi Plain-Text chuẩn xác mà các hệ thống ATS quốc tế (Workday, Taleo) đọc ra, kèm nút 1-click chuyển Minimalist Harvard 1 cột (4 tests pass). | Chuyển sang bố cục HeaderBar tối giản giúp giao diện hiện đại chuẩn SaaS và hiểu rõ cơ chế máy quét ATS quốc tế bảo vệ hồ sơ không bị loại oan. |
 
 | Tuần: 6 Thứ:      5                Ngày: 29/10/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
 | **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Nâng cấp tính năng Sắp xếp Sections trên Canvas & Tái cấu trúc InteractiveCVCanvas.tsx. | Xây dựng SectionSettingsModal.tsx và ReorderSectionsModal.tsx cho phép kéo thả sắp xếp lại thứ tự các khối thông tin trong CV (Học vấn, Kinh nghiệm, Đồ án, Kỹ năng). | Cung cấp khả năng tùy biến bố cục linh hoạt giúp ứng viên may đo hồ sơ phù hợp với từng định dạng chuẩn của các công ty đa quốc gia. |
-| 13:00 - 17:00 | Nâng cấp tính năng Sắp xếp Sections trên Canvas & Tái cấu trúc InteractiveCVCanvas.tsx. | Tái cấu trúc tệp Canvas trung tâm InteractiveCVCanvas.tsx, tối ưu hóa hiệu năng render khi người dùng chuyển đổi qua lại giữa các phiên bản CV. | Cung cấp khả năng tùy biến bố cục linh hoạt giúp ứng viên may đo hồ sơ phù hợp với từng định dạng chuẩn của các công ty đa quốc gia. |
+| 08:30 - 12:00 | Xây dựng Động Cơ Khảo Sát Lương Thị Trường AI & Widget Bản Đồ Nhiệt Theo Dõi CV. | Xây dựng salaryBenchmarkService.ts & SalaryBenchmarkModal.tsx nhận diện cấp bậc, tính Tech Multiplier (+10% đến 35%) và dùng đồ án làm đòn bẩy nâng phân vị lương từ P50 lên P75-P85 (4 tests pass). | Trang bị công cụ khảo sát dải lương giúp ứng viên tự tin đàm phán và dữ liệu bản đồ nhiệt giúp hiểu rõ phần nào trong CV được nhà tuyển dụng chú ý nhiều nhất. |
+| 13:00 - 17:00 | Xây dựng Động Cơ Khảo Sát Lương Thị Trường AI & Widget Bản Đồ Nhiệt Theo Dõi CV. | Xây dựng cvTrackingAnalyticsService.ts & CvHeatmapWidget.tsx đo lường lượt xem, thời gian dừng đọc trung bình (Avg Dwell Time), trực quan hóa % thời gian dừng ở từng mục; thêm ThemeToggleSwitch.tsx (Dark/Light mode). | Trang bị công cụ khảo sát dải lương giúp ứng viên tự tin đàm phán và dữ liệu bản đồ nhiệt giúp hiểu rõ phần nào trong CV được nhà tuyển dụng chú ý nhiều nhất. |
 
 | Tuần: 6 Thứ:      6                Ngày: 30/10/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
 | **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Tái cấu trúc giao diện sang phong cách Consumer SaaS (HeaderBar, Footer & Landing Page). | Loại bỏ Sidebar cố định 240px trong MainLayout.tsx để giải phóng 100% không gian ngang cho màn hình soạn thảo CV; xây dựng HeaderBar.tsx kính mờ (Glassmorphism) và Footer.tsx. | Chuyển sang bố cục HeaderBar tối giản giúp giao diện hiện đại chuẩn SaaS và tối đa hóa không gian thao tác trên màn hình nhỏ. |
-| 13:00 - 17:00 | Tái cấu trúc giao diện sang phong cách Consumer SaaS (HeaderBar, Footer & Landing Page). | Xây dựng trang chủ Landing Page HomePage.tsx tại đường dẫn gốc / chuẩn Consumer SaaS (Linear/Stripe style); viết bộ test headerNavigation.test.ts và homePageData.test.ts pass 100%. | Chuyển sang bố cục HeaderBar tối giản giúp giao diện hiện đại chuẩn SaaS và tối đa hóa không gian thao tác trên màn hình nhỏ. |
-
-| Tuần: 6 Thứ:      7                Ngày: 31/10/2026 <td colspan=4/> |
-| :--- | :--- | :--- | :--- |
-| **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Hiện thực hóa tính năng "Mắt Thần ATS" (AtsParserEyeModal.tsx & atsParserEyeService.ts). | Xây dựng atsParserEyeService.ts phân tích cú pháp và trích xuất chuỗi Plain-Text chuẩn xác mà các hệ thống ATS quốc tế (Workday, Taleo) đọc ra. | Hiểu rõ cơ chế phân tích cú pháp của các hệ thống ATS quốc tế giúp bảo vệ hồ sơ sinh viên không bị loại oan uổng ngay từ vòng quét tự động. |
-| 13:00 - 17:00 | Hiện thực hóa tính năng "Mắt Thần ATS" (AtsParserEyeModal.tsx & atsParserEyeService.ts). | Xây dựng AtsParserEyeModal.tsx cảnh báo rủi ro xáo trộn thứ tự từ ngữ trên layout 2 cột và cung cấp nút 1-click chuyển đổi nhanh sang Minimalist Harvard 1 cột (4 bài test pass 100%). | Hiểu rõ cơ chế phân tích cú pháp của các hệ thống ATS quốc tế giúp bảo vệ hồ sơ sinh viên không bị loại oan uổng ngay từ vòng quét tự động. |
+| 08:30 - 12:00 | Xây dựng Interview War Room 4 Chặng & Kiểm thử hồi quy hiệu năng toàn diện. | Hoàn thành aiMockInterviewService.ts, selfInterviewService.ts, AiMockInterviewModal.tsx, InterviewWarRoomModal.tsx mô phỏng 4 chặng: Elevator Pitch, STAR Deep-Dive, Live Incident Crisis, Skill Gap Defense. | Luyện tập phỏng vấn xử lý sự cố khẩn cấp (Live Incident) kết hợp kiểm thử hồi quy và đo lường hiệu năng vào chiều thứ 6 giúp đóng gói hệ thống an toàn và vững chắc. |
+| 13:00 - 17:00 | Xây dựng Interview War Room 4 Chặng & Kiểm thử hồi quy hiệu năng toàn diện. | Tích hợp tính năng đổi giờ phỏng vấn (Reschedule) đồng bộ 2 chiều sang pipeline NTD; chạy toàn bộ 82/82 Unit Tests (22/22 Test Suites pass 100%) và đo lường hiệu năng bundle build sạch sẽ trong 23s. | Luyện tập phỏng vấn xử lý sự cố khẩn cấp (Live Incident) kết hợp kiểm thử hồi quy và đo lường hiệu năng vào chiều thứ 6 giúp đóng gói hệ thống an toàn và vững chắc. |
 
 | Tuần: 7 Thứ:      2                Ngày: 02/11/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
 | **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Xây dựng Động Cơ Khảo Sát Lương Thị Trường AI (SalaryBenchmarkModal.tsx). | Xây dựng salaryBenchmarkService.ts: Nhận diện cấp bậc (Intern đến Lead), phân tích Tech Multiplier (React, Go, Cloud...) cộng thêm từ 10% đến 35% giá trị vào dải lương cơ bản. | Trang bị công cụ khảo sát dải lương thị trường theo Tech Stack giúp sinh viên có vị thế tự tin và biết cách đàm phán mức lương xứng đáng dựa trên bằng chứng đồ án thực tế. |
-| 13:00 - 17:00 | Xây dựng Động Cơ Khảo Sát Lương Thị Trường AI (SalaryBenchmarkModal.tsx). | Xây dựng SalaryBenchmarkModal.tsx: Tận dụng số lượng đồ án Verified làm đòn bẩy nâng phân vị lương từ P50 lên P75-P85, gợi ý kịch bản đàm phán offer (4 bài test pass 100%). | Trang bị công cụ khảo sát dải lương thị trường theo Tech Stack giúp sinh viên có vị thế tự tin và biết cách đàm phán mức lương xứng đáng dựa trên bằng chứng đồ án thực tế. |
+| 08:30 - 12:00 | Khảo sát tiến trình ứng tuyển & Thiết kế kiến trúc Application Pipeline Tracker. | Khảo sát góc khuất tâm lý ứng viên sau khi nộp đơn: nỗi sợ thất lạc hồ sơ và quên phiên bản CV đã nộp; xây dựng đặc tả kiến trúc cho Application Pipeline Tracker và Public Verification Gateway. | Phân tích sâu hành vi ứng viên sau khi gửi CV giúp xây dựng các tính năng đồng hành liên tục suốt quá trình tìm việc chứ không dừng lại ở khâu xuất file. |
+| 13:00 - 17:00 | Khảo sát tiến trình ứng tuyển & Thiết kế kiến trúc Application Pipeline Tracker. | Khai báo Schema Types (application.types.ts, starDefense.types.ts, projects.types.ts) và thiết lập kiến trúc dịch vụ bảo chứng & băm mật mã học (applicationTrackerService.ts, verificationService.ts). | Phân tích sâu hành vi ứng viên sau khi gửi CV giúp xây dựng các tính năng đồng hành liên tục suốt quá trình tìm việc chứ không dừng lại ở khâu xuất file. |
 
 | Tuần: 7 Thứ:      3                Ngày: 03/11/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
 | **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Xây dựng Widget Bản Đồ Nhiệt Theo Dõi CV (CvHeatmapWidget.tsx & cvTrackingAnalyticsService.ts). | Xây dựng cvTrackingAnalyticsService.ts đo lường các chỉ số tương tác thực tế: Tổng lượt xem, số NTD duy nhất, thời gian đọc trung bình (Avg Dwell Time) và tỷ lệ đọc hết trang. | Trực quan hóa dữ liệu đọc CV bằng Heatmap giúp ứng viên hiểu rõ nhà tuyển dụng quan tâm đến phần nào nhất để tối ưu hóa vị trí đặt thông tin quan trọng. |
-| 13:00 - 17:00 | Xây dựng Widget Bản Đồ Nhiệt Theo Dõi CV (CvHeatmapWidget.tsx & cvTrackingAnalyticsService.ts). | Phát triển CvHeatmapWidget.tsx trực quan hóa % thời gian HR dừng lại ở từng mục (Kinh nghiệm, Đồ án, Kỹ năng) và tích hợp nhật ký Recruiter Visit Feed thời gian thực (3 bài test pass 100%). | Trực quan hóa dữ liệu đọc CV bằng Heatmap giúp ứng viên hiểu rõ nhà tuyển dụng quan tâm đến phần nào nhất để tối ưu hóa vị trí đặt thông tin quan trọng. |
+| 08:30 - 12:00 | Hiện thực hóa Bảng Kanban Ứng Tuyển & Phao Cứu Sinh Giải Trình Số Liệu STAR. | Xây dựng bảng Kanban ApplicationKanbanBoard.tsx với các cột trạng thái rõ ràng (Đã nộp, Chờ phỏng vấn, Đã nhận offer, Từ chối), tích hợp dữ liệu ứng tuyển đồng bộ. | Cung cấp bản tóm tắt luận điểm kỹ thuật rút gọn ngay trên bảng Kanban giúp ứng viên luôn ở trạng thái sẵn sàng cao nhất khi nhận cuộc gọi từ nhà tuyển dụng. |
+| 13:00 - 17:00 | Hiện thực hóa Bảng Kanban Ứng Tuyển & Phao Cứu Sinh Giải Trình Số Liệu STAR. | Xây dựng modal phao cứu sinh giải trình số liệu StarDefenseModal.tsx giúp ứng viên ôn tập nhanh các luận điểm kỹ thuật then chốt 15 phút trước giờ phỏng vấn; viết test TDD pass 100%. | Cung cấp bản tóm tắt luận điểm kỹ thuật rút gọn ngay trên bảng Kanban giúp ứng viên luôn ở trạng thái sẵn sàng cao nhất khi nhận cuộc gọi từ nhà tuyển dụng. |
 
 | Tuần: 7 Thứ:      4                Ngày: 04/11/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
 | **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Phát triển Hệ Thống Chuyển Đổi Dark/Light Mode & Đồng Bộ Giao Diện Toàn Ứng Dụng. | Xây dựng ThemeContext.tsx và component ThemeToggleSwitch.tsx quản lý trạng thái giao diện sáng/tối với bảng màu Slate/Indigo/Navy chống lóa mắt. | Chăm chút tính năng Dark Mode hoàn chỉnh nâng cao đáng kể trải nghiệm thị giác cho lập trình viên và nhà tuyển dụng khi duyệt hồ sơ vào ban đêm. |
-| 13:00 - 17:00 | Phát triển Hệ Thống Chuyển Đổi Dark/Light Mode & Đồng Bộ Giao Diện Toàn Ứng Dụng. | Rà soát toàn bộ các modal và Canvas đảm bảo hiển thị sắc nét ở cả hai chế độ màu, loại bỏ hoàn toàn hiện tượng Flash of Unstyled Content (FOUC). | Chăm chút tính năng Dark Mode hoàn chỉnh nâng cao đáng kể trải nghiệm thị giác cho lập trình viên và nhà tuyển dụng khi duyệt hồ sơ vào ban đêm. |
+| 08:30 - 12:00 | Xây dựng Cổng Tra Cứu Bảo Chứng Công Khai (/verify/:code) & Kiểm thử bảo mật. | Xây dựng PublicVerificationView.tsx tại route độc lập /verify/:code, kết nối thuật toán băm cryptographic bảo chứng tính toàn vẹn của đồ án và đồng bộ mã QR quét mở trực tiếp. | Bảo vệ dữ liệu riêng tư cá nhân khi thiết kế cổng tra cứu công khai là yêu cầu an toàn thông tin bắt buộc đối với nền tảng giáo dục - tuyển dụng. |
+| 13:00 - 17:00 | Xây dựng Cổng Tra Cứu Bảo Chứng Công Khai (/verify/:code) & Kiểm thử bảo mật. | Kiểm thử bảo mật ranh giới riêng tư (Privacy Boundary): thiết lập RLS ẩn GPA và số điện thoại/email cá nhân trên cổng tra cứu công khai, chỉ hiển thị minh chứng đồ án và kỹ năng kỹ thuật. | Bảo vệ dữ liệu riêng tư cá nhân khi thiết kế cổng tra cứu công khai là yêu cầu an toàn thông tin bắt buộc đối với nền tảng giáo dục - tuyển dụng. |
 
 | Tuần: 7 Thứ:      5                Ngày: 05/11/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
 | **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Xây dựng Phòng Luyện Phỏng Vấn Kỹ Thuật War Room Thích Ứng 4 Chặng. | Xây dựng aiMockInterviewService.ts và selfInterviewService.ts hiện thực hóa 4 giai đoạn phỏng vấn: Elevator Pitch (120s), Deep-Dive & STAR Metrics, Live Incident Crisis, Skill Gap Defense. | Luyện tập phỏng vấn xử lý sự cố khẩn cấp (Live Incident) giúp ứng viên tôi luyện phản xạ bình tĩnh và tư duy giải quyết vấn đề thực tế trước các Tech Lead khó tính. |
-| 13:00 - 17:00 | Xây dựng Phòng Luyện Phỏng Vấn Kỹ Thuật War Room Thích Ứng 4 Chặng. | Xây dựng AiMockInterviewModal.tsx và InterviewWarRoomModal.tsx xuất biểu đồ Radar 5 trụ cột và xếp loại tuyển dụng chuẩn BigTech (Strong Hire, Hire...); 7 bài test pass 100%. | Luyện tập phỏng vấn xử lý sự cố khẩn cấp (Live Incident) giúp ứng viên tôi luyện phản xạ bình tĩnh và tư duy giải quyết vấn đề thực tế trước các Tech Lead khó tính. |
+| 08:30 - 12:00 | Khảo sát nhu cầu ứng tuyển & Xây dựng Bộ Hồ Sơ Ứng Tuyển Toàn Diện (Cover Letter Service). | Ban hành đặc tả kỹ thuật SDD, khai báo Schema Types (coverLetter.types.ts) cho Cover Letter & Outbound Email Generator bám sát đồ án thực tế và JD. | Tạo thư ứng tuyển tự động bám sát đồ án thực tế và số liệu định lượng giúp ứng viên thể hiện năng lực nổi bật mà không bao giờ bịa đặt công nghệ. |
+| 13:00 - 17:00 | Khảo sát nhu cầu ứng tuyển & Xây dựng Bộ Hồ Sơ Ứng Tuyển Toàn Diện (Cover Letter Service). | Xây dựng coverLetterService.ts với Rule Template Engine 4 đoạn kết hợp thuật toán dệt số liệu định lượng STAR từ CV; viết 7/7 bài kiểm thử Vitest pass 100%. | Tạo thư ứng tuyển tự động bám sát đồ án thực tế và số liệu định lượng giúp ứng viên thể hiện năng lực nổi bật mà không bao giờ bịa đặt công nghệ. |
 
 | Tuần: 7 Thứ:      6                Ngày: 06/11/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
 | **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Hiện thực hóa Tính Năng Đồng Bộ Lịch Phỏng Vấn 2 Chiều (Reschedule Request). | Nâng cấp widget phỏng vấn trên Dashboard: Hiển thị ngày giờ, ghi chú, link Google Meet trực tiếp kèm nút Xác nhận ngay hoặc Yêu cầu đổi giờ. | Cơ chế tương tác lịch phỏng vấn 2 chiều giúp giải quyết dứt điểm tình trạng trùng lịch và tăng tính chuyên nghiệp trong giao tiếp giữa ứng viên và doanh nghiệp. |
-| 13:00 - 17:00 | Hiện thực hóa Tính Năng Đồng Bộ Lịch Phỏng Vấn 2 Chiều (Reschedule Request). | Viết hàm requestInterviewRescheduleByStudent trong pipelineSync.ts tự động đồng bộ yêu cầu đổi lịch phỏng vấn sang pipeline của nhà tuyển dụng theo thời gian thực. | Cơ chế tương tác lịch phỏng vấn 2 chiều giúp giải quyết dứt điểm tình trạng trùng lịch và tăng tính chuyên nghiệp trong giao tiếp giữa ứng viên và doanh nghiệp. |
-
-| Tuần: 7 Thứ:      7                Ngày: 07/11/2026 <td colspan=4/> |
-| :--- | :--- | :--- | :--- |
-| **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Kiểm thử hồi quy toàn diện (Full Regression Suite) & Đóng gói sản xuất Clean Build. | Thực thi toàn bộ bộ kiểm thử tự động của dự án: Đạt kỷ lục 22/22 Test Suites (82/82 Tests) Pass 100% không có bất kỳ lỗi nào. | Duy trì kỷ luật All-Green Tests và Clean Build ở mỗi mốc phát triển mang lại sự tự tin tuyệt đối về tính ổn định và độ tin cậy của phần mềm. |
-| 13:00 - 17:00 | Kiểm thử hồi quy toàn diện (Full Regression Suite) & Đóng gói sản xuất Clean Build. | Chạy npx tsc --noEmit (0 lỗi TypeScript) và npm run build đóng gói bundle sản xuất tối ưu trong 23.88s; kiểm tra vận hành trơn tru trên môi trường staging. | Duy trì kỷ luật All-Green Tests và Clean Build ở mỗi mốc phát triển mang lại sự tự tin tuyệt đối về tính ổn định và độ tin cậy của phần mềm. |
+| 08:30 - 12:00 | Hiện thực hóa CoverLetterModal.tsx & Kiểm thử hiệu năng hệ thống toàn dự án. | Phát triển CoverLetterModal.tsx hỗ trợ 3 phong cách (Chuyên nghiệp/Startup/Kỹ thuật), mẫu Email gửi HR chuẩn quốc tế, xuất Markdown, tích hợp nút gọi nhanh từ ApplicationCard.tsx. | Tích hợp liền mạch giữa Kanban theo dõi ứng tuyển và công cụ may đo thư xin việc, đồng thời gom kiểm tra hiệu năng hệ thống vào cuối tuần giúp đảm bảo toàn bộ hệ sinh thái chạy mượt mà. |
+| 13:00 - 17:00 | Hiện thực hóa CoverLetterModal.tsx & Kiểm thử hiệu năng hệ thống toàn dự án. | Kiểm thử toàn diện 37 files (151/151 tests pass 100%), đo lường hiệu năng rendering trên các trình duyệt Chrome/Edge/Firefox và build sản xuất sạch sẽ 100%. | Tích hợp liền mạch giữa Kanban theo dõi ứng tuyển và công cụ may đo thư xin việc, đồng thời gom kiểm tra hiệu năng hệ thống vào cuối tuần giúp đảm bảo toàn bộ hệ sinh thái chạy mượt mà. |
 
 | Tuần: 8 Thứ:      2                Ngày: 09/11/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
 | **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
 | 08:30 - 12:00 | Triển khai thử nghiệm người dùng Beta (User Acceptance Testing - UAT). | Tổ chức phiên thử nghiệm người dùng UAT với nhóm 15 sinh viên năm cuối ngành CNTT: Giao nhiệm vụ tạo CV từ JD thực tế của FPT Software và VNG. | Quan sát người dùng thực tế thao tác giúp phát hiện nhiều chi tiết nhỏ về mặt tương tác (micro-interactions) cần được tinh chỉnh để tăng tính trực quan. |
-| 13:00 - 17:00 | Triển khai thử nghiệm người dùng Beta (User Acceptance Testing - UAT). | Ghi nhận nhật ký thao tác và phỏng vấn nhanh cảm nhận của người dùng về tính năng STAR Diagnostic, Mắt Thần ATS và Interview War Room. | Quan sát người dùng thực tế thao tác giúp phát hiện nhiều chi tiết nhỏ về mặt tương tác (micro-interactions) cần được tinh chỉnh để tăng tính trực quan. |
+| 13:00 - 17:00 | Triển khai thử nghiệm người dùng Beta (User Acceptance Testing - UAT). | Ghi nhận nhật ký thao tác và phỏng vấn nhanh cảm nhận của người dùng về tính năng STAR Diagnostic, Mắt Thần ATS, Application Tracker và Cover Letter. | Quan sát người dùng thực tế thao tác giúp phát hiện nhiều chi tiết nhỏ về mặt tương tác (micro-interactions) cần được tinh chỉnh để tăng tính trực quan. |
 
 | Tuần: 8 Thứ:      3                Ngày: 10/11/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
 | **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Phân tích kết quả UAT và Tinh chỉnh kích thước hiển thị in ấn chuẩn A4. | Tổng hợp danh sách 8 điểm góp ý từ đợt thử nghiệm UAT: Điều chỉnh kích thước font chữ in ấn xuống 10.5pt để vừa vặn hơn trên các khổ giấy hẹp. | Kiểm thử trên thiết bị vật lý thực tế (máy in và camera điện thoại) là bước bắt buộc để đảm bảo chất lượng đầu ra của sản phẩm in ấn. |
-| 13:00 - 17:00 | Phân tích kết quả UAT và Tinh chỉnh kích thước hiển thị in ấn chuẩn A4. | Kiểm thử in thực tế trên 3 dòng máy in văn phòng phổ biến (HP LaserJet, Canon LBP, Brother); đảm bảo mã QR quét nhạy trong vòng 1 giây. | Kiểm thử trên thiết bị vật lý thực tế (máy in và camera điện thoại) là bước bắt buộc để đảm bảo chất lượng đầu ra của sản phẩm in ấn. |
+| 08:30 - 12:00 | Phân tích kết quả UAT và Tinh chỉnh kích thước hiển thị in ấn chuẩn A4. | Tổng hợp danh sách góp ý từ đợt thử nghiệm UAT, điều chỉnh kích thước font chữ in ấn xuống 10.5pt để vừa vặn hơn trên các khổ giấy hẹp. | Kiểm thử trên thiết bị vật lý thực tế (máy in và camera điện thoại) là bước bắt buộc để đảm bảo chất lượng đầu ra của sản phẩm in ấn. |
+| 13:00 - 17:00 | Phân tích kết quả UAT và Tinh chỉnh kích thước hiển thị in ấn chuẩn A4. | Kiểm thử in thực tế trên 3 dòng máy in văn phòng phổ biến (HP LaserJet, Canon LBP, Brother); kiểm tra độ sắc nét và đảm bảo mã QR quét nhạy trong vòng 1 giây. | Kiểm thử trên thiết bị vật lý thực tế (máy in và camera điện thoại) là bước bắt buộc để đảm bảo chất lượng đầu ra của sản phẩm in ấn. |
 
 | Tuần: 8 Thứ:      4                Ngày: 11/11/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
 | **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Tối ưu hóa SEO, OpenGraph Meta Tags và Tốc độ tải trang cho Public Showcase. | Cấu hình dynamic OpenGraph tags cho trang /showcase/:id: Hiển thị ảnh thumbnail dự án, tên ứng viên và danh sách tech stack khi chia sẻ link lên LinkedIn/Facebook. | Chăm chút trang Portfolio công khai giúp ứng viên tự tin gửi link profile cá nhân cho nhà tuyển dụng với hình ảnh xem trước chuyên nghiệp. |
-| 13:00 - 17:00 | Tối ưu hóa SEO, OpenGraph Meta Tags và Tốc độ tải trang cho Public Showcase. | Tối ưu hóa hình ảnh webp và lazy loading; đo lường điểm hiệu năng Chrome Lighthouse đạt 98/100 điểm Performance và 100/100 điểm SEO. | Chăm chút trang Portfolio công khai giúp ứng viên tự tin gửi link profile cá nhân cho nhà tuyển dụng với hình ảnh xem trước chuyên nghiệp. |
+| 08:30 - 12:00 | Tối ưu hóa SEO, OpenGraph Meta Tags & Nâng cấp bộ xuất PDF vector chất lượng cao. | Cấu hình dynamic OpenGraph tags cho trang /showcase/:id: Hiển thị ảnh thumbnail dự án, tên ứng viên và danh sách tech stack khi chia sẻ link lên LinkedIn/Facebook. | Chăm chút trang Portfolio công khai và xuất file PDF vector giúp máy quét ATS bóc tách dữ liệu chính xác 100% so với việc xuất ảnh bitmap thông thường. |
+| 13:00 - 17:00 | Tối ưu hóa SEO, OpenGraph Meta Tags & Nâng cấp bộ xuất PDF vector chất lượng cao. | Tích hợp cấu hình print style sheet @media print chuyên sâu: Khóa chặt tỷ lệ trang 1:1, kiểm tra văn bản vector có thể bôi đen và tìm kiếm được (selectable text) không bị vỡ hạt khi phóng to 300%. | Chăm chút trang Portfolio công khai và xuất file PDF vector giúp máy quét ATS bóc tách dữ liệu chính xác 100% so với việc xuất ảnh bitmap thông thường. |
 
 | Tuần: 8 Thứ:      5                Ngày: 12/11/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
 | **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Nâng cấp bộ xuất file PDF vector chất lượng cao (High-DPI PDF Export). | Tích hợp cấu hình print style sheet @media print chuyên sâu: Khóa chặt tỷ lệ trang 1:1, loại bỏ hoàn toàn viền trắng thừa khi lưu dạng PDF. | Xuất file PDF dạng văn bản vector (selectable text) giúp máy quét ATS bóc tách dữ liệu chính xác 100% so với việc xuất ảnh bitmap thông thường. |
-| 13:00 - 17:00 | Nâng cấp bộ xuất file PDF vector chất lượng cao (High-DPI PDF Export). | Kiểm tra chất lượng văn bản vector khi phóng to 300% trên Adobe Acrobat Reader: Đảm bảo nét chữ sắc sảo, không bị vỡ hạt hay mờ nhòe. | Xuất file PDF dạng văn bản vector (selectable text) giúp máy quét ATS bóc tách dữ liệu chính xác 100% so với việc xuất ảnh bitmap thông thường. |
+| 08:30 - 12:00 | Đóng gói toàn bộ tài liệu kỹ thuật bàn giao (Developer Handover Guide & Architecture Spec). | Cập nhật hoàn chỉnh tài liệu kiến trúc docs/CONTEXT.md, sơ đồ luồng hệ thống docs/luong_chinh_he_thong.md và hướng dẫn triển khai. | Viết tài liệu bàn giao chuẩn mực và mạch lạc là kỹ năng quan trọng khẳng định tính chuyên nghiệp của một kỹ sư phần mềm khi kết thúc dự án. |
+| 13:00 - 17:00 | Đóng gói toàn bộ tài liệu kỹ thuật bàn giao (Developer Handover Guide & Architecture Spec). | Đóng gói mã nguồn, kiểm tra lại toàn bộ file README.md, rà soát các biến môi trường và chuẩn bị tài liệu báo cáo thực tập tốt nghiệp chi tiết. | Viết tài liệu bàn giao chuẩn mực và mạch lạc là kỹ năng quan trọng khẳng định tính chuyên nghiệp của một kỹ sư phần mềm khi kết thúc dự án. |
 
 | Tuần: 8 Thứ:      6                Ngày: 13/11/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
 | **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Đóng gói toàn bộ tài liệu kỹ thuật bàn giao (Developer Handover Guide & Architecture Spec). | Cập nhật hoàn chỉnh tài liệu kiến trúc docs/CONTEXT.md, sơ đồ luồng hệ thống docs/luong_chinh_he_thong.md và hướng dẫn triển khai deployment-guide.md. | Viết tài liệu bàn giao chuẩn mực và mạch lạc là kỹ năng quan trọng khẳng định tính chuyên nghiệp của một kỹ sư phần mềm khi kết thúc dự án. |
-| 13:00 - 17:00 | Đóng gói toàn bộ tài liệu kỹ thuật bàn giao (Developer Handover Guide & Architecture Spec). | Đóng gói mã nguồn, kiểm tra lại toàn bộ file README.md và chuẩn bị tài liệu báo cáo thực tập tốt nghiệp chi tiết. | Viết tài liệu bàn giao chuẩn mực và mạch lạc là kỹ năng quan trọng khẳng định tính chuyên nghiệp của một kỹ sư phần mềm khi kết thúc dự án. |
-
-| Tuần: 8 Thứ:      7                Ngày: 14/11/2026 <td colspan=4/> |
-| :--- | :--- | :--- | :--- |
-| **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Báo cáo nghiệm thu giai đoạn với Người hướng dẫn doanh nghiệp và Tổng kết kỳ thực tập. | Trình bày demo toàn bộ các tính năng của nền tảng ProfileHub trước đại diện Công ty TNHH Alpaca Solutions: Nhận đánh giá xuất sắc về tính thực chiến và độ hoàn thiện. | Trải nghiệm thực tập thực tế tại doanh nghiệp giúp chuyển hóa vững chắc kiến thức lý thuyết trên giảng đường thành năng lực xây dựng sản phẩm công nghệ hoàn chỉnh. |
-| 13:00 - 17:00 | Báo cáo nghiệm thu giai đoạn với Người hướng dẫn doanh nghiệp và Tổng kết kỳ thực tập. | Ký nhận sổ theo dõi thực tập hàng tuần, hoàn thiện hồ sơ nghiệm thu thực tập tốt nghiệp và tổng kết kinh nghiệm quý báu đạt được trong suốt 8 tuần. | Trải nghiệm thực tập thực tế tại doanh nghiệp giúp chuyển hóa vững chắc kiến thức lý thuyết trên giảng đường thành năng lực xây dựng sản phẩm công nghệ hoàn chỉnh. |
-
-
+| 08:30 - 12:00 | Đo lường hiệu năng hệ thống lần cuối & Báo cáo nghiệm thu với Người hướng dẫn doanh nghiệp. | Đo lường điểm hiệu năng toàn diện trên Chrome Lighthouse (đạt 98/100 Performance, 100/100 SEO), kiểm tra tải trang và tối ưu hóa tài nguyên bundle lần cuối. | Trải nghiệm thực tập thực tế tại doanh nghiệp giúp chuyển hóa vững chắc kiến thức lý thuyết trên giảng đường thành năng lực xây dựng sản phẩm công nghệ hoàn chỉnh. |
+| 13:00 - 17:00 | Đo lường hiệu năng hệ thống lần cuối & Báo cáo nghiệm thu với Người hướng dẫn doanh nghiệp. | Báo cáo nghiệm thu dự án ProfileHub trước đại diện Công ty TNHH Alpaca Solutions, ký nhận phiếu theo dõi tiến độ thực tập và hoàn tất hồ sơ thực tập tốt nghiệp. | Trải nghiệm thực tập thực tế tại doanh nghiệp giúp chuyển hóa vững chắc kiến thức lý thuyết trên giảng đường thành năng lực xây dựng sản phẩm công nghệ hoàn chỉnh. |
 
 | Tuần: 9 Thứ:      2                Ngày: 16/11/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
 | **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Khảo sát, thiết kế kiến trúc và mô hình dữ liệu cho: Kiểm thử đồng bộ Typography. | Xây dựng hoàn tất đặc tả kiến trúc, khai báo cấu trúc bảng CSDL và models (append_bm01b.py). | Thiết kế schema chặt chẽ ngay từ đầu giúp loại bỏ rủi ro sai lệch dữ liệu và tối ưu hiệu năng truy vấn cho đồ án. |
-| 13:00 - 17:00 | Hiện thực hóa API Controller, nghiệp vụ và kiểm thử cho: Kiểm thử đồng bộ Typography. | Hoàn thiện các endpoint API, xử lý nghiệp vụ, viết bộ kiểm thử Unit Test và commit lên GitHub repository. | Tự động hóa kiểm thử và đồng bộ commit theo từng tính năng giúp đảm bảo chất lượng phần mềm luôn đạt chuẩn ổn định. |
+| 08:30 - 12:00 | Rà soát và chuẩn hóa Typography, font chữ hệ thống trên toàn bộ giao diện. | Rà soát và chuẩn hóa Typography, font chữ hệ thống trên toàn bộ các trang (Dashboard, CV Builder, Showcase, Kanban). | Đảm bảo tính nhất quán về mặt thị giác và khả năng đọc (readability) nâng cao tính thẩm mỹ và độ tin cậy của sản phẩm. |
+| 13:00 - 17:00 | Rà soát và chuẩn hóa Typography, font chữ hệ thống trên toàn bộ giao diện. | Viết các bài kiểm thử tự động kiểm tra tính tương thích font chữ và độ tương phản màu sắc trên các kích thước màn hình khác nhau. | Đảm bảo tính nhất quán về mặt thị giác và khả năng đọc (readability) nâng cao tính thẩm mỹ và độ tin cậy của sản phẩm. |
 
 | Tuần: 9 Thứ:      3                Ngày: 17/11/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
 | **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Khảo sát, thiết kế kiến trúc và mô hình dữ liệu cho: Application Pipeline Tracker (Quản lý tiến trình nộp đơn), STAR Defense Cheat-Sheet (Phao cứu sinh giải trình số liệu) và Public Verification Gateway (Cổng tra cứu bảo chứng đồ án công khai). | Hoàn thiện đặc tả kỹ thuật, khai báo Schema Types chặt chẽ (application.types.ts, starDefense.types.ts, projects.types.ts) và xây dựng kiến trúc dịch vụ bảo chứng & băm mật mã học (applicationTrackerService.ts, starDefenseService.ts, verificationService.ts). | Phân tích sâu góc khuất tâm lý ứng viên và thiết kế kiến trúc Single-Player độc lập giúp sản phẩm mang lại giá trị thực tiễn cao mà không phụ thuộc vào bên thứ ba. |
-| 13:00 - 17:00 | Hiện thực hóa Component Giao diện, tích hợp điểm chạm và kiểm thử tự động cho Application Pipeline Tracker, STAR Defense Cheat-Sheet và Public Verification Gateway (/verify/:code). | Xây dựng bảng Kanban (ApplicationKanbanBoard.tsx), modal giải trình số liệu (StarDefenseModal.tsx), trang chứng nhận số công khai (PublicVerificationView.tsx), đồng bộ mã QR và viết bộ kiểm thử Vitest 100% pass. | Tách nhỏ các lát cắt chức năng theo chuỗi T1-T2-T3 kết hợp kiểm thử hồi quy nghiêm ngặt giúp đảm bảo tính tương thích và độ ổn định của toàn hệ thống. |
-
+| 08:30 - 12:00 | Kiểm thử tích hợp luồng tương tác giữa Kanban ứng tuyển và gửi Email HR. | Kiểm thử tích hợp luồng tương tác giữa bảng Kanban ứng tuyển và modal gửi Email cho nhà tuyển dụng. | Phản hồi giao diện tức thì khi người dùng tương tác giúp ứng dụng mang lại cảm giác mượt mà và chuyên nghiệp như các công cụ SaaS quốc tế. |
+| 13:00 - 17:00 | Kiểm thử tích hợp luồng tương tác giữa Kanban ứng tuyển và gửi Email HR. | Tối ưu hóa các thao tác kéo thả trạng thái ứng viên, bổ sung thông báo Toast phản hồi tức thì khi cập nhật tiến độ phỏng vấn. | Phản hồi giao diện tức thì khi người dùng tương tác giúp ứng dụng mang lại cảm giác mượt mà và chuyên nghiệp như các công cụ SaaS quốc tế. |
 
 | Tuần: 9 Thứ:      4                Ngày: 18/11/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
 | **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Khảo sát nhu cầu ứng tuyển, thiết kế kiến trúc và mô hình dữ liệu cho Bộ Hồ Sơ Ứng Tuyển Toàn Diện (Cover Letter & Outbound Email Generator). | Ban hành đặc tả kỹ thuật SDD, khai báo Schema Types (coverLetter.types.ts), xây dựng coverLetterService.ts với Rule Template Engine 4 đoạn kết hợp thuật toán dệt số liệu định lượng STAR từ CV và viết 7/7 bài kiểm thử Vitest pass 100%. | Tạo thư ứng tuyển tự động bám sát đồ án thực tế và số liệu định lượng giúp ứng viên thể hiện năng lực nổi bật mà không bao giờ bịa đặt công nghệ. |
-| 13:00 - 17:00 | Hiện thực hóa Giao diện Modal Soạn Thảo (CoverLetterModal.tsx), tích hợp đa phong cách (Tones), Email HR và điểm chạm trên Kanban. | Phát triển CoverLetterModal.tsx hỗ trợ 3 phong cách (Chuyên nghiệp/Startup/Kỹ thuật), mẫu Email gửi HR chuẩn quốc tế, xuất Markdown, tích hợp nút gọi nhanh từ ApplicationCard.tsx và AddApplicationModal.tsx; kiểm thử toàn diện 37 files (151/151 tests) pass 100% và build sản xuất sạch sẽ. | Thiết kế tích hợp liền mạch giữa Kanban theo dõi ứng tuyển và công cụ may đo hồ sơ giúp giảm tối đa thao tác thừa, nâng cao trải nghiệm người dùng. |
+| 08:30 - 12:00 | Tinh chỉnh các mẫu template Cover Letter & Hoàn thiện tính năng xuất đa định dạng. | Tinh chỉnh các mẫu template Cover Letter theo 3 phong cách (Chuyên nghiệp, Startup, Kỹ thuật chuyên sâu) dựa trên phản hồi của sinh viên. | Đa dạng hóa định dạng xuất tài liệu giúp đáp ứng linh hoạt các phương thức nộp đơn khác nhau của các công ty công nghệ. |
+| 13:00 - 17:00 | Tinh chỉnh các mẫu template Cover Letter & Hoàn thiện tính năng xuất đa định dạng. | Hoàn thiện tính năng xuất Cover Letter ra file .txt và Markdown chuẩn GitHub để ứng viên dễ dàng lưu trữ và tùy biến thêm. | Đa dạng hóa định dạng xuất tài liệu giúp đáp ứng linh hoạt các phương thức nộp đơn khác nhau của các công ty công nghệ. |
+
+| Tuần: 9 Thứ:      5                Ngày: 19/11/2026 <td colspan=4/> |
+| :--- | :--- | :--- | :--- |
+| **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
+| 08:30 - 12:00 | Rà soát toàn bộ liên kết tài liệu minh chứng & Thiết lập cơ chế sao lưu dữ liệu tự động. | Rà soát toàn bộ các liên kết tài liệu minh chứng, link GitHub Repo và Demo của các đồ án mẫu trong hệ thống. | Thiết lập chính sách sao lưu định kỳ là biện pháp phòng ngừa rủi ro mất mát dữ liệu quan trọng nhất cho hệ thống đang vận hành. |
+| 13:00 - 17:00 | Rà soát toàn bộ liên kết tài liệu minh chứng & Thiết lập cơ chế sao lưu dữ liệu tự động. | Kiểm tra cơ chế sao lưu dự phòng CSDL trên Supabase và thiết lập lịch tự động sao lưu định kỳ hàng tuần. | Thiết lập chính sách sao lưu định kỳ là biện pháp phòng ngừa rủi ro mất mát dữ liệu quan trọng nhất cho hệ thống đang vận hành. |
+
+| Tuần: 9 Thứ:      6                Ngày: 20/11/2026 <td colspan=4/> |
+| :--- | :--- | :--- | :--- |
+| **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
+| 08:30 - 12:00 | Chạy kiểm thử tải hệ thống (Load Testing) & Tổng kết tuần thực tập 9. | Chạy kiểm thử tải (load testing) với k6 mô phỏng 100 người dùng đồng thời truy cập Public Showcase, ghi nhận thời gian phản hồi API < 200ms. | Thực hiện kiểm thử tải trước khi bàn giao giúp đánh giá chính xác năng lực chịu tải của hạ tầng và mang lại sự an tâm tuyệt đối. |
+| 13:00 - 17:00 | Chạy kiểm thử tải hệ thống (Load Testing) & Tổng kết tuần thực tập 9. | Tổng kết tuần 9, bàn giao tài liệu bổ sung cho doanh nghiệp và chuẩn bị các nội dung chuẩn bị cho lễ bảo vệ thực tập tốt nghiệp. | Thực hiện kiểm thử tải trước khi bàn giao giúp đánh giá chính xác năng lực chịu tải của hạ tầng và mang lại sự an tâm tuyệt đối. |
+
