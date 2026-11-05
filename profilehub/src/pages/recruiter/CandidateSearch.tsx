@@ -4,6 +4,7 @@ import { jobStudioService } from '../../services/jobStudioService';
 import { useAuth } from '../../context/AuthProvider';
 import { supabase } from '../../services/supabase';
 import VerifiedBadge from '../../components/common/VerifiedBadge';
+import { getProjectBadgeVariant, countCandidateProjectBadges } from '../../services/projectBadgeService';
 import { Search, ShieldCheck, Mail, FileText, ExternalLink, Code2, FileSpreadsheet, FolderOpen } from 'lucide-react';
 import VSCodeViewerModal from '../../components/common/VSCodeViewerModal';
 import { addToSharedPipeline } from '../../utils/pipelineSync';
@@ -58,6 +59,7 @@ export default function CandidateSearch() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [onlyVerified, setOnlyVerified] = useState(true);
+  const [onlyDemoReady, setOnlyDemoReady] = useState(false);
 
   // Modal xem Cặp Hồ Sơ (CV + Thư Giới Thiệu)
   const [selectedDossierCandidate, setSelectedDossierCandidate] = useState<DossierCandidate | null>(null);
@@ -199,6 +201,13 @@ export default function CandidateSearch() {
   }, [roleParam, skillsParam]);
 
   const filteredCandidates = candidates.filter(c => {
+    if (onlyDemoReady) {
+      const hasDemoProject = c.projects.some(p => {
+        const variant = getProjectBadgeVariant(p);
+        return variant === 'demo-ready' || variant === 'full';
+      });
+      if (!hasDemoProject) return false;
+    }
     const text = `${c.full_name} ${c.university} ${c.major} ${c.gpa} ${c.skills?.join(' ')} ${c.projects.map(p => p.title).join(' ')}`.toLowerCase();
     return text.includes(searchTerm.toLowerCase());
   });
@@ -257,6 +266,15 @@ export default function CandidateSearch() {
               />
               🛡️ Chỉ xem Ứng viên có đồ án Verified
             </label>
+
+            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: 'bold', color: '#1d4ed8', cursor: 'pointer', whiteSpace: 'nowrap', backgroundColor: onlyDemoReady ? '#eff6ff' : '#f8fafc', padding: '6px 12px', borderRadius: '8px', border: `1px solid ${onlyDemoReady ? '#93c5fd' : '#cbd5e1'}` }}>
+              <input
+                type="checkbox"
+                checked={onlyDemoReady}
+                onChange={e => setOnlyDemoReady(e.target.checked)}
+              />
+              🚀 Chỉ xem Ứng viên có Demo Ready
+            </label>
           </div>
 
           {/* Danh Sách Ứng Viên */}
@@ -293,11 +311,51 @@ export default function CandidateSearch() {
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
-                      {candidate.verified_projects_count > 0 && (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', backgroundColor: '#ecfdf5', color: '#059669', padding: '4px 10px', borderRadius: '12px', fontSize: '11px', fontWeight: 'bold' }}>
-                        <ShieldCheck size={14} /> {candidate.verified_projects_count} Verified
-                      </div>
-                    )}
+                      {(() => {
+                        const badgeCounts = countCandidateProjectBadges(candidate.projects);
+                        return (
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', justifyContent: 'flex-end' }}>
+                            {badgeCounts.demoReadyCount > 0 && (
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '4px',
+                                  backgroundColor: '#eff6ff',
+                                  color: '#1d4ed8',
+                                  border: '1px solid #bfdbfe',
+                                  padding: '3px 8px',
+                                  borderRadius: '12px',
+                                  fontSize: '11px',
+                                  fontWeight: 'bold'
+                                }}
+                                title={`${candidate.full_name} có ${badgeCounts.demoReadyCount} đồ án có link chạy thật (Demo Ready)`}
+                              >
+                                🚀 {badgeCounts.demoReadyCount} Demo Ready
+                              </div>
+                            )}
+                            {badgeCounts.verifiedCount > 0 && (
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '4px',
+                                  backgroundColor: '#faf5ff',
+                                  color: '#7e22ce',
+                                  border: '1px solid #d8b4fe',
+                                  padding: '3px 8px',
+                                  borderRadius: '12px',
+                                  fontSize: '11px',
+                                  fontWeight: 'bold'
+                                }}
+                                title={`${candidate.full_name} có ${badgeCounts.verifiedCount} đồ án có mã nguồn bảo chứng (Verified)`}
+                              >
+                                🛡️ {badgeCounts.verifiedCount} Verified
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })()}
                       {candidate.is_open_to_work !== false && (
                         <span style={{ fontSize: '10px', fontWeight: 'bold', color: '#047857', backgroundColor: '#dcfce7', padding: '2px 8px', borderRadius: '8px', border: '1px solid #86efac' }}>
                           ● Open to Work
@@ -340,7 +398,18 @@ export default function CandidateSearch() {
                       <div key={p.id} style={{ marginBottom: '12px', paddingBottom: '8px', borderBottom: '1px dashed #e2e8f0' }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
                           <span style={{ fontSize: '13px', fontWeight: 'bold', color: '#1e3a8a' }}>{p.title}</span>
-                          {p.is_verified && <VerifiedBadge size="sm" />}
+                          {(() => {
+                            const variant = getProjectBadgeVariant(p);
+                            if (variant === 'none') return null;
+                            return (
+                              <VerifiedBadge
+                                variant={variant}
+                                demoUrl={p.demo_url}
+                                size="sm"
+                                interactive={true}
+                              />
+                            );
+                          })()}
                         </div>
 
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '6px' }}>
@@ -546,7 +615,18 @@ export default function CandidateSearch() {
                     <div key={p.id} style={{ backgroundColor: '#ffffff', padding: '16px', borderRadius: '10px', border: '1px solid #cbd5e1', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                         <span style={{ fontSize: '16px', fontWeight: 'bold', color: '#0f172a' }}>{p.title}</span>
-                        {p.is_verified && <VerifiedBadge size="md" />}
+                        {(() => {
+                          const variant = getProjectBadgeVariant(p);
+                          if (variant === 'none') return null;
+                          return (
+                            <VerifiedBadge
+                              variant={variant}
+                              demoUrl={p.demo_url}
+                              size="md"
+                              interactive={true}
+                            />
+                          );
+                        })()}
                       </div>
 
                       {p.role && <div style={{ fontSize: '12px', color: '#64748b', fontWeight: 'bold', marginBottom: '6px' }}>Vai trò: {p.role}</div>}

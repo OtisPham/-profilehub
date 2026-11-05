@@ -16,6 +16,7 @@ import InterviewWarRoomModal from '../../components/student/InterviewWarRoomModa
 import CvQuickViewModal from '../../components/cv/CvQuickViewModal';
 import ProjectDefenseModal from '../../components/cv/ProjectDefenseModal';
 import VerifiedBadge from '../../components/common/VerifiedBadge';
+import { getProjectBadgeVariant } from '../../services/projectBadgeService';
 import SpotlightTour, { type SpotlightStep } from '../../components/common/SpotlightTour';
 import ShowcaseQrModal from '../../components/student/ShowcaseQrModal';
 import { selfInterviewService, type CandidateInterviewSession } from '../../services/selfInterviewService';
@@ -760,13 +761,17 @@ export default function Dashboard() {
                       <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate" title={proj.title}>
                         {proj.title}
                       </h4>
-                      {proj.is_verified || proj.verification_status === 'verified' ? (
-                        <VerifiedBadge size="sm" />
-                      ) : (
-                        <span className="text-[9.5px] font-semibold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 px-1.5 py-0.5 rounded border border-amber-200 dark:border-amber-800 shrink-0">
-                          Chờ duyệt
-                        </span>
-                      )}
+                      {(() => {
+                        const variant = getProjectBadgeVariant(proj);
+                        if (variant !== 'none') {
+                          return <VerifiedBadge variant={variant} demoUrl={proj.demo_url} size="sm" interactive={true} />;
+                        }
+                        return (
+                          <span className="text-[9.5px] font-semibold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 px-1.5 py-0.5 rounded border border-amber-200 dark:border-amber-800 shrink-0">
+                            Chờ duyệt
+                          </span>
+                        );
+                      })()}
                     </div>
 
                     <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">

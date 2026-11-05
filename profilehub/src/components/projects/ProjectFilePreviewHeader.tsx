@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FileText, Code2, Globe, ExternalLink, Eye, Award, CheckCircle2 } from 'lucide-react';
 import VerifiedBadge from '../common/VerifiedBadge';
+import { getProjectBadgeVariant } from '../../services/projectBadgeService';
 
 export interface ProjectData {
   id: string;
@@ -235,9 +236,18 @@ export default function ProjectFilePreviewHeader({ project, onOpenPreview }: Pro
                     {project.score && <span style={{ marginLeft: '10px', fontSize: '12px', fontWeight: 'bold', color: '#d97706' }}>Điểm số: {project.score}</span>}
                   </div>
 
-                  {(project.is_verified || project.verification_status === 'verified') && (
-                    <VerifiedBadge size="md" />
-                  )}
+                  {(() => {
+                    const badgeVariant = getProjectBadgeVariant(project);
+                    if (badgeVariant === 'none') return null;
+                    return (
+                      <VerifiedBadge
+                        variant={badgeVariant}
+                        demoUrl={project.demo_url}
+                        size="md"
+                        interactive={true}
+                      />
+                    );
+                  })()}
                 </div>
 
                 <p style={{ fontSize: '13px', color: '#334155', lineHeight: '1.6', margin: '0 0 15px 0' }}>

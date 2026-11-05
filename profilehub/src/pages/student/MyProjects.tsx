@@ -3,6 +3,7 @@ import { useAuth } from '../../context/AuthProvider';
 import { supabase } from '../../services/supabase';
 import AddProjectModal from '../../components/projects/AddProjectModal';
 import VerifiedBadge from '../../components/common/VerifiedBadge';
+import { getProjectBadgeVariant } from '../../services/projectBadgeService';
 import ProjectFilePreviewHeader from '../../components/projects/ProjectFilePreviewHeader';
 import ProjectQRCodeModal from '../../components/student/ProjectQRCodeModal';
 import type { VerificationStatus } from '../../types/database';
@@ -424,9 +425,18 @@ export default function MyProjects() {
                         )}
                       </div>
 
-                      {(proj.verification_status === 'verified' || proj.is_verified) && (
-                        <VerifiedBadge size="sm" />
-                      )}
+                      {(() => {
+                        const badgeVariant = getProjectBadgeVariant(proj);
+                        if (badgeVariant === 'none') return null;
+                        return (
+                          <VerifiedBadge
+                            variant={badgeVariant}
+                            demoUrl={proj.demo_url}
+                            size="sm"
+                            interactive={true}
+                          />
+                        );
+                      })()}
                     </div>
 
                     {/* Project Title */}
