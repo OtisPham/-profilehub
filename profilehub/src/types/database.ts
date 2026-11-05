@@ -108,6 +108,28 @@ export interface GeneratedCV {
   created_at?: string;
 }
 
+export interface RecruiterProfile {
+  id: string;
+  recruiter_name?: string;
+  company_name?: string;
+  industry?: string;
+  company_size?: string;
+  company_address?: string;
+  website?: string;
+  phone?: string;
+  company_bio?: string;
+  tax_code?: string;
+  is_tax_verified?: boolean;
+  tax_legal_name?: string;
+  tax_registered_address?: string;
+  tax_verification_status?: 'unverified' | 'pending' | 'verified' | 'rejected' | 'reverification_required';
+  tax_verification_tier?: 'full' | 'silver' | 'unverified';
+  tax_verified_at?: string;
+  work_email?: string;
+  is_work_email_verified?: boolean;
+  updated_at?: string;
+}
+
 export type PipelineStage = 'discovered' | 'shortlisted' | 'contacted' | 'interview' | 'hired';
 
 export interface JobPost {
@@ -119,6 +141,9 @@ export interface JobPost {
   required_skills?: string[];
   description?: string;
   status?: 'active' | 'closed';
+  is_tax_verified?: boolean;
+  tax_verification_tier?: 'full' | 'silver' | 'unverified';
+  tax_code?: string;
   created_at?: string;
 }
 

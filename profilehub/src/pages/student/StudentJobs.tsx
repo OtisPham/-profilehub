@@ -30,6 +30,7 @@ export default function StudentJobs() {
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
   const [jobs, setJobs] = useState<JobPost[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [onlyVerified, setOnlyVerified] = useState(false);
   const [selectedJobForModal, setSelectedJobForModal] = useState<JobPost | null>(null);
   const [appliedJobIds, setAppliedJobIds] = useState<string[]>([]);
   const [generateCvJob, setGenerateCvJob] = useState<{
@@ -194,11 +195,19 @@ ${skillsList}`;
     alert(`🎉 Ứng tuyển thành công vị trí: ${job.title}!\nBản CV "${activeCv?.title || 'CV Mặc Định'}" của bạn đã được chuyển tới Nhà tuyển dụng và đưa vào Bảng Kanban theo dõi.`);
   };
 
-  const filteredJobs = jobs.filter(job =>
-    job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    job.department?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    job.required_skills?.some(s => s.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  const filteredJobs = jobs.filter(job => {
+    const matchesSearch = 
+      job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      job.department?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      job.required_skills?.some(s => s.toLowerCase().includes(searchTerm.toLowerCase()));
+
+    if (!matchesSearch) return false;
+    if (onlyVerified) {
+      const rec = getRecruiterCompanyProfile(job.recruiter_id);
+      return Boolean(rec?.isTaxVerified && rec?.taxVerificationTier === 'full');
+    }
+    return true;
+  });
 
   return (
     <div style={{ padding: '30px', maxWidth: '1200px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
@@ -272,25 +281,50 @@ ${skillsList}`;
         <ApplicationKanbanBoard />
       ) : (
         <>
-          {/* Search Bar */}
-      <div style={{ position: 'relative', marginBottom: '25px' }}>
-        <Search size={18} color="#94a3b8" style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)' }} />
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
-          placeholder="Tìm kiếm theo vị trí tuyển dụng, phòng ban hoặc kỹ năng (VD: React, TypeScript, Docker)..."
+          {/* Search Bar & Quick Filter */}
+      <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap' }}>
+        <div style={{ position: 'relative', flex: 1, minWidth: '280px' }}>
+          <Search size={18} color="#94a3b8" style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)' }} />
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+            placeholder="Tìm kiếm theo vị trí tuyển dụng, phòng ban hoặc kỹ năng (VD: React, TypeScript, Docker)..."
+            style={{
+              width: '100%',
+              padding: '14px 16px 14px 46px',
+              borderRadius: '12px',
+              border: '1px solid #cbd5e1',
+              fontSize: '14px',
+              backgroundColor: '#ffffff',
+              boxSizing: 'border-box',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+            }}
+          />
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setOnlyVerified(prev => !prev)}
           style={{
-            width: '100%',
-            padding: '14px 16px 14px 46px',
+            padding: '12px 18px',
             borderRadius: '12px',
-            border: '1px solid #cbd5e1',
-            fontSize: '14px',
-            backgroundColor: '#ffffff',
-            boxSizing: 'border-box',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+            border: onlyVerified ? '1px solid #16a34a' : '1px solid #cbd5e1',
+            backgroundColor: onlyVerified ? '#dcfce7' : '#ffffff',
+            color: onlyVerified ? '#15803d' : '#475569',
+            fontSize: '13px',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.02)',
+            transition: 'all 0.15s ease'
           }}
-        />
+        >
+          <ShieldCheck size={16} color={onlyVerified ? '#16a34a' : '#64748b'} />
+          <span>{onlyVerified ? '✓ Đang Lọc: Chỉ Công Ty Tích Xanh' : '🛡️ Chỉ Xem Công Ty Tích Xanh'}</span>
+        </button>
       </div>
 
       {/* Job Grid / List */}
@@ -322,8 +356,19 @@ ${skillsList}`;
                       {job.title}
                     </h3>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '13px', color: '#475569', flexWrap: 'wrap' }}>
-                      <span style={{ fontWeight: 'bold', color: '#1e3a8a', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <span style={{ fontWeight: 'bold', color: '#1e3a8a', display: 'flex', alignItems: 'center', gap: '6px' }}>
                         <Building2 size={15} /> {recruiterProfile.companyName}
+                        {recruiterProfile.isTaxVerified ? (
+                          recruiterProfile.taxVerificationTier === 'full' ? (
+                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', backgroundColor: '#dcfce7', color: '#15803d', border: '1px solid #bbf7d0', padding: '1px 8px', borderRadius: '10px', fontSize: '11px', fontWeight: 'bold' }}>
+                              <ShieldCheck size={12} /> Tích Xanh
+                            </span>
+                          ) : (
+                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', backgroundColor: '#fef3c7', color: '#b45309', border: '1px solid #fde68a', padding: '1px 8px', borderRadius: '10px', fontSize: '11px', fontWeight: 'bold' }}>
+                              <Shield size={12} /> Tích Bạc
+                            </span>
+                          )
+                        ) : null}
                       </span>
                       <span>•</span>
                       <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -343,6 +388,14 @@ ${skillsList}`;
                     </span>
                   </div>
                 </div>
+
+                {/* Safety Caution Banner for Silver Tier */}
+                {recruiterProfile.isTaxVerified && recruiterProfile.taxVerificationTier === 'silver' && (
+                  <div style={{ backgroundColor: '#fffbeb', border: '1px solid #fef08a', color: '#854d0e', padding: '7px 12px', borderRadius: '6px', fontSize: '11.5px', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span>⚠️</span>
+                    <span>Tài khoản tự khai báo bằng email cá nhân. <strong>Tuyệt đối không đóng bất kỳ khoản phí nào</strong> khi ứng tuyển!</span>
+                  </div>
+                )}
 
                 {/* Job Description */}
                 <p style={{ fontSize: '13px', color: '#334155', margin: '0 0 14px 0', lineHeight: '1.6' }}>

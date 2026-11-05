@@ -1,4 +1,18 @@
-import { X, Building2, MapPin, Mail, Phone, Globe, Users, Briefcase, Sparkles } from 'lucide-react';
+import React from 'react';
+import { 
+  X, 
+  Building2, 
+  MapPin, 
+  Mail, 
+  Phone, 
+  Globe, 
+  Users, 
+  Briefcase, 
+  Sparkles, 
+  ShieldCheck, 
+  AlertTriangle,
+  FileCheck
+} from 'lucide-react';
 import { getRecruiterCompanyProfile } from '../../utils/jobSync';
 
 interface RecruiterCompanyModalProps {
@@ -28,7 +42,7 @@ export default function RecruiterCompanyModal({ recruiterId, jobTitle, onClose }
       <div style={{
         backgroundColor: '#ffffff',
         borderRadius: '16px',
-        maxWidth: '650px',
+        maxWidth: '680px',
         width: '100%',
         maxHeight: '90vh',
         overflowY: 'auto',
@@ -49,10 +63,21 @@ export default function RecruiterCompanyModal({ recruiterId, jobTitle, onClose }
         }}>
           <div>
             <div style={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', opacity: 0.85, marginBottom: '4px' }}>
-              🏢 THÔNG TIN NHÀ TUYỂN DỤNG & CÔNG TY
+              🏢 THÔNG TIN NHÀ TUYỂN DỤNG & PHÁP NHÂN DOANH NGHIỆP
             </div>
-            <h2 style={{ fontSize: '20px', fontWeight: 'bold', margin: '0 0 6px 0' }}>
+            <h2 style={{ fontSize: '20px', fontWeight: 'bold', margin: '0 0 6px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
               {profile.companyName}
+              {profile.isTaxVerified && (
+                profile.taxVerificationTier === 'full' ? (
+                  <span style={{ fontSize: '11px', backgroundColor: '#dcfce7', color: '#15803d', padding: '2px 8px', borderRadius: '12px', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+                    <ShieldCheck size={12} /> Tích Xanh
+                  </span>
+                ) : (
+                  <span style={{ fontSize: '11px', backgroundColor: '#fef3c7', color: '#b45309', padding: '2px 8px', borderRadius: '12px', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+                    <AlertTriangle size={12} /> Tích Bạc
+                  </span>
+                )
+              )}
             </h2>
             {jobTitle && (
               <div style={{ fontSize: '12.5px', opacity: 0.9, backgroundColor: 'rgba(255,255,255,0.15)', padding: '2px 10px', borderRadius: '12px', display: 'inline-block' }}>
@@ -83,13 +108,57 @@ export default function RecruiterCompanyModal({ recruiterId, jobTitle, onClose }
         {/* Modal Body */}
         <div style={{ padding: '28px' }}>
           
+          {/* Legal Tax Verification Section */}
+          <div style={{
+            backgroundColor: profile.isTaxVerified ? (profile.taxVerificationTier === 'full' ? '#f0fdf4' : '#fffbeb') : '#f8fafc',
+            borderRadius: '12px',
+            padding: '16px 20px',
+            border: `1px solid ${profile.isTaxVerified ? (profile.taxVerificationTier === 'full' ? '#bbf7d0' : '#fef08a') : '#e2e8f0'}`,
+            marginBottom: '20px'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+              <div style={{ fontSize: '12.5px', fontWeight: 'bold', color: profile.isTaxVerified ? (profile.taxVerificationTier === 'full' ? '#166534' : '#854d0e') : '#475569', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <ShieldCheck size={16} /> XÁC THỰC PHÁP LÝ DOANH NGHIỆP & MÃ SỐ THUẾ (MST)
+              </div>
+              <span style={{ fontSize: '11px', fontWeight: 'bold', padding: '2px 8px', borderRadius: '6px', backgroundColor: profile.isTaxVerified ? '#ffffff' : '#f1f5f9', color: '#334155', border: '1px solid #cbd5e1' }}>
+                {profile.isTaxVerified ? (profile.taxVerificationTier === 'full' ? '🛡️ Đã Thẩm Định 100%' : '🏷️ Tích Bạc Tự Khai') : 'Chưa Khai Báo'}
+              </span>
+            </div>
+
+            {profile.isTaxVerified ? (
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '12.5px', color: '#334155' }}>
+                <div>
+                  <span style={{ color: '#64748b', fontSize: '11px', display: 'block' }}>Mã Số Thuế (MST):</span>
+                  <strong style={{ fontFamily: 'monospace', color: '#0f172a' }}>{profile.taxCode || '0316892345'}</strong>
+                </div>
+                <div>
+                  <span style={{ color: '#64748b', fontSize: '11px', display: 'block' }}>Tên Pháp Nhân ĐKKD:</span>
+                  <strong>{profile.taxLegalName || profile.companyName}</strong>
+                </div>
+                <div style={{ gridColumn: 'span 2' }}>
+                  <span style={{ color: '#64748b', fontSize: '11px', display: 'block' }}>Địa Chỉ Trụ Sở Đăng Ký Thuế:</span>
+                  <span>{profile.taxRegisteredAddress || profile.companyAddress}</span>
+                </div>
+                {profile.taxVerificationTier === 'silver' && (
+                  <div style={{ gridColumn: 'span 2', backgroundColor: '#fef3c7', padding: '6px 10px', borderRadius: '6px', fontSize: '11.5px', color: '#92400e', marginTop: '4px' }}>
+                    ⚠️ Tài khoản tự đăng ký bằng hộp thư cá nhân. Nhà tuyển dụng cần xác thực Work Email để lên Tích Xanh Toàn Phần.
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div style={{ fontSize: '12px', color: '#64748b' }}>
+                Doanh nghiệp này chưa hoàn tất thủ tục liên kết Mã Số Thuế trên ProfileHub.
+              </div>
+            )}
+          </div>
+
           {/* HR Personnel Section */}
           <div style={{
             backgroundColor: '#f8fafc',
             borderRadius: '12px',
             padding: '18px 20px',
             border: '1px solid #e2e8f0',
-            marginBottom: '24px'
+            marginBottom: '20px'
           }}>
             <div style={{ fontSize: '12px', fontWeight: 'bold', color: '#1e3a8a', textTransform: 'uppercase', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
               👤 Nhân Sự Chịu Trách Nhiệm Tuyển Dụng
@@ -123,12 +192,12 @@ export default function RecruiterCompanyModal({ recruiterId, jobTitle, onClose }
           </div>
 
           {/* Company Details Section */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginBottom: '20px' }}>
             <div style={{ fontSize: '14px', fontWeight: 'bold', color: '#0f172a', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Building2 size={18} color="#1e3a8a" /> Hồ Sơ Chi Tiết Doanh Nghiệp
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
               <div style={{ backgroundColor: '#ffffff', padding: '12px 14px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
                 <div style={{ fontSize: '11px', color: '#64748b', display: 'flex', alignItems: 'center', gap: '4px' }}>
                   <Briefcase size={12} /> Lĩnh Vực Hoạt Động
@@ -150,7 +219,7 @@ export default function RecruiterCompanyModal({ recruiterId, jobTitle, onClose }
 
             <div style={{ backgroundColor: '#ffffff', padding: '12px 14px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
               <div style={{ fontSize: '11px', color: '#64748b', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <MapPin size={12} /> Địa Chỉ Trụ Sở Công Ty
+                <MapPin size={12} /> Địa Chỉ Văn Phòng Làm Việc
               </div>
               <div style={{ fontSize: '13px', fontWeight: '600', color: '#0f172a', marginTop: '4px' }}>
                 {profile.companyAddress || 'Tòa nhà Innovation, Quận 1, TP. Hồ Chí Minh'}

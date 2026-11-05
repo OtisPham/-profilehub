@@ -12,6 +12,15 @@ export interface RecruiterCompanyProfile {
   phone: string;
   companyBio: string;
   email?: string;
+  taxCode?: string;
+  isTaxVerified?: boolean;
+  taxLegalName?: string;
+  taxRegisteredAddress?: string;
+  taxVerificationStatus?: 'unverified' | 'pending' | 'verified' | 'rejected' | 'reverification_required';
+  taxVerificationTier?: 'full' | 'silver' | 'unverified';
+  taxVerifiedAt?: string;
+  workEmail?: string;
+  isWorkEmailVerified?: boolean;
 }
 
 export const getSharedJobs = (): JobPost[] => {
@@ -97,6 +106,14 @@ export const getRecruiterCompanyProfile = (recruiterId?: string): RecruiterCompa
     website: 'https://techcorp.example.com',
     phone: '028 3822 9999',
     companyBio: 'TechCorp Solutions là tập đoàn công nghệ hàng đầu chuyên phát triển các giải pháp chuyển đổi số, phần mềm quản trị doanh nghiệp và ứng dụng trí tuệ nhân tạo (AI). Chúng tôi liên kết trực tiếp với ProfileHub để tìm kiếm các tài năng sinh viên xuất sắc.',
-    email: 'hr@techcorp.example.com'
+    email: 'hr@techcorp.example.com',
+    taxCode: '0316892345',
+    isTaxVerified: true,
+    taxLegalName: 'CÔNG TY CỔ PHẦN TECHCORP SOLUTIONS VIỆT NAM',
+    taxRegisteredAddress: 'Tòa nhà Innovation, Tầng 12, Quận 1, TP. Hồ Chí Minh',
+    taxVerificationStatus: 'verified',
+    taxVerificationTier: 'full',
+    workEmail: 'hr@techcorp.example.com',
+    isWorkEmailVerified: true
   };
 };
