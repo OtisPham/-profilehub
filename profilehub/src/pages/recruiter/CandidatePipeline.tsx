@@ -4,7 +4,9 @@ import { useAuth } from '../../context/AuthProvider';
 import { supabase } from '../../services/supabase';
 import RecruiterFeedbackModal from '../../components/recruiter/RecruiterFeedbackModal';
 import { getSharedPipeline, saveSharedPipeline } from '../../utils/pipelineSync';
-import { User, Edit3, MessageSquarePlus, Calendar, Clock, Video, MapPin, Trash2, FileText, ExternalLink, Mail, ShieldCheck, Brain, X, FolderOpen } from 'lucide-react';
+import { User, Edit3, MessageSquarePlus, Calendar, Clock, Video, MapPin, Trash2, FileText, ExternalLink, Mail, ShieldCheck, Brain, X, FolderOpen, GripVertical } from 'lucide-react';
+import { usePipelineDragDrop } from '../../hooks/usePipelineDragDrop';
+import { createOptimisticPipelineUpdate, rollbackPipelineUpdate } from '../../utils/pipelineDragDrop';
 import type { PipelineStage, CandidatePipelineItem } from '../../types/database';
 import CandidateDossierModal, { type DossierCandidate } from '../../components/recruiter/CandidateDossierModal';
 
@@ -30,6 +32,21 @@ export default function CandidatePipeline() {
   const [noteText, setNoteText] = useState('');
   const [feedbackCandidate, setFeedbackCandidate] = useState<{ id: string; full_name?: string; major?: string } | null>(null);
   const [selectedCandidateForCv, setSelectedCandidateForCv] = useState<CandidatePipelineItem | null>(null);
+
+  // Kéo thả Kanban Hook
+  const {
+    handleDragStart,
+    handleDragOver,
+    handleDragLeave,
+    handleDrop,
+    handleDragEnd,
+    isDragging,
+    isColumnHovered,
+  } = usePipelineDragDrop({
+    onDropItem: (itemId, targetStage) => {
+      handleMoveStage(itemId, targetStage);
+    },
+  });
 
   // Modal Interview Schedule
   const [scheduleItem, setScheduleItem] = useState<CandidatePipelineItem | null>(null);
@@ -99,23 +116,40 @@ export default function CandidatePipeline() {
     return Math.min(70 + matched.length * 8, 98);
   };
 
-  const handleMoveStage = (itemId: string, newStage: PipelineStage) => {
-    const itemToUpdate = pipeline.find(p => p.id === itemId);
-    const updated = pipeline.map(item => item.id === itemId ? { ...item, stage: newStage, updated_at: new Date().toISOString() } : item);
-    savePipelineToStorage(updated);
+  const handleMoveStage = async (itemId: string, newStage: PipelineStage) => {
+    const { updatedItems, previousStage, item: itemToUpdate } = createOptimisticPipelineUpdate(
+      pipeline,
+      itemId,
+      newStage
+    );
 
-    // Đồng bộ trạng thái lên Supabase Cloud
-    Promise.resolve(
-      supabase.from('candidate_pipeline')
-        .update({ stage: newStage, updated_at: new Date().toISOString() })
-        .eq('id', itemId)
-    ).then((res: any) => {
-      if (res?.error) console.warn('[CandidatePipeline] Lỗi cập nhật stage trên Supabase:', res.error.message);
-    }, (err) => console.warn('[CandidatePipeline] Exception cập nhật stage:', err));
+    if (!previousStage || previousStage === newStage) return;
 
-    // Auto open Interview Schedule Modal when moving to 'interview'
+    // 1. Optimistic Update locally
+    savePipelineToStorage(updatedItems);
+
+    // 2. Tự động kích hoạt Modal Hẹn Lịch khi chuyển sang stage 'interview'
     if (newStage === 'interview' && itemToUpdate) {
-      handleOpenScheduleModal(itemToUpdate);
+      handleOpenScheduleModal({ ...itemToUpdate, stage: newStage });
+    }
+
+    // 3. Đồng bộ trạng thái lên Supabase Cloud với cơ chế Rollback an toàn
+    try {
+      const { error } = await supabase
+        .from('candidate_pipeline')
+        .update({ stage: newStage, updated_at: new Date().toISOString() })
+        .eq('id', itemId);
+
+      if (error) {
+        console.warn('[CandidatePipeline] Lỗi cập nhật stage trên Supabase:', error.message);
+        const rolledBack = rollbackPipelineUpdate(updatedItems, itemId, previousStage);
+        savePipelineToStorage(rolledBack);
+        alert(`⚠️ Không thể lưu trạng thái mới lên Cloud (${error.message}). Đã hoàn tác về "${STAGES.find(s => s.id === previousStage)?.label}".`);
+      }
+    } catch (err: any) {
+      console.warn('[CandidatePipeline] Exception cập nhật stage:', err);
+      const rolledBack = rollbackPipelineUpdate(updatedItems, itemId, previousStage);
+      savePipelineToStorage(rolledBack);
     }
   };
 
@@ -221,7 +255,30 @@ export default function CandidatePipeline() {
             {STAGES.map(stage => {
               const items = pipeline.filter(p => p.stage === stage.id);
               return (
-                <div key={stage.id} style={{ backgroundColor: 'white', borderRadius: '10px', padding: '16px', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+                <div
+                  key={stage.id}
+                  onDragOver={(e) => handleDragOver(e, stage.id)}
+                  onDragLeave={(e) => handleDragLeave(e, stage.id)}
+                  onDrop={(e) => handleDrop(e, stage.id)}
+                  style={{
+                    backgroundColor: isColumnHovered(stage.id) ? '#f0f9ff' : 'white',
+                    borderRadius: '10px',
+                    padding: '16px',
+                    border: isColumnHovered(stage.id)
+                      ? `2px dashed ${stage.color}`
+                      : '1px solid #e2e8f0',
+                    boxShadow: isColumnHovered(stage.id)
+                      ? '0 4px 12px rgba(59, 130, 246, 0.15)'
+                      : '0 1px 3px rgba(0,0,0,0.05)',
+                    transition: 'all 0.15s ease-in-out',
+                    minHeight: '260px',
+                  }}
+                >
+                  {isColumnHovered(stage.id) && (
+                    <div style={{ padding: '8px', marginBottom: '12px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: stage.color, backgroundColor: stage.bg, borderRadius: '8px', border: `1px dashed ${stage.color}` }}>
+                      ⬇️ Thả ứng viên vào {stage.label}
+                    </div>
+                  )}
                   {/* Column Header */}
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', paddingBottom: '10px', borderBottom: `2px solid ${stage.color}` }}>
                     <span style={{ fontWeight: 'bold', fontSize: '14px', color: '#1e293b' }}>{stage.label}</span>
@@ -238,8 +295,24 @@ export default function CandidatePipeline() {
                       </div>
                     ) : (
                       items.map(item => (
-                        <div key={item.id} style={{ backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '12px', boxShadow: '0 2px 4px rgba(0,0,0,0.03)' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                        <div
+                          key={item.id}
+                          draggable={true}
+                          onDragStart={(e) => handleDragStart(e, item.id, item.stage)}
+                          onDragEnd={handleDragEnd}
+                          style={{
+                            backgroundColor: '#ffffff',
+                            border: isDragging(item.id) ? '1px dashed #3b82f6' : '1px solid #cbd5e1',
+                            borderRadius: '8px',
+                            padding: '12px',
+                            boxShadow: isDragging(item.id) ? 'none' : '0 2px 4px rgba(0,0,0,0.03)',
+                            opacity: isDragging(item.id) ? 0.4 : 1,
+                            cursor: 'grab',
+                            transition: 'all 0.15s ease-in-out',
+                          }}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                            <GripVertical size={16} color="#94a3b8" style={{ cursor: 'grab', flexShrink: 0 }} />
                             <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1d4ed8' }}>
                               <User size={18} />
                             </div>
