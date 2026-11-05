@@ -23,6 +23,9 @@ import AtsParserEyeModal from '../../components/cv/AtsParserEyeModal';
 import SalaryBenchmarkModal from '../../components/student/SalaryBenchmarkModal';
 import AiMockInterviewModal from '../../components/student/AiMockInterviewModal';
 import ReverseSyncToast from '../../components/cv/ReverseSyncToast';
+import PdfExportStylerModal from '../../components/cv/PdfExportStylerModal';
+import type { PdfStylerOptions, FontId } from '../../types/pdfStyler.types';
+import type { CVDataProps } from '../../components/cv/CVTemplates';
 import { pageBudgetService } from '../../services/pageBudgetService';
 import { evaluateCVQuality } from '../../services/cvQualityCheckService';
 import { auditAtsParseability } from '../../services/atsParserEyeService';
@@ -150,6 +153,7 @@ export default function CVBuilder() {
   const [isCVManagerOpen, setIsCVManagerOpen] = useState(false);
   const [isProfilePickerOpen, setIsProfilePickerOpen] = useState(false);
   const [isReorderModalOpen, setIsReorderModalOpen] = useState(false);
+  const [isPdfStylerModalOpen, setIsPdfStylerModalOpen] = useState(false);
   const [sectionToDelete, setSectionToDelete] = useState<CVSection | null>(null);
   const [sectionToConfigure, setSectionToConfigure] = useState<CVSection | null>(null);
 
@@ -1501,13 +1505,104 @@ export default function CVBuilder() {
     setTimeout(() => setShowSaveSuccessToast(false), 3000);
   };
 
-  const handlePrint = () => {
+  // Chuẩn hóa dữ liệu CVBuilder sang CVDataProps cho PdfExportStylerModal & RenderCVTemplate
+  const exportCvData: CVDataProps = useMemo(() => {
+    const eduSection = sections.find(s => s.type === 'education');
+    const firstEdu = eduSection?.items?.[0] as any;
+
+    const skillsSection = sections.find(s => s.type === 'skills');
+    const extractedSkills: string[] = [];
+    if (skillsSection?.items && Array.isArray(skillsSection.items)) {
+      skillsSection.items.forEach((item: any) => {
+        if (typeof item === 'string') extractedSkills.push(item);
+        else if (item.name) extractedSkills.push(item.name);
+        else if (item.skill) extractedSkills.push(item.skill);
+        else if (item.title) extractedSkills.push(item.title);
+      });
+    }
+
+    const projectsSection = sections.find(s => s.type === 'projects');
+    const mappedProjects = (projectsSection?.items || []).map((p: any) => ({
+      id: p.id || String(Math.random()),
+      title: p.title || p.name || 'Dự án nổi bật',
+      role: p.role || p.position || '',
+      project_type: p.project_type || p.type || 'Đồ án / Dự án thực tế',
+      description: p.description || (Array.isArray(p.bullets) ? p.bullets.join('. ') : ''),
+      is_verified: Boolean(p.is_verified || p.verified),
+      instructor: p.instructor || p.mentor || '',
+      tags: p.technologies || p.techStack || p.tags || []
+    }));
+
+    const certsSection = sections.find(s => s.type === 'certifications');
+    const mappedCerts = (certsSection?.items || []).map((c: any) => ({
+      id: c.id || String(Math.random()),
+      title: c.title || c.name || '',
+      issuer: c.issuer || c.organization || ''
+    }));
+
+    const awardsSection = sections.find(s => s.type === 'awards');
+    const mappedAwards = (awardsSection?.items || []).map((a: any) => ({
+      id: a.id || String(Math.random()),
+      title: a.title || a.name || '',
+      category: a.category || a.award || ''
+    }));
+
+    const summarySection = sections.find(s => s.type === 'objective');
+    const summaryText = summarySection?.content || profileSourceData?.profile?.bio || applicationPitch || '';
+
+    return {
+      profile: {
+        full_name: personalInfo.fullName || profileSourceData?.profile?.full_name || user?.user_metadata?.full_name || 'HỌ VÀ TÊN SINH VIÊN',
+        major: personalInfo.jobTitle || profileSourceData?.profile?.major || 'Kỹ sư phần mềm',
+        university: firstEdu?.institution || profileSourceData?.profile?.university || 'Đại học',
+        gpa: firstEdu?.gpa || profileSourceData?.profile?.gpa || '',
+        skills: extractedSkills.length > 0 ? extractedSkills : (profileSourceData?.profile?.skills || ['JavaScript', 'React', 'TypeScript', 'Node.js', 'SQL', 'Git']),
+        bio: summaryText
+      },
+      userEmail: personalInfo.email || user?.email || '',
+      summary: summaryText,
+      primaryColor: primaryColor,
+      selectedProjects: mappedProjects,
+      certificates: mappedCerts,
+      achievements: mappedAwards
+    };
+  }, [personalInfo, sections, profileSourceData, user, primaryColor, applicationPitch]);
+
+  // Đồng bộ cấu hình phong cách từ Styler Modal vào CVBuilder
+  const handleApplyStylerPreferences = (options: PdfStylerOptions) => {
+    setSelectedTemplate(options.templateId);
+    setPrimaryColor(options.primaryColor);
+    const matchedFont = FONT_OPTIONS.find(f => f.id === options.fontId);
+    if (matchedFont) {
+      setSelectedFont(matchedFont);
+    }
+    if (options.density === 'compact') {
+      setSpacingDensity('compact');
+      setFontSizeLevel('small');
+    } else if (options.density === 'relaxed') {
+      setSpacingDensity('relaxed');
+      setFontSizeLevel('large');
+    } else {
+      setSpacingDensity('standard');
+      setFontSizeLevel('medium');
+    }
+  };
+
+  // Kích hoạt quy trình in sạch sẽ từ Styler Modal
+  const handleTriggerPrintFromModal = (options: PdfStylerOptions) => {
+    handleApplyStylerPreferences(options);
+    setIsPdfStylerModalOpen(false);
     const previousMode = isEditorMode;
     setIsEditorMode(false);
     setTimeout(() => {
       window.print();
       setIsEditorMode(previousMode);
-    }, 150);
+    }, 200);
+  };
+
+  // Mở Trạm Xuất Bản CV Chuyên Nghiệp (Multi-Theme PDF Styler)
+  const handlePrint = () => {
+    setIsPdfStylerModalOpen(true);
   };
 
   return (
@@ -1541,10 +1636,10 @@ export default function CVBuilder() {
             visibility: hidden;
           }
           /* Make CV Containers and its contents visible */
-          #cv-preview-a4, #cv-preview-a4 *, .cv-page-sheet, .cv-page-sheet * {
+          #cv-preview-a4, #cv-preview-a4 *, .cv-page-sheet, .cv-page-sheet *, #cv-modal-print-sheet, #cv-modal-print-sheet * {
             visibility: visible;
           }
-          #cv-preview-a4, .cv-page-sheet {
+          #cv-preview-a4, .cv-page-sheet, #cv-modal-print-sheet {
             display: block !important;
             position: static !important;
             width: 100% !important;
@@ -2487,6 +2582,19 @@ export default function CVBuilder() {
           </div>
         </div>
       )}
+
+      {/* MULTI-THEME PDF STYLER & RESUME EXPORT STUDIO MODAL */}
+      <PdfExportStylerModal
+        isOpen={isPdfStylerModalOpen}
+        onClose={() => setIsPdfStylerModalOpen(false)}
+        cvData={exportCvData}
+        currentTemplate={selectedTemplate}
+        currentColor={primaryColor}
+        currentFontId={selectedFont.id as FontId}
+        userId={user?.id}
+        onApplyPreferencesToBuilder={handleApplyStylerPreferences}
+        onTriggerPrint={handleTriggerPrintFromModal}
+      />
     </div>
   );
 }
