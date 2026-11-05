@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../../context/AuthProvider';
 import { getSharedJobs, getRecruiterCompanyProfile } from '../../utils/jobSync';
 import { addToSharedPipeline, getSharedPipeline } from '../../utils/pipelineSync';
@@ -18,8 +18,10 @@ import {
   ShieldCheck,
   Sparkles,
   FolderKanban,
-  Shield
+  Shield,
+  DollarSign
 } from 'lucide-react';
+import { jobStudioService } from '../../services/jobStudioService';
 import type { JobPost } from '../../types/database';
 import { supabase } from '../../services/supabase';
 import { cvService } from '../../services/cvService';
@@ -31,7 +33,24 @@ export default function StudentJobs() {
   const [jobs, setJobs] = useState<JobPost[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [onlyVerified, setOnlyVerified] = useState(false);
+  const [selectedWorkplace, setSelectedWorkplace] = useState<string>('all');
+  const [selectedLevel, setSelectedLevel] = useState<string>('all');
   const [selectedJobForModal, setSelectedJobForModal] = useState<JobPost | null>(null);
+
+  // Thu thập kỹ năng của sinh viên hiện tại để tính toán % phù hợp cá nhân
+  const activeCv = useMemo(() => cvService.getActiveCV(user?.id), [user]);
+  const candidateSkills = useMemo(() => {
+    return (
+      activeCv?.data?.sections?.find((s: any) => s.type === 'skills')?.items?.flatMap((g: any) => g.skills || []) ||
+      ['React', 'TypeScript', 'Node.js', 'Git']
+    );
+  }, [activeCv]);
+
+  const studentProfile = useMemo(() => ({
+    id: user?.id,
+    full_name: user?.user_metadata?.full_name || 'Tôi',
+    skills: candidateSkills
+  }), [user, candidateSkills]);
   const [appliedJobIds, setAppliedJobIds] = useState<string[]>([]);
   const [generateCvJob, setGenerateCvJob] = useState<{
     isOpen: boolean;
@@ -199,12 +218,19 @@ ${skillsList}`;
     const matchesSearch = 
       job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       job.department?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      job.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       job.required_skills?.some(s => s.toLowerCase().includes(searchTerm.toLowerCase()));
 
     if (!matchesSearch) return false;
     if (onlyVerified) {
       const rec = getRecruiterCompanyProfile(job.recruiter_id);
       return Boolean(rec?.isTaxVerified && rec?.taxVerificationTier === 'full');
+    }
+    if (selectedWorkplace !== 'all' && job.workplace_type !== selectedWorkplace) {
+      return false;
+    }
+    if (selectedLevel !== 'all' && job.experience_level !== selectedLevel) {
+      return false;
     }
     return true;
   });
@@ -303,6 +329,52 @@ ${skillsList}`;
           />
         </div>
 
+        {/* Lọc theo Hình Thức */}
+        <select
+          value={selectedWorkplace}
+          onChange={(e) => setSelectedWorkplace(e.target.value)}
+          style={{
+            padding: '12px 14px',
+            borderRadius: '12px',
+            border: '1px solid #cbd5e1',
+            backgroundColor: '#ffffff',
+            color: '#334155',
+            fontSize: '13px',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            outline: 'none'
+          }}
+        >
+          <option value="all">🏢 Mọi Hình Thức</option>
+          <option value="on-site">🏢 On-site</option>
+          <option value="hybrid">🌐 Hybrid</option>
+          <option value="remote">🏠 Remote</option>
+        </select>
+
+        {/* Lọc theo Cấp Bậc */}
+        <select
+          value={selectedLevel}
+          onChange={(e) => setSelectedLevel(e.target.value)}
+          style={{
+            padding: '12px 14px',
+            borderRadius: '12px',
+            border: '1px solid #cbd5e1',
+            backgroundColor: '#ffffff',
+            color: '#334155',
+            fontSize: '13px',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            outline: 'none'
+          }}
+        >
+          <option value="all">🌱 Mọi Cấp Bậc</option>
+          <option value="intern">🌱 Thực tập sinh (Intern)</option>
+          <option value="fresher">🚀 Mới tốt nghiệp (Fresher)</option>
+          <option value="junior">⚡ Junior (1-2 năm)</option>
+          <option value="middle">💼 Middle (2-4 năm)</option>
+          <option value="senior">🏆 Senior (4+ năm)</option>
+        </select>
+
         <button
           type="button"
           onClick={() => setOnlyVerified(prev => !prev)}
@@ -323,7 +395,7 @@ ${skillsList}`;
           }}
         >
           <ShieldCheck size={16} color={onlyVerified ? '#16a34a' : '#64748b'} />
-          <span>{onlyVerified ? '✓ Đang Lọc: Chỉ Công Ty Tích Xanh' : '🛡️ Chỉ Xem Công Ty Tích Xanh'}</span>
+          <span>{onlyVerified ? '✓ Chỉ Công Ty Tích Xanh' : '🛡️ Chỉ Xem Tích Xanh'}</span>
         </button>
       </div>
 
@@ -381,10 +453,32 @@ ${skillsList}`;
                     </div>
                   </div>
 
-                  {/* Status Pill on Job Card */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontSize: '11px', fontWeight: 'bold', backgroundColor: '#ecfdf5', color: '#047857', padding: '5px 10px', borderRadius: '12px', border: '1px solid #a7f3d0' }}>
-                      🟢 Đang Tuyển Dụng
+                  {/* Status Pill & Personal Match Score */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                    {/* Điểm Phù Hợp Cá Nhân */}
+                    {(() => {
+                      const personalMatch = jobStudioService.calculateStudentJobMatch(job, studentProfile);
+                      return (
+                        <span style={{
+                          fontSize: '11px',
+                          fontWeight: 'bold',
+                          backgroundColor: personalMatch >= 80 ? '#dcfce7' : personalMatch >= 50 ? '#eff6ff' : '#f8fafc',
+                          color: personalMatch >= 80 ? '#15803d' : personalMatch >= 50 ? '#1d4ed8' : '#64748b',
+                          padding: '4px 9px',
+                          borderRadius: '10px',
+                          border: `1px solid ${personalMatch >= 80 ? '#86efac' : personalMatch >= 50 ? '#bfdbfe' : '#e2e8f0'}`,
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '4px'
+                        }}>
+                          <Sparkles size={12} color={personalMatch >= 80 ? '#16a34a' : '#2563eb'} />
+                          <span>{personalMatch}% Phù hợp</span>
+                        </span>
+                      );
+                    })()}
+
+                    <span style={{ fontSize: '11px', fontWeight: 'bold', backgroundColor: '#ecfdf5', color: '#047857', padding: '4px 9px', borderRadius: '10px', border: '1px solid #a7f3d0' }}>
+                      🟢 Đang Tuyển
                     </span>
                   </div>
                 </div>
@@ -396,6 +490,35 @@ ${skillsList}`;
                     <span>Tài khoản tự khai báo bằng email cá nhân. <strong>Tuyệt đối không đóng bất kỳ khoản phí nào</strong> khi ứng tuyển!</span>
                   </div>
                 )}
+
+                {/* Standardized Salary, Workplace & Level Badges */}
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center', marginBottom: '12px' }}>
+                  <span style={{ fontSize: '12px', fontWeight: 'bold', backgroundColor: '#f0fdf4', color: '#166534', padding: '4px 10px', borderRadius: '8px', border: '1px solid #bbf7d0', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    <DollarSign size={13} color="#16a34a" />
+                    <span>{jobStudioService.formatSalaryRange(job)}</span>
+                  </span>
+
+                  {job.workplace_type && (
+                    <span style={{ fontSize: '11.5px', fontWeight: 'bold', backgroundColor: '#eff6ff', color: '#1e40af', padding: '4px 9px', borderRadius: '8px', border: '1px solid #bfdbfe' }}>
+                      {job.workplace_type === 'on-site' ? '🏢 On-site' : job.workplace_type === 'hybrid' ? '🌐 Hybrid' : '🏠 Remote'}
+                    </span>
+                  )}
+
+                  {job.experience_level && (
+                    <span style={{ fontSize: '11.5px', fontWeight: 'bold', backgroundColor: '#faf5ff', color: '#6b21a8', padding: '4px 9px', borderRadius: '8px', border: '1px solid #e9d5ff' }}>
+                      {job.experience_level === 'intern' ? '🌱 Thực tập sinh' : 
+                       job.experience_level === 'fresher' ? '🚀 Mới tốt nghiệp' : 
+                       job.experience_level === 'junior' ? '⚡ Junior' : 
+                       job.experience_level === 'middle' ? '💼 Middle' : '🏆 Senior'}
+                    </span>
+                  )}
+
+                  {job.deadline_date && (
+                    <span style={{ fontSize: '11px', color: '#64748b', marginLeft: 'auto' }}>
+                      Hạn nộp: {new Date(job.deadline_date).toLocaleDateString('vi-VN')}
+                    </span>
+                  )}
+                </div>
 
                 {/* Job Description */}
                 <p style={{ fontSize: '13px', color: '#334155', margin: '0 0 14px 0', lineHeight: '1.6' }}>

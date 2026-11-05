@@ -1,11 +1,15 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { jobStudioService } from '../../services/jobStudioService';
 import { useAuth } from '../../context/AuthProvider';
 import { supabase } from '../../services/supabase';
 import VerifiedBadge from '../../components/common/VerifiedBadge';
 import { Search, ShieldCheck, Mail, FileText, ExternalLink, Code2, FileSpreadsheet, FolderOpen } from 'lucide-react';
 import VSCodeViewerModal from '../../components/common/VSCodeViewerModal';
-import { addToSharedPipeline } from '../../utils/pipelineSync';
-import { candidatePrivacyService } from '../../services/candidatePrivacyService';
+import { addToSharedPipeline } from '../../utils/pipelineSync';
+
+import { candidatePrivacyService } from '../../services/candidatePrivacyService';
+
 import { getRecruiterCompanyProfile } from '../../utils/jobSync';
 import BulkCvImportModal from '../../components/recruiter/BulkCvImportModal';
 import CandidateDossierModal, { type DossierCandidate } from '../../components/recruiter/CandidateDossierModal';
@@ -45,6 +49,11 @@ interface VerifiedStudentCandidate {
 
 export default function CandidateSearch() {
   const { user } = useAuth();
+  const [searchParams] = useSearchParams();
+  const roleParam = searchParams.get('role');
+  const skillsParam = searchParams.get('skills');
+  const jobIdParam = searchParams.get('jobId');
+
   const [candidates, setCandidates] = useState<VerifiedStudentCandidate[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -178,6 +187,17 @@ export default function CandidateSearch() {
     loadData();
   }, [fetchCandidates]);
 
+  useEffect(() => {
+    if (skillsParam) {
+      const firstSkill = skillsParam.split(',')[0]?.trim();
+      if (firstSkill && !searchTerm) {
+        setSearchTerm(firstSkill);
+      }
+    } else if (roleParam && !searchTerm) {
+      setSearchTerm(roleParam);
+    }
+  }, [roleParam, skillsParam]);
+
   const filteredCandidates = candidates.filter(c => {
     const text = `${c.full_name} ${c.university} ${c.major} ${c.gpa} ${c.skills?.join(' ')} ${c.projects.map(p => p.title).join(' ')}`.toLowerCase();
     return text.includes(searchTerm.toLowerCase());
@@ -282,6 +302,17 @@ export default function CandidateSearch() {
                         <span style={{ fontSize: '10px', fontWeight: 'bold', color: '#047857', backgroundColor: '#dcfce7', padding: '2px 8px', borderRadius: '8px', border: '1px solid #86efac' }}>
                           ● Open to Work
                         </span>
+                      )}
+                      {skillsParam && (
+                        (() => {
+                          const reqSkills = skillsParam.split(',').map(s => s.trim()).filter(Boolean);
+                          const scoreResult = jobStudioService.calculateCandidateJobMatch(reqSkills, candidate);
+                          return (
+                            <span style={{ fontSize: '10.5px', fontWeight: 'bold', color: '#7e22ce', backgroundColor: '#f3e8ff', padding: '2px 8px', borderRadius: '8px', border: '1px solid #d8b4fe' }}>
+                              🎯 {scoreResult.matchScore}% Khớp Tin Đăng
+                            </span>
+                          );
+                        })()
                       )}
                     </div>
                   </div>

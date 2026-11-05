@@ -132,12 +132,23 @@ export interface RecruiterProfile {
 
 export type PipelineStage = 'discovered' | 'shortlisted' | 'contacted' | 'interview' | 'hired';
 
+export type ExperienceLevel = 'intern' | 'fresher' | 'junior' | 'middle' | 'senior';
+export type WorkplaceType = 'on-site' | 'hybrid' | 'remote';
+export type SalaryCurrency = 'VND' | 'USD';
+
 export interface JobPost {
   id: string;
   recruiter_id: string;
   title: string;
   department?: string;
   location?: string;
+  workplace_type?: WorkplaceType;
+  experience_level?: ExperienceLevel;
+  salary_min?: number;
+  salary_max?: number;
+  currency?: SalaryCurrency;
+  is_negotiable?: boolean;
+  deadline_date?: string;
   required_skills?: string[];
   description?: string;
   status?: 'active' | 'closed';
@@ -145,6 +156,7 @@ export interface JobPost {
   tax_verification_tier?: 'full' | 'silver' | 'unverified';
   tax_code?: string;
   created_at?: string;
+  updated_at?: string;
 }
 
 export interface SavedCandidate {
