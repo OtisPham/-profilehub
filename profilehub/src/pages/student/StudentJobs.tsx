@@ -5,6 +5,7 @@ import { addToSharedPipeline, getSharedPipeline } from '../../utils/pipelineSync
 import RecruiterCompanyModal from '../../components/student/RecruiterCompanyModal';
 import GenerateCvFromJdModal from '../../components/cv/GenerateCvFromJdModal';
 import ApplicationKanbanBoard from '../../components/student/ApplicationKanbanBoard';
+import CandidatePrivacyModal from '../../components/student/CandidatePrivacyModal';
 import { applicationTrackerService } from '../../services/applicationTrackerService';
 import { 
   Search, 
@@ -16,7 +17,8 @@ import {
   CheckCircle2, 
   ShieldCheck,
   Sparkles,
-  FolderKanban
+  FolderKanban,
+  Shield
 } from 'lucide-react';
 import type { JobPost } from '../../types/database';
 import { supabase } from '../../services/supabase';
@@ -25,6 +27,7 @@ import { cvService } from '../../services/cvService';
 export default function StudentJobs() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<'jobs' | 'pipeline'>('jobs');
+  const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
   const [jobs, setJobs] = useState<JobPost[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedJobForModal, setSelectedJobForModal] = useState<JobPost | null>(null);
@@ -227,8 +230,9 @@ ${skillsList}`;
         </div>
       </div>
 
-      {/* Tab Switcher */}
-      <div className="flex items-center gap-2 mb-6 p-1.5 bg-slate-100 dark:bg-slate-800/80 rounded-2xl w-fit border border-slate-200 dark:border-slate-700">
+      {/* Tab Switcher & Privacy Controls */}
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+        <div className="flex items-center gap-2 p-1.5 bg-slate-100 dark:bg-slate-800/80 rounded-2xl w-fit border border-slate-200 dark:border-slate-700">
         <button
           onClick={() => setActiveTab('jobs')}
           className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs transition-all ${
@@ -251,6 +255,16 @@ ${skillsList}`;
         >
           <FolderKanban size={15} />
           <span>Tiến Trình Ứng Tuyển (Kanban)</span>
+        </button>
+      </div>
+
+        <button
+          onClick={() => setIsPrivacyModalOpen(true)}
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-xs bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-sm transition"
+          title="Cài đặt chế độ Open to Work và Ẩn hồ sơ khỏi công ty chỉ định"
+        >
+          <Shield size={15} className="text-blue-600 dark:text-blue-400" />
+          <span>Quyền Riêng Tư & Ẩn CV</span>
         </button>
       </div>
 
@@ -435,6 +449,13 @@ ${skillsList}`;
           onClose={() => setSelectedJobForModal(null)}
         />
       )}
+
+      {/* Candidate Privacy & Blacklist Modal */}
+      <CandidatePrivacyModal
+        isOpen={isPrivacyModalOpen}
+        onClose={() => setIsPrivacyModalOpen(false)}
+        userId={user?.id || 'default_student'}
+      />
 
       {/* AI Generate CV From JD Modal */}
       {generateCvJob?.isOpen && (

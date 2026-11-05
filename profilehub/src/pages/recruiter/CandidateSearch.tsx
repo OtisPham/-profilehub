@@ -4,7 +4,9 @@ import { supabase } from '../../services/supabase';
 import VerifiedBadge from '../../components/common/VerifiedBadge';
 import { Search, ShieldCheck, Mail, FileText, ExternalLink, Code2, FileSpreadsheet, FolderOpen } from 'lucide-react';
 import VSCodeViewerModal from '../../components/common/VSCodeViewerModal';
-import { addToSharedPipeline } from '../../utils/pipelineSync';
+import { addToSharedPipeline } from '../../utils/pipelineSync';
+import { candidatePrivacyService } from '../../services/candidatePrivacyService';
+import { getRecruiterCompanyProfile } from '../../utils/jobSync';
 import BulkCvImportModal from '../../components/recruiter/BulkCvImportModal';
 import CandidateDossierModal, { type DossierCandidate } from '../../components/recruiter/CandidateDossierModal';
 import { 
@@ -24,6 +26,8 @@ interface VerifiedStudentCandidate {
   bio?: string;
   skills?: string[];
   verified_projects_count: number;
+  is_open_to_work?: boolean;
+  blocked_companies?: string[];
   projects: Array<{
     id: string;
     title: string;
@@ -91,6 +95,8 @@ export default function CandidateSearch() {
               email: userData?.email || '',
               bio: profile?.bio || '',
               skills: profile?.skills || ['React', 'TypeScript', 'Node.js', 'Git'],
+              is_open_to_work: profile?.is_open_to_work ?? true,
+              blocked_companies: profile?.blocked_companies || [],
               verified_projects_count: studentProjects.filter(p => p.is_verified || p.verification_status === 'verified').length,
               projects: studentProjects.map(p => ({
                 id: p.id,
@@ -143,7 +149,21 @@ export default function CandidateSearch() {
       const existingIds = new Set(candidateList.map(c => c.id));
       const combined = [...candidateList, ...filteredBulk.filter(b => !existingIds.has(b.id))];
 
-      setCandidates(combined);
+      // Tự động loại trừ ứng viên theo phân quyền RBAC & chính sách quyền riêng tư
+      const recruiterProfile = user?.id ? getRecruiterCompanyProfile(user.id) : null;
+      const recruiterCompanyName = recruiterProfile?.companyName;
+
+      const privacyFiltered = combined.filter(c =>
+        candidatePrivacyService.isCandidateVisibleToCompany(
+          {
+            is_open_to_work: c.is_open_to_work,
+            blocked_companies: c.blocked_companies
+          },
+          recruiterCompanyName
+        )
+      );
+
+      setCandidates(privacyFiltered);
     } catch (err) {
       console.error(err);
     } finally {
@@ -252,11 +272,18 @@ export default function CandidateSearch() {
                       </div>
                     </div>
 
-                    {candidate.verified_projects_count > 0 && (
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
+                      {candidate.verified_projects_count > 0 && (
                       <div style={{ display: 'flex', alignItems: 'center', gap: '4px', backgroundColor: '#ecfdf5', color: '#059669', padding: '4px 10px', borderRadius: '12px', fontSize: '11px', fontWeight: 'bold' }}>
                         <ShieldCheck size={14} /> {candidate.verified_projects_count} Verified
                       </div>
                     )}
+                      {candidate.is_open_to_work !== false && (
+                        <span style={{ fontSize: '10px', fontWeight: 'bold', color: '#047857', backgroundColor: '#dcfce7', padding: '2px 8px', borderRadius: '8px', border: '1px solid #86efac' }}>
+                          ● Open to Work
+                        </span>
+                      )}
+                    </div>
                   </div>
 
                   {/* Bio */}
@@ -399,6 +426,7 @@ export default function CandidateSearch() {
                           stage: 'discovered',
                           matchScore: 95,
                           verifiedProjectsCount: candidate.verified_projects_count,
+                          is_open_to_work: candidate.is_open_to_work,
                           projects: candidate.projects
                         });
                       }}

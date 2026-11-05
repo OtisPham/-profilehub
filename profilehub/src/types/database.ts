@@ -23,6 +23,8 @@ export interface StudentProfile {
   skills?: string[];
   username?: string;
   qr_code_url?: string;
+  is_open_to_work?: boolean;
+  blocked_companies?: string[];
   updated_at?: string;
 }
 

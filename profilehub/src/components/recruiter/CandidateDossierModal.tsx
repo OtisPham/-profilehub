@@ -51,6 +51,7 @@ export interface DossierCandidate {
   stage?: string;
   matchScore?: number;
   verifiedProjectsCount?: number;
+  is_open_to_work?: boolean;
   coverLetterNotes?: string;
   coverLetterTone?: 'confident' | 'passionate' | 'polite' | 'concise';
   projects?: Array<{
