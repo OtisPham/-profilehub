@@ -6,6 +6,7 @@ import VerifiedBadge from '../../components/common/VerifiedBadge';
 import { getProjectBadgeVariant } from '../../services/projectBadgeService';
 import ProjectFilePreviewHeader from '../../components/projects/ProjectFilePreviewHeader';
 import ProjectQRCodeModal from '../../components/student/ProjectQRCodeModal';
+import ImportCvToProfileModal from '../../components/student/ImportCvToProfileModal';
 import type { VerificationStatus } from '../../types/database';
 import { 
   Building2, Code2, GraduationCap, Shield, Search, Plus, 
@@ -44,6 +45,7 @@ export default function MyProjects() {
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [qrModalProject, setQrModalProject] = useState<Project | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isImportCvModalOpen, setIsImportCvModalOpen] = useState(false);
   const [isCopiedShowcase, setIsCopiedShowcase] = useState(false);
   const [copiedProjectId, setCopiedProjectId] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -94,6 +96,19 @@ export default function MyProjects() {
       fetchProjects();
     }
   }, [user, fetchProjects]);
+
+  // Lắng nghe sự kiện quét CV nạp đồ án tự động
+  useEffect(() => {
+    const handleProfileUpdated = () => {
+      fetchProjects();
+    };
+    window.addEventListener('profilehub_profile_updated', handleProfileUpdated);
+    window.addEventListener('storage', handleProfileUpdated);
+    return () => {
+      window.removeEventListener('profilehub_profile_updated', handleProfileUpdated);
+      window.removeEventListener('storage', handleProfileUpdated);
+    };
+  }, [fetchProjects]);
 
   const handleDelete = async (projectId: string) => {
     const isConfirm = window.confirm("Bạn có chắc chắn muốn xóa Case Study dự án này không?");
@@ -277,6 +292,15 @@ export default function MyProjects() {
                   <ExternalLink className="w-3.5 h-3.5" />
                   <span>Xem Công Khai</span>
                 </a>
+
+                <button
+                  onClick={() => setIsImportCvModalOpen(true)}
+                  className="px-4 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-purple-600/30 flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                  title="Tự động bóc tách và tạo đồ án từ file CV hoặc văn bản dán"
+                >
+                  <Sparkles className="w-4 h-4 text-amber-300" />
+                  <span>Quét CV Nạp Đồ Án</span>
+                </button>
 
                 <button
                   onClick={handleAddNew}
@@ -626,6 +650,16 @@ export default function MyProjects() {
             ...qrModalProject,
             student_id: user?.id || ''
           } as any}
+        />
+      )}
+
+      {isImportCvModalOpen && (
+        <ImportCvToProfileModal
+          isOpen={isImportCvModalOpen}
+          onClose={() => setIsImportCvModalOpen(false)}
+          onProfileUpdated={() => {
+            fetchProjects();
+          }}
         />
       )}
 

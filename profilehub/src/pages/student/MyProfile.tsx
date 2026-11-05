@@ -5,6 +5,7 @@ import { supabase } from '../../services/supabase';
 import CertificateModal, { CertificateData } from '../../components/certificates/CertificateModal';
 import AchievementModal, { AchievementData } from '../../components/achievements/AchievementModal';
 import AddProjectModal from '../../components/projects/AddProjectModal';
+import ImportCvToProfileModal from '../../components/student/ImportCvToProfileModal';
 import { 
   Award, Trophy, User, BookOpen, GraduationCap, Briefcase, Plus, 
   ExternalLink, Trash2, Edit3, Eye, FileText, CheckCircle2, Star, 
@@ -85,6 +86,9 @@ export default function MyProfile() {
   // =================== VIEWER MODAL STATE (PDF/IMAGE) ===================
   const [viewingFileUrl, setViewingFileUrl] = useState<string | null>(null);
 
+  // =================== SMART CV PARSER MODAL STATE ===================
+  const [isImportCvModalOpen, setIsImportCvModalOpen] = useState(false);
+
   // Load Profile
   const fetchProfile = useCallback(async () => {
     if (!user) return;
@@ -149,6 +153,21 @@ export default function MyProfile() {
     fetchProjects();
     fetchCertificates();
     fetchAchievements();
+  }, [fetchProfile, fetchProjects, fetchCertificates, fetchAchievements]);
+
+  // Lắng nghe sự kiện cập nhật từ bộ bóc tách CV hoặc các nguồn khác
+  useEffect(() => {
+    const handleProfileUpdated = () => {
+      fetchProfile();
+      fetchProjects();
+      fetchCertificates();
+      fetchAchievements();
+    };
+
+    window.addEventListener('profilehub_profile_updated', handleProfileUpdated);
+    return () => {
+      window.removeEventListener('profilehub_profile_updated', handleProfileUpdated);
+    };
   }, [fetchProfile, fetchProjects, fetchCertificates, fetchAchievements]);
 
   // Save Profile Info
@@ -366,6 +385,26 @@ export default function MyProfile() {
 
               {/* Action buttons */}
               <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <button
+                  onClick={() => setIsImportCvModalOpen(true)}
+                  style={{
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    border: 'none',
+                    background: 'linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)',
+                    color: '#ffffff',
+                    fontSize: '13px',
+                    fontWeight: '700',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    boxShadow: '0 2px 8px rgba(124, 58, 237, 0.25)'
+                  }}
+                  title="Tự động quét CV tải lên hoặc dán nội dung để điền hồ sơ"
+                >
+                  <Sparkles size={14} color="#fde047" /> Tải CV Tự Động Điền Hồ Sơ
+                </button>
                 <button
                   onClick={() => setIsEditingProfile(!isEditingProfile)}
                   style={{
@@ -1069,6 +1108,18 @@ export default function MyProfile() {
           </div>
         </div>
       )}
+
+      {/* Smart CV Parser & Auto-Populate Modal */}
+      <ImportCvToProfileModal
+        isOpen={isImportCvModalOpen}
+        onClose={() => setIsImportCvModalOpen(false)}
+        onProfileUpdated={() => {
+          fetchProfile();
+          fetchProjects();
+          fetchCertificates();
+          fetchAchievements();
+        }}
+      />
 
     </div>
   );

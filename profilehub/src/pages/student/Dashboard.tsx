@@ -19,6 +19,7 @@ import VerifiedBadge from '../../components/common/VerifiedBadge';
 import { getProjectBadgeVariant } from '../../services/projectBadgeService';
 import SpotlightTour, { type SpotlightStep } from '../../components/common/SpotlightTour';
 import ShowcaseQrModal from '../../components/student/ShowcaseQrModal';
+import ImportCvToProfileModal from '../../components/student/ImportCvToProfileModal';
 import { selfInterviewService, type CandidateInterviewSession } from '../../services/selfInterviewService';
 import { cvService, type ManagedCVItem } from '../../services/cvService';
 import {
@@ -159,6 +160,7 @@ export default function Dashboard() {
   const [copiedLink, setCopiedLink] = useState(false);
   const [isSpotlightTourOpen, setIsSpotlightTourOpen] = useState(false);
   const [isShowcaseQrOpen, setIsShowcaseQrOpen] = useState(false);
+  const [isImportCvModalOpen, setIsImportCvModalOpen] = useState(false);
 
   // Kịch bản 3 bước rọi đèn Spotlight phong cách Game Quest (Giữ nguyên targetId chuẩn)
   const tourSteps: SpotlightStep[] = [
@@ -436,6 +438,16 @@ export default function Dashboard() {
             >
               {copiedLink ? <Check size={14} className="text-emerald-500" /> : <Copy size={14} />}
               <span>{copiedLink ? 'Đã sao chép' : 'Copy Link'}</span>
+            </button>
+
+            {/* Quét CV Tự Động Điền Hồ Sơ */}
+            <button
+              onClick={() => setIsImportCvModalOpen(true)}
+              className="px-3 py-2 text-xs font-bold text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/60 hover:bg-purple-100 dark:hover:bg-purple-900/60 border border-purple-200 dark:border-purple-800 rounded-xl flex items-center gap-1.5 shadow-xs transition-all cursor-pointer"
+              title="Quét CV tự động điền hồ sơ cá nhân và đồ án"
+            >
+              <Sparkles size={14} className="text-purple-600 dark:text-purple-400" />
+              <span>Quét CV Điền Hồ Sơ</span>
             </button>
 
             {/* Single Primary Action: May Đo CV Theo JD */}
@@ -742,12 +754,21 @@ export default function Dashboard() {
             <div className="text-center py-10 px-4 border border-dashed border-slate-200 dark:border-slate-800 rounded-xl">
               <FolderKanban size={32} className="mx-auto text-slate-300 dark:text-slate-600 mb-2" />
               <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">Bạn chưa cập nhật đồ án thực tế nào vào hồ sơ cá nhân.</p>
-              <a
-                href="/projects"
-                className="inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition"
-              >
-                + Thêm Đồ Án Đầu Tiên
-              </a>
+              <div className="flex items-center justify-center gap-3">
+                <button
+                  onClick={() => setIsImportCvModalOpen(true)}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-bold rounded-xl shadow-xs transition cursor-pointer"
+                >
+                  <Sparkles size={14} className="text-amber-300" />
+                  <span>Quét CV Tự Tạo Đồ Án</span>
+                </button>
+                <a
+                  href="/projects"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-xl transition"
+                >
+                  + Thêm Thủ Công
+                </a>
+              </div>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -893,6 +914,14 @@ export default function Dashboard() {
         userId={user?.id}
         userName={displayName}
         major={targetMajor}
+      />
+
+      <ImportCvToProfileModal
+        isOpen={isImportCvModalOpen}
+        onClose={() => setIsImportCvModalOpen(false)}
+        onProfileUpdated={() => {
+          fetchDashboardData();
+        }}
       />
 
     </div>
