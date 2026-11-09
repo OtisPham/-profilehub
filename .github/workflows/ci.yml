@@ -13,6 +13,9 @@ jobs:
     defaults:
       run:
         working-directory: ./profilehub
+    env:
+      VITE_SUPABASE_URL: https://dummy.supabase.co
+      VITE_SUPABASE_ANON_KEY: dummy-anon-key
 
     steps:
       - name: Checkout Code

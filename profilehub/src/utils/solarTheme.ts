@@ -110,9 +110,17 @@ export function calculateAstronomicalSunriseSunset(
       return eventDate;
     };
 
+    const sunrise = calcSolarEvent(true);
+    const sunset = calcSolarEvent(false);
+
+    // Đảm bảo tính bất biến trên mọi múi giờ (kể cả UTC runner): bình minh luôn xảy ra trước hoàng hôn
+    if (sunrise.getTime() > sunset.getTime()) {
+      sunrise.setDate(sunrise.getDate() - 1);
+    }
+
     return {
-      sunrise: calcSolarEvent(true),
-      sunset: calcSolarEvent(false),
+      sunrise,
+      sunset,
     };
   } catch {
     const sRise = new Date(date);
