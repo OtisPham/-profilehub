@@ -257,10 +257,10 @@ export default function RecruiterDashboard() {
 
             <div style={{ display: 'flex', gap: '10px' }}>
               <a
-                href="/recruiter/ai-assistant"
+                href="/recruiter/jobs"
                 style={{ padding: '10px 18px', backgroundColor: '#8b5cf6', color: 'white', borderRadius: '8px', fontWeight: 'bold', fontSize: '13px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px', boxShadow: '0 4px 12px rgba(139, 92, 246, 0.25)' }}
               >
-                <Sparkles size={16} /> AI Tuyển Dụng Smart
+                <Briefcase size={16} /> Đăng Tin & Smart Matching
               </a>
 
               <a
@@ -370,16 +370,16 @@ export default function RecruiterDashboard() {
                   <input
                     type="text"
                     readOnly
-                    onClick={() => window.location.href = '/recruiter/ai-assistant'}
+                    onClick={() => window.location.href = '/recruiter/candidates'}
                     placeholder="VD: Cần tuyển thực tập sinh UI/UX biết Figma, có 2 đồ án thực tế tại TP.HCM..."
                     style={{ width: '100%', padding: '12px 14px 12px 42px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '13px', cursor: 'pointer', backgroundColor: '#f8fafc', boxSizing: 'border-box' }}
                   />
                 </div>
                 <a
-                  href="/recruiter/ai-assistant"
+                  href="/recruiter/candidates"
                   style={{ padding: '12px 20px', backgroundColor: '#1e3a8a', color: 'white', borderRadius: '8px', fontSize: '13px', fontWeight: 'bold', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px' }}
                 >
-                  ⚡ Khớp AI →
+                  🔍 Tìm Ứng Viên →
                 </a>
               </div>
 

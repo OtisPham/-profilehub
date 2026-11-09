@@ -35,7 +35,6 @@ export function getHeaderNavLinks(
       { label: '💼 Tin Tuyển Dụng', path: '/recruiter/jobs' },
       { label: '🔍 Tìm Ứng Viên', path: '/recruiter/candidates' },
       { label: '📌 Pipeline Phỏng Vấn', path: '/recruiter/pipeline' },
-      { label: '✨ Trợ Lý AI', path: '/recruiter/ai-assistant' },
     ];
   }
 

@@ -3,14 +3,11 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthProvider';
 import { supabase } from '../../services/supabase';
 import RecruiterDashboard from '../recruiter/RecruiterDashboard';
-import CvHeatmapWidget from '../../components/student/CvHeatmapWidget';
 import { 
   getTrackingAnalytics, 
   TRACKING_EVENT_NAME, 
   type CvTrackingAnalyticsData 
 } from '../../services/cvTrackingAnalyticsService';
-import SalaryBenchmarkModal from '../../components/student/SalaryBenchmarkModal';
-import AiMockInterviewModal from '../../components/student/AiMockInterviewModal';
 import CreateCvFlowModal from '../../components/cv/CreateCvFlowModal';
 import InterviewWarRoomModal from '../../components/student/InterviewWarRoomModal';
 import CvQuickViewModal from '../../components/cv/CvQuickViewModal';
@@ -31,11 +28,7 @@ import {
   MapPin,
   Video,
   FileText,
-  DollarSign,
-  Mic,
   Copy,
-  ChevronDown,
-  ChevronUp,
   TrendingUp,
   Eye,
   Check,
@@ -48,7 +41,7 @@ import {
   CalendarCheck2
 } from 'lucide-react';
 import type { VerificationStatus } from '../../types/database';
-import { getSharedPipeline } from '../../utils/pipelineSync';
+import { getSharedPipeline, subscribeToPipelineEvents } from '../../utils/pipelineSync';
 
 interface Project {
   id: string;
@@ -144,19 +137,8 @@ export default function Dashboard() {
   const [isDefenseModalOpen, setIsDefenseModalOpen] = useState(false);
   const [defenseProjects, setDefenseProjects] = useState<any[]>([]);
 
-  // Targeted Mock Interview parameters
-  const [mockInterviewTarget, setMockInterviewTarget] = useState<{
-    companyName?: string;
-    roleTitle?: string;
-    projectName?: string;
-    techStack?: string[];
-  }>({});
-
   // Modals state
-  const [isSalaryModalOpen, setIsSalaryModalOpen] = useState(false);
-  const [isMockInterviewModalOpen, setIsMockInterviewModalOpen] = useState(false);
   const [isCreateCvModalOpen, setIsCreateCvModalOpen] = useState(false);
-  const [showHeatmap, setShowHeatmap] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
   const [isSpotlightTourOpen, setIsSpotlightTourOpen] = useState(false);
   const [isShowcaseQrOpen, setIsShowcaseQrOpen] = useState(false);
@@ -173,12 +155,12 @@ export default function Dashboard() {
       onAction: () => setIsCreateCvModalOpen(true)
     },
     {
-      targetId: 'tour-salary-benchmark',
-      title: 'Vũ Khí 2: Khảo Sát Dải Lương (AI Benchmark)',
-      description: 'Nắm vững dải lương thị trường thực tế theo cấp bậc (Fresher/Junior/Middle) và vị trí của bạn. Giúp bạn định giá chuẩn xác và tự tin deal lương!',
-      badge: 'Nhiệm Vụ 2/3 • Dải Lương Thực Tế',
-      actionText: 'Tra Cứu Dải Lương Thử Ngay',
-      onAction: () => setIsSalaryModalOpen(true)
+      targetId: 'tour-import-cv',
+      title: 'Vũ Khí 2: Quét CV Điền Hồ Sơ Tự Động',
+      description: 'Tải lên CV PDF có sẵn để tự động trích xuất thông tin, kỹ năng và đồ án vào hồ sơ chính chỉ trong vài giây!',
+      badge: 'Nhiệm Vụ 2/3 • Trích Xuất Hồ Sơ',
+      actionText: 'Mở Trình Quét CV',
+      onAction: () => setIsImportCvModalOpen(true)
     },
     {
       targetId: 'tour-showcase-qr',
@@ -292,12 +274,25 @@ export default function Dashboard() {
           }));
 
         setStudentInterviews(interviews);
+
+        // Đồng bộ lịch phỏng vấn vào War Room Sessions
+        myPipeline
+          .filter((p: any) => p.interview_date)
+          .forEach((p: any) => {
+            selfInterviewService.syncFromPipelineItem(p);
+          });
+        setInterviewSessions(selfInterviewService.getAllSessions());
       }
     };
     loadData();
     window.addEventListener('storage', loadData);
+    const unsubscribeBroadcast = subscribeToPipelineEvents(() => {
+      loadData();
+    });
+
     return () => {
       window.removeEventListener('storage', loadData);
+      unsubscribeBroadcast();
     };
   }, [user, userRole, fetchDashboardData]);
 
@@ -316,17 +311,6 @@ export default function Dashboard() {
   // Xác định rõ: Có ai mời phỏng vấn thực tế từ phía nhà tuyển dụng không
   const hasRecruiterInterview = studentInterviews.length > 0 || interviewSessions.some(s => s.source === 'recruiter_invited');
 
-  const handleStartTargetedMockInterview = (session: CandidateInterviewSession) => {
-    setMockInterviewTarget({
-      companyName: session.company_name,
-      roleTitle: session.role_title,
-      projectName: session.primary_project_name || projects[0]?.title || 'E-Commerce Platform',
-      techStack: session.target_tech_stack && session.target_tech_stack.length > 0 
-        ? session.target_tech_stack 
-        : (profile?.skills || ['React', 'TypeScript', 'Node.js', 'PostgreSQL'])
-    });
-    setIsMockInterviewModalOpen(true);
-  };
 
   const handleOpenProjectDefense = (session: CandidateInterviewSession) => {
     let projList: any[] = [];
@@ -442,6 +426,7 @@ export default function Dashboard() {
 
             {/* Quét CV Tự Động Điền Hồ Sơ */}
             <button
+              id="tour-import-cv"
               onClick={() => setIsImportCvModalOpen(true)}
               className="px-3 py-2 text-xs font-bold text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/60 hover:bg-purple-100 dark:hover:bg-purple-900/60 border border-purple-200 dark:border-purple-800 rounded-xl flex items-center gap-1.5 shadow-xs transition-all cursor-pointer"
               title="Quét CV tự động điền hồ sơ cá nhân và đồ án"
@@ -546,13 +531,6 @@ export default function Dashboard() {
                         </a>
                       )}
 
-                      <button
-                        onClick={() => handleStartTargetedMockInterview(currentSession)}
-                        className="py-2 px-3 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition active:scale-[0.98] cursor-pointer"
-                      >
-                        <Mic size={14} />
-                        <span>Luyện Phỏng Vấn AI ({currentSession.company_name})</span>
-                      </button>
 
                       <button
                         onClick={() => handleOpenProjectDefense(currentSession)}
@@ -624,17 +602,9 @@ export default function Dashboard() {
                 Nhịp Đập Ứng Tuyển & Tương Tác Hồ Sơ
               </h3>
             </div>
-            
-            <button
-              onClick={() => setShowHeatmap(!showHeatmap)}
-              className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 cursor-pointer"
-            >
-              <span>{showHeatmap ? 'Thu gọn Heatmap' : 'Chi tiết Heatmap lượt xem'}</span>
-              {showHeatmap ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-            </button>
           </div>
 
-          {/* 3 Thẻ Metric Chuẩn: Đã nộp đơn - Lịch phỏng vấn - NTD đã xem (ĐÃ TẮT OFFER) */}
+          {/* 3 Thẻ Metric Chuẩn: Đã nộp đơn - Lịch phỏng vấn - NTD đã xem */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {/* Metric 1: Đã nộp đơn */}
             <Link 
@@ -664,58 +634,21 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Metric 3: Lượt xem NTD (Heatmap) */}
+            {/* Metric 3: Lượt xem NTD */}
             <div 
-              onClick={() => setShowHeatmap(!showHeatmap)}
-              className="p-4 rounded-xl bg-slate-50/70 dark:bg-[#161f36]/70 hover:bg-slate-100 dark:hover:bg-[#19243d] border border-slate-200/70 dark:border-slate-800/80 flex flex-col justify-between transition-all cursor-pointer group"
-              title="Nhấn để xem chi tiết Heatmap"
+              className="p-4 rounded-xl bg-slate-50/70 dark:bg-[#161f36]/70 border border-slate-200/70 dark:border-slate-800/80 flex flex-col justify-between"
+              title="Tổng lượt xem hồ sơ của bạn từ các Nhà tuyển dụng"
             >
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">NTD đã xem hồ sơ</span>
-                <Eye size={13} className="text-slate-400 group-hover:text-blue-500 transition-colors" />
+                <Eye size={13} className="text-slate-400" />
               </div>
               <div className="flex items-baseline justify-between mt-2">
                 <span className="text-2xl font-black text-slate-900 dark:text-white">{trackingData.totalViews}</span>
-                <span className="text-xs font-bold text-blue-600 dark:text-blue-400">
-                  {showHeatmap ? 'Đang mở' : 'Chi tiết'}
-                </span>
+                <span className="text-xs font-bold text-blue-600 dark:text-blue-400">Lượt xem</span>
               </div>
             </div>
           </div>
-
-          {/* Công cụ hỗ trợ ứng viên */}
-          <div className="mt-4 pt-3.5 border-t border-slate-100 dark:border-slate-800/80 flex flex-wrap items-center justify-between gap-3">
-            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
-              Công cụ luyện tập & khảo sát:
-            </span>
-            <div className="flex items-center gap-2 flex-wrap">
-              <button
-                id="tour-salary-benchmark"
-                onClick={() => setIsSalaryModalOpen(true)}
-                className="px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
-                title="Khảo sát dải lương thị trường theo cấp bậc và vị trí"
-              >
-                <DollarSign size={14} className="text-emerald-600 dark:text-emerald-400" />
-                <span>Khảo Sát Lương Thị Trường</span>
-              </button>
-
-              <button
-                onClick={() => setIsMockInterviewModalOpen(true)}
-                className="px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
-                title="Luyện phỏng vấn thực chiến AI"
-              >
-                <Mic size={14} className="text-indigo-600 dark:text-indigo-400" />
-                <span>Luyện Phỏng Vấn AI</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Collapsible CV Heatmap Section */}
-          {showHeatmap && (
-            <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 animate-in fade-in duration-200">
-              <CvHeatmapWidget />
-            </div>
-          )}
         </section>
 
         {/* =========================================================================
@@ -852,23 +785,6 @@ export default function Dashboard() {
       {/* =========================================================================
        * DIALOGS & MODALS
        * ========================================================================= */}
-      <SalaryBenchmarkModal
-        isOpen={isSalaryModalOpen}
-        onClose={() => setIsSalaryModalOpen(false)}
-        initialRole={targetMajor}
-        techStack={profile?.skills || ['React', 'TypeScript', 'Node.js', 'PostgreSQL']}
-        verifiedProjectsCount={verifiedCount}
-      />
-
-      <AiMockInterviewModal
-        isOpen={isMockInterviewModalOpen}
-        onClose={() => setIsMockInterviewModalOpen(false)}
-        candidateName={displayName}
-        companyName={mockInterviewTarget.companyName}
-        roleTitle={mockInterviewTarget.roleTitle || targetMajor}
-        projectName={mockInterviewTarget.projectName || projects[0]?.title || 'E-Commerce Platform'}
-        techStack={mockInterviewTarget.techStack || profile?.skills || ['React', 'Node.js', 'PostgreSQL', 'Docker']}
-      />
 
       <CreateCvFlowModal
         isOpen={isCreateCvModalOpen}

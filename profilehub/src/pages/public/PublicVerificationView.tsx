@@ -17,10 +17,13 @@ import {
   Lock,
   Search,
   Sparkles,
-  Share2
+  Share2,
+  CheckCircle2
 } from 'lucide-react';
 import { verificationService } from '../../services/verificationService';
 import type { PublicVerifiedProjectRecord } from '../../types/projects.types';
+import DirectInterviewInviteModal from '../../components/public/DirectInterviewInviteModal';
+import ViralShareBadgeModal from '../../components/public/ViralShareBadgeModal';
 
 export default function PublicVerificationView() {
   const { code } = useParams<{ code: string }>();
@@ -29,6 +32,9 @@ export default function PublicVerificationView() {
   const [copiedHash, setCopiedHash] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
   const [searchCodeInput, setSearchCodeInput] = useState('');
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [inviteToast, setInviteToast] = useState<string | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -255,6 +261,28 @@ export default function PublicVerificationView() {
 
             {/* Direct Project Links Action Bar */}
             <div className="p-4 rounded-2xl bg-slate-900/40 border border-slate-800/80 flex flex-wrap items-center justify-center gap-3">
+              {/* Nút Kêu Gọi Tuyển Dụng Trực Tiếp */}
+              <button
+                type="button"
+                onClick={() => setIsInviteModalOpen(true)}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white transition shadow-lg shadow-purple-600/25 active:scale-95 cursor-pointer"
+                title="Nhà tuyển dụng mời sinh viên tham gia phỏng vấn vị trí mới"
+              >
+                <Sparkles className="w-4 h-4 text-purple-200 animate-spin-slow" />
+                <span>Mời Phỏng Vấn Trực Tiếp</span>
+              </button>
+
+              {/* Nút Lan Tỏa Khoe Đồ Án */}
+              <button
+                type="button"
+                onClick={() => setIsShareModalOpen(true)}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/30 transition shadow-sm active:scale-95 cursor-pointer"
+                title="Chia sẻ lên LinkedIn và sao chép mã GitHub Badge"
+              >
+                <Share2 className="w-4 h-4" />
+                <span>Lan Tỏa & Khoe Đồ Án</span>
+              </button>
+
               {record.project.demoUrl && (
                 <a
                   href={record.project.demoUrl}
@@ -367,6 +395,34 @@ export default function PublicVerificationView() {
       <footer className="border-t border-slate-800/60 py-6 text-center text-xs text-slate-500">
         <p>© 2026 ProfileHub. Project-Driven AI CV Builder & Verification Gateway.</p>
       </footer>
+
+      {/* Floating Success Toast */}
+      {inviteToast && (
+        <div className="fixed bottom-6 right-6 z-50 p-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold text-xs shadow-2xl flex items-center gap-2.5 animate-in slide-in-from-bottom duration-200 border border-emerald-400/40">
+          <CheckCircle2 className="w-4 h-4 text-emerald-100" />
+          <span>Đã gửi lời mời phỏng vấn từ {inviteToast} đến tác giả đồ án thành công!</span>
+        </div>
+      )}
+
+      {/* Direct Interview Invite Modal */}
+      {record && (
+        <>
+          <DirectInterviewInviteModal
+            isOpen={isInviteModalOpen}
+            onClose={() => setIsInviteModalOpen(false)}
+            record={record}
+            onSuccess={(company) => {
+              setInviteToast(company);
+              setTimeout(() => setInviteToast(null), 4000);
+            }}
+          />
+          <ViralShareBadgeModal
+            isOpen={isShareModalOpen}
+            onClose={() => setIsShareModalOpen(false)}
+            record={record}
+          />
+        </>
+      )}
     </div>
   );
 }

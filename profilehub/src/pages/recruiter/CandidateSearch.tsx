@@ -5,9 +5,10 @@ import { useAuth } from '../../context/AuthProvider';
 import { supabase } from '../../services/supabase';
 import VerifiedBadge from '../../components/common/VerifiedBadge';
 import { getProjectBadgeVariant, countCandidateProjectBadges } from '../../services/projectBadgeService';
-import { Search, ShieldCheck, Mail, FileText, ExternalLink, Code2, FileSpreadsheet, FolderOpen } from 'lucide-react';
+import { Search, ShieldCheck, Mail, FileText, ExternalLink, Code2, FileSpreadsheet, FolderOpen, Eye, EyeOff } from 'lucide-react';
 import VSCodeViewerModal from '../../components/common/VSCodeViewerModal';
 import { addToSharedPipeline } from '../../utils/pipelineSync';
+import { challengeScorecardService } from '../../services/challengeScorecardService';
 
 import { candidatePrivacyService } from '../../services/candidatePrivacyService';
 
@@ -61,7 +62,32 @@ export default function CandidateSearch() {
   const [onlyVerified, setOnlyVerified] = useState(true);
   const [onlyDemoReady, setOnlyDemoReady] = useState(false);
 
-  // Modal xem Cặp Hồ Sơ (CV + Thư Giới Thiệu)
+  // Chế Độ Sàng Lọc Ẩn Danh (Blind Screening Mode)
+  const [isBlindScreening, setIsBlindScreening] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('profilehub_blind_screening_mode') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const toggleBlindScreening = () => {
+    const next = !isBlindScreening;
+    setIsBlindScreening(next);
+    try {
+      localStorage.setItem('profilehub_blind_screening_mode', String(next));
+    } catch {}
+  };
+
+  useEffect(() => {
+    const handleStorage = () => {
+      try {
+        setIsBlindScreening(localStorage.getItem('profilehub_blind_screening_mode') === 'true');
+      } catch {}
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, []);
   const [selectedDossierCandidate, setSelectedDossierCandidate] = useState<DossierCandidate | null>(null);
   const [selectedCvCandidate, setSelectedCvCandidate] = useState<VerifiedStudentCandidate | null>(null);
   const [inspectGitHubUrl, setInspectGitHubUrl] = useState<string | null>(null);
@@ -258,6 +284,38 @@ export default function CandidateSearch() {
               <FileSpreadsheet size={16} /> 📂 Nhập từ Excel (XLSX)
             </button>
 
+            <button
+              type="button"
+              onClick={toggleBlindScreening}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '10px 16px',
+                borderRadius: '8px',
+                fontSize: '13px',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                border: isBlindScreening ? '1.5px solid #6366f1' : '1px solid #cbd5e1',
+                backgroundColor: isBlindScreening ? '#eef2ff' : '#ffffff',
+                color: isBlindScreening ? '#4338ca' : '#475569',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              {isBlindScreening ? (
+                <>
+                  <EyeOff size={16} color="#4f46e5" />
+                  <span>Ẩn Danh (Blind): BẬT</span>
+                </>
+              ) : (
+                <>
+                  <Eye size={16} color="#64748b" />
+                  <span>Bật Sàng Lọc Ẩn Danh</span>
+                </>
+              )}
+            </button>
+
             <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: 'bold', color: '#0f172a', cursor: 'pointer', whiteSpace: 'nowrap' }}>
               <input
                 type="checkbox"
@@ -290,19 +348,38 @@ export default function CandidateSearch() {
             </div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '25px' }}>
-              {filteredCandidates.map(candidate => (
+              {filteredCandidates.map(candidate => {
+                const blindInfo = challengeScorecardService.getBlindCandidateInfo(candidate.id);
+                const displayName = isBlindScreening ? blindInfo.anonymousName : candidate.full_name;
+                const displayRole = isBlindScreening ? blindInfo.anonymousRole : (candidate.major || 'Ứng viên');
+                const displayUniversity = isBlindScreening ? 'Trường Đại học (Đã ẩn danh)' : (candidate.university || 'Đại học');
+
+                return (
                 <div key={candidate.id} style={{ backgroundColor: 'white', borderRadius: '12px', border: '1px solid #e2e8f0', padding: '24px', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
                   
                   {/* Header Candidate */}
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '15px' }}>
                     <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
-                      <div style={{ width: '48px', height: '48px', borderRadius: '50%', backgroundColor: '#1e3a8a', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '18px' }}>
-                        {candidate.full_name.charAt(0).toUpperCase()}
-                      </div>
+                      {isBlindScreening ? (
+                        <div style={{ width: '48px', height: '48px', borderRadius: '50%', backgroundColor: '#eef2ff', color: '#4338ca', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }} title="Ẩn danh vì Blind Screening">
+                          <EyeOff size={22} />
+                        </div>
+                      ) : (
+                        <div style={{ width: '48px', height: '48px', borderRadius: '50%', backgroundColor: '#1e3a8a', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '18px' }}>
+                          {candidate.full_name.charAt(0).toUpperCase()}
+                        </div>
+                      )}
                       <div>
-                        <h3 style={{ margin: '0 0 4px 0', fontSize: '17px', color: '#0f172a' }}>{candidate.full_name}</h3>
+                        <h3 style={{ margin: '0 0 4px 0', fontSize: '17px', color: '#0f172a', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          {displayName}
+                          {isBlindScreening && (
+                            <span style={{ fontSize: '10px', backgroundColor: '#e0e7ff', color: '#4338ca', padding: '1px 6px', borderRadius: '4px', fontWeight: 'bold' }}>
+                              BLIND
+                            </span>
+                          )}
+                        </h3>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', alignItems: 'center', fontSize: '12px', color: '#64748b' }}>
-                          <span>🎓 {candidate.university} • {candidate.major}</span>
+                          <span>🎓 {displayUniversity} • {displayRole}</span>
                           <span style={{ fontSize: '11px', fontWeight: 'bold', backgroundColor: '#ecfdf5', color: '#047857', padding: '2px 8px', borderRadius: '10px', border: '1px solid #a7f3d0' }}>
                             🎯 GPA: {candidate.gpa}
                           </span>
@@ -367,7 +444,7 @@ export default function CandidateSearch() {
                           const scoreResult = jobStudioService.calculateCandidateJobMatch(reqSkills, candidate);
                           return (
                             <span style={{ fontSize: '10.5px', fontWeight: 'bold', color: '#7e22ce', backgroundColor: '#f3e8ff', padding: '2px 8px', borderRadius: '8px', border: '1px solid #d8b4fe' }}>
-                              🎯 {scoreResult.matchScore}% Khớp Tin Đăng
+                              🎯 Độ tương thích JD: {scoreResult.matchScore}%
                             </span>
                           );
                         })()
@@ -537,7 +614,8 @@ export default function CandidateSearch() {
                   </div>
 
                 </div>
-              ))}
+                );
+              })}
             </div>
           )}
 

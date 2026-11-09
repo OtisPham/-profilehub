@@ -11,15 +11,19 @@ import {
   ChevronRight, 
   ChevronLeft,
   Clock,
-  ExternalLink
+  ExternalLink,
+  Terminal
 } from 'lucide-react';
 import type { CandidateApplicationItem, ApplicationStage, ApplicationSource } from '../../types/application.types';
+import type { TakeHomeChallenge } from '../../types/database';
 
 interface ApplicationCardProps {
   application: CandidateApplicationItem;
   onViewCv: (app: CandidateApplicationItem) => void;
   onPracticeAi: (app: CandidateApplicationItem) => void;
   onOpenCoverLetter?: (app: CandidateApplicationItem) => void;
+  onSubmitChallenge?: (app: CandidateApplicationItem) => void;
+  challengeInfo?: TakeHomeChallenge | null;
   onUpdateStage: (id: string, newStage: ApplicationStage) => void;
   onDelete: (id: string) => void;
   onEdit?: (app: CandidateApplicationItem) => void;
@@ -49,6 +53,8 @@ export default function ApplicationCard({
   onViewCv,
   onPracticeAi,
   onOpenCoverLetter,
+  onSubmitChallenge,
+  challengeInfo,
   onUpdateStage,
   onDelete,
   onEdit
@@ -130,6 +136,27 @@ export default function ApplicationCard({
             </div>
           )}
 
+          {/* Take-Home Challenge Banner */}
+          {challengeInfo && (
+            <div className="p-2 rounded-lg bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200/80 dark:border-indigo-800/80 text-[11px]">
+              <div className="flex items-center justify-between font-bold text-indigo-900 dark:text-indigo-200 mb-1">
+                <span className="flex items-center gap-1 truncate">
+                  <Terminal size={12} className="text-indigo-600 shrink-0" /> {challengeInfo.title}
+                </span>
+                <span className={`text-[9.5px] px-1.5 py-0.5 rounded shrink-0 font-bold ${
+                  challengeInfo.status === 'submitted' || challengeInfo.status === 'evaluated'
+                    ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                    : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'
+                }`}>
+                  {challengeInfo.status === 'submitted' ? '✅ Đã nộp PR' : challengeInfo.status === 'evaluated' ? '⭐ Đã chấm' : '⏱️ Đang làm'}
+                </span>
+              </div>
+              <p className="text-[10px] text-slate-500 dark:text-slate-400 line-clamp-1">
+                Hạn chót: {new Date(challengeInfo.deadlineDate).toLocaleDateString('vi-VN')} ({challengeInfo.deadlineHours}h)
+              </p>
+            </div>
+          )}
+
           {/* Notes Preview */}
           {application.notes && (
             <p className="text-[11px] text-slate-500 dark:text-slate-400 italic line-clamp-2 pt-1 border-t border-slate-100 dark:border-slate-800">
@@ -141,6 +168,17 @@ export default function ApplicationCard({
 
       {/* Action Footer */}
       <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-col gap-2">
+        {/* Nút Nộp Bài Giải Thử Thách Kỹ Thuật (Take-Home Challenge) */}
+        {onSubmitChallenge && (application.stage === 'assessment' || challengeInfo) && (
+          <button
+            onClick={() => onSubmitChallenge(application)}
+            className="w-full flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white transition-colors shadow-sm"
+            title="Nộp link GitHub Pull Request giải thử thách kỹ thuật"
+          >
+            <Terminal size={12} />
+            <span>{challengeInfo?.status === 'submitted' ? 'Cập Nhật Bài Giải PR' : '🚀 Nộp Bài Giải Thử Thách'}</span>
+          </button>
+        )}
         {/* Quick buttons */}
         <div className="grid grid-cols-2 gap-1.5">
           <button

@@ -33,6 +33,8 @@ import {
 import { getSharedJobs, saveSharedJobs, getRecruiterCompanyProfile } from '../../utils/jobSync';
 import { jobStudioService } from '../../services/jobStudioService';
 import { Link } from 'react-router-dom';
+import JobTemplatePicker from '../../components/recruiter/JobTemplatePicker';
+import type { JobTemplateItem } from '../../types/database';
 
 const POPULAR_SKILL_TAGS = [
   'ReactJS', 'TypeScript', 'Node.js', 'Python', 'Next.js', 
@@ -97,6 +99,9 @@ export default function JobManagement() {
   // Skill Extraction State
   const [isExtractingSkills, setIsExtractingSkills] = useState(false);
   const [extractionFeedback, setExtractionFeedback] = useState<string | null>(null);
+
+  // Job Template Picker State (T012)
+  const [showTemplatePicker, setShowTemplatePicker] = useState(false);
 
   // Pool of Candidates for Matching
   const [talentPool, setTalentPool] = useState<CandidateProfileInput[]>([]);
@@ -237,6 +242,7 @@ export default function JobManagement() {
     setFormDescription('');
     setFormStatus('active');
     setExtractionFeedback(null);
+    setShowTemplatePicker(false);
     setShowModal(true);
   };
 
@@ -293,6 +299,23 @@ export default function JobManagement() {
     } finally {
       setIsExtractingSkills(false);
     }
+  };
+
+  // T012/T013 — Apply JD Template: pre-fill form + auto-merge skills
+  const handleApplyTemplate = (template: JobTemplateItem) => {
+    setFormTitle(template.title);
+    setFormDepartment(template.department);
+    setFormExperienceLevel(template.experienceLevel as ExperienceLevel);
+    setFormWorkplaceType(template.workplaceType as WorkplaceType);
+    setFormSalaryMin(String(template.salaryMin));
+    setFormSalaryMax(String(template.salaryMax));
+    setFormCurrency(template.currency as SalaryCurrency);
+    setFormDescription(template.description);
+    // T013: Inline skill merge from template (no async state dependency)
+    const merged = Array.from(new Set([...template.requiredSkills]));
+    setFormSkillsInput(merged.join(', '));
+    setExtractionFeedback(`✨ Đã áp dụng mẫu JD "${template.title}" với ${template.requiredSkills.length} kỹ năng chuẩn hóa!`);
+    setShowTemplatePicker(false);
   };
 
   // Submit Save (Create or Update)
@@ -776,7 +799,7 @@ export default function JobManagement() {
                       >
                         <div className="flex items-center gap-1.5">
                           <Users className="w-3.5 h-3.5 text-purple-600" />
-                          <span>{matchResult.totalEligibleCandidates} ứng viên phù hợp (≥ 50%)</span>
+                          <span>{matchResult.totalEligibleCandidates} ứng viên phù hợp (Độ tương thích JD ≥ 50%)</span>
                         </div>
                         <ChevronRight className="w-3.5 h-3.5 text-purple-500" />
                       </Link>
@@ -871,6 +894,31 @@ export default function JobManagement() {
             {/* Modal Body / Form */}
             <form onSubmit={handleSaveJob} className="p-6 space-y-4 max-h-[75vh] overflow-y-auto text-left">
               
+              {/* T012 — JD Template Picker Toggle */}
+              {!editingJob && (
+                <div className="border border-indigo-200 bg-indigo-50/60 rounded-2xl overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => setShowTemplatePicker(v => !v)}
+                    className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-indigo-100/60 transition-colors cursor-pointer"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">⚡</span>
+                      <div>
+                        <p className="text-sm font-bold text-indigo-900">Chọn Mẫu JD Nhanh</p>
+                        <p className="text-[11px] text-indigo-600">6 mẫu JD chuẩn hóa — điền form tự động trong 1 click</p>
+                      </div>
+                    </div>
+                    <span className="text-indigo-400 text-xs font-medium">{showTemplatePicker ? '▲ Thu gọn' : '▼ Mở rộng'}</span>
+                  </button>
+                  {showTemplatePicker && (
+                    <div className="border-t border-indigo-200 p-3">
+                      <JobTemplatePicker onSelectTemplate={handleApplyTemplate} />
+                    </div>
+                  )}
+                </div>
+              )}
+
               {/* Job Title */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">

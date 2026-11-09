@@ -25,6 +25,9 @@ import ApplicationAnalyticsWidget from './ApplicationAnalyticsWidget';
 import CvQuickViewModal from '../cv/CvQuickViewModal';
 import AiMockInterviewModal from './AiMockInterviewModal';
 import CoverLetterModal from './CoverLetterModal';
+import SubmitChallengeModal from './SubmitChallengeModal';
+import { getSharedPipeline } from '../../utils/pipelineSync';
+import type { CandidatePipelineItem } from '../../types/database';
 import { cvService, type ManagedCVItem } from '../../services/cvService';
 import { useAuth } from '../../context/AuthProvider';
 
@@ -120,6 +123,10 @@ export default function ApplicationKanbanBoard() {
     roleTitle: ''
   });
 
+  // State Thử Thách Kỹ Thuật (Take-Home Challenge)
+  const [challengeCandidate, setChallengeCandidate] = useState<CandidatePipelineItem | null>(null);
+  const [pipelineItems, setPipelineItems] = useState<CandidatePipelineItem[]>([]);
+
   const handleOpenCoverLetter = (app: CandidateApplicationItem) => {
     setCoverLetterData({
       isOpen: true,
@@ -133,7 +140,53 @@ export default function ApplicationKanbanBoard() {
   const loadData = useCallback(() => {
     const list = applicationTrackerService.getApplications(user?.id);
     setApplications(list);
+    const shared = getSharedPipeline(user?.id);
+    setPipelineItems(shared);
   }, [user?.id]);
+
+  const handleSubmitChallenge = (app: CandidateApplicationItem) => {
+    // Tìm ứng viên trong pipeline có take_home_challenge
+    const existing = pipelineItems.find(p => 
+      (p.student_id === user?.id || (user?.email && (p.student as any)?.email === user.email)) && 
+      p.take_home_challenge
+    );
+    if (existing) {
+      setChallengeCandidate(existing);
+    } else {
+      // Fallback item nếu nộp trực tiếp từ Kanban
+      const fallbackItem: CandidatePipelineItem = {
+        id: `pipe_app_${app.id}`,
+        recruiter_id: 'recruiter_system',
+        student_id: user?.id || 'current_student',
+        job_id: app.id,
+        stage: 'interview',
+        created_at: new Date().toISOString(),
+        student: {
+          id: user?.id || 'current_student',
+          full_name: user?.user_metadata?.full_name || 'Học viên ProfileHub'
+        } as any,
+        take_home_challenge: {
+          id: `ch_${app.id}`,
+          candidatePipelineId: `pipe_app_${app.id}`,
+          recruiterId: 'recruiter_system',
+          studentId: user?.id || 'current_student',
+          jobId: app.id,
+          title: `Thử Thách Kỹ Thuật: ${app.roleTitle}`,
+          description: `Yêu cầu tạo một Pull Request trên GitHub cho dự án của bạn nhằm giải quyết bài toán kỹ thuật theo chuẩn Clean Architecture.`,
+          requirements: [
+            'Tạo nhánh git mới feature/challenge-solution',
+            'Tạo Pull Request với mô tả kỹ thuật chi tiết',
+            'Cung cấp unit tests hoặc tài liệu API'
+          ],
+          deadlineHours: 48,
+          deadlineDate: new Date(Date.now() + 48 * 3600 * 1000).toISOString(),
+          status: 'issued',
+          createdAt: new Date().toISOString()
+        }
+      };
+      setChallengeCandidate(fallbackItem);
+    }
+  };
 
   useEffect(() => {
     loadData();
@@ -287,17 +340,26 @@ export default function ApplicationKanbanBoard() {
                       </button>
                     </div>
                   ) : (
-                    columnApps.map(app => (
-                      <ApplicationCard
-                        key={app.id}
-                        application={app}
-                        onViewCv={handleViewCv}
-                        onPracticeAi={handlePracticeAi}
-                        onOpenCoverLetter={handleOpenCoverLetter}
-                        onUpdateStage={handleUpdateStage}
-                        onDelete={handleDelete}
-                      />
-                    ))
+                    columnApps.map(app => {
+                      const appChallenge = pipelineItems.find(p => 
+                        (p.student_id === user?.id || (user?.email && (p.student as any)?.email === user.email)) && 
+                        p.take_home_challenge
+                      )?.take_home_challenge;
+
+                      return (
+                        <ApplicationCard
+                          key={app.id}
+                          application={app}
+                          challengeInfo={app.stage === 'assessment' ? appChallenge : (appChallenge?.status === 'submitted' ? appChallenge : null)}
+                          onSubmitChallenge={handleSubmitChallenge}
+                          onViewCv={handleViewCv}
+                          onPracticeAi={handlePracticeAi}
+                          onOpenCoverLetter={handleOpenCoverLetter}
+                          onUpdateStage={handleUpdateStage}
+                          onDelete={handleDelete}
+                        />
+                      );
+                    })
                   )}
                 </div>
 
@@ -354,6 +416,19 @@ export default function ApplicationKanbanBoard() {
           companyName={coverLetterData.companyName}
           roleTitle={coverLetterData.roleTitle}
           linkedCvId={coverLetterData.linkedCvId}
+        />
+      )}
+
+      {/* Submit Take-Home Challenge Modal */}
+      {challengeCandidate && (
+        <SubmitChallengeModal
+          isOpen={Boolean(challengeCandidate)}
+          onClose={() => setChallengeCandidate(null)}
+          candidate={challengeCandidate}
+          onSubmitted={() => {
+            loadData();
+            setChallengeCandidate(null);
+          }}
         />
       )}
     </div>

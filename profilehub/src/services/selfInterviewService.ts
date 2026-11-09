@@ -296,5 +296,58 @@ export const selfInterviewService = {
    */
   updateStatus(id: string, status: InterviewStatusType): boolean {
     return this.updateSession(id, { status });
+  },
+
+  /**
+   * Đồng bộ lịch phỏng vấn từ tin tuyển dụng vào War Room
+   */
+  syncFromPipelineItem(item: {
+    id: string;
+    job?: { title?: string; company_name?: string; required_skills?: string[] };
+    interview_date?: string;
+    interview_time?: string;
+    meeting_link?: string;
+    interview_location?: string;
+    interview_status?: string;
+  }): CandidateInterviewSession | null {
+    if (!item.interview_date) return null;
+    const list = this.getAllSessions();
+    const sessionId = `recruiter_${item.id}`;
+    const existing = list.find(s => s.id === sessionId);
+
+    if (existing) {
+      existing.interview_date = item.interview_date;
+      existing.interview_time = item.interview_time || existing.interview_time;
+      existing.meeting_link = item.meeting_link || existing.meeting_link;
+      existing.location_address = item.interview_location || existing.location_address;
+      existing.company_name = item.job?.company_name || existing.company_name;
+      existing.role_title = item.job?.title || existing.role_title;
+      existing.updated_at = new Date().toISOString();
+      this.saveAllSessions(list);
+      return existing;
+    }
+
+    const newSession: CandidateInterviewSession = {
+      id: sessionId,
+      company_name: item.job?.company_name || 'Doanh nghiệp tuyển dụng',
+      role_title: item.job?.title || 'Vị trí phỏng vấn',
+      interview_date: item.interview_date,
+      interview_time: item.interview_time || '10:00',
+      format: item.meeting_link ? 'online' : 'offline',
+      meeting_link: item.meeting_link,
+      location_address: item.interview_location || (item.meeting_link ? 'Online (Google Meet)' : 'Văn phòng công ty'),
+      stage: 'technical',
+      target_tech_stack: item.job?.required_skills || ['React', 'TypeScript', 'Node.js'],
+      primary_project_name: 'Dự án thực tế phù hợp với JD',
+      personal_notes: 'Lịch phỏng vấn được xếp trực tiếp từ Nhà tuyển dụng trên ProfileHub.',
+      status: 'upcoming',
+      source: 'recruiter_invited',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+
+    const updated = [newSession, ...list];
+    this.saveAllSessions(updated);
+    return newSession;
   }
 };

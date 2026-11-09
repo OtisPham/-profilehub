@@ -62,6 +62,10 @@ export interface StudentProfileData {
     instructor?: string;
     tags?: string[];
     created_at?: string;
+    demo_url?: string;
+    github_url?: string;
+    figma_url?: string;
+    score?: string;
   }>;
   certificates: Array<{
     id: string;
@@ -1528,6 +1532,10 @@ export const cvService = {
 
           return topProjects.map((p, pIdx) => {
             const isFirstIntersecting = pIdx === 0 && pivotScenario === 'CAREER_PIVOT';
+            const techList = p.tags && p.tags.length > 0 ? p.tags : ['TypeScript', 'React'];
+            const projectUrl = p.demo_url || p.figma_url || undefined;
+            const githubUrl = p.github_url || undefined;
+
             return {
               id: p.id,
               projectName: p.title,
@@ -1536,15 +1544,17 @@ export const cvService = {
               endDate: '2026',
               description: isFirstIntersecting
                 ? `Đồ án giao thoa kỹ năng thể hiện năng lực nghiệp vụ và tư duy công nghệ phù hợp vị trí ${detectedRole}.`
-                : (p.description || ''),
+                : (p.description || `Đồ án thực tế áp dụng ${techList.slice(0, 3).join(', ')} phục vụ bài toán chuyên ngành.`),
               bullets: [
-                `• Triển khai các tính năng cốt lõi sử dụng ${(p.tags || ['công nghệ']).slice(0, 3).join(', ')}.`,
-                `• Tối ưu hiệu năng, cấu trúc mã nguồn theo chuẩn module và tài liệu hóa chi tiết.`,
-                `• Đảm bảo chất lượng sản phẩm qua quy trình kiểm thử và rà soát kỹ thuật.`
+                `• [Tình huống & Mục tiêu] Đảm nhận vai trò ${p.role || 'lập trình viên'}, phát triển hệ thống ${p.title} đáp ứng yêu cầu thực tế.`,
+                `• [Hành động & Công nghệ] Trực tiếp triển khai các module tính năng bằng ${techList.slice(0, 4).join(', ')}, chuẩn hóa luồng dữ liệu và Clean Code.`,
+                p.score 
+                  ? `• [Kết quả & Đo lường] Đạt điểm số đánh giá ${p.score}/10, bảo chứng năng lực thực tế và hoàn thành triển khai đúng hạn.`
+                  : `• [Kết quả & Đo lường] Đóng gói và phát hành bản demo hoạt động ổn định, hoàn thành 100% các tiêu chí nghiệm thu kỹ thuật.`
               ],
-              technologies: p.tags && p.tags.length > 0 ? p.tags : ['TypeScript', 'React'],
-              projectUrl: undefined,
-              githubUrl: undefined,
+              technologies: techList,
+              projectUrl,
+              githubUrl,
               is_verified: !!p.is_verified,
             };
           });

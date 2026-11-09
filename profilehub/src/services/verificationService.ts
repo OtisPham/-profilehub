@@ -314,6 +314,31 @@ class VerificationService {
 
     return expectedHash.toLowerCase() === record.verificationHash.toLowerCase();
   }
+
+  /**
+   * Tạo đường dẫn chia sẻ mạng xã hội và mã Markdown Badge cho GitHub README
+   */
+  getPublicShareUrls(verificationCode: string, projectTitle: string, studentName?: string) {
+    const origin = typeof window !== 'undefined' && window.location?.origin 
+      ? window.location.origin 
+      : 'https://profilehub.vn';
+    const verifyUrl = `${origin}/verify/${encodeURIComponent(verificationCode)}`;
+    
+    const postTitle = encodeURIComponent(`Đồ án "${projectTitle}" của tôi đã được chứng nhận bảo chứng học thuật trên ProfileHub!`);
+    
+    const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(verifyUrl)}`;
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${postTitle}&url=${encodeURIComponent(verifyUrl)}`;
+    const markdownBadge = `[![ProfileHub Verified](https://img.shields.io/badge/ProfileHub-Verified_Project-10b981?style=for-the-badge&logo=shield&logoColor=white)](${verifyUrl})`;
+    const htmlBadge = `<a href="${verifyUrl}"><img src="https://img.shields.io/badge/ProfileHub-Verified_Project-10b981?style=for-the-badge&logo=shield&logoColor=white" alt="ProfileHub Verified Project" /></a>`;
+
+    return {
+      verifyUrl,
+      linkedInUrl,
+      twitterUrl,
+      markdownBadge,
+      htmlBadge
+    };
+  }
 }
 
 export const verificationService = new VerificationService();

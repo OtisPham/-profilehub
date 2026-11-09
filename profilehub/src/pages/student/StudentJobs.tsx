@@ -6,6 +6,7 @@ import RecruiterCompanyModal from '../../components/student/RecruiterCompanyModa
 import GenerateCvFromJdModal from '../../components/cv/GenerateCvFromJdModal';
 import ApplicationKanbanBoard from '../../components/student/ApplicationKanbanBoard';
 import CandidatePrivacyModal from '../../components/student/CandidatePrivacyModal';
+import SkillGapDiagnosticModal from '../../components/student/SkillGapDiagnosticModal';
 import { applicationTrackerService } from '../../services/applicationTrackerService';
 import { 
   Search, 
@@ -21,6 +22,7 @@ import {
   Shield,
   DollarSign
 } from 'lucide-react';
+import { Zap } from 'lucide-react';
 import { jobStudioService } from '../../services/jobStudioService';
 import type { JobPost } from '../../types/database';
 import { supabase } from '../../services/supabase';
@@ -36,6 +38,8 @@ export default function StudentJobs() {
   const [selectedWorkplace, setSelectedWorkplace] = useState<string>('all');
   const [selectedLevel, setSelectedLevel] = useState<string>('all');
   const [selectedJobForModal, setSelectedJobForModal] = useState<JobPost | null>(null);
+  const [diagnoseSkillGapJob, setDiagnoseSkillGapJob] = useState<JobPost | null>(null);
+  const [studentProjects, setStudentProjects] = useState<any[]>([]);
 
   // Thu thập kỹ năng của sinh viên hiện tại để tính toán % phù hợp cá nhân
   const activeCv = useMemo(() => cvService.getActiveCV(user?.id), [user]);
@@ -130,6 +134,12 @@ ${skillsList}`;
       }
     };
 
+    try {
+      const localProjectsRaw = localStorage.getItem('profilehub_projects') || localStorage.getItem(`projects_${user?.id}`);
+      if (localProjectsRaw) {
+        setStudentProjects(JSON.parse(localProjectsRaw));
+      }
+    } catch {}
     loadJobs();
     window.addEventListener('storage', loadJobs);
     window.addEventListener('focus', loadJobs);
@@ -580,6 +590,27 @@ ${skillsList}`;
                   </button>
 
                   <button
+                    onClick={() => setDiagnoseSkillGapJob(job)}
+                    style={{
+                      padding: '9px 16px',
+                      backgroundColor: '#fffbeb',
+                      color: '#b45309',
+                      border: '1px solid #fde68a',
+                      borderRadius: '8px',
+                      fontSize: '12.5px',
+                      fontWeight: 'bold',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      boxShadow: '0 1px 3px rgba(217, 119, 6, 0.1)'
+                    }}
+                  >
+                    <Zap size={15} style={{ color: '#d97706' }} />
+                    ⚡ Chẩn Đoán Skill-Gap & Lộ Trình
+                  </button>
+
+                  <button
                     onClick={() => handleApplyJob(job)}
                     disabled={isApplied}
                     style={{
@@ -644,6 +675,20 @@ ${skillsList}`;
         />
       )}
 
+      {/* Skill-Gap Diagnostic & Upgrade Recipes Modal */}
+      {diagnoseSkillGapJob && (
+        <SkillGapDiagnosticModal
+          isOpen={!!diagnoseSkillGapJob}
+          onClose={() => setDiagnoseSkillGapJob(null)}
+          job={diagnoseSkillGapJob}
+          studentSkills={candidateSkills}
+          studentProjects={studentProjects}
+          onGenerateTailoredCv={(targetJob) => {
+            const company = getRecruiterCompanyProfile(targetJob.recruiter_id);
+            handleOpenGenerateCvModal(targetJob, company.companyName);
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Sparkles, 
@@ -9,13 +9,13 @@ import {
   Briefcase, 
   UserCheck, 
   AlertCircle,
-  DollarSign
+  Tag,
+  ShieldCheck,
+  FolderKanban
 } from 'lucide-react';
 import { cvService, type ManagedCVItem, type StudentProfileData } from '../../services/cvService';
 import { useAuth } from '../../context/AuthProvider';
 import CvQuickViewModal from './CvQuickViewModal';
-import SalaryBenchmarkModal from '../student/SalaryBenchmarkModal';
-import { extractLevelFromJdOrTitle } from '../../services/salaryBenchmarkService';
 
 interface GenerateCvFromJdModalProps {
   isOpen: boolean;
@@ -109,8 +109,49 @@ export default function GenerateCvFromJdModal({
   const [newlyCreatedCv, setNewlyCreatedCv] = useState<ManagedCVItem | null>(null);
   const [aiNotes, setAiNotes] = useState<any>(null);
 
-  // Salary Benchmark Modal state
-  const [isSalaryModalOpen, setIsSalaryModalOpen] = useState(false);
+  // Real-time tech keyword extraction from JD
+  const extractedKeywords = useMemo(() => {
+    if (!jdText.trim()) return [];
+    const normalized = jdText.toLowerCase();
+    const techDictionary = [
+      'react', 'next.js', 'vue', 'angular', 'typescript', 'javascript', 'node.js', 'express', 'nestjs',
+      'python', 'django', 'fastapi', 'java', 'spring', 'c#', '.net', 'golang', 'rust',
+      'sql', 'postgresql', 'mysql', 'mongodb', 'redis', 'supabase', 'firebase',
+      'docker', 'kubernetes', 'aws', 'gcp', 'azure', 'git', 'ci/cd', 'rest api', 'graphql',
+      'tailwind', 'css', 'html', 'figma', 'ui/ux', 'agile', 'scrum', 'testing', 'jest'
+    ];
+    return techDictionary.filter(kw => normalized.includes(kw));
+  }, [jdText]);
+
+  const candidateSkills = useMemo(() => {
+    return (sourceData?.profile?.skills || []).map(s => s.toLowerCase());
+  }, [sourceData?.profile?.skills]);
+
+  const matchingKeywords = useMemo(() => {
+    return extractedKeywords.filter(kw => candidateSkills.some(s => s.includes(kw) || kw.includes(s)));
+  }, [extractedKeywords, candidateSkills]);
+
+  const missingKeywords = useMemo(() => {
+    return extractedKeywords.filter(kw => !candidateSkills.some(s => s.includes(kw) || kw.includes(s)));
+  }, [extractedKeywords, candidateSkills]);
+
+  // Tìm các đồ án liên quan nhất với JD
+  const prioritizedProjects = useMemo(() => {
+    if (!sourceData?.projects || sourceData.projects.length === 0) return [];
+    const normalized = jdText.toLowerCase();
+    return [...sourceData.projects]
+      .map(p => {
+        let score = 0;
+        const text = `${p.title} ${p.description || ''} ${(p.tags || []).join(' ')}`.toLowerCase();
+        extractedKeywords.forEach(kw => {
+          if (text.includes(kw)) score += 10;
+        });
+        return { project: p, score };
+      })
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 2)
+      .map(item => item.project);
+  }, [sourceData?.projects, jdText, extractedKeywords]);
 
   // Load student profile & projects on mount
   useEffect(() => {
@@ -350,19 +391,9 @@ export default function GenerateCvFromJdModal({
               <label className="block text-xs font-bold text-slate-800 dark:text-slate-200">
                 Nội dung mô tả công việc (Dán JD vào đây) <span className="text-rose-500">*</span>:
               </label>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setIsSalaryModalOpen(true)}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 font-bold text-[11px] border border-emerald-200 dark:border-emerald-800 transition shadow-xs cursor-pointer"
-                >
-                  <DollarSign className="w-3.5 h-3.5" />
-                  <span>Khảo Sát Lương JD Này</span>
-                </button>
-                <span className="text-[11px] text-slate-400 dark:text-slate-400">
-                  {jdText.length} ký tự
-                </span>
-              </div>
+              <span className="text-[11px] text-slate-400 dark:text-slate-400">
+                {jdText.length} ký tự
+              </span>
             </div>
             <textarea
               rows={7}
@@ -372,6 +403,51 @@ export default function GenerateCvFromJdModal({
               disabled={isGenerating}
               className="w-full p-3.5 bg-slate-50/80 dark:bg-[#090d16] border border-slate-200 dark:border-slate-700/80 rounded-2xl text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 font-mono transition leading-relaxed selection:bg-indigo-500 selection:text-white"
             />
+
+            {/* Live Tech Extraction & Match Breakdown */}
+            {extractedKeywords.length > 0 && (
+              <div className="mt-3 p-3.5 bg-slate-50 dark:bg-[#111728] border border-slate-200 dark:border-slate-800 rounded-xl space-y-2.5 animate-in fade-in duration-200 text-xs">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <div className="flex items-center gap-1.5 font-bold text-slate-800 dark:text-slate-200">
+                    <Tag className="w-3.5 h-3.5 text-indigo-500" />
+                    <span>Phân tích từ khóa JD tức thì:</span>
+                  </div>
+                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+                    Khớp {matchingKeywords.length}/{extractedKeywords.length} công nghệ ({Math.round((matchingKeywords.length / Math.max(extractedKeywords.length, 1)) * 100)}%)
+                  </span>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Đã khớp:</span>
+                  {matchingKeywords.length > 0 ? (
+                    matchingKeywords.map((kw, i) => (
+                      <span key={i} className="px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-medium text-[11px]">
+                        ✓ {kw}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-slate-400 italic text-[11px]">Chưa phát hiện từ khóa khớp trực tiếp</span>
+                  )}
+                  {missingKeywords.length > 0 && (
+                    <>
+                      <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 ml-2">JD cần thêm:</span>
+                      {missingKeywords.slice(0, 5).map((kw, i) => (
+                        <span key={i} className="px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 font-medium text-[11px]">
+                          + {kw}
+                        </span>
+                      ))}
+                    </>
+                  )}
+                </div>
+
+                {prioritizedProjects.length > 0 && (
+                  <div className="pt-2 border-t border-slate-200/60 dark:border-slate-800 flex items-center gap-1.5 text-slate-600 dark:text-slate-300 text-[11px]">
+                    <FolderKanban className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+                    <span><strong>Đồ án sẽ được đẩy lên đầu trang CV:</strong> {prioritizedProjects.map(p => p.title).join(' • ')}</span>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* AI Generation Live Progress */}
@@ -436,15 +512,6 @@ export default function GenerateCvFromJdModal({
 
       </div>
 
-      {/* Salary Benchmark Modal */}
-      {isSalaryModalOpen && (
-        <SalaryBenchmarkModal
-          isOpen={isSalaryModalOpen}
-          onClose={() => setIsSalaryModalOpen(false)}
-          initialRole={targetRole || 'Frontend ReactJS Developer'}
-          initialLevel={extractLevelFromJdOrTitle(jdText || targetRole)}
-        />
-      )}
     </div>
   );
 }

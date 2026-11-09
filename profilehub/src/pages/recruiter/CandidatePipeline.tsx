@@ -3,12 +3,25 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthProvider';
 import { supabase } from '../../services/supabase';
 import RecruiterFeedbackModal from '../../components/recruiter/RecruiterFeedbackModal';
-import { getSharedPipeline, saveSharedPipeline } from '../../utils/pipelineSync';
+import { 
+  getSharedPipeline, 
+  saveSharedPipeline, 
+  scheduleInterviewForCandidate, 
+  subscribeToPipelineEvents, 
+  sendBrowserNotification 
+} from '../../utils/pipelineSync';
 import { User, Edit3, MessageSquarePlus, Calendar, Clock, Video, MapPin, Trash2, FileText, ExternalLink, Mail, ShieldCheck, Brain, X, FolderOpen, GripVertical } from 'lucide-react';
 import { usePipelineDragDrop } from '../../hooks/usePipelineDragDrop';
 import { createOptimisticPipelineUpdate, rollbackPipelineUpdate } from '../../utils/pipelineDragDrop';
 import type { PipelineStage, CandidatePipelineItem } from '../../types/database';
 import CandidateDossierModal, { type DossierCandidate } from '../../components/recruiter/CandidateDossierModal';
+import IssueChallengeModal from '../../components/recruiter/IssueChallengeModal';
+import InterviewScorecardModal from '../../components/recruiter/InterviewScorecardModal';
+import ExecutiveEvaluationReportModal from '../../components/recruiter/ExecutiveEvaluationReportModal';
+import OfferLetterStudioModal from '../../components/recruiter/OfferLetterStudioModal';
+import { offerLetterService } from '../../services/offerLetterService';
+import { challengeScorecardService } from '../../services/challengeScorecardService';
+import { Eye, EyeOff, Award, Star, Terminal, GitPullRequest, Printer } from 'lucide-react';
 
 const STAGES: { id: PipelineStage; label: string; color: string; bg: string }[] = [
   { id: 'discovered', label: 'Ứng viên mới', color: '#64748b', bg: '#f1f5f9' },
@@ -32,6 +45,19 @@ export default function CandidatePipeline() {
   const [noteText, setNoteText] = useState('');
   const [feedbackCandidate, setFeedbackCandidate] = useState<{ id: string; full_name?: string; major?: string } | null>(null);
   const [selectedCandidateForCv, setSelectedCandidateForCv] = useState<CandidatePipelineItem | null>(null);
+  
+  // Chế Độ Sàng Lọc Ẩn Danh (Blind Screening) & Thử Thách Kỹ Thuật
+  const [isBlindScreening, setIsBlindScreening] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('profilehub_blind_screening_mode') === 'true';
+    } catch {
+      return false;
+    }
+  });
+  const [challengeCandidate, setChallengeCandidate] = useState<CandidatePipelineItem | null>(null);
+  const [scorecardCandidate, setScorecardCandidate] = useState<CandidatePipelineItem | null>(null);
+  const [dossierReportCandidate, setDossierReportCandidate] = useState<CandidatePipelineItem | null>(null);
+  const [offerStudioCandidate, setOfferStudioCandidate] = useState<CandidatePipelineItem | null>(null);
 
   // Kéo thả Kanban Hook
   const {
@@ -98,10 +124,29 @@ export default function CandidatePipeline() {
 
     window.addEventListener('storage', handleSync);
     window.addEventListener('focus', handleSync);
+    window.addEventListener('profilehub_offer_updated', handleSync);
+
+    const unsubscribeBroadcast = subscribeToPipelineEvents((event) => {
+      if (event.type === 'INTERVIEW_STATUS_UPDATED') {
+        const shared = getSharedPipeline(user?.id);
+        setPipeline(shared);
+        if (event.status === 'confirmed') {
+          sendBrowserNotification('ProfileHub - Ứng viên đã xác nhận!', {
+            body: `Ứng viên ${event.studentName || ''} đã đồng ý tham gia phỏng vấn vị trí ${event.jobTitle || ''}.`
+          });
+        } else if (event.status === 'reschedule_requested') {
+          sendBrowserNotification('ProfileHub - Yêu cầu dời lịch phỏng vấn', {
+            body: `Ứng viên ${event.studentName || ''} đề xuất lịch mới: ${event.interviewDate} lúc ${event.interviewTime}.`
+          });
+        }
+      }
+    });
 
     return () => {
       window.removeEventListener('storage', handleSync);
       window.removeEventListener('focus', handleSync);
+      window.removeEventListener('profilehub_offer_updated', handleSync);
+      unsubscribeBroadcast();
     };
   }, [user]);
 
@@ -185,21 +230,19 @@ export default function CandidatePipeline() {
 
   const handleSaveSchedule = () => {
     if (!scheduleItem) return;
-    const updated = pipeline.map(item =>
-      item.id === scheduleItem.id
-        ? {
-            ...item,
-            interview_date: scheduleDate,
-            interview_time: scheduleTime,
-            meeting_link: scheduleMeetingLink,
-            interview_location: scheduleLocation,
-            interview_status: 'pending_student' as const,
-            stage: 'interview' as PipelineStage,
-            updated_at: new Date().toISOString()
-          }
-        : item
+    const updated = scheduleInterviewForCandidate(
+      scheduleItem.id,
+      {
+        interview_date: scheduleDate,
+        interview_time: scheduleTime,
+        meeting_link: scheduleMeetingLink,
+        interview_location: scheduleLocation,
+        company_name: (user?.user_metadata?.company_name as string) || 'Doanh nghiệp tuyển dụng',
+        job_title: scheduleItem.job?.title || 'Vị trí thực tập / Fresher'
+      },
+      user?.id
     );
-    savePipelineToStorage(updated);
+    setPipeline(updated);
     setScheduleItem(null);
   };
 
@@ -239,7 +282,8 @@ export default function CandidatePipeline() {
 
   return (
     <div style={{ padding: '30px', width: '100%', boxSizing: 'border-box' }}>
-      <div style={{ marginBottom: '25px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px', flexWrap: 'wrap', gap: '15px' }}>
+        <div>
           <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 8px 0' }}>
             📊 Pipeline Quản Lý Ứng Viên & Lịch Phỏng Vấn (2 Chiều)
           </h1>
@@ -247,6 +291,46 @@ export default function CandidatePipeline() {
             Mời phỏng vấn, theo dõi trạng thái xác nhận từ sinh viên realtime và gửi đánh giá năng lực.
           </p>
         </div>
+
+        {/* Công Tắc Sàng Lọc Ẩn Danh (Blind Screening Mode) */}
+        <button
+          type="button"
+          onClick={() => {
+            const next = !isBlindScreening;
+            setIsBlindScreening(next);
+            try {
+              localStorage.setItem('profilehub_blind_screening_mode', String(next));
+            } catch {}
+          }}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '9px 16px',
+            borderRadius: '12px',
+            fontSize: '12.5px',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            transition: 'all 0.2s',
+            border: isBlindScreening ? '1.5px solid #6366f1' : '1px solid #cbd5e1',
+            backgroundColor: isBlindScreening ? '#eef2ff' : '#ffffff',
+            color: isBlindScreening ? '#4338ca' : '#475569',
+            boxShadow: isBlindScreening ? '0 2px 8px rgba(99, 102, 241, 0.2)' : '0 1px 3px rgba(0,0,0,0.05)'
+          }}
+        >
+          {isBlindScreening ? (
+            <>
+              <EyeOff size={16} color="#4f46e5" />
+              <span>Chế Độ Ẩn Danh: ĐANG BẬT</span>
+            </>
+          ) : (
+            <>
+              <Eye size={16} color="#64748b" />
+              <span>Bật Sàng Lọc Ẩn Danh (Blind)</span>
+            </>
+          )}
+        </button>
+      </div>
 
         {loading ? (
           <div style={{ textAlign: 'center', padding: '50px', color: '#64748b' }}>Đang tải pipeline...</div>
@@ -294,7 +378,12 @@ export default function CandidatePipeline() {
                         Chưa có ứng viên
                       </div>
                     ) : (
-                      items.map(item => (
+                      items.map(item => {
+                        const blindInfo = challengeScorecardService.getBlindCandidateInfo(item.student_id || item.id);
+                        const displayName = isBlindScreening ? blindInfo.anonymousName : (item.student?.full_name || 'Ứng viên');
+                        const displayRole = isBlindScreening ? blindInfo.anonymousRole : (item.student?.major || 'Sinh viên');
+
+                        return (
                         <div
                           key={item.id}
                           draggable={true}
@@ -313,16 +402,27 @@ export default function CandidatePipeline() {
                         >
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
                             <GripVertical size={16} color="#94a3b8" style={{ cursor: 'grab', flexShrink: 0 }} />
-                            <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1d4ed8' }}>
-                              <User size={18} />
-                            </div>
-                            <div>
-                              <div style={{ fontWeight: 'bold', fontSize: '14px', color: '#0f172a', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                {item.student?.full_name || 'Ứng viên'}
+                            {isBlindScreening ? (
+                              <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#eef2ff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4f46e5' }} title="Ẩn danh vì Blind Screening Mode">
+                                <EyeOff size={18} />
                               </div>
-                              <div style={{ fontSize: '12px', color: '#64748b' }}>{item.student?.major || 'Sinh viên'}</div>
+                            ) : (
+                              <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1d4ed8' }}>
+                                <User size={18} />
+                              </div>
+                            )}
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ fontWeight: 'bold', fontSize: '14px', color: '#0f172a', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{displayName}</span>
+                                {isBlindScreening && (
+                                  <span style={{ fontSize: '9px', backgroundColor: '#e0e7ff', color: '#4338ca', padding: '1px 5px', borderRadius: '4px', fontWeight: 'bold', flexShrink: 0 }}>
+                                    BLIND
+                                  </span>
+                                )}
+                              </div>
+                              <div style={{ fontSize: '12px', color: '#64748b' }}>{displayRole}</div>
                               <div style={{ fontSize: '11px', color: '#8b5cf6', fontWeight: 'bold', backgroundColor: '#f5f3ff', padding: '2px 6px', borderRadius: '4px', marginTop: '4px', display: 'inline-block' }}>
-                                ✨ AI Match Score: {calculateMatchScore(item.student?.skills)}%
+                                🎯 Độ tương thích JD: {calculateMatchScore(item.student?.skills)}%
                               </div>
                             </div>
                           </div>
@@ -437,6 +537,67 @@ export default function CandidatePipeline() {
                             <FolderOpen size={13} color="#d97706" /> 📁 Mở Cặp Hồ Sơ (CV & Thư)
                           </button>
 
+                          {/* Take-Home Challenge Badge */}
+                          {item.take_home_challenge && (
+                            <div style={{
+                              marginBottom: '8px',
+                              padding: '6px 8px',
+                              borderRadius: '6px',
+                              fontSize: '11px',
+                              backgroundColor: item.take_home_challenge.status === 'submitted' ? '#ecfdf5' : '#fffbeb',
+                              border: item.take_home_challenge.status === 'submitted' ? '1px solid #a7f3d0' : '1px solid #fde68a'
+                            }}>
+                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontWeight: 'bold', color: item.take_home_challenge.status === 'submitted' ? '#065f46' : '#92400e' }}>
+                                <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                  <Terminal size={12} /> {item.take_home_challenge.title}
+                                </span>
+                                <span>
+                                  {item.take_home_challenge.status === 'submitted' ? '✅ Đã nộp PR' : '⏱️ Đang làm'}
+                                </span>
+                              </div>
+                              {item.take_home_challenge.submission?.pullRequestUrl && (
+                                <a
+                                  href={item.take_home_challenge.submission.pullRequestUrl}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', marginTop: '4px', color: '#047857', textDecoration: 'none', fontWeight: 'bold', fontSize: '10.5px' }}
+                                >
+                                  <GitPullRequest size={12} /> Xem GitHub PR
+                                </a>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Scorecard Consensus Badge */}
+                          {item.scorecards && item.scorecards.length > 0 && (() => {
+                            const consensus = challengeScorecardService.calculateConsensus(item.scorecards);
+                            if (!consensus || consensus.totalInterviews === 0) return null;
+                            const isStrong = consensus.recommendation === 'strong_hire';
+                            const isHire = consensus.recommendation === 'hire';
+                            const color = isStrong ? '#059669' : isHire ? '#2563eb' : '#d97706';
+                            const bg = isStrong ? '#ecfdf5' : isHire ? '#eff6ff' : '#fffbeb';
+                            const recLabel = isStrong ? 'Strong Hire' : isHire ? 'Hire' : consensus.recommendation === 'no_hire' ? 'No Hire' : 'Neutral';
+                            return (
+                              <div style={{
+                                marginBottom: '8px',
+                                padding: '5px 8px',
+                                borderRadius: '6px',
+                                backgroundColor: bg,
+                                border: `1px solid ${color}40`,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between'
+                              }}>
+                                <span style={{ fontSize: '11px', fontWeight: 'bold', color, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                  <Award size={13} /> {consensus.averageScore}/100 • {recLabel}
+                                </span>
+                                <span style={{ fontSize: '10px', color: '#64748b' }}>
+                                  ({consensus.totalInterviews} đánh giá)
+                                </span>
+                              </div>
+                            );
+                          })()}
+
                           {/* Actions */}
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '6px', paddingTop: '6px', borderTop: '1px solid #f1f5f9', gap: '6px', flexWrap: 'wrap' }}>
                             <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
@@ -453,6 +614,38 @@ export default function CandidatePipeline() {
                               >
                                 <Calendar size={12} /> Hẹn lịch
                               </button>
+
+                              <button
+                                onClick={() => setChallengeCandidate(item)}
+                                title="Giao thử thách kỹ thuật gắn đồ án Take-Home Challenge"
+                                style={{ background: 'none', border: 'none', color: '#0d9488', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '3px', padding: 0, fontWeight: 'bold' }}
+                              >
+                                <Terminal size={12} /> Giao test
+                              </button>
+
+                              <button
+                                onClick={() => setScorecardCandidate(item)}
+                                title="Mở bảng chấm điểm phỏng vấn chuẩn hóa Scorecard"
+                                style={{ background: 'none', border: 'none', color: '#ea580c', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '3px', padding: 0, fontWeight: 'bold' }}
+                              >
+                                <Award size={12} /> Scorecard
+                              </button>
+
+                              <button
+                                onClick={() => setDossierReportCandidate(item)}
+                                title="Xuất hồ sơ đánh giá phỏng vấn điều hành (A4 PDF) trình Ban Giám Đốc"
+                                style={{ background: 'none', border: 'none', color: '#4338ca', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '3px', padding: 0, fontWeight: 'bold' }}
+                              >
+                                <Printer size={12} /> Báo cáo
+                              </button>
+
+                              <button
+                                onClick={() => setOfferStudioCandidate(item)}
+                                title="Soạn và phát hành thư mời nhận việc tương tác (Offer Letter)"
+                                style={{ background: 'none', border: 'none', color: '#059669', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '3px', padding: 0, fontWeight: 'bold' }}
+                              >
+                                <Mail size={12} /> Offer
+                              </button>
                             </div>
 
                             <select
@@ -466,7 +659,8 @@ export default function CandidatePipeline() {
                             </select>
                           </div>
                         </div>
-                      ))
+                        );
+                      })
                     )}
                   </div>
                 </div>
@@ -625,6 +819,59 @@ export default function CandidatePipeline() {
             }
           }}
         />
+
+        {/* Issue Take-Home Challenge Modal */}
+        {challengeCandidate && (
+          <IssueChallengeModal
+            isOpen={Boolean(challengeCandidate)}
+            onClose={() => setChallengeCandidate(null)}
+            candidate={challengeCandidate}
+            recruiterId={user?.id || 'recruiter-me'}
+            onChallengeIssued={(newChallenge) => {
+              setPipeline(prev => prev.map(p => p.id === challengeCandidate.id ? { ...p, take_home_challenge: newChallenge } : p));
+              setChallengeCandidate(null);
+            }}
+          />
+        )}
+
+        {/* Interview Scorecard Modal */}
+        {scorecardCandidate && (
+          <InterviewScorecardModal
+            isOpen={Boolean(scorecardCandidate)}
+            onClose={() => setScorecardCandidate(null)}
+            candidate={scorecardCandidate}
+            interviewerName={user?.user_metadata?.full_name || 'Tech Lead'}
+            interviewerRole="Tech Lead"
+            onScorecardSaved={(newScorecard) => {
+              setPipeline(prev => prev.map(p => p.id === scorecardCandidate.id ? { ...p, scorecards: [...(p.scorecards || []), newScorecard] } : p));
+              setScorecardCandidate(null);
+            }}
+            onOpenReport={(cand) => setDossierReportCandidate(cand)}
+          />
+        )}
+
+        {/* Executive Evaluation Report (A4 Print / PDF) Modal */}
+        {dossierReportCandidate && (
+          <ExecutiveEvaluationReportModal
+            isOpen={Boolean(dossierReportCandidate)}
+            onClose={() => setDossierReportCandidate(null)}
+            candidate={dossierReportCandidate}
+            isBlind={isBlindScreening}
+            companyName={(user?.user_metadata?.company_name as string) || 'Doanh nghiệp tuyển dụng ProfileHub'}
+          />
+        )}
+
+        {/* Offer Letter Studio Modal (T011 - T014) */}
+        {offerStudioCandidate && (
+          <OfferLetterStudioModal
+            candidate={offerStudioCandidate}
+            onClose={() => setOfferStudioCandidate(null)}
+            onOfferIssued={(newOffer) => {
+              // Cập nhật lại danh sách pipeline
+              setPipeline(getSharedPipeline());
+            }}
+          />
+        )}
       </div>
   );
 }

@@ -3,11 +3,19 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthProvider';
 import type { UserRole, CandidatePipelineItem } from '../../types/database';
 import { 
-  Menu, X, Sparkles, Bell, ChevronDown, LogOut, 
+  Menu, X, Sparkles, Bell, BellRing, ChevronDown, LogOut, 
   User, CheckCircle2, Video, Globe, Building2, Briefcase, Plus
 } from 'lucide-react';
 import { getHeaderNavLinks, getPendingInterviewNotificationCount } from './headerNavigation';
-import { getSharedPipeline, updateInterviewStatusByStudent } from '../../utils/pipelineSync';
+import { 
+  getSharedPipeline, 
+  updateInterviewStatusByStudent,
+  isNotificationSupported,
+  getNotificationPermission,
+  requestBrowserNotificationPermission,
+  sendBrowserNotification,
+  subscribeToPipelineEvents
+} from '../../utils/pipelineSync';
 import CreateCvFlowModal from '../cv/CreateCvFlowModal';
 import ThemeToggleSwitch from '../common/ThemeToggleSwitch';
 
@@ -26,7 +34,19 @@ export default function HeaderBar() {
   const profileRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
 
-  // Lắng nghe dữ liệu pipeline đồng bộ thời gian thực
+  const [notificationPermission, setNotificationPermission] = useState<NotificationPermission | 'unsupported'>(() => getNotificationPermission());
+
+  const handleRequestPermission = async () => {
+    const perm = await requestBrowserNotificationPermission();
+    setNotificationPermission(perm);
+    if (perm === 'granted') {
+      sendBrowserNotification('ProfileHub - Đã kích hoạt thông báo!', {
+        body: 'Bạn sẽ nhận được thông báo tức thời khi có lịch phỏng vấn mới.'
+      });
+    }
+  };
+
+  // Lắng nghe dữ liệu pipeline đồng bộ thời gian thực và thông báo đẩy
   useEffect(() => {
     const loadPipeline = () => {
       const data = getSharedPipeline(user?.id);
@@ -36,8 +56,42 @@ export default function HeaderBar() {
 
     const handleStorage = () => loadPipeline();
     window.addEventListener('storage', handleStorage);
-    return () => window.removeEventListener('storage', handleStorage);
-  }, [user?.id]);
+
+    const unsubscribe = subscribeToPipelineEvents((event) => {
+      loadPipeline();
+
+      if (event.type === 'INTERVIEW_SCHEDULED') {
+        if (userRole === 'student' || !userRole) {
+          sendBrowserNotification('ProfileHub - Lời mời phỏng vấn mới!', {
+            body: `${event.companyName || 'Nhà tuyển dụng'} đã gửi lịch phỏng vấn vị trí ${event.jobTitle || 'thực tập'} vào ngày ${event.interviewDate} lúc ${event.interviewTime}.`
+          });
+        }
+      } else if (event.type === 'INBOUND_INVITE_RECEIVED') {
+        if (userRole === 'student' || !userRole) {
+          sendBrowserNotification('ProfileHub - Lời mời phỏng vấn trực tiếp!', {
+            body: `${event.companyName || 'Doanh nghiệp'} đã xem đồ án và gửi lời mời phỏng vấn vị trí ${event.jobTitle || 'thực tập'}!`
+          });
+        }
+      } else if (event.type === 'INTERVIEW_STATUS_UPDATED') {
+        if (userRole === 'recruiter') {
+          if (event.status === 'confirmed') {
+            sendBrowserNotification('ProfileHub - Ứng viên xác nhận!', {
+              body: `Ứng viên ${event.studentName || ''} đã đồng ý tham gia phỏng vấn vị trí ${event.jobTitle || ''}!`
+            });
+          } else if (event.status === 'reschedule_requested') {
+            sendBrowserNotification('ProfileHub - Đề xuất đổi lịch!', {
+              body: `Ứng viên ${event.studentName || ''} đề xuất lịch mới: ${event.interviewDate || ''} lúc ${event.interviewTime || ''}.`
+            });
+          }
+        }
+      }
+    });
+
+    return () => {
+      window.removeEventListener('storage', handleStorage);
+      unsubscribe();
+    };
+  }, [user?.id, userRole]);
 
   // Đóng dropdown khi click ra ngoài
   useEffect(() => {
@@ -223,6 +277,29 @@ export default function HeaderBar() {
                           {scheduledInterviews.length} lịch hẹn
                         </span>
                       </div>
+
+                      {/* Trạng thái Quyền Thông Báo Đẩy Trình Duyệt */}
+                      {notificationPermission === 'default' && (
+                        <div className="mt-2.5 p-2 rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-950/40 dark:to-purple-950/40 border border-indigo-100 dark:border-indigo-900/60 flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-1.5 text-[11px] text-indigo-900 dark:text-indigo-200">
+                            <BellRing className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 shrink-0" />
+                            <span>Bật thông báo đẩy</span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={handleRequestPermission}
+                            className="text-[10px] font-bold px-2 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition active:scale-95 cursor-pointer shrink-0"
+                          >
+                            Bật ngay
+                          </button>
+                        </div>
+                      )}
+                      {notificationPermission === 'granted' && (
+                        <div className="mt-2 px-2 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/40 flex items-center gap-1.5 text-[10.5px] text-emerald-700 dark:text-emerald-300">
+                          <CheckCircle2 className="w-3 h-3 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                          <span>Đã kích hoạt thông báo đẩy</span>
+                        </div>
+                      )}
 
                       <div className="mt-2 space-y-2 max-h-64 overflow-y-auto">
                         {scheduledInterviews.length === 0 ? (

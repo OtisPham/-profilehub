@@ -7,6 +7,9 @@ import { getProjectBadgeVariant } from '../../services/projectBadgeService';
 import ProjectFilePreviewHeader from '../../components/projects/ProjectFilePreviewHeader';
 import ProjectQRCodeModal from '../../components/student/ProjectQRCodeModal';
 import ImportCvToProfileModal from '../../components/student/ImportCvToProfileModal';
+import CodeHealthDiagnosticModal from '../../components/student/CodeHealthDiagnosticModal';
+import { codeHealthService } from '../../services/codeHealthService';
+import { ShieldCheck } from 'lucide-react';
 import type { VerificationStatus } from '../../types/database';
 import { 
   Building2, Code2, GraduationCap, Shield, Search, Plus, 
@@ -44,6 +47,7 @@ export default function MyProjects() {
   
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [qrModalProject, setQrModalProject] = useState<Project | null>(null);
+  const [codeHealthProject, setCodeHealthProject] = useState<Project | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isImportCvModalOpen, setIsImportCvModalOpen] = useState(false);
   const [isCopiedShowcase, setIsCopiedShowcase] = useState(false);
@@ -461,6 +465,28 @@ export default function MyProjects() {
                           />
                         );
                       })()}
+
+                      {(() => {
+                        const healthReport = codeHealthService.getStoredCodeHealthReport(proj.id);
+                        if (!healthReport) return null;
+                        return (
+                          <span 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setCodeHealthProject(proj);
+                            }}
+                            title={`Điểm kiểm định: ${healthReport.overallScore}/100. Bấm để xem chi tiết.`}
+                            className={`inline-flex items-center gap-1 text-[10.5px] font-bold px-2 py-0.5 rounded-md cursor-pointer transition shadow-2xs ${
+                              healthReport.tier.includes('A+') 
+                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100'
+                                : 'bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100'
+                            }`}
+                          >
+                            <ShieldCheck className="w-3 h-3 text-emerald-600" />
+                            <span>{healthReport.tier}</span>
+                          </span>
+                        );
+                      })()}
                     </div>
 
                     {/* Project Title */}
@@ -583,6 +609,15 @@ export default function MyProjects() {
                         </a>
                       )}
 
+                      <button
+                        onClick={() => setCodeHealthProject(proj)}
+                        title="Kiểm định độ sạch mã nguồn và cấp huy hiệu GitHub"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-[11px] border border-indigo-200/60 transition shadow-2xs"
+                      >
+                        <ShieldCheck className="w-3 h-3 text-indigo-600" />
+                        <span>Kiểm Định Code</span>
+                      </button>
+
                       {/* Management Action Buttons */}
                       <div className="flex items-center gap-1 ml-auto">
                         <button
@@ -660,6 +695,15 @@ export default function MyProjects() {
           onProfileUpdated={() => {
             fetchProjects();
           }}
+        />
+      )}
+
+      {/* Code Health & Architecture Diagnostic Modal */}
+      {codeHealthProject && (
+        <CodeHealthDiagnosticModal
+          isOpen={!!codeHealthProject}
+          onClose={() => setCodeHealthProject(null)}
+          project={codeHealthProject}
         />
       )}
 

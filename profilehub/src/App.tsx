@@ -9,14 +9,13 @@ import Logout from './pages/auth/Logout';
 import HomePage from './pages/public/HomePage';
 import PublicShowcase from './pages/public/PublicShowcase';
 import PublicVerificationView from './pages/public/PublicVerificationView';
+import PublicOfferPortal from './pages/public/PublicOfferPortal';
 
 import Dashboard from './pages/student/Dashboard';
 import MyProfile from './pages/student/MyProfile';
-import Achievements from './pages/student/MyAchievements';
 import Projects from './pages/student/MyProjects';
 import CVBuilder from './pages/student/CVBuilder';
 import CVManagementPage from './pages/student/CVManagementPage';
-import Certificates from './pages/student/Certificates';
 import StudentJobs from './pages/student/StudentJobs';
 
 import RecruiterDashboard from './pages/recruiter/RecruiterDashboard';
@@ -24,7 +23,6 @@ import CandidateSearch from './pages/recruiter/CandidateSearch';
 import CandidatePipeline from './pages/recruiter/CandidatePipeline';
 import SavedCandidates from './pages/recruiter/SavedCandidates';
 import JobManagement from './pages/recruiter/JobManagement';
-import AIRecruitmentAssistant from './pages/recruiter/AIRecruitmentAssistant';
 import RecruiterProfile from './pages/recruiter/RecruiterProfile';
 
 import MainLayout from './components/layout/MainLayout';
@@ -97,6 +95,10 @@ function App() {
       {/* Cổng tra cứu bảo chứng đồ án công khai & QR Proof (Độc lập, không yêu cầu đăng nhập) */}
       <Route path="/verify/:code" element={<PublicVerificationView />} />
 
+      {/* Cổng chào đón nhận việc tương tác công khai & Ký số Offer (Public Route độc lập) */}
+      <Route path="/offer/:token" element={<PublicOfferPortal />} />
+      <Route path="/offer/:token/preview" element={<PublicOfferPortal />} />
+
       {/* Layout SaaS toàn cục có HeaderBar kính mờ & Footer */}
       <Route element={<MainLayout />}>
         {/* 1. Trang chủ Landing Page chuẩn Consumer SaaS (Công khai) */}
@@ -151,22 +153,8 @@ function App() {
         />
         <Route path="/profile" element={<Navigate to="/my-profile" replace />} />
 
-        <Route 
-          path="/certificates" 
-          element={
-            <ProtectedRoute allowedRoles={['student']}>
-              <Certificates />
-            </ProtectedRoute>
-          } 
-        />
-        <Route 
-          path="/achievements" 
-          element={
-            <ProtectedRoute allowedRoles={['student']}>
-              <Achievements />
-            </ProtectedRoute>
-          } 
-        />
+        <Route path="/certificates" element={<Navigate to="/my-profile" replace />} />
+        <Route path="/achievements" element={<Navigate to="/my-profile" replace />} />
         <Route 
           path="/student/jobs" 
           element={
@@ -226,14 +214,7 @@ function App() {
             </ProtectedRoute>
           } 
         />
-        <Route 
-          path="/recruiter/ai-assistant" 
-          element={
-            <ProtectedRoute allowedRoles={['recruiter']}>
-              <AIRecruitmentAssistant />
-            </ProtectedRoute>
-          } 
-        />
+        <Route path="/recruiter/ai-assistant" element={<Navigate to="/recruiter/jobs" replace />} />
       </Route>
 
       {/* 404 Route */}

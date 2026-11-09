@@ -117,4 +117,18 @@ describe('Cổng Tra Cứu Bảo Chứng Đồ Án (Public Verification Gateway 
     });
     expect(isTampered).toBe(false);
   });
+
+  it('TC-VER-07: getPublicShareUrls tạo link chia sẻ LinkedIn và Markdown Badge hợp lệ', () => {
+    const urls = verificationService.getPublicShareUrls(
+      'PH-VER-A8B9C2',
+      'Hệ Thống Phân Tích Dữ Liệu Real-time',
+      'Nguyễn Văn A'
+    );
+
+    expect(urls.verifyUrl).toContain('/verify/PH-VER-A8B9C2');
+    expect(urls.linkedInUrl).toContain('linkedin.com/sharing/share-offsite');
+    expect(urls.linkedInUrl).toContain(encodeURIComponent(urls.verifyUrl));
+    expect(urls.markdownBadge).toContain('img.shields.io/badge/ProfileHub-Verified_Project-10b981');
+    expect(urls.markdownBadge).toContain(urls.verifyUrl);
+  });
 });
