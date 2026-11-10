@@ -29,6 +29,29 @@ import RecruiterProfile from './pages/recruiter/RecruiterProfile';
 import MainLayout from './components/layout/MainLayout';
 
 /**
+ * Điều hướng thông minh cho trang chủ (Smart Home Route):
+ * - Khách truy cập (chưa đăng nhập): Hiển thị Landing Page giới thiệu nền tảng với đồ họa 3D sống động.
+ * - Thành viên đã đăng nhập: Tự động điều hướng vào Bảng tin nghề nghiệp (/feed) để cập nhật tin mới tức thì.
+ */
+function SmartHomeRoute() {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-[#0c101c]">
+        <div className="w-8 h-8 border-3 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (user) {
+    return <Navigate to="/feed" replace />;
+  }
+
+  return <HomePage />;
+}
+
+/**
  * Component bảo vệ tuyến đường nội bộ - Kích hoạt luồng bắt buộc đăng nhập (Login-First Architecture)
  * (updateui.md Section 1.1 & Section 5)
  */
@@ -102,10 +125,11 @@ function App() {
 
       {/* Layout SaaS toàn cục có HeaderBar kính mờ & Footer */}
       <Route element={<MainLayout />}>
-        {/* 1. Trang chủ Landing Page chuẩn Consumer SaaS (Công khai) */}
-        <Route path="/" element={<HomePage />} />
+        {/* 1. Trang chủ thông minh: Khách -> Landing Page 3D; Đã đăng nhập -> /feed */}
+        <Route path="/" element={<SmartHomeRoute />} />
+        <Route path="/landing" element={<HomePage />} />
 
-        {/* 1.1. Bảng tin Mạng Xã Hội Nghề Nghiệp & Đồ Án Thực Chiến (Công khai) */}
+        {/* 1.1. Bảng tin Mạng Xã Hội Nghề Nghiệp & Đồ Án Thực Chiến */}
         <Route path="/feed" element={<CommunityFeedPage />} />
         <Route path="/community" element={<CommunityFeedPage />} />
 

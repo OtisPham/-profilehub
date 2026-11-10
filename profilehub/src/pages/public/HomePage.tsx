@@ -3,9 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { 
   Sparkles, ArrowRight, Github, ShieldCheck, CheckCircle2, 
   XCircle, FileText, QrCode, Laptop, Code2, Award, Zap,
-  ExternalLink, Layers, ChevronRight, Briefcase, Users, MessageSquare, Flame
+  ExternalLink, Layers, ChevronRight, Briefcase, Users, MessageSquare, Flame,
+  Cpu, Box
 } from 'lucide-react';
 import { CORE_PILLARS, BEFORE_AFTER_COMPARISON, TRUST_METRICS } from './homePageData';
+import Hero3DVisual from '../../components/3d/Hero3DVisual';
+import Interactive3DTiltCard from '../../components/3d/Interactive3DTiltCard';
 
 const DEMO_PALETTES = [
   { id: 'indigo', name: 'Tech Indigo', hex: '#4f46e5', badgeBg: 'bg-indigo-50 dark:bg-indigo-950/60', textClass: 'text-indigo-600 dark:text-indigo-400' },
@@ -35,92 +38,140 @@ export default function HomePage() {
   return (
     <div className="w-full bg-slate-50/60 dark:bg-[#090d16] font-sans text-slate-900 dark:text-slate-100 selection:bg-indigo-100 dark:selection:bg-indigo-950 selection:text-indigo-900 dark:selection:text-indigo-200 transition-colors duration-200">
       
-      {/* 1. HERO SECTION */}
-      <section className="relative pt-12 pb-20 sm:pt-20 sm:pb-28 overflow-hidden">
+      {/* 1. HERO SECTION WITH INTERACTIVE 3D HOLOGRAPHIC VISUAL */}
+      <section className="relative pt-8 pb-16 sm:pt-16 sm:pb-24 overflow-hidden">
         {/* Background Mesh Gradients */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[500px] pointer-events-none -z-10">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] pointer-events-none -z-10">
           <div className="absolute top-10 left-1/4 w-96 h-96 bg-blue-300/20 dark:bg-blue-600/10 rounded-full blur-3xl" />
           <div className="absolute top-20 right-1/4 w-96 h-96 bg-indigo-300/20 dark:bg-indigo-600/10 rounded-full blur-3xl" />
           <div className="absolute top-40 left-1/2 -translate-x-1/2 w-[600px] h-64 bg-violet-200/20 dark:bg-violet-600/10 rounded-full blur-3xl" />
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          {/* Badge thông báo sản phẩm */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800/80 text-indigo-700 dark:text-indigo-300 text-xs font-bold mb-8 shadow-2xs hover:bg-indigo-100/70 dark:hover:bg-indigo-900/60 transition cursor-default">
-            <span className="flex h-2 w-2 relative">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-600"></span>
-            </span>
-            <span>ProfileHub v1.0 — Nền tảng tạo CV dựa trên bằng chứng & đồ án thực chiến</span>
-          </div>
-
-          {/* Tiêu đề chính (Headline) */}
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-900 dark:text-white max-w-5xl mx-auto leading-[1.15]">
-            Xây Dựng Thương Hiệu Nghề Nghiệp Dựa Trên{' '}
-            <span className="bg-gradient-to-r from-blue-700 via-indigo-600 to-violet-600 dark:from-blue-400 dark:via-indigo-300 dark:to-violet-400 bg-clip-text text-transparent">
-              Bằng Chứng Thực Chiến
-            </span>
-          </h1>
-
-          {/* Mô tả phụ (Subheadline) */}
-          <p className="mt-6 text-base sm:text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed">
-            Tuyệt đối không bịa số liệu ảo. Bóc tách 1-click từ GitHub Repo, chuẩn hóa câu văn STAR kỹ thuật, 
-            khống chế vừa vặn 1 trang A4 và trang bị bản lĩnh phòng thủ trước Tech Lead.
-          </p>
-
-          {/* Cụm nút hành động chính (Triple Action CTAs) */}
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3.5">
-            <Link
-              to="/cv-management"
-              className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-bold text-sm shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/35 transition-all flex items-center justify-center gap-2 group active:scale-95"
-            >
-              <Sparkles className="w-4 h-4 text-blue-200 group-hover:rotate-12 transition-transform" />
-              <span>Bắt Đầu Tạo CV — Miễn Phí</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-            </Link>
-
-            <Link
-              to="/feed"
-              className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-indigo-50 dark:bg-indigo-950/70 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 font-bold text-sm border border-indigo-200/80 dark:border-indigo-800/80 shadow-2xs transition-all flex items-center justify-center gap-2 active:scale-95"
-            >
-              <Briefcase className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-              <span>Dòng Tin Việc Làm & Đồ Án</span>
-            </Link>
-
-            <Link
-              to="/showcase"
-              className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-white dark:bg-[#111728] hover:bg-slate-50 dark:hover:bg-[#161f36] text-slate-700 dark:text-slate-200 font-bold text-sm border border-slate-200 dark:border-slate-800 shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-all flex items-center justify-center gap-2 active:scale-95"
-            >
-              <Github className="w-4 h-4 text-slate-800 dark:text-slate-200" />
-              <span>Showcase Đồ Án</span>
-            </Link>
-          </div>
-
-          {/* Dải cam kết (Trust Metrics Bar) */}
-          <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
-            {TRUST_METRICS.map((metric) => (
-              <div 
-                key={metric.label}
-                className="p-4 rounded-2xl bg-white/80 dark:bg-[#111728]/80 backdrop-blur-xs border border-slate-200/80 dark:border-slate-800 shadow-2xs text-left transition-colors"
-              >
-                <div className="text-xl sm:text-2xl font-extrabold text-indigo-700 dark:text-indigo-400">
-                  {metric.value}
-                </div>
-                <div className="text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5">
-                  {metric.label}
-                </div>
-                <div className="text-[11px] text-slate-600 dark:text-slate-400 mt-1 line-clamp-2">
-                  {metric.subtext}
-                </div>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            
+            {/* Cột Trái: Tiêu Đề, Giá Trị & Nút Hành Động (7 Cột) */}
+            <div className="lg:col-span-7 text-left space-y-6">
+              
+              {/* Badge thông báo sản phẩm 3D */}
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800/80 text-indigo-700 dark:text-indigo-300 text-xs font-bold shadow-2xs hover:bg-indigo-100/70 dark:hover:bg-indigo-900/60 transition cursor-default">
+                <span className="flex h-2 w-2 relative">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-600"></span>
+                </span>
+                <span>ProfileHub v1.0 — 3D Evidence & Career Platform</span>
               </div>
-            ))}
+
+              {/* Tiêu đề chính (Headline) */}
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.15]">
+                Xây Dựng Thương Hiệu Nghề Nghiệp Dựa Trên{' '}
+                <span className="bg-gradient-to-r from-blue-700 via-indigo-600 to-violet-600 dark:from-blue-400 dark:via-indigo-300 dark:to-violet-400 bg-clip-text text-transparent">
+                  Bằng Chứng Thực Chiến
+                </span>
+              </h1>
+
+              {/* Mô tả phụ (Subheadline) */}
+              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">
+                Tuyệt đối không bịa số liệu ảo. Bóc tách 1-click từ GitHub Repo, chuẩn hóa câu văn STAR kỹ thuật, 
+                khống chế vừa vặn 1 trang A4 và trang bị bản lĩnh phòng thủ trước Tech Lead.
+              </p>
+
+              {/* Cụm nút hành động chính (Triple Action CTAs) */}
+              <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                <Link
+                  to="/cv-management"
+                  className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-bold text-xs sm:text-sm shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/35 transition-all flex items-center justify-center gap-2 group active:scale-95"
+                >
+                  <Sparkles className="w-4 h-4 text-blue-200 group-hover:rotate-12 transition-transform" />
+                  <span>Bắt Đầu Tạo CV — Miễn Phí</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </Link>
+
+                <Link
+                  to="/feed"
+                  className="px-5 py-3.5 rounded-2xl bg-indigo-50 dark:bg-indigo-950/70 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 font-bold text-xs sm:text-sm border border-indigo-200/80 dark:border-indigo-800/80 shadow-2xs transition-all flex items-center justify-center gap-2 active:scale-95"
+                >
+                  <Briefcase className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                  <span>Dòng Tin Việc Làm & Đồ Án</span>
+                </Link>
+
+                <Link
+                  to="/showcase"
+                  className="px-5 py-3.5 rounded-2xl bg-white dark:bg-[#111728] hover:bg-slate-50 dark:hover:bg-[#161f36] text-slate-700 dark:text-slate-200 font-bold text-xs sm:text-sm border border-slate-200 dark:border-slate-800 shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-all flex items-center justify-center gap-2 active:scale-95"
+                >
+                  <Github className="w-4 h-4 text-slate-800 dark:text-slate-200" />
+                  <span>Showcase Đồ Án</span>
+                </Link>
+              </div>
+
+              {/* Dải cam kết (Trust Metrics Bar) */}
+              <div className="pt-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {TRUST_METRICS.map((metric) => (
+                  <div 
+                    key={metric.label}
+                    className="p-3 rounded-2xl bg-white/80 dark:bg-[#111728]/80 backdrop-blur-xs border border-slate-200/80 dark:border-slate-800 shadow-2xs text-left transition-colors"
+                  >
+                    <div className="text-lg font-extrabold text-indigo-700 dark:text-indigo-400">
+                      {metric.value}
+                    </div>
+                    <div className="text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5">
+                      {metric.label}
+                    </div>
+                    <div className="text-[10.5px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2">
+                      {metric.subtext}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+            </div>
+
+            {/* Cột Phải: Không Gian 3D Tương Tác Sống Động (5 Cột) */}
+            <div className="lg:col-span-5 relative flex items-center justify-center">
+              
+              {/* 3D WebGL Canvas */}
+              <div className="relative w-full aspect-square max-w-[420px] mx-auto flex items-center justify-center">
+                <Hero3DVisual />
+
+                {/* 3D Floating Hologram Badge 1 (Top Left) */}
+                <div className="absolute top-4 -left-4 sm:left-2 p-2.5 bg-white/90 dark:bg-[#111728]/90 backdrop-blur-md border border-slate-200/80 dark:border-slate-700 rounded-2xl shadow-xl flex items-center gap-2 animate-bounce duration-1000">
+                  <div className="w-7 h-7 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+                    <ShieldCheck className="w-4 h-4" />
+                  </div>
+                  <div className="text-left">
+                    <div className="text-[11px] font-bold text-slate-900 dark:text-white">Proof-of-Work</div>
+                    <div className="text-[9.5px] text-emerald-600 font-semibold">100% Zero Fake Metrics</div>
+                  </div>
+                </div>
+
+                {/* 3D Floating Hologram Badge 2 (Bottom Right) */}
+                <div className="absolute bottom-6 -right-2 sm:right-4 p-2.5 bg-white/90 dark:bg-[#111728]/90 backdrop-blur-md border border-slate-200/80 dark:border-slate-700 rounded-2xl shadow-xl flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
+                    <Github className="w-4 h-4" />
+                  </div>
+                  <div className="text-left">
+                    <div className="text-[11px] font-bold text-slate-900 dark:text-white">GitHub 1-Click</div>
+                    <div className="text-[9.5px] text-indigo-600 font-semibold">Bóc tách Codebase Thật</div>
+                  </div>
+                </div>
+
+                {/* 3D Floating Hologram Badge 3 (Top Right) */}
+                <div className="absolute top-10 right-2 hidden sm:flex p-2 bg-white/80 dark:bg-[#111728]/80 backdrop-blur-md border border-slate-200/80 dark:border-slate-700 rounded-xl shadow-lg items-center gap-1.5 text-[10px] font-bold text-purple-600 dark:text-purple-400">
+                  <Box className="w-3.5 h-3.5" />
+                  <span>WebGL 60FPS</span>
+                </div>
+
+              </div>
+
+            </div>
+
           </div>
 
         </div>
       </section>
 
-      {/* 2. INTERACTIVE PRODUCT MOCKUP PREVIEW */}
+      {/* 2. INTERACTIVE PRODUCT MOCKUP PREVIEW (CÓ HIỆU ỨNG 3D TILT KHI HOVER) */}
       <section className="py-12 sm:py-20 border-y border-slate-200/70 dark:border-slate-800 bg-gradient-to-b from-white to-slate-50 dark:from-[#090d16] dark:to-[#0c101c] transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
@@ -132,14 +183,14 @@ export default function HomePage() {
               Biên Tập Trực Quan, Khám Sức Khỏe CV Theo Thời Gian Thực
             </h3>
             <p className="mt-3 text-sm sm:text-base text-slate-600 dark:text-slate-300">
-              Không còn những biểu mẫu điền thông tin dài dòng. Trải nghiệm chỉnh sửa trực tiếp trên bản in A4 với sự đồng hành của AI Coach.
+              Di chuột lên bản CV A4 để trải nghiệm góc nghiêng 3D thực tế và bộ thử màu sắc nét.
             </p>
           </div>
 
           {/* Browser Window Mockup */}
           <div className="rounded-3xl border border-slate-300/80 dark:border-slate-800 bg-white dark:bg-[#0f1523] shadow-2xl dark:shadow-[0_20px_60px_rgba(0,0,0,0.8)] overflow-hidden max-w-5xl mx-auto transition-colors">
             
-            {/* Window Header with 2D Interactive Controls */}
+            {/* Window Header with Interactive Controls */}
             <div className="bg-slate-100 dark:bg-[#0c101c] border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex flex-wrap items-center justify-between gap-3 transition-colors">
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-1.5">
@@ -196,15 +247,15 @@ export default function HomePage() {
 
                 <div className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-2xs">
                   <CheckCircle2 size={13} className="text-emerald-600 dark:text-emerald-400" />
-                  <span>ATS: 98% • 2D Elevated</span>
+                  <span>3D Tilt Ready • ATS: 98%</span>
                 </div>
               </div>
             </div>
 
-            {/* Window Body: 2 Cột Preview */}
+            {/* Window Body: 2 Cột Preview với Hiệu Ứng 3D Tilt Card */}
             <div className="grid grid-cols-1 lg:grid-cols-12 p-6 sm:p-8 gap-6 bg-slate-50/50 dark:bg-[#090d16] transition-colors">
               
-              {/* Bên Trái: Bản CV Mô Phỏng 2D Nổi Bổng Sắc Nét (8 cột) */}
+              {/* Bên Trái: Bản CV Mô Phỏng 3D Tilt (8 cột) */}
               <div className="lg:col-span-8 relative">
                 {/* Quầng sáng Ambient Glow phía sau */}
                 <div 
@@ -212,161 +263,162 @@ export default function HomePage() {
                   style={{ backgroundColor: activePalette.hex }}
                 />
 
-                <div 
-                  key={`${demoLayout}-${activePalette.id}`}
-                  className={`cv-paper-elevated cv-shimmer-effect ${
-                    isDipping ? 'cv-spring-dip' : ''
-                  } relative bg-white dark:bg-[#0c101c] p-6 sm:p-8 rounded-2xl border border-slate-200/90 dark:border-slate-800 text-left font-serif text-slate-800 dark:text-slate-100 transition-all duration-300`}
-                >
-                  {/* Top Bar Badges */}
-                  <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-200 dark:border-slate-800">
-                    <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-[10.5px] font-bold text-emerald-700 dark:text-emerald-300 font-sans">
-                      <CheckCircle2 size={12} className="text-emerald-600 dark:text-emerald-400" />
-                      <span>Chuẩn ATS Harvard: 98/100</span>
-                    </div>
-                    <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-[10.5px] font-bold text-indigo-700 dark:text-indigo-300 font-sans">
-                      <ShieldCheck size={12} className="text-indigo-600 dark:text-indigo-400" />
-                      <span>Proof-of-Work: Live Demo & GitHub</span>
-                    </div>
-                  </div>
-
-                  {/* Header Profile Name */}
-                  <div className="mb-4">
-                    <h3 
-                      className="text-xl sm:text-2xl font-black tracking-tight"
-                      style={{ color: activePalette.hex }}
-                    >
-                      NGUYỄN MINH TRIẾT
-                    </h3>
-                    <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 font-sans mt-0.5">
-                      Fullstack Software Engineer • Next.js, Go, Distributed Systems
-                    </div>
-                    <div className="text-[10.5px] text-slate-500 font-sans mt-1 flex flex-wrap gap-2">
-                      <span>tp.hcm@profilehub.dev</span>
-                      <span>•</span>
-                      <span>github.com/trietnguyen-dev</span>
-                      <span>•</span>
-                      <span>linkedin.com/in/trietnguyen</span>
-                    </div>
-                  </div>
-
-                  {/* Tóm tắt mục tiêu (Summary) */}
-                  <div className="mb-4 pb-3 border-b border-slate-100 dark:border-slate-800/80">
-                    <div className="text-[10px] font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 mb-1">
-                      TÓM TẮT CHUYÊN MÔN
-                    </div>
-                    <p className="text-[11px] leading-relaxed text-slate-600 dark:text-slate-300 font-sans">
-                      Kỹ sư phần mềm 1+ năm kinh nghiệm thực chiến với React 18, TypeScript, Golang. Trực tiếp thiết kế hệ thống xử lý 25,000 tasks/phút, đam mê tối ưu kiến trúc và trải nghiệm người dùng tốc độ cao.
-                    </p>
-                  </div>
-
-                  {/* Layout Render Body: 1 Cột hoặc 2 Cột */}
-                  {demoLayout === '1-col' ? (
-                    <div className="space-y-4">
-                      {/* Đồ án tiêu biểu */}
-                      <div>
-                        <div className="text-[10.5px] font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 mb-1.5 flex items-center justify-between">
-                          <span>ĐỒ ÁN PHẦN MỀM TIÊU BIỂU</span>
-                          <span className="text-[9.5px] text-emerald-600 dark:text-emerald-400 font-bold">Proof-of-Work Verified</span>
-                        </div>
-
-                        <div className="space-y-2">
-                          <div className="text-xs font-bold text-slate-900 dark:text-white flex items-center justify-between">
-                            <span>ProfileHub AI ATS Studio (React 18, TypeScript, Tailwind)</span>
-                            <span className="text-[10px] text-slate-500 font-mono">03/2026 – Hiện tại</span>
-                          </div>
-                          <ul className="list-disc list-outside ml-3.5 text-[11px] space-y-1 text-slate-700 dark:text-slate-300 leading-relaxed font-sans">
-                            <li>
-                              Thiết kế engine xuất in A4 2D không bị bay màu bằng CSS <code className="text-[10px] px-1 bg-slate-100 dark:bg-slate-800 rounded">print-color-adjust</code>, đạt <strong style={{ color: activePalette.hex }}>100% độ sắc nét vector</strong>.
-                            </li>
-                            <li>
-                              Tích hợp cơ chế STAR Diff Review so sánh phiên bản, nâng điểm số ATS trung bình của ứng viên từ 62 lên 94 điểm.
-                            </li>
-                          </ul>
-                        </div>
+                <Interactive3DTiltCard maxTilt={6} scale={1.01}>
+                  <div 
+                    key={`${demoLayout}-${activePalette.id}`}
+                    className={`cv-paper-elevated relative bg-white dark:bg-[#0c101c] p-6 sm:p-8 rounded-2xl border border-slate-200/90 dark:border-slate-800 text-left font-serif text-slate-800 dark:text-slate-100 shadow-xl transition-all duration-300`}
+                  >
+                    {/* Top Bar Badges */}
+                    <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-200 dark:border-slate-800">
+                      <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-[10.5px] font-bold text-emerald-700 dark:text-emerald-300 font-sans">
+                        <CheckCircle2 size={12} className="text-emerald-600 dark:text-emerald-400" />
+                        <span>Chuẩn ATS Harvard: 98/100</span>
                       </div>
-
-                      {/* Kỹ năng kỹ thuật */}
-                      <div>
-                        <div className="text-[10.5px] font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 mb-1">
-                          KỸ NĂNG CỐT LÕI
-                        </div>
-                        <div className="text-[11px] text-slate-700 dark:text-slate-300 font-sans leading-relaxed">
-                          <strong>Ngôn ngữ:</strong> TypeScript, Go, Python, SQL, C++ • <strong>Frontend:</strong> React 18, Next.js, Three.js, Tailwind CSS • <strong>Backend & Cloud:</strong> Docker, PostgreSQL, Supabase, Redis, AWS EC2.
-                        </div>
+                      <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-[10.5px] font-bold text-indigo-700 dark:text-indigo-300 font-sans">
+                        <ShieldCheck size={12} className="text-indigo-600 dark:text-indigo-400" />
+                        <span>Proof-of-Work: Live Demo & GitHub</span>
                       </div>
                     </div>
-                  ) : (
-                    /* 2 Cột */
-                    <div className="grid grid-cols-12 gap-4 font-sans">
-                      {/* Sub-column Left: Sidebar (4 cols) */}
-                      <div className="col-span-4 border-r border-slate-100 dark:border-slate-800/80 pr-3 space-y-3">
+
+                    {/* Header Profile Name */}
+                    <div className="mb-4">
+                      <h3 
+                        className="text-xl sm:text-2xl font-black tracking-tight"
+                        style={{ color: activePalette.hex }}
+                      >
+                        NGUYỄN MINH TRIẾT
+                      </h3>
+                      <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 font-sans mt-0.5">
+                        Fullstack Software Engineer • Next.js, Go, Distributed Systems
+                      </div>
+                      <div className="text-[10.5px] text-slate-500 font-sans mt-1 flex flex-wrap gap-2">
+                        <span>tp.hcm@profilehub.dev</span>
+                        <span>•</span>
+                        <span>github.com/trietnguyen-dev</span>
+                        <span>•</span>
+                        <span>linkedin.com/in/trietnguyen</span>
+                      </div>
+                    </div>
+
+                    {/* Tóm tắt mục tiêu (Summary) */}
+                    <div className="mb-4 pb-3 border-b border-slate-100 dark:border-slate-800/80">
+                      <div className="text-[10px] font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 mb-1">
+                        TÓM TẮT CHUYÊN MÔN
+                      </div>
+                      <p className="text-[11px] leading-relaxed text-slate-600 dark:text-slate-300 font-sans">
+                        Kỹ sư phần mềm 1+ năm kinh nghiệm thực chiến với React 18, TypeScript, Golang. Trực tiếp thiết kế hệ thống xử lý 25,000 tasks/phút, đam mê tối ưu kiến trúc và trải nghiệm người dùng tốc độ cao.
+                      </p>
+                    </div>
+
+                    {/* Layout Render Body: 1 Cột hoặc 2 Cột */}
+                    {demoLayout === '1-col' ? (
+                      <div className="space-y-4">
+                        {/* Đồ án tiêu biểu */}
                         <div>
-                          <div className="text-[10px] font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 mb-1.5">
+                          <div className="text-[10.5px] font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 mb-1.5 flex items-center justify-between">
+                            <span>ĐỒ ÁN PHẦN MỀM TIÊU BIỂU</span>
+                            <span className="text-[9.5px] text-emerald-600 dark:text-emerald-400 font-bold">Proof-of-Work Verified</span>
+                          </div>
+
+                          <div className="space-y-2">
+                            <div className="text-xs font-bold text-slate-900 dark:text-white flex items-center justify-between">
+                              <span>ProfileHub AI ATS Studio (React 18, TypeScript, Tailwind)</span>
+                              <span className="text-[10px] text-slate-500 font-mono">03/2026 – Hiện tại</span>
+                            </div>
+                            <ul className="list-disc list-outside ml-3.5 text-[11px] space-y-1 text-slate-700 dark:text-slate-300 leading-relaxed font-sans">
+                              <li>
+                                Thiết kế engine xuất in A4 2D không bị bay màu bằng CSS <code className="text-[10px] px-1 bg-slate-100 dark:bg-slate-800 rounded">print-color-adjust</code>, đạt <strong style={{ color: activePalette.hex }}>100% độ sắc nét vector</strong>.
+                              </li>
+                              <li>
+                                Tích hợp cơ chế STAR Diff Review so sánh phiên bản, nâng điểm số ATS trung bình của ứng viên từ 62 lên 94 điểm.
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+
+                        {/* Kỹ năng kỹ thuật */}
+                        <div>
+                          <div className="text-[10.5px] font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 mb-1">
                             KỸ NĂNG CỐT LÕI
                           </div>
-                          <div className="flex flex-wrap gap-1">
-                            {['React', 'TypeScript', 'Node.js', 'PostgreSQL', 'Redis', 'Docker'].map((sk) => (
-                              <span key={sk} className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-                                {sk}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div>
-                          <div className="text-[10px] font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 mb-1.5">
-                            HỌC VẤN & BẢNG ĐIỂM
-                          </div>
-                          <div className="text-[11px] font-bold text-slate-900 dark:text-white">Đại Học Bách Khoa</div>
-                          <div className="text-[10px] text-slate-500">Kỹ Thuật Phần Mềm</div>
-                          <div className="text-[10px] font-mono font-bold mt-0.5" style={{ color: activePalette.hex }}>GPA: 3.65 / 4.0</div>
-                        </div>
-
-                        <div>
-                          <div className="text-[10px] font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 mb-1.5">
-                            CHỨNG CHỈ XÁC THỰC
-                          </div>
-                          <div className="space-y-1 text-[10px] text-slate-600 dark:text-slate-300">
-                            <div>• AWS Certified Cloud Practitioner</div>
-                            <div>• IELTS Academic 7.5</div>
+                          <div className="text-[11px] text-slate-700 dark:text-slate-300 font-sans leading-relaxed">
+                            <strong>Ngôn ngữ:</strong> TypeScript, Go, Python, SQL, C++ • <strong>Frontend:</strong> React 18, Next.js, Three.js, Tailwind CSS • <strong>Backend & Cloud:</strong> Docker, PostgreSQL, Supabase, Redis, AWS EC2.
                           </div>
                         </div>
                       </div>
+                    ) : (
+                      /* 2 Cột */
+                      <div className="grid grid-cols-12 gap-4 font-sans">
+                        {/* Sub-column Left: Sidebar (4 cols) */}
+                        <div className="col-span-4 border-r border-slate-100 dark:border-slate-800/80 pr-3 space-y-3">
+                          <div>
+                            <div className="text-[10px] font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 mb-1.5">
+                              KỸ NĂNG CỐT LÕI
+                            </div>
+                            <div className="flex flex-wrap gap-1">
+                              {['React', 'TypeScript', 'Node.js', 'PostgreSQL', 'Redis', 'Docker'].map((sk) => (
+                                <span key={sk} className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                                  {sk}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
 
-                      {/* Sub-column Right: Main Content (8 cols) */}
-                      <div className="col-span-8 space-y-3 pl-1">
-                        <div>
-                          <div className="text-[10.5px] font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 mb-1 flex items-center justify-between">
-                            <span>ĐỒ ÁN PHẦN MỀM TIÊU BIỂU</span>
-                            <span className="text-[9.5px] text-emerald-600 dark:text-emerald-400 font-bold">Proof-of-Work</span>
+                          <div>
+                            <div className="text-[10px] font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 mb-1.5">
+                              HỌC VẤN & BẢNG ĐIỂM
+                            </div>
+                            <div className="text-[11px] font-bold text-slate-900 dark:text-white">Đại Học Bách Khoa</div>
+                            <div className="text-[10px] text-slate-500">Kỹ Thuật Phần Mềm</div>
+                            <div className="text-[10px] font-mono font-bold mt-0.5" style={{ color: activePalette.hex }}>GPA: 3.65 / 4.0</div>
                           </div>
-                          <div className="text-xs font-bold text-slate-900 dark:text-white">
-                            Microservices Platform & Task Dispatcher
+
+                          <div>
+                            <div className="text-[10px] font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 mb-1.5">
+                              CHỨNG CHỈ XÁC THỰC
+                            </div>
+                            <div className="space-y-1 text-[10px] text-slate-600 dark:text-slate-300">
+                              <div>• AWS Certified Cloud Practitioner</div>
+                              <div>• IELTS Academic 7.5</div>
+                            </div>
                           </div>
-                          <div className="text-[10px] text-slate-500 font-mono mb-1">01/2026 – Hiện tại</div>
-                          <ul className="list-disc list-outside ml-3.5 text-[11px] space-y-1 text-slate-700 dark:text-slate-300 leading-relaxed">
-                            <li>
-                              Phát triển message queue với Kafka và Go worker, xử lý <strong style={{ color: activePalette.hex }}>25,000 tasks/phút</strong> không nghẽn cổ chai.
-                            </li>
-                            <li>
-                              Áp dụng kiến trúc Clean Architecture, giảm 50% thời gian onboard cho thành viên mới.
-                            </li>
-                          </ul>
+                        </div>
+
+                        {/* Sub-column Right: Main Content (8 cols) */}
+                        <div className="col-span-8 space-y-3 pl-1">
+                          <div>
+                            <div className="text-[10.5px] font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 mb-1 flex items-center justify-between">
+                              <span>ĐỒ ÁN PHẦN MỀM TIÊU BIỂU</span>
+                              <span className="text-[9.5px] text-emerald-600 dark:text-emerald-400 font-bold">Proof-of-Work</span>
+                            </div>
+                            <div className="text-xs font-bold text-slate-900 dark:text-white">
+                              Microservices Platform & Task Dispatcher
+                            </div>
+                            <div className="text-[10px] text-slate-500 font-mono mb-1">01/2026 – Hiện tại</div>
+                            <ul className="list-disc list-outside ml-3.5 text-[11px] space-y-1 text-slate-700 dark:text-slate-300 leading-relaxed">
+                              <li>
+                                Phát triển message queue với Kafka và Go worker, xử lý <strong style={{ color: activePalette.hex }}>25,000 tasks/phút</strong> không nghẽn cổ chai.
+                              </li>
+                              <li>
+                                Áp dụng kiến trúc Clean Architecture, giảm 50% thời gian onboard cho thành viên mới.
+                              </li>
+                            </ul>
+                          </div>
                         </div>
                       </div>
+                    )}
+
+                    {/* Vạch ngắt trang A4 */}
+                    <div className="mt-6 pt-3 border-t-2 border-dashed border-indigo-200 dark:border-indigo-900/60 flex items-center justify-between text-[10px] text-indigo-700 dark:text-indigo-400 font-sans font-bold bg-indigo-50/50 dark:bg-indigo-950/30 p-2 rounded-lg">
+                      <span>--- Vạch ngắt trang A4 (Nội dung vừa vặn 100% trong 1 trang in) ---</span>
+                      <span className="flex items-center gap-1">
+                        <QrCode className="w-3.5 h-3.5" />
+                        <span>Mã QR Demo: 28px</span>
+                      </span>
                     </div>
-                  )}
-
-                  {/* Vạch ngắt trang A4 */}
-                  <div className="mt-6 pt-3 border-t-2 border-dashed border-indigo-200 dark:border-indigo-900/60 flex items-center justify-between text-[10px] text-indigo-700 dark:text-indigo-400 font-sans font-bold bg-indigo-50/50 dark:bg-indigo-950/30 p-2 rounded-lg">
-                    <span>--- Vạch ngắt trang A4 (Nội dung vừa vặn 100% trong 1 trang in) ---</span>
-                    <span className="flex items-center gap-1">
-                      <QrCode className="w-3.5 h-3.5" />
-                      <span>Mã QR Demo: 28px</span>
-                    </span>
                   </div>
-                </div>
+                </Interactive3DTiltCard>
+
               </div>
 
               {/* Bên Phải: Thẻ AI Coach Đột Phá (4 cột) */}
@@ -433,7 +485,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 2.5. SPOTLIGHT NGHỀ NGHIỆP & CỘNG ĐỒNG (TINH GỌN, KHÔNG RỐI MẮT) */}
+      {/* 2.5. SPOTLIGHT NGHỀ NGHIỆP & CỘNG ĐỒNG */}
       <section className="py-16 bg-white dark:bg-[#0b101d] border-b border-slate-200/80 dark:border-slate-800 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
