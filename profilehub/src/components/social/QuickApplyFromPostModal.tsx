@@ -13,6 +13,7 @@ import {
 import type { SocialPost } from '../../types/database';
 import { socialFeedService } from '../../services/socialFeedService';
 import { useAuth } from '../../context/AuthProvider';
+import AuthRequiredModal from '../common/AuthRequiredModal';
 
 interface QuickApplyFromPostModalProps {
   post: SocialPost | null;
@@ -27,6 +28,19 @@ export default function QuickApplyFromPostModal({
 }: QuickApplyFromPostModalProps) {
   const { user } = useAuth();
   if (!post) return null;
+
+  // Nếu người dùng chưa đăng nhập, kích hoạt popup thông báo bắt buộc đăng nhập
+  if (!user) {
+    return (
+      <AuthRequiredModal
+        isOpen={true}
+        onClose={onClose}
+        targetJobTitle={post.title}
+        companyName={post.company_name || post.author_name}
+        actionReason="Để đính kèm bản CV chuẩn ATS và các đồ án thực chiến có bằng chứng GitHub gửi đến nhà tuyển dụng, vui lòng đăng nhập tài khoản ProfileHub."
+      />
+    );
+  }
 
   const [applicantName, setApplicantName] = useState(user?.user_metadata?.full_name || 'Nguyễn Văn An');
   const [applicantMajor, setApplicantMajor] = useState('Kỹ thuật Phần mềm / CNTT');

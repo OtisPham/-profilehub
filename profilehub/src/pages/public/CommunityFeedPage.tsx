@@ -6,17 +6,31 @@ import {
 import FeedControlCard from '../../components/social/FeedControlCard';
 import PostCard from '../../components/social/PostCard';
 import QuickApplyFromPostModal from '../../components/social/QuickApplyFromPostModal';
+import AuthRequiredModal from '../../components/common/AuthRequiredModal';
+import { useAuth } from '../../context/AuthProvider';
 import { socialFeedService } from '../../services/socialFeedService';
 import type { SocialPost, FeedFilter } from '../../types/database';
 
 export default function CommunityFeedPage() {
+  const { user } = useAuth();
   const [currentFilter, setCurrentFilter] = useState<FeedFilter>('all');
   const [posts, setPosts] = useState<SocialPost[]>([]);
   const [searchKeyword, setSearchKeyword] = useState('');
   
   // Quick Apply Modal State
   const [selectedJobPost, setSelectedJobPost] = useState<SocialPost | null>(null);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [pendingJobPost, setPendingJobPost] = useState<SocialPost | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const handleQuickApplyRequest = (post: SocialPost) => {
+    if (!user) {
+      setPendingJobPost(post);
+      setIsAuthModalOpen(true);
+      return;
+    }
+    setSelectedJobPost(post);
+  };
 
   const loadFeed = () => {
     const list = socialFeedService.getPosts(currentFilter);
@@ -120,7 +134,7 @@ export default function CommunityFeedPage() {
               <PostCard
                 key={post.id}
                 post={post}
-                onQuickApply={(p) => setSelectedJobPost(p)}
+                onQuickApply={(p) => handleQuickApplyRequest(p)}
                 onInviteCandidate={(p) => {
                   alert(`Đã gửi lời mời phỏng vấn đến bạn ${p.author_name} cho đồ án "${p.title}"!`);
                 }}
@@ -132,7 +146,7 @@ export default function CommunityFeedPage() {
 
       </div>
 
-      {/* Quick Apply Modal */}
+      {/* Quick Apply Modal (Dành cho người dùng đã đăng nhập) */}
       {selectedJobPost && (
         <QuickApplyFromPostModal
           post={selectedJobPost}
@@ -140,6 +154,20 @@ export default function CommunityFeedPage() {
           onAppliedSuccess={handleApplySuccess}
         />
       )}
+
+      {/* Popup Bắt Buộc Đăng Nhập (Khi khách vãng lai bấm Ứng Tuyển) */}
+      <AuthRequiredModal
+        isOpen={isAuthModalOpen}
+        onClose={() => {
+          setIsAuthModalOpen(false);
+          setPendingJobPost(null);
+        }}
+        title="Đăng Nhập Để Nộp Hồ Sơ Ứng Tuyển"
+        subtitle="Bảo chứng đồ án & đồng bộ CV chuẩn ATS"
+        targetJobTitle={pendingJobPost?.title}
+        companyName={pendingJobPost?.company_name || pendingJobPost?.author_name}
+        actionReason="Để gửi bản CV chuẩn ATS và đính kèm bằng chứng đồ án GitHub của bạn trực tiếp đến nhà tuyển dụng, bạn cần đăng nhập tài khoản ProfileHub."
+      />
 
     </div>
   );
