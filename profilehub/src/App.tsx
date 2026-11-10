@@ -7,6 +7,7 @@ import Login from './pages/auth/Login';
 import Register from './pages/auth/Register'; 
 import Logout from './pages/auth/Logout';
 import HomePage from './pages/public/HomePage';
+import CommunityFeedPage from './pages/public/CommunityFeedPage';
 import PublicShowcase from './pages/public/PublicShowcase';
 import PublicVerificationView from './pages/public/PublicVerificationView';
 import PublicOfferPortal from './pages/public/PublicOfferPortal';
@@ -103,6 +104,10 @@ function App() {
       <Route element={<MainLayout />}>
         {/* 1. Trang chủ Landing Page chuẩn Consumer SaaS (Công khai) */}
         <Route path="/" element={<HomePage />} />
+
+        {/* 1.1. Bảng tin Mạng Xã Hội Nghề Nghiệp & Đồ Án Thực Chiến (Công khai) */}
+        <Route path="/feed" element={<CommunityFeedPage />} />
+        <Route path="/community" element={<CommunityFeedPage />} />
 
         {/* 2. Bảng điều khiển trung tâm hành động (Bảo vệ đăng nhập) */}
         <Route 

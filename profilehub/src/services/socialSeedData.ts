@@ -11,7 +11,7 @@ export const DEFAULT_SOCIAL_POSTS: SocialPost[] = [
     is_author_verified: true,
     post_type: 'job_hiring',
     title: '🚀 Tuyển Dụng 03 Vị Trí Frontend ReactJS / Next.js Fresher - Khối ZaloPay',
-    content: `Chào các bạn lập trình viên trẻ tài năng! Đội ngũ ZaloPay đang tìm kiếm 03 bạn Fresher Frontend đam mê xây dựng giao diện hiệu năng cao, mượt mà chuẩn 60fps cho hàng triệu người dùng.\n\n✨ Quyền lợi nổi bật:\n- Dải lương khởi điểm: 14,000,000 - 18,000,000 VND / tháng + Thưởng quý\n- Làm việc Hybrid 2 ngày WFH/tuần, cấp MacBook Pro M3 mới 100%\n- Đào tạo 1:1 cùng các Senior Principal Engineer\n\n📌 Ưu tiên đặc biệt: Các bạn có đồ án bảo chứng Demo-Ready trên ProfileHub sẽ được bỏ qua vòng CV và mời thẳng vào phỏng vấn kỹ thuật!`,
+    content: `Chào các bạn lập trình viên trẻ tài năng! Đội ngũ ZaloPay đang tìm kiếm 03 bạn Fresher Frontend đam mê xây dựng giao diện hiệu năng cao, mượt mà chuẩn 60fps cho hàng triệu người dùng.\n\n✨ Quyền lợi nổi bật:\n- Dải lương khởi điểm: 14,000,000 - 18,000,000 VND / tháng + Thưởng quý\n- Làm việc Hybrid 2 ngày WFH/tuần, cấp MacBook Pro M3 mới 100%\n- Đào tạo 1:1 cùng các Senior Principal Engineer\n\n📌 Ưu tiên đặc biệt: Các bạn có đồ án thực chiến kèm Live Demo & GitHub Repo trên ProfileHub sẽ được ưu tiên vào thẳng vòng phỏng vấn kỹ thuật!`,
     tags: ['ReactJS', 'Next.js', 'TypeScript', 'ZaloPay', 'Fresher', 'Lương18M'],
     created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
     likes_count: 42,
@@ -29,7 +29,7 @@ export const DEFAULT_SOCIAL_POSTS: SocialPost[] = [
         author_name: 'Trần Minh Hoàng',
         author_avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=80&h=80&q=80',
         author_role: 'student',
-        content: 'Dạ chào anh/chị, em có đồ án E-commerce Next.js 14 đạt 9.5 điểm bảo chứng trên ProfileHub thì nộp bằng nút 1-click apply bên dưới được luôn đúng không ạ?',
+        content: 'Dạ chào anh/chị, em có đồ án E-commerce Next.js 14 có đầy đủ Live Demo & GitHub Repo trên ProfileHub thì nộp bằng nút 1-click apply bên dưới được luôn đúng không ạ?',
         created_at: new Date(Date.now() - 90 * 60 * 1000).toISOString()
       },
       {
@@ -52,8 +52,8 @@ export const DEFAULT_SOCIAL_POSTS: SocialPost[] = [
     author_headline: '🎓 Sinh Viên Năm Cuối • ĐH Khoa Học Tự Nhiên TP.HCM',
     is_author_verified: true,
     post_type: 'project_showcase',
-    title: '🌟 Vừa Hoàn Thành Đồ Án Web 3D AI Medical Diagnostic Viewer (Điểm Bảo Chứng 9.6/10)',
-    content: `Chào mọi người! Sau 3 tháng cày cuốc, mình vừa chính thức hoàn thành đồ án tốt nghiệp ứng dụng Web 3D kết hợp AI phân tích ảnh X-quang phổi và render mô hình giải phẫu trực quan.\n\n🛠️ Công nghệ sử dụng:\n- Frontend: React Three Fiber, Three.js, Tailwind CSS\n- Backend: FastAPI, PyTorch, Supabase\n- Đã được Thầy hướng dẫn nghiệm thu và cấp huy hiệu Demo-Ready Verified trên ProfileHub!\n\nMời các anh chị Tech Lead và các bạn vào trải nghiệm thử qua link Live Demo bên dưới nhé, rất mong nhận được góp ý chuyên môn từ cộng đồng!`,
+    title: '🌟 Vừa Hoàn Thành Đồ Án Web 3D AI Medical Diagnostic Viewer (Live Demo & GitHub)',
+    content: `Chào mọi người! Sau 3 tháng cày cuốc, mình vừa chính thức hoàn thành đồ án tốt nghiệp ứng dụng Web 3D kết hợp AI phân tích ảnh X-quang phổi và render mô hình giải phẫu trực quan.\n\n🛠️ Công nghệ sử dụng:\n- Frontend: React Three Fiber, Three.js, Tailwind CSS\n- Backend: FastAPI, PyTorch, Supabase\n- Đã được nghiệm thu chất lượng mã nguồn và cấp huy hiệu Demo-Ready trên ProfileHub!\n\nMời các anh chị Tech Lead và các bạn vào trải nghiệm thử qua link Live Demo bên dưới nhé, rất mong nhận được góp ý chuyên môn từ cộng đồng!`,
     tags: ['Three.js', 'React', 'AI', 'FastAPI', 'Showcase', 'DemoReady'],
     created_at: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
     likes_count: 88,
@@ -62,7 +62,7 @@ export const DEFAULT_SOCIAL_POSTS: SocialPost[] = [
     is_saved: false,
     project_demo_url: 'https://medical-3d-ai.demo.profilehub.io',
     project_github_url: 'https://github.com/quynhnga/medical-3d-ai-viewer',
-    project_score: '9.6/10 (Xuất sắc)',
+    project_score: 'Đã Kiểm Thử & Sẵn Sàng Phỏng Vấn',
     project_id: 'proj_med_3d',
     comments: [
       {

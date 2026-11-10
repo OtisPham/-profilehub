@@ -168,7 +168,7 @@ export default function PostCard({
               </span>
             </div>
             <p className="text-[11px] text-indigo-700 font-medium">
-              Ứng tuyển trực tiếp bằng đồ án bảo chứng và CV được chấm điểm ATS chuẩn hóa.
+              Ứng tuyển trực tiếp bằng đồ án thực chiến và CV được chuẩn hóa ATS.
             </p>
           </div>
 
@@ -188,9 +188,9 @@ export default function PostCard({
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="text-[11px] font-bold bg-purple-100 text-purple-800 px-2.5 py-0.5 rounded-full">
-                ★ Điểm bảo chứng: {post.project_score || '9.5/10'}
+                ★ Đồ án thực chiến: {post.project_score || 'Demo-Ready Verified'}
               </span>
-              <span className="text-[11px] text-slate-500 font-medium">Demo-Ready Verified</span>
+              <span className="text-[11px] text-slate-500 font-medium">Proof-of-Work</span>
             </div>
             <p className="text-xs text-slate-600">Đã kiểm thử code defense và sẵn sàng trình diễn trong phỏng vấn.</p>
           </div>

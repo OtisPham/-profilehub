@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthProvider';
 import type { UserRole, CandidatePipelineItem } from '../../types/database';
 import { 
   Menu, X, Sparkles, Bell, BellRing, ChevronDown, LogOut, 
-  User, CheckCircle2, Video, Globe, Building2, Briefcase, Plus
+  User, CheckCircle2, Video, Globe, Building2, Briefcase, Plus, Users
 } from 'lucide-react';
 import { getHeaderNavLinks, getPendingInterviewNotificationCount } from './headerNavigation';
 import { 
@@ -210,6 +210,15 @@ export default function HeaderBar() {
           {/* 3. Khu vực Phải: Quick Actions 2 Trạng Thái (updateui.md Section 2.1 & 2.2) */}
           <div className="flex items-center gap-2 sm:gap-3">
             
+            {/* Liên kết nhanh Dòng Tin Cộng Đồng */}
+            <Link
+              to="/feed"
+              className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100/80 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all border border-slate-200/60 dark:border-slate-700/60"
+            >
+              <Users className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+              <span>Cộng Đồng</span>
+            </Link>
+
             {/* Công Tắc Gạt Sáng / Tối luôn sẵn sàng */}
             <ThemeToggleSwitch size="md" className="hidden sm:inline-flex" />
 
@@ -496,6 +505,15 @@ export default function HeaderBar() {
                 {link.label}
               </Link>
             ))}
+
+            <Link
+              to="/feed"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:bg-slate-50 dark:hover:bg-slate-800"
+            >
+              <Users className="w-4 h-4" />
+              <span>Cộng Đồng Nghề Nghiệp & Việc Làm</span>
+            </Link>
 
             {/* Quick Actions Mobile */}
             {!isAuthenticated ? (

@@ -124,7 +124,7 @@ export default function SocialSidebarRight() {
             <h3 className="font-bold text-sm text-slate-900 tracking-tight">Đồ Án Điểm Cao</h3>
           </div>
           <span className="text-[10px] font-bold bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full">
-            Bảo Chứng
+            Thực Chiến
           </span>
         </div>
 

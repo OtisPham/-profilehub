@@ -92,7 +92,7 @@ export default function CreatePostBox({ onPostCreated }: CreatePostBoxProps) {
           >
             {userRole === 'recruiter' 
               ? 'Đăng tin tuyển dụng mới hoặc chia sẻ câu chuyện văn hóa công ty...' 
-              : 'Chia sẻ đồ án bảo chứng mới, đặt câu hỏi hoặc trao đổi kinh nghiệm...'}
+              : 'Chia sẻ đồ án thực chiến mới, đặt câu hỏi hoặc trao đổi kinh nghiệm...'}
           </button>
         </div>
       ) : (

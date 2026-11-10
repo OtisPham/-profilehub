@@ -71,7 +71,7 @@ export default function SocialSidebarLeft({
         <div className="pt-3 border-t border-slate-100 grid grid-cols-2 gap-2 text-center">
           <div className="bg-slate-50 p-2 rounded-xl">
             <span className="text-xs font-bold text-slate-800 block">3</span>
-            <span className="text-[10px] text-slate-500">Đồ án bảo chứng</span>
+            <span className="text-[10px] text-slate-500">Đồ án thực chiến</span>
           </div>
           <div className="bg-slate-50 p-2 rounded-xl">
             <span className="text-xs font-bold text-indigo-600 block">95/100</span>
@@ -115,7 +115,7 @@ export default function SocialSidebarLeft({
           <span>Điểm Sáng Nghề Nghiệp</span>
         </div>
         <p className="text-[11px] text-slate-600 leading-relaxed">
-          Ứng viên có đồ án được Giảng viên bảo chứng tăng <strong className="text-indigo-700">3.8 lần</strong> cơ hội được Tech Lead mời phỏng vấn trực tiếp.
+          Ứng viên có đồ án thực chiến kèm Live Demo & GitHub tăng <strong className="text-indigo-700">3.8 lần</strong> cơ hội được Tech Lead mời phỏng vấn trực tiếp.
         </p>
       </div>
 

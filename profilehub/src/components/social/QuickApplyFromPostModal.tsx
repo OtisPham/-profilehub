@@ -72,7 +72,7 @@ export default function QuickApplyFromPostModal({
             </div>
             <div>
               <h3 className="font-bold text-base">Ứng Tuyển Nhanh 1-Click</h3>
-              <p className="text-[11px] text-blue-200">Đồng bộ hồ sơ năng lực & đồ án bảo chứng đến HR</p>
+              <p className="text-[11px] text-blue-200">Đồng bộ hồ sơ năng lực & đồ án thực chiến đến HR</p>
             </div>
           </div>
           <button
@@ -152,7 +152,7 @@ export default function QuickApplyFromPostModal({
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> Đính kèm Bằng chứng Đồ án Thực Chiến (Demo-Ready)
               </p>
               <p className="text-[11px] text-slate-500 mt-0.5">
-                Tự động gửi link Live Demo và điểm số bảo chứng của Giảng viên để được ưu tiên phỏng vấn.
+                Tự động gửi kèm link Live Demo và mã nguồn kiểm thử để được ưu tiên phỏng vấn.
               </p>
             </div>
           </label>
