@@ -3,11 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { 
   Sparkles, ArrowRight, Github, ShieldCheck, CheckCircle2, 
   XCircle, FileText, QrCode, Laptop, Code2, Award, Zap,
-  ExternalLink, Layers, ChevronRight, Briefcase, Users, MessageSquare, Flame,
-  Cpu, Box
+  ExternalLink, Layers, ChevronRight, Briefcase, Users, MessageSquare, Flame
 } from 'lucide-react';
 import { CORE_PILLARS, BEFORE_AFTER_COMPARISON, TRUST_METRICS } from './homePageData';
-import Hero3DVisual from '../../components/3d/Hero3DVisual';
 import Interactive3DTiltCard from '../../components/3d/Interactive3DTiltCard';
 
 const DEMO_PALETTES = [
@@ -38,8 +36,8 @@ export default function HomePage() {
   return (
     <div className="w-full bg-slate-50/60 dark:bg-[#090d16] font-sans text-slate-900 dark:text-slate-100 selection:bg-indigo-100 dark:selection:bg-indigo-950 selection:text-indigo-900 dark:selection:text-indigo-200 transition-colors duration-200">
       
-      {/* 1. HERO SECTION WITH INTERACTIVE 3D HOLOGRAPHIC VISUAL */}
-      <section className="relative pt-8 pb-16 sm:pt-16 sm:pb-24 overflow-hidden">
+      {/* 1. HERO SECTION */}
+      <section className="relative pt-10 pb-16 sm:pt-16 sm:pb-24 overflow-hidden">
         {/* Background Mesh Gradients */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] pointer-events-none -z-10">
           <div className="absolute top-10 left-1/4 w-96 h-96 bg-blue-300/20 dark:bg-blue-600/10 rounded-full blur-3xl" />
@@ -47,125 +45,78 @@ export default function HomePage() {
           <div className="absolute top-40 left-1/2 -translate-x-1/2 w-[600px] h-64 bg-violet-200/20 dark:bg-violet-600/10 rounded-full blur-3xl" />
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
           
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-            
-            {/* Cột Trái: Tiêu Đề, Giá Trị & Nút Hành Động (7 Cột) */}
-            <div className="lg:col-span-7 text-left space-y-6">
-              
-              {/* Badge thông báo sản phẩm 3D */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800/80 text-indigo-700 dark:text-indigo-300 text-xs font-bold shadow-2xs hover:bg-indigo-100/70 dark:hover:bg-indigo-900/60 transition cursor-default">
-                <span className="flex h-2 w-2 relative">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-600"></span>
-                </span>
-                <span>ProfileHub v1.0 — 3D Evidence & Career Platform</span>
-              </div>
+          {/* Badge thông báo sản phẩm */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800/80 text-indigo-700 dark:text-indigo-300 text-xs font-bold shadow-2xs hover:bg-indigo-100/70 dark:hover:bg-indigo-900/60 transition cursor-default">
+            <span className="flex h-2 w-2 relative">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-600"></span>
+            </span>
+            <span>ProfileHub v1.0 — Nền tảng tạo CV dựa trên bằng chứng & đồ án thực chiến</span>
+          </div>
 
-              {/* Tiêu đề chính (Headline) */}
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.15]">
-                Xây Dựng Thương Hiệu Nghề Nghiệp Dựa Trên{' '}
-                <span className="bg-gradient-to-r from-blue-700 via-indigo-600 to-violet-600 dark:from-blue-400 dark:via-indigo-300 dark:to-violet-400 bg-clip-text text-transparent">
-                  Bằng Chứng Thực Chiến
-                </span>
-              </h1>
+          {/* Tiêu đề chính (Headline) */}
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.15] max-w-4xl mx-auto">
+            Xây Dựng Thương Hiệu Nghề Nghiệp Dựa Trên{' '}
+            <span className="bg-gradient-to-r from-blue-700 via-indigo-600 to-violet-600 dark:from-blue-400 dark:via-indigo-300 dark:to-violet-400 bg-clip-text text-transparent">
+              Bằng Chứng Thực Chiến
+            </span>
+          </h1>
 
-              {/* Mô tả phụ (Subheadline) */}
-              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">
-                Tuyệt đối không bịa số liệu ảo. Bóc tách 1-click từ GitHub Repo, chuẩn hóa câu văn STAR kỹ thuật, 
-                khống chế vừa vặn 1 trang A4 và trang bị bản lĩnh phòng thủ trước Tech Lead.
-              </p>
+          {/* Mô tả phụ (Subheadline) */}
+          <p className="text-sm sm:text-lg text-slate-600 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed">
+            Tuyệt đối không bịa số liệu ảo. Bóc tách 1-click từ GitHub Repo, chuẩn hóa câu văn STAR kỹ thuật, 
+            khống chế vừa vặn 1 trang A4 và trang bị bản lĩnh phòng thủ trước Tech Lead.
+          </p>
 
-              {/* Cụm nút hành động chính (Triple Action CTAs) */}
-              <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                <Link
-                  to="/cv-management"
-                  className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-bold text-xs sm:text-sm shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/35 transition-all flex items-center justify-center gap-2 group active:scale-95"
-                >
-                  <Sparkles className="w-4 h-4 text-blue-200 group-hover:rotate-12 transition-transform" />
-                  <span>Bắt Đầu Tạo CV — Miễn Phí</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                </Link>
+          {/* Cụm nút hành động chính (Triple Action CTAs) */}
+          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3.5">
+            <Link
+              to="/cv-management"
+              className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-bold text-xs sm:text-sm shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/35 transition-all flex items-center justify-center gap-2 group active:scale-95"
+            >
+              <Sparkles className="w-4 h-4 text-blue-200 group-hover:rotate-12 transition-transform" />
+              <span>Bắt Đầu Tạo CV — Miễn Phí</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+            </Link>
 
-                <Link
-                  to="/feed"
-                  className="px-5 py-3.5 rounded-2xl bg-indigo-50 dark:bg-indigo-950/70 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 font-bold text-xs sm:text-sm border border-indigo-200/80 dark:border-indigo-800/80 shadow-2xs transition-all flex items-center justify-center gap-2 active:scale-95"
-                >
-                  <Briefcase className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-                  <span>Dòng Tin Việc Làm & Đồ Án</span>
-                </Link>
+            <Link
+              to="/feed"
+              className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-indigo-50 dark:bg-indigo-950/70 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 font-bold text-xs sm:text-sm border border-indigo-200/80 dark:border-indigo-800/80 shadow-2xs transition-all flex items-center justify-center gap-2 active:scale-95"
+            >
+              <Briefcase className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+              <span>Dòng Tin Việc Làm & Đồ Án</span>
+            </Link>
 
-                <Link
-                  to="/showcase"
-                  className="px-5 py-3.5 rounded-2xl bg-white dark:bg-[#111728] hover:bg-slate-50 dark:hover:bg-[#161f36] text-slate-700 dark:text-slate-200 font-bold text-xs sm:text-sm border border-slate-200 dark:border-slate-800 shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-all flex items-center justify-center gap-2 active:scale-95"
-                >
-                  <Github className="w-4 h-4 text-slate-800 dark:text-slate-200" />
-                  <span>Showcase Đồ Án</span>
-                </Link>
-              </div>
+            <Link
+              to="/showcase"
+              className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-white dark:bg-[#111728] hover:bg-slate-50 dark:hover:bg-[#161f36] text-slate-700 dark:text-slate-200 font-bold text-xs sm:text-sm border border-slate-200 dark:border-slate-800 shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-all flex items-center justify-center gap-2 active:scale-95"
+            >
+              <Github className="w-4 h-4 text-slate-800 dark:text-slate-200" />
+              <span>Showcase Đồ Án</span>
+            </Link>
+          </div>
 
-              {/* Dải cam kết (Trust Metrics Bar) */}
-              <div className="pt-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {TRUST_METRICS.map((metric) => (
-                  <div 
-                    key={metric.label}
-                    className="p-3 rounded-2xl bg-white/80 dark:bg-[#111728]/80 backdrop-blur-xs border border-slate-200/80 dark:border-slate-800 shadow-2xs text-left transition-colors"
-                  >
-                    <div className="text-lg font-extrabold text-indigo-700 dark:text-indigo-400">
+          {/* Dải cam kết (Trust Metrics Bar với Subtle 3D Tilt) */}
+          <div className="pt-8 grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
+            {TRUST_METRICS.map((metric) => (
+              <Interactive3DTiltCard key={metric.label} maxTilt={6} className="rounded-2xl">
+                <div className="p-4 rounded-2xl bg-white/80 dark:bg-[#111728]/80 backdrop-blur-xs border border-slate-200/80 dark:border-slate-800 shadow-2xs text-left transition-colors h-full flex flex-col justify-between">
+                  <div>
+                    <div className="text-xl font-black text-indigo-700 dark:text-indigo-400">
                       {metric.value}
                     </div>
-                    <div className="text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5">
+                    <div className="text-xs font-bold text-slate-800 dark:text-slate-200 mt-1">
                       {metric.label}
                     </div>
-                    <div className="text-[10.5px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2">
-                      {metric.subtext}
-                    </div>
                   </div>
-                ))}
-              </div>
-
-            </div>
-
-            {/* Cột Phải: Không Gian 3D Tương Tác Sống Động (5 Cột) */}
-            <div className="lg:col-span-5 relative flex items-center justify-center">
-              
-              {/* 3D WebGL Canvas */}
-              <div className="relative w-full aspect-square max-w-[420px] mx-auto flex items-center justify-center">
-                <Hero3DVisual />
-
-                {/* 3D Floating Hologram Badge 1 (Top Left) */}
-                <div className="absolute top-4 -left-4 sm:left-2 p-2.5 bg-white/90 dark:bg-[#111728]/90 backdrop-blur-md border border-slate-200/80 dark:border-slate-700 rounded-2xl shadow-xl flex items-center gap-2 animate-bounce duration-1000">
-                  <div className="w-7 h-7 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
-                    <ShieldCheck className="w-4 h-4" />
-                  </div>
-                  <div className="text-left">
-                    <div className="text-[11px] font-bold text-slate-900 dark:text-white">Proof-of-Work</div>
-                    <div className="text-[9.5px] text-emerald-600 font-semibold">100% Zero Fake Metrics</div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
+                    {metric.subtext}
                   </div>
                 </div>
-
-                {/* 3D Floating Hologram Badge 2 (Bottom Right) */}
-                <div className="absolute bottom-6 -right-2 sm:right-4 p-2.5 bg-white/90 dark:bg-[#111728]/90 backdrop-blur-md border border-slate-200/80 dark:border-slate-700 rounded-2xl shadow-xl flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
-                    <Github className="w-4 h-4" />
-                  </div>
-                  <div className="text-left">
-                    <div className="text-[11px] font-bold text-slate-900 dark:text-white">GitHub 1-Click</div>
-                    <div className="text-[9.5px] text-indigo-600 font-semibold">Bóc tách Codebase Thật</div>
-                  </div>
-                </div>
-
-                {/* 3D Floating Hologram Badge 3 (Top Right) */}
-                <div className="absolute top-10 right-2 hidden sm:flex p-2 bg-white/80 dark:bg-[#111728]/80 backdrop-blur-md border border-slate-200/80 dark:border-slate-700 rounded-xl shadow-lg items-center gap-1.5 text-[10px] font-bold text-purple-600 dark:text-purple-400">
-                  <Box className="w-3.5 h-3.5" />
-                  <span>WebGL 60FPS</span>
-                </div>
-
-              </div>
-
-            </div>
-
+              </Interactive3DTiltCard>
+            ))}
           </div>
 
         </div>
