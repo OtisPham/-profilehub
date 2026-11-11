@@ -565,6 +565,7 @@ if __name__ == "__main__":
 
     # 3. Generate BM01b Markdown file
     md_header = """# BM01b — SỔ NHẬT KÝ THỰC TẬP TỐT NGHIỆP
+### BỘ GIÁO DỤC VÀ ĐÀO TẠO
 ### TRƯỜNG ĐẠI HỌC HOA SEN — KHOA CÔNG NGHỆ
 **HỌC KỲ 2631 NĂM HỌC 2026 - 2027**
 
@@ -578,9 +579,23 @@ if __name__ == "__main__":
 
 *Thành phố Hồ Chí Minh, tháng 12 năm 2026*
 
+| **Một số lưu ý:** Sinh viên đánh số trang liên tục trong sổ nhật ký thực tập. Sinh viên ghi chép đầy đủ các công việc được giao, các công việc đã hoàn tất, các kinh nghiệm cũng như những nhận xét rút ra từ những công việc này. Cuối mỗi tuần, sinh viên gửi sổ nhật ký thực tập đến người hướng dẫn xem xét để đánh giá và ký xác nhận. Sinh viên dùng sổ nhật ký thực tập để viết báo cáo thực tập. Sinh viên ghi theo thứ tự thời gian. Mỗi sinh viên phải có sổ nhật ký thực tập riêng, mặc dù nhiều sinh viên có thể thực tập tại cùng đơn vị. |
+
 ---
 
 ### PHIẾU THEO DÕI TIẾN ĐỘ THỰC TẬP TỐT NGHIỆP
+**HỌC KỲ 2631 NĂM HỌC 2026 - 2027**
+
+| Họ và tên sinh viên | : PHẠM THÁI BẢO |
+| :--- | :--- |
+| **Mã số sinh viên** | : 22114919 |
+| **Ngành đào tạo** | : CÔNG NGHỆ THÔNG TIN |
+| **Lớp** | : QL21111 |
+| **Đơn vị thực tập** | : CÔNG TY TNHH ALPACA SOLUTIONS |
+| **Người hướng dẫn** | : |
+
+*Ghi chú: Sinh viên phải xuất trình sổ nhật ký thực tập và phiếu theo dõi thực tập hàng tuần để người hướng dẫn kiểm tra và ký tên.*
+
 | Tuần | Từ ngày đến ngày | Họ tên và chữ ký của người hướng dẫn |
 | :---: | :---: | :---: |
 | 1 | 18/09/2026 - 19/09/2026 | |
