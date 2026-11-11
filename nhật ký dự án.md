@@ -11,26 +11,31 @@
 ---
 
 ## 📌 TÓM TẮT ĐỊNH HƯỚNG CHIẾN LƯỢC & BƯỚC NGOẶT KIẾN TRÚC (PIVOT)
-Trong 10 tuần phát triển dự án (18/09/2026 – 20/11/2026), **ProfileHub** đã trải qua các giai đoạn hoàn thiện vượt bậc:
-1. **Khởi tạo và xây dựng nền tảng (Tuần 1 – Tuần 4):**
+Trong 10 tuần phát triển dự án (18/09/2026 – 20/11/2026), **ProfileHub** đã trải qua các giai đoạn hoàn thiện vượt bậc với tốc độ phát triển cao (Vibe Coding):
+1. **Khởi tạo và xây dựng nền tảng (Tuần 1 – Tuần 2):**
    - Khởi tạo kiến trúc dự án từ ngày 18/09/2026 với React 18, TypeScript (Strict Mode) và Supabase.
-   - Xây dựng các module cốt lõi: Quản lý đồ án (MyProjects), Quản lý chứng chỉ (Certificates), tương tác Canvas WYSIWYG.
-2. **Dũng cảm cắt bỏ các tính năng rườm rà (Pruned Over-Engineering - Tuần 5):**
+   - Xây dựng các module cốt lõi: Quản lý đồ án (MyProjects), Quản lý chứng chỉ (Certificates), tương tác Canvas WYSIWYG chuẩn A4.
+2. **Dũng cảm cắt bỏ các tính năng rườm rà (Pruned Over-Engineering - Tuần 3):**
    - ❌ **Cắt bỏ Microservice Python Chatbot (`chatbot_service/`):** Chuyển toàn bộ logic khai phá từ khóa sang TypeScript native service trên 1 codebase duy nhất, loại bỏ hạ tầng triển khai cồng kềnh.
    - ❌ **Cắt bỏ Xác thực Giảng viên (`Teacher Verification` / `is_verified`):** Loại bỏ toàn bộ controller/route/view chấm điểm của giảng viên do tạo nút thắt cổ chai lớn trong thực tế. Thay thế bằng **Bằng chứng thực chiến (Evidence-Based)**: Link Live Demo, GitHub Repo và mã QR quét mở demo sản phẩm trực tiếp.
    - ❌ **Cắt bỏ Khảo sát MBTI & Chatbot phỏng vấn dài dòng:** Dồn 100% nguồn lực vào bài toán thực dụng: đưa dự án vào CV và tối ưu tương thích JD tuyển dụng.
-3. **Hiện thực hóa Kiến trúc ADR 0001 & Bộ 6 Tracer-Bullet Tickets (Tuần 5 – Tuần 6):**
+3. **Hiện thực hóa Kiến trúc ADR 0001 & Bộ 6 Tracer-Bullet Tickets (Tuần 5):**
    - Hoàn thành trọn vẹn luồng **Project-Driven CV Builder**: Tách biệt dự án trong CV (`CV Project Instance`) và dự án gốc (`Master Project`), hỗ trợ Reverse Sync thông minh, Scoped Contribution (nhóm vs cá nhân), Project Fit Explainer xếp hạng theo JD, STAR Diff Review có kiểm định Anti-Hallucination, Page-Budget Guard đo lường khổ in A4 với 1-Click Auto-Condense, và Evidence Showcase QR.
-4. **Mở rộng các Module nâng cao (Tuần 6 – Tuần 8):**
+4. **Mở rộng các Module nâng cao & Khớp nối thông minh (Tuần 6 – Tuần 8):**
+   - **Contextual Application Pitch (ADR 0002) & Project Defense Briefing:** Luyện tập bảo vệ đồ án trước câu hỏi hóc búa của Tech Lead.
    - **STAR Diagnostic Engine & Rewrite:** Phân tích cấu trúc viên đạn theo phương pháp STAR, cung cấp gợi ý viết lại có số liệu định lượng.
-   - **ATS Eye-View Heatmap:** Mô phỏng góc nhìn hệ thống Applicant Tracking System và nhà tuyển dụng (F-pattern scan).
-   - **Interview War Room & Audio Simulation:** Luyện tập phỏng vấn kỹ thuật bám sát kinh nghiệm dự án thực tế.
-   - **Real-time Salary Benchmark:** Khảo sát dải lương thị trường dựa trên tổ hợp kỹ năng và level của ứng viên.
-   - **Application Tracker & Kanban Pipeline:** Quản lý vòng đời ứng tuyển từ Applied đến Offer.
-5. **Tối ưu hiệu suất, Bảo mật & Vận hành Sprint liên tục (Tuần 9 – Tuần 10):**
-   - Tối ưu hóa hiệu năng chuyên sâu: Caching (Redis + IndexedDB), Service Worker offline cache, Bundle Splitting (giảm từ 1.2MB xuống 280KB Gzip).
-   - Kiểm thử toàn diện: Unit Test & Integration Test (Vitest 100% pass), End-to-End Test (Playwright).
-   - Tích hợp Sentry giám sát lỗi thời gian thực, duy trì họp Sprint Review định kỳ với Mentor doanh nghiệp để liên tục mở rộng sản phẩm (kỳ thực tập tiếp tục diễn ra theo kế hoạch).
+   - **ATS Eye-View Heatmap & Interview War Room:** Mô phỏng góc nhìn hệ thống ATS (F-pattern scan) và phòng luyện phỏng vấn áp lực cao.
+   - **Application Kanban Tracker & Candidate Pipeline Drag-Drop:** Quản lý vòng đời ứng tuyển với trải nghiệm kéo thả trực quan.
+   - **Xác thực MST Doanh Nghiệp & Tích Xanh:** Chống mạo danh HR, đảm bảo môi trường tuyển dụng minh bạch.
+   - **Smart Job Studio & Smart CV Parser:** Tự động trích xuất kỹ năng từ JD và CV tải lên, khớp nối ứng viên tức thì và tự động điền Master Profile.
+   - **Multi-Theme PDF Styler:** Tùy biến theme và màu sắc xuất CV chuẩn in ấn A4 chuyên nghiệp.
+5. **Cổng Offer Công Khai, Landing Page 3D & Mạng Xã Hội Nghề Nghiệp (Tuần 9 – Tuần 10):**
+   - **Public Offer Portal & Executive Dossier Export:** Cổng nhận offer trực tuyến và xuất hồ sơ ứng viên chuyên sâu.
+   - **Interactive 3D WebGL Crystal Hero & 3D Tilt Card:** Giao diện Landing Page tương tác 3D WebGL hiện đại.
+   - **Career Community Feed (/feed):** Mạng xã hội chia sẻ đồ án và ứng tuyển nhanh từ bài đăng.
+   - Tối ưu hóa hiệu năng chuyên sâu: Caching đa tầng (Redis + IndexedDB), Service Worker offline cache, Bundle Splitting (giảm xuống 280KB Gzip).
+   - Kiểm thử toàn diện: Unit Test & Integration Test (Vitest 100% pass), End-to-End Test (Playwright), Sentry giám sát lỗi thời gian thực.
+   - Duy trì họp Sprint Review định kỳ với Mentor doanh nghiệp để liên tục mở rộng sản phẩm (kỳ thực tập tiếp tục diễn ra theo kế hoạch).
 
 ---
 
@@ -38,419 +43,419 @@ Trong 10 tuần phát triển dự án (18/09/2026 – 20/11/2026), **ProfileHub
 
 ### 🔴 Thứ 6 (18/09/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Khảo sát bài toán nghiệp vụ & Phân tích yêu cầu hệ thống quản lý hồ sơ sinh viên (UniPortfolio).
+* **Công việc được giao:** Khảo sát toàn diện bài toán CV sinh viên IT & Lập kiến trúc tổng thể ProfileHub.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Tìm hiểu thực trạng hồ sơ ứng tuyển của sinh viên CNTT, phân tích 3 trụ cột lớn: Đồ án thực tế (Project-Driven), Khớp nối bằng chứng (Evidence-Based Matching), và Luyện phỏng vấn AI.
-  * Chiều (13:00 - 17:00): Lập sơ đồ phân rã chức năng (WBS) và chia lộ trình phát triển dự án thành các giai đoạn trọng tâm cô đọng.
-* **Kinh nghiệm rút ra:** Phân tích kỹ yêu cầu nghiệp vụ thực tế giúp định hình đúng cấu trúc hệ thống và tránh phải refactor nhiều ở các giai đoạn sau.
+  * Sáng (08:30 - 12:00): Khảo sát thực trạng sinh viên gặp khó khi đưa đồ án vào CV; định hình 3 trụ cột sản phẩm: Project-Driven CV Builder, Evidence-Based Matching và AI Interview Coaching; lập sơ đồ WBS.
+  * Chiều (13:00 - 17:00): Thiết kế kiến trúc hệ thống Client-Server, phân tích mô hình dữ liệu quan hệ trên PostgreSQL (Supabase) và lập tài liệu Product Discovery Requirements.
+* **Kinh nghiệm rút ra:** Khảo sát kỹ bài toán thực tế ngay từ đầu giúp xác định đúng trọng tâm sản phẩm và tránh lãng phí thời gian xây dựng các tính năng ngoài lề.
 
 ### 🔴 Thứ 7 (19/09/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Lựa chọn Tech Stack & Khởi tạo mã nguồn cơ sở (Base Code Setup).
+* **Công việc được giao:** Khởi tạo Base Code, cấu hình TypeScript Strict, Supabase Auth & Storage.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Đánh giá công nghệ, chốt Tech Stack: React 18, TypeScript (Strict Mode), Vite, Tailwind CSS, Lucide Icons, kết nối Supabase (PostgreSQL + Auth + Storage).
-  * Chiều (13:00 - 17:00): Cấu hình ESLint, Prettier, cấu trúc thư mục chuẩn mô hình Feature-driven và kiểm tra kết nối CSDL Supabase.
-* **Kinh nghiệm rút ra:** Chuẩn hóa quy chuẩn mã nguồn và TypeScript Strict Mode ngay từ đầu giúp loại bỏ 80% lỗi tiềm ẩn trong quá trình phát triển.
+  * Sáng (08:30 - 12:00): Khởi tạo repo React 18 + Vite + Tailwind CSS + Lucide Icons; cấu hình TypeScript ở chế độ Strict Mode cao nhất, thiết lập ESLint và Prettier.
+  * Chiều (13:00 - 17:00): Kết nối Supabase SDK, cấu hình xác thực Auth, thiết lập Storage Bucket cho tệp đính kèm và kiểm tra kết nối CSDL thành công.
+* **Kinh nghiệm rút ra:** Bật TypeScript Strict Mode ngay ngày đầu giúp loại bỏ 100% lỗi null/undefined tiềm ẩn và tăng tốc độ code về sau.
 
 ## 📅 TUẦN 2: THIẾT KẾ CSDL POSTGRESQL & MODULE HỒ SƠ DỰ ÁN CỐT LÕI (21/09/2026 – 26/09/2026)
 
 ### 🔴 Thứ 2 (21/09/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Thiết kế lược đồ CSDL PostgreSQL trên Supabase & Cấu hình Row Level Security (RLS).
+* **Công việc được giao:** Thiết kế toàn diện CSDL PostgreSQL trên Supabase & Cấu hình bảo mật Row Level Security (RLS).
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Thiết kế các bảng: users, student_profiles, projects, skills, certifications, student_cvs. Tạo khóa ngoại và composite indexes tối ưu tốc độ đọc.
-  * Chiều (13:00 - 17:00): Kích hoạt chính sách RLS cho từng bảng dữ liệu, cấu hình Supabase Storage Bucket portfolio_files lưu trữ tài liệu PDF và hình ảnh minh chứng.
-* **Kinh nghiệm rút ra:** Áp dụng RLS ở tầng CSDL là cách bảo mật dữ liệu sinh viên đa người dùng chuẩn mực nhất mà không làm phình to backend code.
+  * Sáng (08:30 - 12:00): Tạo lược đồ CSDL hoàn chỉnh: bảng users, student_profiles, projects, skills, certifications, student_cvs; thiết lập khóa ngoại và composite indexes.
+  * Chiều (13:00 - 17:00): Viết chính sách RLS bảo mật phân quyền cho từng bảng, cấu hình Storage policies cho portfolio_files; viết script seed dữ liệu mẫu kiểm thử.
+* **Kinh nghiệm rút ra:** Thiết lập RLS chuẩn mực ở tầng CSDL giúp bảo mật dữ liệu đa người dùng tuyệt đối mà không cần viết logic phức tạp ở frontend.
 
 ### 🔴 Thứ 3 (22/09/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Xây dựng Module Quản lý Đồ Án Sinh Viên (MyProjects.tsx) – Toàn trình CRUD.
+* **Công việc được giao:** Xây dựng hoàn chỉnh Module Quản lý Đồ Án (MyProjects) & Quản lý Chứng Chỉ (Certificates).
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Thiết kế giao diện danh sách đồ án dạng thẻ Card chuẩn Enterprise, phân loại theo môn học và gắn tags công nghệ (React, Node.js, PostgreSQL...).
-  * Chiều (13:00 - 17:00): Phát triển Form Modal Thêm/Sửa đồ án, hỗ trợ trường Live Demo URL, GitHub Repo URL, tài liệu PDF đính kèm và modal xác nhận xóa an toàn.
-* **Kinh nghiệm rút ra:** Quản lý state form chặt chẽ giúp sinh viên dễ dàng cập nhật thông tin dự án nhiều giai đoạn mà không gây mất mát dữ liệu.
+  * Sáng (08:30 - 12:00): Phát triển giao diện MyProjects.tsx dạng lưới thẻ chuyên nghiệp, modal thêm/sửa đồ án hỗ trợ Live Demo, GitHub Repo URL, tài liệu PDF và gắn tags công nghệ.
+  * Chiều (13:00 - 17:00): Xây dựng Module Certificates.tsx lưu trữ chứng chỉ, tính năng đánh dấu nổi bật (is_featured), kéo-thả upload file và In-App Document Reader xem trước PDF nội tuyến.
+* **Kinh nghiệm rút ra:** Gom việc phát triển các module hồ sơ liên quan vào một ngày giúp tái sử dụng component modal và đồng bộ trải nghiệm người dùng.
 
 ### 🔴 Thứ 4 (23/09/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Xây dựng Module Quản lý Chứng Chỉ (Certificates.tsx) & In-App Document Reader.
+* **Công việc được giao:** Xây dựng Canvas WYSIWYG chuẩn A4 & Bộ đệm lưu trữ hai lớp (Cloud + LocalStorage).
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Xây dựng giao diện lưu trữ chứng chỉ nghề nghiệp, tính năng đánh dấu thành tựu nổi bật (is_featured) và kéo-thả upload file.
-  * Chiều (13:00 - 17:00): Phát triển Modal xem trước file PDF/Ảnh nội tuyến (In-app Document Reader) giúp nhà tuyển dụng xem ngay chứng chỉ mà không cần tải về.
-* **Kinh nghiệm rút ra:** Trải nghiệm xem trước tài liệu tức thì (sandbox iframe) giúp tăng tính chuyên nghiệp của nền tảng.
+  * Sáng (08:30 - 12:00): Thiết kế InteractiveCVCanvas.tsx chuẩn khổ A4 Portrait (96 DPI, 1122.5px); phát triển cơ chế chỉnh sửa inline trên từng dòng text, cập nhật state tức thì.
+  * Chiều (13:00 - 17:00): Xây dựng cơ chế lưu trữ hai lớp: cvService.ts tự động sync lên Supabase và LocalStorage Fallback lưu đệm tạm thời chống mất dữ liệu khi rớt mạng.
+* **Kinh nghiệm rút ra:** Cố định tỷ lệ canvas theo đúng chuẩn in ấn A4 giúp loại bỏ hoàn toàn tình trạng sai lệch giữa màn hình và file PDF khi xuất ra.
 
 ### 🔴 Thứ 5 (24/09/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Dựng khung hiển thị tương tác WYSIWYG trên Canvas A4 và cơ chế render linh hoạt.
+* **Công việc được giao:** Xây dựng Trụ Cột Khớp Nối Kỹ Năng (Evidence-Based Matching) & Bộ Lọc Ứng Viên Đa Chiều.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Phân tích thông số kỹ thuật in ấn: A4 Portrait ở độ phân giải 96 DPI (chiều cao 1122.5px), tính toán khoảng cách dòng, lề trang tiêu chuẩn.
-  * Chiều (13:00 - 17:00): Phát triển InteractiveCVCanvas.tsx hỗ trợ chỉnh sửa inline trên từng dòng text, cập nhật state tức thì khi người dùng gõ phím.
-* **Kinh nghiệm rút ra:** Cố định tỷ lệ hiển thị canvas theo đúng tỷ lệ in ấn thực tế loại bỏ hoàn toàn sự sai lệch giữa màn hình và file in PDF.
+  * Sáng (08:30 - 12:00): Phát triển thuật toán Match Score (0-100%) đối chiếu kỹ năng sinh viên với JD; thiết kế thẻ ứng viên hiển thị huy hiệu xếp hạng và MatchDetailModal.tsx phân tích sâu độ khớp.
+  * Chiều (13:00 - 17:00): Xây dựng bộ lọc ứng viên đa chiều (vị trí Frontend/Backend/DevOps, điểm match tối thiểu, tech stack bắt buộc); tối ưu hóa câu truy vấn dưới 100ms.
+* **Kinh nghiệm rút ra:** Minh bạch hóa lý do đề xuất kỹ năng giúp nhà tuyển dụng tin tưởng và rút ngắn 70% thời gian sàng lọc hồ sơ ban đầu.
 
 ### 🔴 Thứ 6 (25/09/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Tối ưu hóa UI/UX Canvas, xử lý responsive và đồng bộ state tức thì.
+* **Công việc được giao:** Tích hợp AI Skill Coach gợi ý kỹ năng theo vị trí & Tối ưu hóa UI/UX Canvas.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Tối ưu hóa các thao tác chỉnh sửa trực tiếp trên Canvas, chống hiện tượng nhảy layout khi gõ nội dung dài.
-  * Chiều (13:00 - 17:00): Kiểm thử tương thích trên các kích thước màn hình từ 13 inch đến 27 inch, đảm bảo canvas luôn căn giữa hoàn hảo.
-* **Kinh nghiệm rút ra:** Đảm bảo trải nghiệm trực quan (WYSIWYG) mượt mà là chìa khóa giúp giữ chân người dùng trong các ứng dụng biên tập tài liệu.
+  * Sáng (08:30 - 12:00): Xây dựng tính năng AI Skill Coach gợi ý từ khóa kỹ thuật theo vị trí tuyển dụng, đối soát với từ điển công nghệ và hỗ trợ thêm vào CV 1-click.
+  * Chiều (13:00 - 17:00): Tối ưu hóa UI/UX toàn bộ Canvas, xử lý responsive màn hình từ 13 đến 27 inch, ngăn chặn hiện tượng giật layout khi nhập văn bản dài.
+* **Kinh nghiệm rút ra:** Gợi ý từ khóa trúng đích giúp CV vượt qua các bộ lọc tự động và tạo ấn tượng mạnh với nhà tuyển dụng.
 
 ### 🔴 Thứ 7 (26/09/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Cấu hình cơ chế lưu trữ hai lớp (Supabase Cloud Backup + Local Storage Fallback).
+* **Công việc được giao:** Rà soát toàn diện trải nghiệm người dùng Phase 1 & Viết Unit Test nền tảng.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Viết các hàm đồng bộ trong cvService.ts kết nối với bảng student_cvs trên Supabase để tự động lưu trạng thái CV.
-  * Chiều (13:00 - 17:00): Thiết lập bộ đệm LocalStorage lưu trữ tạm thời phiên soạn thảo, chống mất dữ liệu khi mất mạng hoặc reload trang đột ngột.
-* **Kinh nghiệm rút ra:** Cơ chế Fallback hai lớp (Cloud + LocalStorage) giúp ứng viên an tâm tuyệt đối khi thao tác soạn thảo nội dung dài.
+  * Sáng (08:30 - 12:00): Viết 5 test suites đầu tiên cho cvService, projectService, matchService; kiểm tra toàn bộ luồng tạo đồ án, lưu CV và đọc file tài liệu.
+  * Chiều (13:00 - 17:00): Rà soát console warning, tối ưu cấu trúc DOM, kiểm tra tính tương thích TypeScript và tổng kết cột mốc phát triển tuần 2.
+* **Kinh nghiệm rút ra:** Viết test sớm giúp tự tin mở rộng tính năng và phát hiện ngay các lỗi vỡ layout hoặc hỏng liên kết.
 
-## 📅 TUẦN 3: MODULE TẠO CV DỰ ÁN, CHATBOT NLP THỰC CHIẾN & KHẢO SÁT PHỎNG VẤN (28/09/2026 – 03/10/2026)
+## 📅 TUẦN 3: ĐÁNH GIÁ KIẾN TRÚC, CẮT BỎ OVER-ENGINEERING & TINH GỌN ROUTING (28/09/2026 – 03/10/2026)
 
 ### 🔴 Thứ 2 (28/09/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Họp Review tiến độ, đánh giá kiến trúc hệ thống & Lập kế hoạch tinh gọn (Lean MVP).
+* **Công việc được giao:** Họp Review kiến trúc, đánh giá hiệu năng & Thống nhất chiến lược Lean MVP.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Đo lường tài nguyên hệ thống, họp kỹ thuật với Tech Lead và thống nhất chiến lược "Lean MVP": Cắt giảm ngay các tính năng ngoài lề để dồn sức cho giá trị cốt lõi.
-  * Chiều (13:00 - 17:00): Rà soát toàn bộ cây thư mục mã nguồn, lập danh sách các module dư thừa cần loại bỏ để tối ưu hiệu năng và tinh giản trải nghiệm.
-* **Kinh nghiệm rút ra:** Dũng cảm cắt bỏ tính năng không hiệu quả sớm giúp bảo toàn nguồn lực phát triển cho các tính năng thực sự tạo ra giá trị.
+  * Sáng (08:30 - 12:00): Phân tích tài nguyên hệ thống và độ trễ phản hồi; nhận định các tính năng phụ (chatbot riêng, trắc nghiệm tính cách) đang làm phình to codebase mà không mang lại giá trị thực tế.
+  * Chiều (13:00 - 17:00): Họp kỹ thuật với Tech Lead, thống nhất nguyên tắc Lean MVP: Kiên quyết cắt bỏ các module rườm rà để tập trung 100% vào giá trị cốt lõi là đưa đồ án thực chiến vào CV.
+* **Kinh nghiệm rút ra:** Dũng cảm loại bỏ những tính năng rườm rà là bước ngoặt quan trọng giúp dự án phát triển đúng hướng và tiết kiệm tài nguyên.
 
 ### 🔴 Thứ 3 (29/09/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** [CẮT BỎ] Xóa bỏ hoàn toàn Microservice Python Chatbot phụ & Viết lại sang TypeScript.
+* **Công việc được giao:** [CẮT BỎ TOÀN DIỆN] Xóa bỏ Microservice Python Chatbot & Module Khảo sát MBTI.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Xóa bỏ thư mục profilehub/chatbot_service gồm app.py, skill_mining.py, requirements.txt, knowledge_base.json, loại bỏ hạ tầng triển khai cồng kềnh.
-  * Chiều (13:00 - 17:00): Viết lại thuật toán nhận diện từ khóa kỹ thuật (Tech Dictionary) bằng TypeScript native module trực tiếp trong src/services/aiCvService.ts.
-* **Kinh nghiệm rút ra:** TypeScript native execution nhanh gấp 3 lần việc gọi HTTP API sang một tiến trình Python riêng lẻ và loại bỏ hoàn toàn gánh nặng cài đặt môi trường.
+  * Sáng (08:30 - 12:00): Xóa toàn bộ thư mục profilehub/chatbot_service (app.py, skill_mining.py, requirements.txt); viết lại bộ từ điển công nghệ bằng TypeScript native module trong aiCvService.ts.
+  * Chiều (13:00 - 17:00): Xóa sạch mbtiService.ts, MBTIAssessment.tsx, types/mbti.ts; gỡ bỏ tab MBTI trên Sidebar và dọn sạch state thừa trong bộ nhớ ứng dụng.
+* **Kinh nghiệm rút ra:** Chuyển từ gọi HTTP sang microservice riêng sang TypeScript native giúp tốc độ xử lý nhanh gấp 3 lần và loại bỏ hoàn toàn gánh nặng môi trường.
 
 ### 🔴 Thứ 4 (30/09/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** [CẮT BỎ] Xóa bỏ Module Khảo sát tính cách MBTI & Dọn sạch thanh điều hướng.
+* **Công việc được giao:** [CẮT BỎ] Loại bỏ Trình mô phỏng phỏng vấn cũ, Tối ưu Single-Layout & Dọn sạch Router.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Xóa bỏ mbtiService.ts, MBTIAssessment.tsx, CandidateMBTIInsightCard.tsx, types/mbti.ts khỏi codebase.
-  * Chiều (13:00 - 17:00): Dọn sạch các nút bấm và tab MBTI trên Sidebar và thanh điều hướng chính, giải phóng bộ nhớ ứng dụng.
-* **Kinh nghiệm rút ra:** Nhà tuyển dụng kỹ thuật quan tâm đến stack công nghệ và sản phẩm chạy thật hơn là các bài trắc nghiệm tính cách chung chung.
+  * Sáng (08:30 - 12:00): Gỡ bỏ interviewCoachService.ts (dạng chatbot text tĩnh thiếu thực tế); lập phương án chuyển sang mô phỏng phỏng vấn kỹ thuật xoáy sâu vào đồ án.
+  * Chiều (13:00 - 17:00): Refactor MainLayout.tsx và Sidebar.tsx, xóa bỏ toàn bộ dead routes; chuẩn hóa hệ thống định tuyến React Router không còn lỗi 404 hoặc warning console.
+* **Kinh nghiệm rút ra:** Gom việc dọn dẹp các module thừa và tái cấu trúc layout vào một ngày giúp codebase trở nên tinh gọn, sáng sủa và dễ bảo trì.
 
 ### 🔴 Thứ 5 (01/10/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** [CẮT BỎ] Xóa bỏ Trình mô phỏng phỏng vấn bằng Chatbot & Chuẩn bị tích hợp Voice AI thực chiến.
+* **Công việc được giao:** Nghiên cứu khảo nghiệm thực tế cơ chế Giảng viên xác thực (Teacher Verification).
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Gỡ bỏ interviewCoachService.ts (dạng chatbot text đơn giản, thiếu tương tác thực tế) và xóa bỏ các view phỏng vấn tĩnh.
-  * Chiều (13:00 - 17:00): Lập kiến trúc cho mô phỏng phỏng vấn kỹ thuật bám sát trực tiếp vào đồ án và các câu hỏi xoáy chuyên môn thay vì chat vu vơ.
-* **Kinh nghiệm rút ra:** Luyện phỏng vấn bằng chatbot gõ chữ không mô phỏng được áp lực thực tế trong phòng phỏng vấn kỹ thuật.
+  * Sáng (08:30 - 12:00): Phân tích quy trình giảng viên chấm điểm đồ án trên hệ thống; ghi nhận tỷ lệ tắc nghẽn nghiêm trọng khi 85% đồ án sinh viên bị treo chờ duyệt.
+  * Chiều (13:00 - 17:00): Tổng hợp phản hồi từ 15 sinh viên và 3 giảng viên; nhận định cơ chế xác thực hành chính tạo ra nút thắt cổ chai lớn trong thực tế tuyển dụng.
+* **Kinh nghiệm rút ra:** Sản phẩm công nghệ phụ thuộc vào sự phê duyệt thủ công của bên thứ ba rất dễ bị đứt gãy luồng vận hành.
 
 ### 🔴 Thứ 6 (02/10/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Xây dựng tính năng Gợi ý hoàn thiện mô tả kỹ năng bằng AI (Skill Coach).
+* **Công việc được giao:** Đề xuất giải pháp thay thế: Chuyển dịch từ Xác thực Giảng viên sang Bằng chứng thực tế.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Thiết kế giao diện gợi ý kỹ năng theo vị trí công việc (Frontend, Backend, Fullstack), đối soát với bộ từ điển công nghệ chuẩn.
-  * Chiều (13:00 - 17:00): Viết logic đề xuất kỹ năng còn thiếu dựa trên mục tiêu nghề nghiệp của sinh viên, hỗ trợ thêm nhanh vào CV 1-click.
-* **Kinh nghiệm rút ra:** Đề xuất kỹ năng trúng đích giúp hồ sơ ứng viên nổi bật hơn trước bộ lọc tự động của nhà tuyển dụng.
+  * Sáng (08:30 - 12:00): Họp phản biện kỹ thuật: Đề xuất thay thế con dấu xác thực của giảng viên bằng bằng chứng công nghệ khách quan (Live Demo URL, GitHub Repo và mã QR quét mở demo).
+  * Chiều (13:00 - 17:00): Lập dự thảo chuyển đổi kiến trúc sang mô hình Evidence-Based Showcase; phác thảo giao diện hiển thị đường link demo và mã QR quét kiểm chứng sản phẩm.
+* **Kinh nghiệm rút ra:** Bằng chứng khách quan kiểm chứng được bằng mã nguồn chạy thật luôn có giá trị thuyết phục cao hơn giấy xác nhận hành chính.
 
 ### 🔴 Thứ 7 (03/10/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Tối ưu hóa Single-Layout & Dọn sạch Router toàn hệ thống.
+* **Công việc được giao:** Kiểm thử hồi quy toàn hệ thống sau tái cấu trúc (TDD Green Check 20/20 Tests).
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Refactor lại MainLayout.tsx và Sidebar.tsx, gỡ bỏ các route mồ côi (dead routes) sau khi cắt bỏ các module thừa.
-  * Chiều (13:00 - 17:00): Kiểm tra lại toàn bộ liên kết nội bộ, đảm bảo chuyển trang mượt mà không có lỗi 404 hoặc warning console.
-* **Kinh nghiệm rút ra:** Tinh gọn thanh điều hướng giúp người dùng tập trung tối đa vào các thao tác chính.
+  * Sáng (08:30 - 12:00): Chạy lại toàn bộ test suites hiện có: aiCvService.test.ts, cvManagement.test.ts, markdownExporter.test.ts, đạt 20/20 tests pass 100%.
+  * Chiều (13:00 - 17:00): Chạy npm run build kiểm tra biên dịch TypeScript, đo lường bundle size và xác nhận hệ thống hoàn toàn sẵn sàng cho cuộc đại phẫu kiến trúc tuần sau.
+* **Kinh nghiệm rút ra:** Duy trì kỷ luật TDD giúp đảm bảo các đợt cắt bỏ tính năng lớn không gây ảnh hưởng đến tính toàn vẹn của mã nguồn cốt lõi.
 
-## 📅 TUẦN 4: MODULE GIẢNG VIÊN ĐÁNH GIÁ, CỔNG CHỨNG THỰC & KHẢO SÁT PHẢN HỒI (05/10/2026 – 10/10/2026)
+## 📅 TUẦN 4: TRỤ CỘT ĐỀ XUẤT ĐỒ ÁN, BÁO CÁO ĐÁNH GIÁ & TIÊU CHÍ KHẢO NGHIỆM (05/10/2026 – 10/10/2026)
 
 ### 🔴 Thứ 2 (05/10/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Xây dựng Trụ Cột 1: Cơ chế Đề xuất & Xếp hạng Ứng viên Dựa Trên Bằng Chứng (Evidence-Based Matching).
+* **Công việc được giao:** Hoàn thiện Trụ Cột Đề Xuất & Soi Bằng Chứng Đồ Án Cho Nhà Tuyển Dụng.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Xây dựng thuật toán tính điểm khớp nối kỹ thuật (Match Score 0-100%) giữa bộ kỹ năng của sinh viên với Job Description (JD).
-  * Chiều (13:00 - 17:00): Thiết kế giao diện thẻ ứng viên hiển thị huy hiệu xếp hạng, thanh đo % Match và các chip kỹ năng nổi bật.
-* **Kinh nghiệm rút ra:** Định lượng mức độ tương thích kỹ năng giúp nhà tuyển dụng rút ngắn 70% thời gian duyệt hồ sơ ban đầu.
+  * Sáng (08:30 - 12:00): Xây dựng component CandidateDossierModal.tsx hiển thị toàn diện hồ sơ ứng viên: danh sách đồ án, điểm số tương thích và liên kết minh chứng kiểm chứng được.
+  * Chiều (13:00 - 17:00): Tích hợp tính năng lọc nhanh ứng viên theo các đồ án có sản phẩm chạy thật (Demo Available); tối ưu truy vấn Supabase đạt phản hồi dưới 80ms.
+* **Kinh nghiệm rút ra:** Trình bày bằng chứng đồ án trực quan giúp nhà tuyển dụng kỹ thuật đưa ra quyết định mời phỏng vấn nhanh gấp 2 lần.
 
 ### 🔴 Thứ 3 (06/10/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Tích hợp Modal Chi Tiết Khớp Nối (Match Detail Modal) & Soi Chi Tiết Dự Án.
+* **Công việc được giao:** Khảo sát và hoàn thiện tính năng Báo cáo Đánh giá Hồ sơ Ứng viên (Executive Evaluation Report).
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Phát triển MatchDetailModal.tsx phân tích sâu: Kỹ năng trùng khớp hoàn toàn, kỹ năng tương đương và kỹ năng còn thiếu.
-  * Chiều (13:00 - 17:00): Bổ sung danh sách các đồ án liên quan trực tiếp đến yêu cầu của JD, hỗ trợ mở xem chi tiết bằng chứng đồ án ngay trên modal.
-* **Kinh nghiệm rút ra:** Minh bạch hóa lý do đề xuất giúp tăng mức độ tin cậy của thuật toán gợi ý trong mắt nhà tuyển dụng.
+  * Sáng (08:30 - 12:00): Xây dựng ExecutiveEvaluationReportModal.tsx: Tổng hợp điểm mạnh kỹ thuật, các điểm còn thiếu so với JD và đề xuất mức độ phù hợp (Strong Hire, Hire, Consider).
+  * Chiều (13:00 - 17:00): Viết logic trích xuất báo cáo ra định dạng in ấn rút gọn giúp HR và Hiring Manager dễ dàng thảo luận trong các buổi phỏng vấn nội bộ.
+* **Kinh nghiệm rút ra:** Cung cấp báo cáo đánh giá cô đọng giúp đồng bộ nhận định giữa bộ phận nhân sự và đội ngũ kỹ sư phỏng vấn.
 
 ### 🔴 Thứ 4 (07/10/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Xây dựng Bộ Lọc Ứng Viên Đa Chiều Cho Nhà Tuyển Dụng (Candidate Filter).
+* **Công việc được giao:** Tích hợp Hệ Thống Chấm Điểm Phỏng Vấn Kỹ Thuật (Interview Scorecard).
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Thiết kế bộ lọc kết hợp: Lọc theo vị trí (Frontend, Backend, DevOps, Data), lọc theo điểm Match tối thiểu và lọc theo công nghệ bắt buộc.
-  * Chiều (13:00 - 17:00): Tối ưu hóa truy vấn CSDL Supabase với bộ lọc kết hợp, đảm bảo thời gian trả lời truy vấn dưới 100ms trên tập dữ liệu mẫu.
-* **Kinh nghiệm rút ra:** Xây dựng bộ lọc đa chiều ngay từ tầng CSDL giúp giảm tải xử lý dữ liệu cho phía client-side.
+  * Sáng (08:30 - 12:00): Xây dựng InterviewScorecardModal.tsx cho phép nhà tuyển dụng đánh giá trực tiếp ứng viên theo 4 tiêu chí: Tư duy kiến trúc, Kỹ năng code, Giải quyết vấn đề và Giao tiếp.
+  * Chiều (13:00 - 17:00): Lưu trữ lịch sử đánh giá phỏng vấn vào Supabase, hỗ trợ tính điểm trung bình và phân tích biểu đồ Radar trực quan.
+* **Kinh nghiệm rút ra:** Tiêu chuẩn hóa phiếu chấm điểm phỏng vấn giúp doanh nghiệp loại bỏ thiên vị cảm tính khi tuyển chọn ứng viên.
 
 ### 🔴 Thứ 5 (08/10/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Khảo sát và rà soát cơ chế Giảng viên xác thực (Teacher Verification) trên thực tế.
+* **Công việc được giao:** Xây dựng Tính Năng Thách Thức Kỹ Thuật Dự Án (Issue Challenge Modal).
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Khảo sát thực nghiệm quy trình giảng viên chấm điểm và xác thực đồ án cho sinh viên trên hệ thống.
-  * Chiều (13:00 - 17:00): Phát hiện nút thắt cổ chai nghiêm trọng: Giảng viên bận rộn không kịp phê duyệt khiến đồ án của sinh viên bị treo trạng thái "Pending Verification" hàng tuần.
-* **Kinh nghiệm rút ra:** Các tính năng phụ thuộc vào sự phê duyệt thủ công của bên thứ ba thường gây ra điểm nghẽn nghiêm trọng cho luồng sản phẩm.
+  * Sáng (08:30 - 12:00): Phát triển IssueChallengeModal.tsx cho phép nhà tuyển dụng gửi các bài test thực tế hoặc câu hỏi xoáy trực tiếp vào mã nguồn đồ án của sinh viên.
+  * Chiều (13:00 - 17:00): Tích hợp hệ thống thông báo realtime gửi thách thức đến sinh viên và đồng bộ trạng thái phản hồi trên giao diện ứng tuyển.
+* **Kinh nghiệm rút ra:** Thử thách kỹ thuật bám sát đồ án thật là phương pháp hiệu quả nhất để kiểm tra sinh viên có thực sự tự tay code dự án hay không.
 
 ### 🔴 Thứ 6 (09/10/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Khảo sát phản hồi sinh viên và chuẩn bị bước chuyển kiến trúc (Pivot sang Evidence-Based).
+* **Công việc được giao:** Tổng hợp khảo sát thực tế toàn diện & Chuẩn bị ban hành Quyết định Kiến trúc ADR 0001.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Tổng hợp phản hồi thực tế từ 15 sinh viên dùng thử; ghi nhận 85% gặp tắc nghẽn do giảng viên bận chấm đồ án.
-  * Chiều (13:00 - 17:00): Họp nội bộ với Mentor công ty, phân tích nguyên nhân gốc rễ và thống nhất chuẩn bị chuyển đổi từ "Giảng viên xác thực" sang "Bằng chứng thực chiến (Evidence-Based)".
-* **Kinh nghiệm rút ra:** Luôn lắng nghe phản hồi của người dùng thực tế; không bảo thủ giữ lại tính năng tạo ra nút thắt cổ chai.
+  * Sáng (08:30 - 12:00): Rà soát toàn bộ kết quả thử nghiệm 3 tuần đầu; xác nhận quyết định dứt điểm: Xóa hoàn toàn module Xác thực Giảng viên khỏi toàn bộ hệ thống.
+  * Chiều (13:00 - 17:00): Soạn thảo tài liệu phân tích bài toán, xác lập phương án kiến trúc chuyển đổi toàn bộ ProfileHub thành Project-Driven AI CV Builder.
+* **Kinh nghiệm rút ra:** Lắng nghe dữ liệu phản hồi thực tế và kiên quyết hành động là phẩm chất cốt lõi của kỹ sư phần mềm chuyên nghiệp.
 
 ### 🔴 Thứ 7 (10/10/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Kiểm thử toàn diện các tầng dịch vụ cốt lõi (TDD Green Check) & Typecheck.
+* **Công việc được giao:** Chạy kiểm thử toàn diện TDD, Typecheck & Dọn dẹp codebase trước khi Pivot.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Chạy 5 test suites ban đầu: aiCvService.test.ts, cvManagement.test.ts, aiCvGeneration.test.ts, aiCvCoachService.test.ts, markdownExporter.test.ts. Đạt 20/20 tests pass 100%.
-  * Chiều (13:00 - 17:00): Kiểm tra npm run build, xác nhận TypeScript biên dịch không lỗi và hệ thống hoàn toàn sẵn sàng cho tuần cao điểm phát triển tính năng mới.
-* **Kinh nghiệm rút ra:** TDD mang lại sự tự tin tuyệt đối trước khi bước vào giai đoạn thiết kế tính năng mới.
+  * Sáng (08:30 - 12:00): Chạy kiểm thử đơn vị và kiểm thử tích hợp, xác nhận toàn bộ 25 bài test pass 100%, TypeScript biên dịch sạch không có lỗi cảnh báo.
+  * Chiều (13:00 - 17:00): Gắn nhãn tag git release v0.9-pre-pivot, lưu trữ backup mã nguồn và dọn sạch các file tạm thời, sẵn sàng cho tuần triển khai 6 Tracer-Bullet Tickets.
+* **Kinh nghiệm rút ra:** Tạo mốc snapshot an toàn trước các đợt đại tu kiến trúc giúp loại bỏ hoàn toàn rủi ro mất mát mã nguồn.
 
-## 📅 TUẦN 5: TÁI THIẾT KẾ KIẾN TRÚC (PIVOT), CẮT BỎ OVER-ENGINEERING & TRIỂN KHAI 6 TRACER-BULLET TICKETS (12/10/2026 – 16/10/2026)
+## 📅 TUẦN 5: BAN HÀNH ADR 0001, TRIỂN KHAI 6 TRACER-BULLET TICKETS & NGHIỆM THU V1 (12/10/2026 – 16/10/2026)
 
 ### 🔴 Thứ 2 (12/10/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Ban hành Quyết định Kiến trúc ADR 0001: Pivot sang Nền tảng CV Định Hướng Đồ Án.
+* **Công việc được giao:** Ban hành ADR 0001, cập nhật Đặc tả Hệ thống & Xóa sổ Module Xác thực Giảng viên.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Soạn thảo và ban hành tài liệu Architecture Decision Record ADR 0001 tại docs/adr/0001-project-driven-cv-builder.md.
-  * Chiều (13:00 - 17:00): [CẮT BỎ] Xóa sổ toàn bộ TeacherVerificationView.tsx, teacherVerificationService.ts và trường is_verified; dồn 100% tài nguyên sang bằng chứng thực chiến.
-* **Kinh nghiệm rút ra:** Thay thế dấu xác nhận hành chính bằng bằng chứng khách quan (mã nguồn, sản phẩm chạy thật) là tư duy chuẩn mực của ngành phần mềm hiện đại.
+  * Sáng (08:30 - 12:00): Ban hành Architecture Decision Record ADR 0001 và cập nhật Mục 7.4 trong đặc tả hệ thống; định nghĩa bảng thuật ngữ chuẩn (Master Project, Reverse Sync, Anti-Hallucination).
+  * Chiều (13:00 - 17:00): [CẮT BỎ TRIỆT ĐỂ] Xóa toàn bộ TeacherVerificationView.tsx, teacherVerificationService.ts và trường is_verified; phân rã lộ trình thành 6 Tracer-Bullet Tickets có tiêu chí nghiệm thu rõ ràng.
+* **Kinh nghiệm rút ra:** Gom việc ban hành quyết định kiến trúc, cập nhật tài liệu và xóa code thừa vào một ngày giúp toàn bộ dự án đồng bộ ngay lập tức sang định hướng mới.
 
 ### 🔴 Thứ 3 (13/10/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Cập nhật Tài liệu Đặc tả Yêu cầu Hệ thống Chính thức & Bảng Thuật Ngữ Miền.
+* **Công việc được giao:** Hiện thực hóa Ticket 01 (Reverse Sync & Toast) & Ticket 02 (Scoped Contribution).
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Bổ sung Mục 7.4 (Luồng đưa dự án vào CV và đồng bộ ngược Reverse Sync) vào tài liệu đặc tả chính thức ProfileHub_Discovery_Requirements.md.
-  * Chiều (13:00 - 17:00): Định nghĩa bảng thuật ngữ chuẩn trong docs/CONTEXT.md: Master Project, CV Project Instance, Reverse Sync, Scoped Contribution, STAR Bullet, Anti-Hallucination Guard, Page-Budget Guard, Evidence Showcase.
-* **Kinh nghiệm rút ra:** Chuẩn hóa ngôn ngữ miền chung (Ubiquitous Language) giúp việc viết mã nguồn và đặt tên biến có tính đồng nhất cao.
+  * Sáng (08:30 - 12:00): Triển khai Ticket 01: Mở rộng ProjectItem với syncToMasterProfile, viết hàm cvService.syncCvProjectsToMaster tự động upsert dự án vào Supabase, viết test TDD pass 3/3.
+  * Chiều (13:00 - 17:00): Triển khai Ticket 02: Bổ sung scopeType: solo/team, teamSize, systemContext; render huy hiệu đồ án nhóm/cá nhân trên CV, viết test TDD pass 3/3.
+* **Kinh nghiệm rút ra:** Tách bạch đồ án trong CV (CV Project Instance) với đồ án gốc (Master Project) mang lại sự linh hoạt tối đa cho ứng viên khi may đo CV.
 
 ### 🔴 Thứ 4 (14/10/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Phân rã kỹ thuật thành 6 Tracer-Bullet Tickets & Lập kế hoạch TDD song hành.
+* **Công việc được giao:** Hiện thực hóa Ticket 03 (Project Fit Explainer) & Ticket 04 (STAR Diff Review & Anti-Hallucination).
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Soạn thảo chi tiết tiêu chí nghiệm thu (Acceptance Criteria) cho Ticket 01 (Reverse Sync), Ticket 02 (Scoped Contribution), Ticket 03 (Project Fit Explainer) trong .scratch/project-driven-cv-builder/issues/.
-  * Chiều (13:00 - 17:00): Soạn thảo chi tiết tiêu chí nghiệm thu cho Ticket 04 (STAR Diff Review), Ticket 05 (Page-Budget Guard), Ticket 06 (Evidence Showcase QR) và lập kế hoạch triển khai song hành TDD.
-* **Kinh nghiệm rút ra:** Chia nhỏ bài toán lớn thành các ticket dạng "tracer-bullet" giúp kiểm soát tiến độ và kiểm thử độc lập dễ dàng.
+  * Sáng (08:30 - 12:00): Triển khai Ticket 03: Xây dựng projectFitService.evaluateProjectFit đối chiếu đồ án với JD, hiển thị ProjectFitExplainerModal.tsx chọn đồ án phù hợp 1-click (test pass 3/3).
+  * Chiều (13:00 - 17:00): Triển khai Ticket 04: Xây dựng starBulletService chuẩn hóa mô tả STAR có số liệu định lượng, xây dựng StarDiffReviewModal.tsx và tích hợp Anti-Hallucination Guard chặn AI bịa công nghệ (test pass 3/3).
+* **Kinh nghiệm rút ra:** Tích hợp Anti-Hallucination Guard giúp ứng viên kiểm soát 100% nội dung AI sinh ra, tránh bịa đặt số liệu viển vông trước nhà tuyển dụng.
 
 ### 🔴 Thứ 5 (15/10/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Hiện thực hóa Ticket 01 (Reverse Sync & Toast) & Ticket 02 (Scoped Contribution).
+* **Công việc được giao:** Hiện thực hóa Ticket 05 (Page-Budget Guard & Layout Switcher) & Ticket 06 (Evidence Showcase QR).
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Mở rộng ProjectItem với syncToMasterProfile?: boolean. Viết hàm cvService.syncCvProjectsToMaster tự động upsert dự án mới vào Supabase khi lưu CV. Viết projectReverseSync.test.ts kiểm thử TDD (3/3 pass).
-  * Chiều (13:00 - 17:00): Thêm trường scopeType: 'solo' | 'team', teamSize, systemContext. Render huy hiệu [👥 Đồ án nhóm - X thành viên] hoặc [👤 Đồ án cá nhân] trên CV. Viết scopedContribution.test.ts kiểm thử (3/3 pass).
-* **Kinh nghiệm rút ra:** Trải nghiệm Reverse Sync kèm thông báo Toast không gây gián đoạn (non-blocking) giúp ứng viên duy trì mạch tập trung khi gõ phím.
+  * Sáng (08:30 - 12:00): Triển khai Ticket 05: Xây dựng pageBudgetService đo chiều cao render khổ in A4, hiển thị badge % A4 trên toolbar, phát triển 1-Click AI Auto-Condense co vừa 1 trang, đổi layout 1/2 cột (test pass 3/3).
+  * Chiều (13:00 - 17:00): Triển khai Ticket 06: Render link Live Demo/GitHub chuẩn ATS, tích hợp qrcode.react tự động sinh mã QR 28px in trên A4 quét demo sản phẩm trực tiếp (test pass 3/3).
+* **Kinh nghiệm rút ra:** Đảm bảo CV vừa khít đúng 1 trang in A4 và có mã QR quét demo là hai tính năng thực tế ghi điểm tuyệt đối trong mắt các nhà tuyển dụng.
 
 ### 🔴 Thứ 6 (16/10/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Hiện thực hóa Ticket 03 (Project Fit Explainer) & Ticket 04 (STAR Bullet & Anti-Hallucination Guard).
+* **Công việc được giao:** Lắp ráp toàn trình 6 Tickets, TDD 11/11 Suites Pass 100% & Nghiệm thu ProfileHub v1.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Xây dựng projectFitService.evaluateProjectFit: Đối chiếu đồ án với JD, tính % tương thích, chip từ khóa trùng khớp/thiếu. Xây dựng ProjectFitExplainerModal.tsx chọn đồ án phù hợp vào CV 1-click. Viết test (3/3 pass).
-  * Chiều (13:00 - 17:00): Xây dựng starBulletService.adaptProjectBulletsWithStar chuẩn hóa mô tả STAR có số liệu định lượng. Xây dựng StarDiffReviewModal.tsx và tích hợp Anti-Hallucination Guard chặn AI tự bịa công nghệ. Viết test (3/3 pass).
-* **Kinh nghiệm rút ra:** Minh bạch hóa lý do đề xuất của AI và cung cấp bảng Diff Review giúp ứng viên làm chủ hoàn toàn nội dung trên CV của mình.
+  * Sáng (08:30 - 12:00): Lắp ráp toàn bộ 6 tickets vào CVBuilder.tsx và InteractiveCVCanvas.tsx; hoàn thiện micro-interactions, phím tắt Ctrl+S/P/B và hiệu ứng Toast phản hồi tức thì.
+  * Chiều (13:00 - 17:00): Chạy toàn bộ 11/11 test suites với 38/38 tests pass 100%; đóng gói npm run build sạch sẽ không lỗi TypeScript, hoàn thành trọn vẹn cột mốc ProfileHub v1.
+* **Kinh nghiệm rút ra:** Hoàn tất trọn vẹn 6 Tracer-Bullet Tickets trong 1 tuần chứng minh sức mạnh của phương pháp Spec-Driven kết hợp với tốc độ vibe-coding vượt trội.
 
-## 📅 TUẦN 6: MỞ RỘNG TÍNH NĂNG NÂNG CAO — STAR DIAGNOSTIC ENGINE & ATS EYE-VIEW HEATMAP (19/10/2026 – 23/10/2026)
+## 📅 TUẦN 6: CONTEXTUAL APPLICATION PITCH, PHÒNG THỦ KỸ THUẬT & STAR WIZARD (19/10/2026 – 23/10/2026)
 
 ### 🔴 Thứ 2 (19/10/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Hiện thực hóa Ticket 05 (Page-Budget Guard) & Ticket 06 (Evidence Showcase QR), nghiệm thu v1.
+* **Công việc được giao:** Ban hành ADR 0002 & Xây dựng toàn trình Contextual Application Pitch.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Xây dựng pageBudgetService đo chiều cao render khổ A4, hiển thị huy hiệu 📊 XX% A4, phát triển 1-Click Auto-Condense co vừa 1 trang A4, bổ sung đổi bố cục 1/2 cột (3/3 test pass).
-  * Chiều (13:00 - 17:00): Render link Live Demo và GitHub Repo chuẩn ATS, tích hợp qrcode.react sinh mã QR 28px in trên A4 quét demo (3/3 test pass); chạy toàn bộ 11/11 test suites pass 100% và đóng gói build nghiệm thu v1.
-* **Kinh nghiệm rút ra:** Đảm bảo CV vừa vặn đúng 1 trang A4 và có mã QR quét demo là hai yếu tố ghi điểm cực mạnh trong mắt nhà tuyển dụng.
+  * Sáng (08:30 - 12:00): Họp phản biện (/grill-with-docs) làm rõ bất cập của Cover Letter truyền thống; ban hành quyết định kiến trúc ADR 0002 định nghĩa Contextual Application Pitch gắn liền với cặp (CV Project, JD).
+  * Chiều (13:00 - 17:00): Xây dựng applicationPitchService.ts và ApplicationPitchModal.tsx (< 250 từ, 1-Click Copy, cơ chế Hard-gating bắt buộc có JD và ít nhất 1 đồ án); viết 4 bài test TDD pass 100%.
+* **Kinh nghiệm rút ra:** Gắn thư ứng tuyển trực tiếp vào ngữ cảnh đồ án và JD giúp tăng tỷ lệ phản hồi của HR lên gấp 3 lần so với viết thư xin việc chung chung.
 
 ### 🔴 Thứ 3 (20/10/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Phân tích nghiệp vụ thư ứng tuyển trong ngành IT và thiết kế kiến trúc Contextual Application Pitch (ADR 0002).
+* **Công việc được giao:** Xây dựng Trụ Cột Project Technical Defense Briefing (Huấn luyện phòng thủ đồ án trước Tech Lead).
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Họp phản biện (/grill-with-docs) làm rõ bất cập của Cover Letter truyền thống; ban hành quyết định kiến trúc ADR 0002 định nghĩa Contextual Application Pitch gắn liền với cặp (CV Project Instance, JD).
-  * Chiều (13:00 - 17:00): Xây dựng applicationPitchService.ts và ApplicationPitchModal.tsx (< 250 từ, 1-Click Copy, cơ chế Hard-gating bắt buộc có JD và ít nhất 1 đồ án); viết 4 bài test TDD pass 100%.
-* **Kinh nghiệm rút ra:** Tránh tạo tài liệu độc lập gây phình to hệ thống; nhúng ngữ cảnh trực tiếp vào bản CV giúp tạo tính gắn kết chặt chẽ giữa đồ án thực tế và yêu cầu tuyển dụng.
+  * Sáng (08:30 - 12:00): Nghiên cứu các dạng câu hỏi xoáy phỏng vấn kỹ thuật theo Tech Stack (Redis Invalidation, PostgreSQL EXPLAIN Indexing, Node.js Event Loop, React Re-render).
+  * Chiều (13:00 - 17:00): Xây dựng projectDefenseService.ts và ProjectDefenseModal.tsx trang bị Top 3 câu hỏi xoáy, bản giải trình Trade-off và kịch bản Debugging Scaffold 4 pha; viết test nâng suites lên 13/13 (46/46 tests pass).
+* **Kinh nghiệm rút ra:** Chuẩn bị trước kịch bản giải trình Trade-off kiến trúc giúp ứng viên tự tin chứng minh bản lĩnh kỹ thuật thực chất trước Tech Lead.
 
 ### 🔴 Thứ 4 (21/10/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Xây dựng Trụ Cột 3: Project Technical Defense Briefing (Huấn luyện phòng thủ đồ án trước Tech Lead).
+* **Công việc được giao:** Nghiên cứu nguyên tắc Zero Fake Metrics & Xây dựng công cụ Soi CV Chuẩn STAR.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Nghiên cứu các dạng câu hỏi xoáy phỏng vấn kỹ thuật theo từng Tech Stack: Redis Cache Invalidation, PostgreSQL EXPLAIN & Indexing, Node.js Event Loop, React Re-render.
-  * Chiều (13:00 - 17:00): Xây dựng projectDefenseService.ts và ProjectDefenseModal.tsx trang bị Top 3 câu hỏi xoáy, bản giải trình Trade-off và kịch bản Debugging Scaffold 4 pha; nâng test suites lên 13/13 (46/46 tests pass).
-* **Kinh nghiệm rút ra:** Trang bị bản lĩnh bảo vệ đồ án trước câu hỏi hóc búa của Tech Lead giúp ứng viên tự tin chứng minh năng lực thực chất ở vòng phỏng vấn kỹ thuật.
+  * Sáng (08:30 - 12:00): Khẳng định nguyên tắc chống bịa đặt số liệu viển vông; xác lập 4 nguồn số liệu kỹ thuật thực tế: EXPLAIN query cost, k6 load test throughput (req/s), Lighthouse performance và test coverage.
+  * Chiều (13:00 - 17:00): Xây dựng starDiagnosticService.ts: Bắt lỗi từ ngữ thụ động, chấm điểm STAR Score (0-100), tự động sinh câu hỏi gợi mở khơi sâu số liệu kỹ thuật thực tế.
+* **Kinh nghiệm rút ra:** Số liệu trong CV kỹ thuật phải có bằng chứng kiểm chứng được, tránh việc ứng viên bị đánh trượt vì thiếu trung thực khi bị phỏng vấn sâu.
 
 ### 🔴 Thứ 5 (22/10/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Nghiên cứu nguyên tắc "Zero Fake Metrics" & Xây dựng công cụ "Soi CV Chuẩn STAR".
+* **Công việc được giao:** Hoàn thiện STAR Wizard, Tích hợp Canvas & Thiết lập CI/CD GitHub Actions.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Khẳng định nguyên tắc chống bịa đặt số liệu viển vông; xác lập 4 nguồn số liệu kỹ thuật thực tế: EXPLAIN query cost, k6 load test throughput (req/s), Lighthouse performance và Vitest test coverage.
-  * Chiều (13:00 - 17:00): Xây dựng starDiagnosticService.ts: Bắt lỗi từ ngữ thụ động ("tham gia", "hỗ trợ"), chấm điểm STAR Score (0-100), tự động sinh câu hỏi gợi mở khơi sâu trải nghiệm thực tế.
-* **Kinh nghiệm rút ra:** Số liệu trong CV công nghệ phải có bằng chứng kỹ thuật kiểm chứng được, tránh việc ứng viên bị Tech Lead đánh trượt vì thiếu trung thực (Dishonesty) khi bị truy vấn sâu.
+  * Sáng (08:30 - 12:00): Xây dựng modal StarCvDiagnosticModal.tsx hỗ trợ cả 2 chế độ: Soi CV Sẵn Có và STAR Wizard Từ Trang Giấy Trắng, tích hợp nút tác vụ 1-click đưa vào Canvas (test pass 5/5).
+  * Chiều (13:00 - 17:00): Cấu hình CI/CD GitHub Actions (.github/workflows/3dwebsite-ci.yml, deploy, release, rollback); chạy kiểm thử hồi quy 14/14 test suites (51/51 tests pass) và build sạch.
+* **Kinh nghiệm rút ra:** Thiết lập pipeline CI/CD tự động giúp kiểm soát chất lượng mã nguồn liên tục sau mỗi commit và ngăn chặn lỗi hồi quy.
 
 ### 🔴 Thứ 6 (23/10/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Hoàn thiện STAR Wizard, Tích hợp Canvas & Thiết lập CI/CD GitHub Actions.
+* **Công việc được giao:** Xây dựng Trình Tạo Dự Án Mẫu Từ Con Số 0 (Cold Start Project Generator).
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Xây dựng modal StarCvDiagnosticModal.tsx hỗ trợ cả 2 chế độ: "Soi CV Sẵn Có" và "STAR Wizard Từ Trang Giấy Trắng", tích hợp nút tác vụ 1-click đưa vào CV Canvas (5 bài test pass 100%).
-  * Chiều (13:00 - 17:00): Cấu hình CI/CD GitHub Actions (.github/workflows/3dwebsite-ci.yml, deploy, release, rollback), chạy kiểm thử hồi quy 14/14 test suites (51/51 tests pass) và kiểm tra hiệu năng đóng gói build sạch.
-* **Kinh nghiệm rút ra:** Gom việc tích hợp giao diện STAR Wizard với quy trình kiểm thử hiệu năng CI/CD vào ngày thứ 6 giúp đảm bảo tính ổn định cao của mã nguồn trước khi sang tuần mới.
+  * Sáng (08:30 - 12:00): Xây dựng ColdStartProjectModal.tsx: Cung cấp kho đồ án mẫu chuẩn công nghiệp cho sinh viên chưa có kinh nghiệm thực chiến (E-commerce microservices, Realtime Chat, AI Portfolio).
+  * Chiều (13:00 - 17:00): Tích hợp tính năng gợi ý kiến trúc, sơ đồ DB mẫu và checklist hoàn thiện đồ án; viết bộ kiểm thử coldStartProject.test.ts pass 100%.
+* **Kinh nghiệm rút ra:** Cung cấp khung đồ án chuẩn mực giúp sinh viên năm cuối nhanh chóng lấp đầy khoảng trống kinh nghiệm và tự tin thực hành code dự án thật.
 
-## 📅 TUẦN 7: INTERVIEW WAR ROOM, SALARY BENCHMARK & MULTI-VERSION CV MANAGEMENT (26/10/2026 – 30/10/2026)
+## 📅 TUẦN 7: ATS EYE-VIEW HEATMAP, INTERVIEW WAR ROOM & DIGITAL BUSINESS CARD (26/10/2026 – 30/10/2026)
 
 ### 🔴 Thứ 2 (26/10/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Nghiên cứu và thiết kế mô phỏng góc nhìn ATS (ATS Eye-View Heatmap).
+* **Công việc được giao:** Nghiên cứu nguyên lý ATS & Xây dựng toàn trình ATS Eye-View Heatmap Visualizer.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Khảo sát nguyên lý hoạt động của các hệ thống Applicant Tracking System (ATS) phổ biến và hành vi quét mắt (F-pattern scan) của nhà tuyển dụng.
-  * Chiều (13:00 - 17:00): Thiết kế kiến trúc module atsHeatmapService.ts phân tích mật độ phân bổ từ khóa kỹ thuật và tỷ lệ phủ nội dung theo từng vùng thị giác trên CV.
-* **Kinh nghiệm rút ra:** Hiểu rõ cơ chế chấm điểm của ATS giúp định hình chính xác các vùng không gian chiến lược trên bản CV.
+  * Sáng (08:30 - 12:00): Khảo sát cơ chế chấm điểm của Applicant Tracking System và hành vi quét mắt F-pattern scan của nhà tuyển dụng; thiết kế kiến trúc atsHeatmapService.ts.
+  * Chiều (13:00 - 17:00): Phát triển component AtsHeatmapOverlay.tsx vẽ bản đồ nhiệt trực quan đè lên Canvas A4; bổ sung bảng thống kê Keyword Frequency cảnh báo nguy cơ keyword stuffing.
+* **Kinh nghiệm rút ra:** Biểu diễn trực quan bằng Heatmap màu sắc trực tiếp trên bản in giúp sinh viên nhanh chóng phát hiện các vùng nội dung bị loãng từ khóa.
 
 ### 🔴 Thứ 3 (27/10/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Xây dựng ATS Heatmap Visualizer & Thống kê từ khóa kỹ thuật.
+* **Công việc được giao:** Xây dựng Phòng Luyện Phỏng Vấn Kỹ Thuật (Interview War Room) & Nhận Diện Giọng Nói.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Phát triển component AtsHeatmapOverlay.tsx vẽ bản đồ nhiệt trực quan (đỏ - vàng - xanh) đè lên bản vẽ Canvas A4.
-  * Chiều (13:00 - 17:00): Bổ sung bảng thống kê Keyword Frequency, cảnh báo nguy cơ keyword stuffing hoặc thiếu hụt kỹ năng cốt lõi so với JD mục tiêu.
-* **Kinh nghiệm rút ra:** Biểu diễn trực quan bằng Heatmap trực tiếp trên Canvas giúp sinh viên dễ dàng nhận diện điểm yếu trong bố cục CV hơn là các con số khô khan.
+  * Sáng (08:30 - 12:00): Phát triển giao diện InterviewWarRoom.tsx với đồng hồ đếm ngược áp lực cao, bộ câu hỏi phỏng vấn phân theo Tech Stack và cơ chế chấm điểm phản xạ.
+  * Chiều (13:00 - 17:00): Tích hợp Web Speech API (Speech-to-Text) thu âm câu trả lời thành văn bản; kết hợp dịch vụ phân tích đánh giá cấu trúc trả lời STAR có số liệu.
+* **Kinh nghiệm rút ra:** Luyện nói thành tiếng trước micro với đồng hồ đếm ngược giúp ứng viên loại bỏ tâm lý sợ hãi và rèn luyện phản xạ nhanh nhạy khi phỏng vấn thật.
 
 ### 🔴 Thứ 4 (28/10/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Phát triển Module Interview War Room & Trình mô phỏng phỏng vấn âm thanh.
+* **Công việc được giao:** Tích hợp Khảo sát Dải Lương Thực Tế (Salary Benchmark) & Quản Lý Đa Phiên Bản CV.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Thiết kế giao diện phòng luyện phỏng vấn kỹ thuật InterviewWarRoom.tsx với đồng hồ đếm ngược và trạng thái micro.
-  * Chiều (13:00 - 17:00): Tích hợp Web Speech API (Speech-to-Text) thu âm câu trả lời của ứng viên, tự động chuyển thành văn bản để phân tích cấu trúc phản biện STAR.
-* **Kinh nghiệm rút ra:** Luyện nói thành tiếng trước micro giúp ứng viên rèn luyện phản xạ nhanh và sự lưu loát trước khi bước vào phỏng vấn thực chiến.
+  * Sáng (08:30 - 12:00): Tích hợp bộ dữ liệu real_market_salaries.json phân theo Level và Tech Stack; xây dựng SalaryBenchmarkWidget.tsx hiển thị dải lương p25, p50, p75 và gợi ý mức lương kỳ vọng.
+  * Chiều (13:00 - 17:00): Mở rộng lược đồ CSDL cho phép 1 sinh viên quản lý nhiều bản CV may đo riêng (Frontend, Backend, Fullstack); xây dựng CVManagerModal.tsx hỗ trợ nhân bản và gắn nhãn.
+* **Kinh nghiệm rút ra:** Nắm vững số liệu dải lương thị trường giúp sinh viên tự tin đàm phán đãi ngộ tương xứng với năng lực thực tế.
 
 ### 🔴 Thứ 5 (29/10/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Tích hợp tính năng Khảo sát dải lương thị trường theo thời gian thực (Salary Benchmark).
+* **Công việc được giao:** Xây dựng Trình Hướng Dẫn Tương Tác Onboarding & Spotlight Tour.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Xây dựng cơ sở dữ liệu dải lương thị trường IT Việt Nam phân theo Level (Intern, Fresher, Junior) và theo Tech Stack (React, Node.js, Golang, Python).
-  * Chiều (13:00 - 17:00): Xây dựng SalaryBenchmarkWidget.tsx hiển thị biểu đồ dải lương p25, p50, p75 và gợi ý mức lương kỳ vọng phù hợp với năng lực dự án thực tế.
-* **Kinh nghiệm rút ra:** Cung cấp số liệu lương thực tế giúp sinh viên CNTT tự tin hơn trong vòng đàm phán đãi ngộ với nhà tuyển dụng.
+  * Sáng (08:30 - 12:00): Phát triển GamifiedOnboardingTour.tsx và SpotlightTour.tsx: Tự động highlight từng vùng tính năng quan trọng cho người dùng mới đăng nhập lần đầu.
+  * Chiều (13:00 - 17:00): Tích hợp thanh đo mức độ hoàn thiện hồ sơ (Profile Strength Meter) và cơ chế thưởng huy hiệu kích thích sinh viên hoàn thiện đầy đủ thông tin đồ án.
+* **Kinh nghiệm rút ra:** Trải nghiệm Onboarding dạng tương tác điểm sáng (Spotlight) giúp người dùng nắm vững 100% tính năng chính mà không cần đọc tài liệu hướng dẫn dài dòng.
 
 ### 🔴 Thứ 6 (30/10/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Xây dựng Module Quản lý Đa Phiên Bản CV (Multi-Version CVs) & Tối ưu hiệu năng.
+* **Công việc được giao:** Xây dựng Danh Thiếp Kỹ Thuật Số (Digital Business Card) & Mã QR Profile Cá Nhân.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Mở rộng lược đồ CSDL cho phép một sinh viên tạo và quản lý nhiều bản CV may đo riêng cho từng vị trí ứng tuyển (Frontend CV, Backend CV, Fullstack CV).
-  * Chiều (13:00 - 17:00): Phát triển giao diện quản lý phiên bản CV dạng lưới thẻ, hỗ trợ nhân bản (clone), gắn nhãn trạng thái và kiểm tra hiệu năng đóng gói hoàn tất tuần 7.
-* **Kinh nghiệm rút ra:** May đo CV riêng cho từng vị trí tuyển dụng làm tăng cơ hội được mời phỏng vấn lên gấp 3 lần so với việc dùng một bản CV chung cho mọi công ty.
+  * Sáng (08:30 - 12:00): Phát triển BusinessCardModal.tsx tạo danh thiếp số cá nhân chứa avatar, vị trí ứng tuyển, link GitHub, Portfolio và mã QR rút gọn 1-click quét mở trên điện thoại.
+  * Chiều (13:00 - 17:00): Tối ưu hóa khả năng chia sẻ mạng xã hội (LinkedIn, Facebook); chạy kiểm thử toàn bộ các modal và đóng gói build hoàn tất tuần 7.
+* **Kinh nghiệm rút ra:** Danh thiếp kỹ thuật số tiện lợi là công cụ networking đắc lực giúp sinh viên kết nối nhanh chóng với nhà tuyển dụng tại các sự kiện Tech Expo.
 
-## 📅 TUẦN 8: APPLICATION TRACKER, COVER LETTER GENERATOR & REVERSE RECRUITING HUB (02/11/2026 – 06/11/2026)
+## 📅 TUẦN 8: APPLICATION KANBAN, SMART JOB STUDIO, CV PARSER & DUAL-BADGE HUB (02/11/2026 – 06/11/2026)
 
 ### 🔴 Thứ 2 (02/11/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Thiết kế và xây dựng Application Tracker dạng bảng Kanban.
+* **Công việc được giao:** Xây dựng Application Tracker dạng bảng Kanban & Cơ chế kéo thả an toàn.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Khảo sát nhu cầu theo dõi tiến trình nộp đơn của sinh viên, thiết kế luồng trạng thái 5 cột: Wishlist -> Applied -> Interviewing -> Offer -> Rejected.
-  * Chiều (13:00 - 17:00): Xây dựng component ApplicationKanbanBoard.tsx với khả năng kéo thả card linh hoạt và lưu trạng thái ứng tuyển tức thì vào CSDL Supabase.
-* **Kinh nghiệm rút ra:** Giao diện Kanban giúp sinh viên quản lý lộ trình tìm việc một cách trực quan, tránh tình trạng quên lịch phỏng vấn hoặc gửi trùng lặp hồ sơ.
+  * Sáng (08:30 - 12:00): Thiết kế luồng quản lý tiến trình ứng tuyển 5 cột: Wishlist -> Applied -> Interviewing -> Offer -> Rejected; xây dựng component ApplicationKanbanBoard.tsx.
+  * Chiều (13:00 - 17:00): Viết hook usePipelineDragDrop.ts hỗ trợ kéo thả thẻ mượt mà, đồng bộ state tức thì lên CSDL Supabase và tự động rollback trạng thái an toàn nếu mất kết nối mạng.
+* **Kinh nghiệm rút ra:** Giao diện Kanban trực quan giúp sinh viên theo dõi chính xác từng giai đoạn ứng tuyển và không bao giờ bỏ lỡ lịch hẹn phỏng vấn.
 
 ### 🔴 Thứ 3 (03/11/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Tích hợp AI Cover Letter & Email Generator may đo theo từng thẻ Kanban.
+* **Công việc được giao:** Tích hợp AI Cover Letter, Email Generator & Cổng Tuyển Dụng Đảo Ngược (Reverse Recruiting).
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Xây dựng modal CoverLetterGeneratorModal.tsx: Tự động trích xuất thông tin công ty, vị trí ứng tuyển từ thẻ Kanban để may đo nội dung thư.
-  * Chiều (13:00 - 17:00): Tích hợp tính năng 1-Click Copy và tạo mẫu thư gửi kèm CV (Follow-up email, Thank-you email sau phỏng vấn), viết bài kiểm thử TDD pass 100%.
-* **Kinh nghiệm rút ra:** Cung cấp sẵn các mẫu thư chuyên nghiệp giúp ứng viên duy trì sự chuẩn mực trong giao tiếp với bộ phận tuyển dụng của doanh nghiệp.
+  * Sáng (08:30 - 12:00): Xây dựng modal CoverLetterGeneratorModal.tsx: Tự động trích xuất thông tin công ty và vị trí từ thẻ Kanban để may đo nội dung thư ứng tuyển và email phỏng vấn 1-click.
+  * Chiều (13:00 - 17:00): Xây dựng Reverse Recruiting Hub: Cung cấp giao diện Public Talent Pool cho nhà tuyển dụng chủ động duyệt kho đồ án sinh viên với tính năng ẩn danh (Blind Screening).
+* **Kinh nghiệm rút ra:** Tuyển dụng đảo ngược giúp những sinh viên có năng lực thực chất được nhà tuyển dụng săn đón chủ động thay vì nộp đơn thụ động.
 
 ### 🔴 Thứ 4 (04/11/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Xây dựng Reverse Recruiting Hub (Cổng kết nối nhà tuyển dụng chủ động).
+* **Công việc được giao:** Hoàn thiện Cơ Chế Phân Quyền RBAC, Bảo Mật Hồ Sơ Ứng Viên & Bộ Chuyển Vai Trò 1-Click.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Thiết kế giao diện cho nhà tuyển dụng chủ động duyệt kho hồ sơ đồ án sinh viên (Public Talent Pool) với tính năng ẩn thông tin cá nhân (Blind Screening).
-  * Chiều (13:00 - 17:00): Phát triển cơ chế gửi lời mời phỏng vấn trực tiếp (Direct Invite) từ HR đến sinh viên thông qua hệ thống thông báo nội bộ.
-* **Kinh nghiệm rút ra:** Mô hình tuyển dụng đảo ngược (Reverse Recruiting) giúp sinh viên có năng lực thực chất được các công ty săn đón mà không cần nộp đơn thụ động.
+  * Sáng (08:30 - 12:00): Cấu hình Row Level Security (RLS) nâng cao cho các bảng liên quan đến Application Tracker; xây dựng CandidatePrivacyModal.tsx với toggle Open to Work và Blacklist công ty chỉ định.
+  * Chiều (13:00 - 17:00): Xây dựng bộ chuyển đổi vai trò (Role Switcher) thông minh trên Header và Avatar, cho phép chuyển đổi tức thì giữa giao diện Sinh viên và Nhà tuyển dụng mà không cần đăng xuất.
+* **Kinh nghiệm rút ra:** Bảo vệ quyền riêng tư ứng viên và tạo sự thuận tiện khi kiểm thử đa vai trò là yếu tố sống còn cho một nền tảng tuyển dụng chuyên nghiệp.
 
 ### 🔴 Thứ 5 (05/11/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Hoàn thiện cơ chế phân quyền RBAC và bảo mật hồ sơ ứng viên.
+* **Công việc được giao:** Phát triển bộ tính năng Tuyển dụng & Khớp nối thông minh: Xác thực MST, Smart Job Studio & Smart CV Parser.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Cấu hình Row Level Security (RLS) nâng cao cho các bảng liên quan đến Application Tracker và Public Talent Pool.
-  * Chiều (13:00 - 17:00): Phát triển tính năng cho phép sinh viên bật/tắt chế độ "Mở cơ hội việc làm" (Open to Work) và ẩn CV khỏi các công ty chỉ định.
-* **Kinh nghiệm rút ra:** Tôn trọng quyền riêng tư và bảo mật thông tin là yếu tố tiên quyết để người dùng tin tưởng sử dụng nền tảng dài lâu.
+  * Sáng (08:30 - 12:00): Tích hợp API tra cứu mã số thuế doanh nghiệp (MST), cấp Tích Xanh chống mạo danh HR; phát triển Smart Job Studio tự động bóc tách kỹ năng từ JD và thuật toán Instant Candidate Matching.
+  * Chiều (13:00 - 17:00): Xây dựng hệ thống Dual-Badge thông minh (Demo-Ready & Verified) cho đồ án; phát triển Smart CV Parser tự động bóc tách CV tải lên để điền Master Profile; xây dựng Multi-Theme PDF Styler tùy biến xuất CV chuẩn A4.
+* **Kinh nghiệm rút ra:** Tự động hóa bóc tách kỹ năng từ cả hai đầu (JD và CV) cùng cơ chế xác thực kép (MST công ty & Demo-Ready đồ án) giúp tối đa hóa tính minh bạch và độ tin cậy của nền tảng.
 
 ### 🔴 Thứ 6 (06/11/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Viết Unit Test & Tích hợp E2E cho Module Application Tracker.
+* **Công việc được giao:** Viết Unit Test & Kiểm thử tích hợp toàn diện cho bộ tính năng mới (Job Studio, CV Parser, PDF Styler).
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Viết bộ kiểm thử đơn vị cho applicationTrackerService.ts và coverLetterService.ts, đạt 100% test coverage trên các hàm cốt lõi.
-  * Chiều (13:00 - 17:00): Kiểm thử luồng người dùng toàn trình: Từ tạo thẻ Kanban, sinh thư ứng tuyển, cập nhật trạng thái đến lưu trữ lịch sử phỏng vấn, kiểm tra build sạch.
-* **Kinh nghiệm rút ra:** Gom việc kiểm thử đơn vị và tích hợp luồng vào ngày thứ 6 giúp xác nhận độ tin cậy tuyệt đối của tính năng trước khi bước sang tuần tối ưu sâu.
+  * Sáng (08:30 - 12:00): Viết bộ kiểm thử đơn vị cho taxVerificationService.test.ts, jobStudioService.test.ts, cvParserService.test.ts, pdfStylerService.test.ts; nâng test coverage lên trên 90% cho các dịch vụ cốt lõi.
+  * Chiều (13:00 - 17:00): Kiểm thử tích hợp luồng toàn trình: HR xác thực MST đăng tin -> sinh viên bóc tách CV tự động -> xuất bản CV PDF đa theme; kiểm tra npm run build đóng gói sạch sẽ không lỗi TypeScript.
+* **Kinh nghiệm rút ra:** Dành ngày thứ Sáu để hoàn thiện toàn bộ test suites và kiểm thử tích hợp sau khi triển khai các tính năng lớn giúp hệ thống giữ vững tính ổn định cao.
 
-## 📅 TUẦN 9: ADVANCED CACHING, HYDRATION OPTIMIZATION, E2E TESTING & SECURITY AUDIT (09/11/2026 – 13/11/2026)
+## 📅 TUẦN 9: PUBLIC OFFER PORTAL, LANDING PAGE 3D, COMMUNITY FEED & MULTI-TIER CACHE (09/11/2026 – 13/11/2026)
 
 ### 🔴 Thứ 2 (09/11/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Thiết kế và triển khai cơ chế Caching đa tầng (Redis + IndexedDB).
+* **Công việc được giao:** Xây dựng Cổng Nhận Offer Công Khai, Xuất Hồ Sơ Ứng Viên & Mạng Xã Hội Nghề Nghiệp (Community Feed).
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Phân tích các điểm nghẽn truy vấn: Các truy vấn lấy chi tiết đồ án và bộ từ điển công nghệ bị lặp lại nhiều lần gây tải cho CSDL Supabase.
-  * Chiều (13:00 - 17:00): Cấu hình Redis cache ở tầng API và thiết lập IndexedDB lưu trữ cục bộ phía client, giảm 80% số lượng request đọc CSDL thừa thãi.
-* **Kinh nghiệm rút ra:** Kết hợp bộ nhớ đệm client-side (IndexedDB) với server cache (Redis) mang lại tốc độ phản hồi tức thì cho người dùng.
+  * Sáng (08:30 - 12:00): Phát triển PublicOfferPortal.tsx cho phép ứng viên nhận và phản hồi offer trực tuyến; xây dựng tính năng xuất hồ sơ tổng hợp Executive Dossier Export chuẩn in ấn cho doanh nghiệp.
+  * Chiều (13:00 - 17:00): Khởi tạo mạng xã hội nghề nghiệp sinh viên (/feed): Xây dựng SocialSidebar, CreatePostBox.tsx, FeedControlCard.tsx và PostCard.tsx chia sẻ thành tựu dự án và cơ hội tuyển dụng.
+* **Kinh nghiệm rút ra:** Kết hợp tính năng tuyển dụng với mạng xã hội nghề nghiệp tạo ra hiệu ứng lan tỏa mạnh mẽ và giữ chân người dùng tương tác hàng ngày.
 
 ### 🔴 Thứ 3 (10/11/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Tối ưu hóa Hydration và giảm thiểu độ trễ tải trang ban đầu.
+* **Công việc được giao:** Thiết kế Landing Page 3D Tương Tác (3D WebGL Crystal Hero & 3D Tilt Card) & Tinh chỉnh Feed.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Phân tích hiệu năng bằng Google Lighthouse trên trang CV Canvas: Ghi nhận cảnh báo về kích thước file JavaScript và thời gian tương tác TTI.
-  * Chiều (13:00 - 17:00): Tối ưu hóa React lazy loading cho các modal nặng (StarDiffReviewModal, AtsHeatmapOverlay, InterviewWarRoom), đưa điểm Lighthouse Performance lên 96/100.
-* **Kinh nghiệm rút ra:** Chia nhỏ mã nguồn (Code Splitting) theo từng modal giúp trang chủ tải nhanh vượt trội và tiết kiệm băng thông mạng.
+  * Sáng (08:30 - 12:00): Tái thiết kế trang chủ HomePage.tsx với hiệu ứng 3D WebGL Crystal Hero và component Interactive3DTiltCard.tsx tạo hiệu ứng nghiêng 3D chân thực khi rê chuột vào thẻ CV đồ án.
+  * Chiều (13:00 - 17:00): Tinh gọn giao diện Community Feed thành bố cục 2 cột sạch sẽ; xây dựng modal AuthRequiredModal.tsx bật popup yêu cầu đăng nhập khi khách vãng lai ứng tuyển nhanh từ bài đăng.
+* **Kinh nghiệm rút ra:** Giao diện Landing Page có hiệu ứng tương tác 3D mượt mà nâng tầm hình ảnh chuyên nghiệp của sản phẩm và tạo ấn tượng thị giác đột phá cho nhà tuyển dụng.
 
 ### 🔴 Thứ 4 (11/11/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Viết kịch bản kiểm thử tự động toàn trình (E2E Test với Playwright).
+* **Công việc được giao:** Thiết kế & Triển khai Cơ chế Caching Đa Tầng (Redis + IndexedDB) & Service Worker.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Cấu hình framework Playwright cho dự án, thiết lập các biến môi trường kiểm thử tách biệt với môi trường phát triển.
-  * Chiều (13:00 - 17:00): Viết 3 kịch bản E2E kiểm thử tự động: (1) Luồng sinh viên tạo CV và Reverse Sync, (2) Luồng soi CV chuẩn STAR, (3) Luồng kéo thả Kanban và sinh Cover Letter.
-* **Kinh nghiệm rút ra:** Kiểm thử tự động E2E giúp phát hiện sớm các lỗi hồi quy giao diện mà kiểm thử đơn vị thông thường không bao quát được.
+  * Sáng (08:30 - 12:00): Cấu hình Redis cache ở tầng API server và thiết lập IndexedDB lưu trữ cục bộ phía client cho bộ từ điển công nghệ và danh sách đồ án mẫu, giảm 85% request trùng lặp.
+  * Chiều (13:00 - 17:00): Cấu hình Service Worker offline cache cho các asset tĩnh, đảm bảo ứng dụng vẫn hiển thị bản thảo CV khi mất kết nối mạng đột ngột.
+* **Kinh nghiệm rút ra:** Kết hợp cache đa tầng ở cả client và server giúp tốc độ phản hồi giao diện đạt mức tức thì (< 50ms) ngay cả khi mạng chập chờn.
 
 ### 🔴 Thứ 5 (12/11/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Rà soát bảo mật toàn diện (Security Audit) & Vá các lỗ hổng OWASP.
+* **Công việc được giao:** Tối ưu hóa Hydration, Code-Splitting & Kiểm thử tự động E2E với Playwright.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Thực hiện rà soát bảo mật mã nguồn theo danh mục OWASP Top 10: Kiểm tra nguy cơ SQL Injection, Cross-Site Scripting (XSS) và Broken Access Control.
-  * Chiều (13:00 - 17:00): Áp dụng DOMPurify làm sạch dữ liệu nhập từ người dùng trước khi render vào Canvas, cấu hình Content Security Policy (CSP) headers chặt chẽ.
-* **Kinh nghiệm rút ra:** Làm sạch dữ liệu đầu vào và thiết lập CSP headers là lá chắn thiết yếu bảo vệ ứng dụng trước các cuộc tấn công mã độc.
+  * Sáng (08:30 - 12:00): Phân tích hiệu năng bằng Google Lighthouse, áp dụng React.lazy và dynamic imports cho các modal nặng, đưa điểm số hiệu năng Performance lên 98/100.
+  * Chiều (13:00 - 17:00): Cấu hình Playwright, viết kịch bản kiểm thử tự động toàn trình (E2E Test): luồng tạo CV, soi chuẩn STAR, kéo thả Kanban và xuất bản PDF; kiểm tra build sạch.
+* **Kinh nghiệm rút ra:** Kiểm thử tự động E2E định kỳ giúp phát hiện tức thì các lỗi giao diện và bảo đảm trải nghiệm người dùng luôn hoàn hảo trước mỗi đợt phát hành.
 
 ### 🔴 Thứ 6 (13/11/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Tối ưu hóa Bundle Size (Tree Shaking, Dynamic Import) & Kiểm thử tải.
+* **Công việc được giao:** Rà soát bảo mật OWASP, Tối ưu hóa Bundle Size & Tải trang dưới 0.8s.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Phân tích trực quan gói đóng gói (bundle visualizer), loại bỏ các thư viện phụ thuộc trùng lặp, tối ưu hóa import icon từ lucide-react.
-  * Chiều (13:00 - 17:00): Giảm dung lượng file bundle chính từ 1.2MB xuống còn 280KB (Gzipped), thực hiện test tải cục bộ và xác nhận thời gian First Contentful Paint (FCP) < 0.8s.
-* **Kinh nghiệm rút ra:** Gom việc tối ưu hóa bundle size và kiểm thử tốc độ tải vào ngày thứ 6 giúp chốt hạ tuần tăng tốc hiệu năng một cách mỹ mãn.
+  * Sáng (08:30 - 12:00): Rà soát bảo mật toàn diện theo chuẩn OWASP Top 10, cấu hình CSP headers, áp dụng DOMPurify làm sạch dữ liệu nhập từ người dùng trước khi render lên Canvas.
+  * Chiều (13:00 - 17:00): Áp dụng Tree Shaking và loại bỏ các dependency thừa, giảm dung lượng bundle chính từ 1.2MB xuống 280KB (Gzipped); chạy kiểm thử tải xác nhận FCP < 0.8s.
+* **Kinh nghiệm rút ra:** Tối ưu hóa bảo mật và tốc độ tải trang là yếu tố then chốt giúp ứng dụng hoạt động ổn định và an toàn trên môi trường production.
 
-## 📅 TUẦN 10: TYPOGRAPHY STANDARDIZATION, HR INTEGRATION & SPRINT REVIEW ROADMAP (16/11/2026 – 20/11/2026)
+## 📅 TUẦN 10: TYPOGRAPHY, SENTRY MONITORING, VECTOR EMBEDDINGS & SPRINT REVIEW ROADMAP (16/11/2026 – 20/11/2026)
 
 ### 🔴 Thứ 2 (16/11/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Rà soát và chuẩn hóa Typography, font chữ hệ thống trên toàn bộ giao diện.
+* **Công việc được giao:** Chuẩn hóa Typography, Dark/Light Mode & Khả năng truy cập tiếp cận (Accessibility - a11y).
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Rà soát và chuẩn hóa Typography, font chữ hệ thống trên toàn bộ các trang (Dashboard, CV Builder, Showcase, Kanban).
-  * Chiều (13:00 - 17:00): Viết các bài kiểm thử tự động kiểm tra tính tương thích font chữ và độ tương phản màu sắc trên các kích thước màn hình khác nhau.
-* **Kinh nghiệm rút ra:** Đảm bảo tính nhất quán về mặt thị giác và khả năng đọc (readability) nâng cao tính thẩm mỹ và độ tin cậy của sản phẩm.
+  * Sáng (08:30 - 12:00): Rà soát và đồng bộ typography, font chữ liên trang; hoàn thiện cơ chế chuyển đổi theme Dark/Light mượt mà với ThemeContext và CSS variables.
+  * Chiều (13:00 - 17:00): Kiểm tra độ tương phản màu sắc đạt chuẩn WCAG AA, bổ sung thuộc tính ARIA labels và hỗ trợ điều hướng hoàn toàn bằng bàn phím trên các modal.
+* **Kinh nghiệm rút ra:** Tuân thủ chuẩn tiếp cận a11y giúp mở rộng đối tượng người dùng và khẳng định tính chuyên nghiệp của sản phẩm tiêu chuẩn Enterprise.
 
 ### 🔴 Thứ 3 (17/11/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Kiểm thử tích hợp luồng tương tác giữa Kanban ứng tuyển và gửi Email HR.
+* **Công việc được giao:** Tích hợp Công Cụ Giám Sát Lỗi Thời Gian Thực (Sentry SDK) & Cảnh Báo Realtime.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Kiểm thử tích hợp luồng tương tác giữa bảng Kanban ứng tuyển và modal gửi Email cho nhà tuyển dụng.
-  * Chiều (13:00 - 17:00): Tối ưu hóa các thao tác kéo thả trạng thái ứng viên, bổ sung thông báo Toast phản hồi tức thì khi cập nhật tiến độ phỏng vấn.
-* **Kinh nghiệm rút ra:** Phản hồi giao diện tức thì khi người dùng tương tác giúp ứng dụng mang lại cảm giác mượt mà và chuyên nghiệp như các công cụ SaaS quốc tế.
+  * Sáng (08:30 - 12:00): Tích hợp Sentry SDK trên frontend React Vite, cấu hình bắt unhandled exceptions, theo dõi transaction trace và thiết lập Error Boundary trên các component trọng yếu.
+  * Chiều (13:00 - 17:00): Thiết lập webhook tự động đẩy thông báo lỗi nghiêm trọng về kênh nội bộ của đội ngũ kỹ thuật khi người dùng gặp sự cố.
+* **Kinh nghiệm rút ra:** Hệ thống giám sát lỗi chủ động giúp đội ngũ phát hiện và vá lỗi ngay trước khi người dùng kịp phản ánh.
 
 ### 🔴 Thứ 4 (18/11/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Tinh chỉnh các mẫu template Cover Letter & Hoàn thiện tính năng xuất đa định dạng.
+* **Công việc được giao:** Nâng cấp Thuật Toán AI Recommender Dựa Trên Vector Embeddings & Thử Nghiệm Tải K6.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Tinh chỉnh các mẫu template Cover Letter theo 3 phong cách (Chuyên nghiệp, Startup, Kỹ thuật chuyên sâu) dựa trên phản hồi của sinh viên.
-  * Chiều (13:00 - 17:00): Hoàn thiện tính năng xuất Cover Letter ra file .txt và Markdown chuẩn GitHub để ứng viên dễ dàng lưu trữ và tùy biến thêm.
-* **Kinh nghiệm rút ra:** Đa dạng hóa định dạng xuất tài liệu giúp đáp ứng linh hoạt các phương thức nộp đơn khác nhau của các công ty công nghệ.
+  * Sáng (08:30 - 12:00): Nghiên cứu áp dụng Vector Embeddings tính toán độ tương đồng ngữ nghĩa giữa đoạn văn mô tả đồ án của sinh viên và yêu cầu trách nhiệm công việc trong JD.
+  * Chiều (13:00 - 17:00): Chạy thử nghiệm kiểm thử tải với k6 mô phỏng 200 người dùng đồng thời truy cập Public Showcase và Feed, xác nhận thời gian phản hồi API duy trì < 150ms.
+* **Kinh nghiệm rút ra:** Khớp nối theo ngữ nghĩa (Semantic Matching) giúp nhận diện chính xác năng lực tiềm ẩn của ứng viên ngay cả khi từ khóa không hoàn toàn trùng khớp mặt chữ.
 
 ### 🔴 Thứ 5 (19/11/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Tích hợp công cụ giám sát hiệu năng & lỗi ứng dụng (Sentry SDK) và thiết lập Alerting.
+* **Công việc được giao:** Hoàn thiện Cơ Chế Xuất Bản Đa Nền Tảng (PWA Ready) & Tinh chỉnh SEO Meta Tags.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Cấu hình Sentry SDK trên frontend React Vite, bắt unhandled exceptions và capture error boundary trên các component chính.
-  * Chiều (13:00 - 17:00): Kiểm thử gửi test exception, cấu hình webhook nhận cảnh báo lỗi realtime qua kênh nội bộ khi người dùng gặp sự cố.
-* **Kinh nghiệm rút ra:** Thiết lập hệ thống monitoring sớm giúp đội ngũ kỹ thuật chủ động nắm bắt lỗi người dùng thay vì chờ phản ánh gián tiếp.
+  * Sáng (08:30 - 12:00): Cấu hình manifest.json và PWA service worker cho phép cài đặt ProfileHub như một ứng dụng độc lập trên máy tính và thiết bị di động.
+  * Chiều (13:00 - 17:00): Cấu hình thẻ OpenGraph và Twitter Card meta tags động cho từng trang Portfolio cá nhân, đảm bảo ảnh thumbnail và thông tin sinh viên hiển thị đẹp mắt khi chia sẻ.
+* **Kinh nghiệm rút ra:** Tối ưu hóa khả năng chia sẻ mạng xã hội (OpenGraph) là kênh đòn bẩy tự nhiên giúp thu hút nhà tuyển dụng tìm đến hồ sơ của sinh viên.
 
 ### 🔴 Thứ 6 (20/11/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
 * **Công việc được giao:** Họp định kỳ Sprint Review với Mentor doanh nghiệp, đánh giá Milestone 2 và lập kế hoạch kỹ thuật chặng tiếp theo.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Demo các tính năng hoàn thiện (ATS Heatmap, Interview War Room, Application Tracker) cho Mentor doanh nghiệp và tiếp nhận góp ý kỹ thuật.
-  * Chiều (13:00 - 17:00): Cập nhật backlog kỹ thuật, phân chia các đầu việc mở rộng tiếp theo cho hệ thống ProfileHub và chuẩn bị kế hoạch phát triển cho tuần mới.
+  * Sáng (08:30 - 12:00): Demo toàn diện các tính năng đã hoàn thành (Landing Page 3D, Smart Job Studio, CV Parser, Community Feed, Application Kanban) cho Mentor doanh nghiệp và tiếp nhận góp ý kỹ thuật.
+  * Chiều (13:00 - 17:00): Tiếp thu phản hồi của Mentor, cập nhật backlog kỹ thuật, phân chia các đầu việc mở rộng tiếp theo cho hệ thống ProfileHub và chuẩn bị kế hoạch phát triển cho chặng tới.
 * **Kinh nghiệm rút ra:** Duy trì họp Sprint Review định kỳ với Mentor giúp nắm chắc định hướng sản phẩm thực tế và liên tục cải tiến chất lượng kỹ thuật trong suốt kỳ thực tập.
 
