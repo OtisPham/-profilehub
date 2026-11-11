@@ -6,6 +6,7 @@ import type { UserRole } from './types/database';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register'; 
 import Logout from './pages/auth/Logout';
+import AuthCallback from './pages/auth/AuthCallback';
 import HomePage from './pages/public/HomePage';
 import CommunityFeedPage from './pages/public/CommunityFeedPage';
 import PublicShowcase from './pages/public/PublicShowcase';
@@ -109,6 +110,7 @@ function App() {
       <Route path="/login" element={<Login />} /> 
       <Route path="/register" element={<Register />} />
       <Route path="/logout" element={<Logout />} />
+      <Route path="/auth/callback" element={<AuthCallback />} />
 
       {/* Trang Portfolio & Showcase công khai (Không yêu cầu đăng nhập) */}
       <Route path="/showcase" element={<PublicShowcase />} />

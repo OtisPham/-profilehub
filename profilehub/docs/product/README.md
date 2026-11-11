@@ -10,6 +10,7 @@ Tất cả các tài liệu dưới đây đại diện cho hệ thống đang �
 
 | Thứ tự | Tệp tài liệu | Phân loại | Tóm tắt vai trò trong hệ thống | Mã nguồn đối ứng (Code Mapping) |
 | :---: | :--- | :--- | :--- | :--- |
+| **00** | [`spec.md`](./spec.md) | **Đặc tả Sản phẩm Hợp nhất (Product Spec v3.0)** | Tài liệu quy chiếu đặc tả toàn diện hệ thống: 7 trụ cột, 25 yêu cầu chức năng (FR-001 -> FR-025), quy tắc nghiệp vụ, tiêu chuẩn nghiệm thu và chỉ số chất lượng. | Toàn bộ dự án `src/` |
 | **01** | [`vision.md`](./vision.md) | **Tầm nhìn & Định vị** | Tuyên ngôn sứ mệnh và 3 trụ cột giá trị cốt lõi: Xác thực học thuật, Tuyển dụng theo bằng chứng, và Vòng lặp phản hồi tuyển dụng. | [`src/pages/public/`](../../src/pages/public) |
 | **02** | [`prd.md`](./prd.md) | **Yêu cầu sản phẩm (PRD)** | Yêu cầu chức năng tổng quan của 3 tác tử: Sinh viên (Student), Giảng viên (Teacher) và Doanh nghiệp tuyển dụng (Recruiter). | [`src/App.tsx`](../../src/App.tsx), [`src/components/layout/Sidebar.tsx`](../../src/components/layout/Sidebar.tsx) |
 | **03** | [`luong_chinh_he_thong.md`](./luong_chinh_he_thong.md) | **Luồng vận hành cốt lõi** | Bản đồ tương tác toàn diện của 5 luồng chính: Quản lý & duyệt đồ án, AI CV Builder, Tuyển dụng thông minh, Luyện phỏng vấn AI, và Phản hồi lỗ hổng kiến thức. | Toàn bộ các trang nghiệp vụ `src/pages/` |

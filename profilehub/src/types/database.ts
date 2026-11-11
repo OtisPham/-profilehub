@@ -23,6 +23,7 @@ export interface StudentProfile {
   skills?: string[];
   username?: string;
   qr_code_url?: string;
+  github_url?: string;
   is_open_to_work?: boolean;
   blocked_companies?: string[];
   updated_at?: string;
@@ -190,6 +191,10 @@ export interface CandidatePipelineItem {
   job?: JobPost;
   take_home_challenge?: TakeHomeChallenge;
   scorecards?: InterviewScorecard[];
+  interview_slots?: InterviewSlot[];
+  selected_slot_id?: string;
+  pre_interview_cheatsheet?: PreInterviewCheatSheet;
+  ai_tldr?: CandidateAiTLDR;
   blind_anonymous_id?: string;
 }
 
@@ -599,6 +604,96 @@ export interface CreatePostParams {
   offerCompanyName?: string;
   offerPosition?: string;
 }
+
+// ==========================================
+// Phân Hệ Siêu Tốc Độ Tuyển Dụng & Tiện Ích Hai Chiều (Velocity Suite)
+// ==========================================
+
+export interface InterviewSlot {
+  id: string;
+  candidatePipelineId: string;
+  startTime: string; // ISO 8601
+  endTime: string;   // ISO 8601
+  status: 'available' | 'booked';
+  meetUrl?: string;
+  bookedAt?: string;
+}
+
+export interface PreInterviewCheatSheet {
+  candidateId: string;
+  candidateName: string;
+  jobTitle: string;
+  companyName: string;
+  elevatorPitch: string;
+  killerMetrics: Array<{
+    label: string;
+    value: string;
+    source: 'lighthouse' | 'rps' | 'coverage' | 'db_index' | 'custom';
+  }>;
+  starStory: {
+    situationTask: string;
+    actionTaken: string;
+    quantifiedResult: string;
+  };
+  questionsToAsk: string[];
+  cachedAt: string;
+}
+
+export interface CandidateAiTLDR {
+  candidateId: string;
+  technicalCore: string;
+  keyProofProject: string;
+  screeningAttention: string;
+  matchScore: number;
+}
+
+export interface BatchEmailTemplate {
+  id: string;
+  title: string;
+  subject: string;
+  body: string;
+  category: 'interview_invite' | 'challenge_issue' | 'offer_letter' | 'rejection_courtesy';
+}
+
+export interface ReadReceiptEvent {
+  id: string;
+  studentId: string;
+  candidatePipelineId?: string;
+  targetType: 'cv' | 'live_demo' | 'github_repo' | 'verify_page';
+  durationSeconds: number;
+  timestamp: string;
+  anonymousLabel: string;
+}
+
+// OAuth Resilience & Auto-Provisioning Models (FR-033)
+export interface OAuthRawMetadata {
+  full_name?: string;
+  name?: string;
+  avatar_url?: string;
+  picture?: string;
+  email?: string;
+  email_verified?: boolean;
+  provider_id?: string;
+  [key: string]: any;
+}
+
+export interface OAuthDiagnosticInfo {
+  isError: boolean;
+  errorCode?: string;
+  errorDescription?: string;
+  solutionHint?: string;
+  canFallbackToDemo: boolean;
+}
+
+export interface ProvisioningResult {
+  success: boolean;
+  isNewUser: boolean;
+  role: UserRole;
+  destinationUrl: string;
+  error?: string;
+}
+
+
 
 
 

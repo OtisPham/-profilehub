@@ -19,6 +19,10 @@ import ShowcaseQrModal from '../../components/student/ShowcaseQrModal';
 import ImportCvToProfileModal from '../../components/student/ImportCvToProfileModal';
 import { selfInterviewService, type CandidateInterviewSession } from '../../services/selfInterviewService';
 import { cvService, type ManagedCVItem } from '../../services/cvService';
+import { CalendarSyncDropdown } from '../../components/student/CalendarSyncDropdown';
+import { ChallengeCountdownWidget } from '../../components/student/ChallengeCountdownWidget';
+import { PreInterviewCheatSheetModal } from '../../components/student/PreInterviewCheatSheetModal';
+import { CandidateSlotBookingModal } from '../../components/student/CandidateSlotBookingModal';
 import {
   FolderKanban,
   Sparkles,
@@ -38,7 +42,9 @@ import {
   Plus,
   Compass,
   QrCode,
-  CalendarCheck2
+  CalendarCheck2,
+  Zap,
+  Flame,
 } from 'lucide-react';
 import type { VerificationStatus } from '../../types/database';
 import { getSharedPipeline, subscribeToPipelineEvents } from '../../utils/pipelineSync';
@@ -143,6 +149,10 @@ export default function Dashboard() {
   const [isSpotlightTourOpen, setIsSpotlightTourOpen] = useState(false);
   const [isShowcaseQrOpen, setIsShowcaseQrOpen] = useState(false);
   const [isImportCvModalOpen, setIsImportCvModalOpen] = useState(false);
+
+  // Velocity Suite Modals (Cheat-Sheet & Slot Booking)
+  const [isCheatSheetOpen, setIsCheatSheetOpen] = useState(false);
+  const [slotBookingItem, setSlotBookingItem] = useState<any>(null);
 
   // Kịch bản 3 bước rọi đèn Spotlight phong cách Game Quest (Giữ nguyên targetId chuẩn)
   const tourSteps: SpotlightStep[] = [
@@ -547,6 +557,29 @@ export default function Dashboard() {
                         <FileText size={14} />
                         <span>Xem Lại CV Đã Nộp</span>
                       </button>
+
+                      {/* Thẻ tác chiến 60s Trước giờ G */}
+                      <button
+                        onClick={() => setIsCheatSheetOpen(true)}
+                        className="py-2.5 px-3 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold text-xs rounded-lg flex items-center justify-center gap-1.5 shadow-sm transition active:scale-[0.98] cursor-pointer"
+                      >
+                        <Zap size={14} className="fill-white" />
+                        <span>⚡ Thẻ Tác Chiến 60s (Trước Giờ G)</span>
+                      </button>
+
+                      {/* Nút Đồng Bộ Lịch */}
+                      <div className="w-full flex justify-center">
+                        <CalendarSyncDropdown
+                          payload={{
+                            title: `[Phỏng Vấn ProfileHub] ${currentSession.role_title} - ${currentSession.company_name}`,
+                            description: `Phỏng vấn giữa ${currentSession.company_name} và ${user?.user_metadata?.full_name || 'Ứng viên'}.\nLink họp: ${currentSession.meeting_link || 'Trực tiếp'}\nĐịa điểm: ${currentSession.location_address || 'Google Meet'}`,
+                            location: currentSession.meeting_link || currentSession.location_address || 'Google Meet',
+                            startTime: currentSession.interview_date ? `${currentSession.interview_date}T${currentSession.interview_time || '09:00'}:00.000Z` : new Date().toISOString(),
+                            endTime: currentSession.interview_date ? `${currentSession.interview_date}T10:00:00.000Z` : new Date(Date.now() + 3600000).toISOString(),
+                          }}
+                          filename={`lich-phong-van-${currentSession.company_name}.ics`}
+                        />
+                      </div>
                     </div>
                   </div>
                 );
@@ -839,6 +872,51 @@ export default function Dashboard() {
           fetchDashboardData();
         }}
       />
+
+      {/* Pre-Interview Cheat Sheet Modal */}
+      {isCheatSheetOpen && (
+        <PreInterviewCheatSheetModal
+          isOpen={isCheatSheetOpen}
+          onClose={() => setIsCheatSheetOpen(false)}
+          candidate={{
+            id: 'my_pipeline_item',
+            student_id: user?.id || 'me',
+            recruiter_id: 'recruiter_partner',
+            stage: 'interview',
+            job: {
+              id: 'job_active',
+              recruiter_id: 'rec_unknown',
+              title: interviewSessions[selectedSessionIndex]?.role_title || 'Kỹ sư phần mềm',
+              company_name: interviewSessions[selectedSessionIndex]?.company_name || 'Doanh nghiệp Công nghệ',
+              location: 'Hồ Chí Minh',
+              required_skills: ['React', 'Node.js'],
+              created_at: new Date().toISOString(),
+            },
+            student: {
+              id: user?.id || 'me',
+              full_name: displayName,
+              major: targetMajor,
+              skills: profile?.skills || ['React', 'TypeScript'],
+            },
+          }}
+        />
+      )}
+
+      {/* Candidate Slot Booking Modal */}
+      {slotBookingItem && (
+        <CandidateSlotBookingModal
+          isOpen={Boolean(slotBookingItem)}
+          onClose={() => setSlotBookingItem(null)}
+          candidateName={displayName}
+          companyName={slotBookingItem.companyName || 'Công ty Công nghệ'}
+          jobTitle={slotBookingItem.jobTitle || 'Kỹ sư phần mềm'}
+          slots={slotBookingItem.slots || []}
+          onConfirmSlot={(bookedSlot) => {
+            setSlotBookingItem(null);
+            fetchDashboardData();
+          }}
+        />
+      )}
 
     </div>
   );

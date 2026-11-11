@@ -17,8 +17,11 @@ if (typeof globalThis.WebSocket === 'undefined') {
   ;(globalThis as any).WebSocket = DummyWebSocket
 }
 
-// Fallback an toàn cho môi trường CI / Test không có file .env
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://placeholder-url.supabase.co'
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder-anon-key'
+// Fallback an toàn trỏ đúng vào dự án Supabase ProfileHub nếu Vercel chưa nạp biến môi trường
+const DEFAULT_SUPABASE_URL = 'https://kdfjiqnfjjtyxctcolyi.supabase.co'
+const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtkZmppcW5mamp0eXhjdGNvbHlpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk2NzQ0NzksImV4cCI6MjEwNTI1MDQ3OX0.U3PmLsBcccMf6Gbkp_7d6m1I3PoHkN3R04BczqKqB-0'
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || DEFAULT_SUPABASE_URL
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || DEFAULT_SUPABASE_ANON_KEY
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)

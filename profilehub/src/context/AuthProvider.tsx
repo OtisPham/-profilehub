@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode, useCall
 import type { Session, User } from '@supabase/supabase-js';
 import { supabase } from '../services/supabase';
 import type { UserRole } from '../types/database';
+import { provisionOAuthUserProfile } from '../services/oauthProvisioningService';
 
 interface AuthContextType {
   session: Session | null;
@@ -63,10 +64,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (!error && data?.role) {
         setUserRole(data.role as UserRole);
-      } else if (metadataRole) {
-        setUserRole(metadataRole as UserRole);
       } else {
-        setUserRole('student');
+        // Cơ chế tự phục hồi (Self-healing Provisioning) nếu bảng public.users chưa có bản ghi
+        const targetRole: UserRole = (metadataRole as UserRole) || 'student';
+        setUserRole(targetRole);
+        if (user && !userId.startsWith('demo_')) {
+          provisionOAuthUserProfile(user, targetRole).catch(e => console.warn('[AuthProvider] Auto-provisioning fallback error:', e));
+        }
       }
     } catch {
       setUserRole((metadataRole as UserRole) || 'student');

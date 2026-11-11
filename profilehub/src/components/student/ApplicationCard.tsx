@@ -16,6 +16,8 @@ import {
 } from 'lucide-react';
 import type { CandidateApplicationItem, ApplicationStage, ApplicationSource } from '../../types/application.types';
 import type { TakeHomeChallenge } from '../../types/database';
+import { CalendarSyncDropdown } from './CalendarSyncDropdown';
+import { ChallengeCountdownWidget } from './ChallengeCountdownWidget';
 
 interface ApplicationCardProps {
   application: CandidateApplicationItem;
@@ -128,18 +130,31 @@ export default function ApplicationCard({
             </div>
           )}
 
-          {/* Interview Date Highlight */}
+          {/* Interview Date Highlight & Calendar Sync */}
           {application.interviewDate && (
-            <div className="flex items-center gap-1.5 p-1.5 rounded-md bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/80 text-[11px] text-amber-800 dark:text-amber-300 font-medium">
-              <Clock size={12} className="shrink-0" />
-              <span className="truncate">PV: {application.interviewDate}</span>
+            <div className="flex items-center justify-between gap-1.5 p-1.5 rounded-md bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/80 text-[11px] text-amber-800 dark:text-amber-300 font-medium">
+              <div className="flex items-center gap-1.5 truncate">
+                <Clock size={12} className="shrink-0" />
+                <span className="truncate">PV: {application.interviewDate}</span>
+              </div>
+              <CalendarSyncDropdown
+                size="sm"
+                payload={{
+                  title: `[Phỏng Vấn ProfileHub] ${application.roleTitle} - ${application.companyName}`,
+                  description: `Lịch phỏng vấn vị trí ${application.roleTitle} tại ${application.companyName}.\nĐịa điểm: ${application.jobLocation || 'Google Meet'}\nGhi chú: ${application.notes || 'Chuẩn bị đồ án thực tế'}`,
+                  location: application.jobLocation || 'Google Meet',
+                  startTime: application.interviewDate ? `${application.interviewDate}T09:00:00.000Z` : new Date().toISOString(),
+                  endTime: application.interviewDate ? `${application.interviewDate}T10:00:00.000Z` : new Date(Date.now() + 3600000).toISOString(),
+                }}
+                filename={`lich-phong-van-${application.companyName}.ics`}
+              />
             </div>
           )}
 
-          {/* Take-Home Challenge Banner */}
+          {/* Take-Home Challenge Banner & Live Countdown */}
           {challengeInfo && (
-            <div className="p-2 rounded-lg bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200/80 dark:border-indigo-800/80 text-[11px]">
-              <div className="flex items-center justify-between font-bold text-indigo-900 dark:text-indigo-200 mb-1">
+            <div className="p-2.5 rounded-lg bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200/80 dark:border-indigo-800/80 text-[11px] space-y-1.5">
+              <div className="flex items-center justify-between font-bold text-indigo-900 dark:text-indigo-200">
                 <span className="flex items-center gap-1 truncate">
                   <Terminal size={12} className="text-indigo-600 shrink-0" /> {challengeInfo.title}
                 </span>
@@ -151,9 +166,18 @@ export default function ApplicationCard({
                   {challengeInfo.status === 'submitted' ? '✅ Đã nộp PR' : challengeInfo.status === 'evaluated' ? '⭐ Đã chấm' : '⏱️ Đang làm'}
                 </span>
               </div>
-              <p className="text-[10px] text-slate-500 dark:text-slate-400 line-clamp-1">
-                Hạn chót: {new Date(challengeInfo.deadlineDate).toLocaleDateString('vi-VN')} ({challengeInfo.deadlineHours}h)
-              </p>
+              <div className="flex items-center justify-between gap-1">
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 truncate">
+                  Hạn: {new Date(challengeInfo.deadlineDate).toLocaleDateString('vi-VN')}
+                </span>
+                {challengeInfo.status !== 'submitted' && challengeInfo.status !== 'evaluated' && (
+                  <ChallengeCountdownWidget
+                    deadlineDateStr={challengeInfo.deadlineDate}
+                    deadlineHours={challengeInfo.deadlineHours}
+                    compact
+                  />
+                )}
+              </div>
             </div>
           )}
 

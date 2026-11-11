@@ -21,7 +21,12 @@ import ExecutiveEvaluationReportModal from '../../components/recruiter/Executive
 import OfferLetterStudioModal from '../../components/recruiter/OfferLetterStudioModal';
 import { offerLetterService } from '../../services/offerLetterService';
 import { challengeScorecardService } from '../../services/challengeScorecardService';
-import { Eye, EyeOff, Award, Star, Terminal, GitPullRequest, Printer } from 'lucide-react';
+import { Eye, EyeOff, Award, Star, Terminal, GitPullRequest, Printer, Zap, Send, CalendarPlus } from 'lucide-react';
+import { SpeedScreenerModal } from '../../components/recruiter/SpeedScreenerModal';
+import { CandidateAiTldrBadge } from '../../components/recruiter/CandidateAiTldrBadge';
+import { BatchEmailModal } from '../../components/recruiter/BatchEmailModal';
+import { SmartSlotPickerModal } from '../../components/recruiter/SmartSlotPickerModal';
+import { generateCandidateAiTldr } from '../../services/speedScreenerService';
 
 const STAGES: { id: PipelineStage; label: string; color: string; bg: string }[] = [
   { id: 'discovered', label: 'Ứng viên mới', color: '#64748b', bg: '#f1f5f9' },
@@ -59,6 +64,58 @@ export default function CandidatePipeline() {
   const [dossierReportCandidate, setDossierReportCandidate] = useState<CandidatePipelineItem | null>(null);
   const [offerStudioCandidate, setOfferStudioCandidate] = useState<CandidatePipelineItem | null>(null);
 
+
+
+  // Modal Interview Schedule
+  const [scheduleItem, setScheduleItem] = useState<CandidatePipelineItem | null>(null);
+  const [scheduleDate, setScheduleDate] = useState('');
+  const [scheduleTime, setScheduleTime] = useState('');
+  const [scheduleMeetingLink, setScheduleMeetingLink] = useState('');
+  const [scheduleLocation, setScheduleLocation] = useState('Online (Google Meet)');
+
+  // Speed Screener, Batch Email & Slot Picker Modals
+  const [isSpeedScreenerOpen, setIsSpeedScreenerOpen] = useState(false);
+  const [isBatchEmailOpen, setIsBatchEmailOpen] = useState(false);
+  const [slotPickerCandidate, setSlotPickerCandidate] = useState<CandidatePipelineItem | null>(null);
+
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if (
+        e.code === 'Space' &&
+        !isSpeedScreenerOpen &&
+        !isBatchEmailOpen &&
+        !scheduleItem &&
+        !challengeCandidate &&
+        !scorecardCandidate &&
+        !dossierReportCandidate &&
+        !offerStudioCandidate
+      ) {
+        const target = e.target as HTMLElement | null;
+        if (
+          target &&
+          (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)
+        ) {
+          return;
+        }
+        if (pipeline.length > 0) {
+          e.preventDefault();
+          setIsSpeedScreenerOpen(true);
+        }
+      }
+    };
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+  }, [
+    pipeline.length,
+    isSpeedScreenerOpen,
+    isBatchEmailOpen,
+    scheduleItem,
+    challengeCandidate,
+    scorecardCandidate,
+    dossierReportCandidate,
+    offerStudioCandidate,
+  ]);
+
   // Kéo thả Kanban Hook
   const {
     handleDragStart,
@@ -74,12 +131,7 @@ export default function CandidatePipeline() {
     },
   });
 
-  // Modal Interview Schedule
-  const [scheduleItem, setScheduleItem] = useState<CandidatePipelineItem | null>(null);
-  const [scheduleDate, setScheduleDate] = useState('');
-  const [scheduleTime, setScheduleTime] = useState('');
-  const [scheduleMeetingLink, setScheduleMeetingLink] = useState('');
-  const [scheduleLocation, setScheduleLocation] = useState('Online (Google Meet)');
+
 
   useEffect(() => {
     const fetchPipeline = async () => {
@@ -292,44 +344,95 @@ export default function CandidatePipeline() {
           </p>
         </div>
 
-        {/* Công Tắc Sàng Lọc Ẩn Danh (Blind Screening Mode) */}
-        <button
-          type="button"
-          onClick={() => {
-            const next = !isBlindScreening;
-            setIsBlindScreening(next);
-            try {
-              localStorage.setItem('profilehub_blind_screening_mode', String(next));
-            } catch {}
-          }}
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            padding: '9px 16px',
-            borderRadius: '12px',
-            fontSize: '12.5px',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            transition: 'all 0.2s',
-            border: isBlindScreening ? '1.5px solid #6366f1' : '1px solid #cbd5e1',
-            backgroundColor: isBlindScreening ? '#eef2ff' : '#ffffff',
-            color: isBlindScreening ? '#4338ca' : '#475569',
-            boxShadow: isBlindScreening ? '0 2px 8px rgba(99, 102, 241, 0.2)' : '0 1px 3px rgba(0,0,0,0.05)'
-          }}
-        >
-          {isBlindScreening ? (
-            <>
-              <EyeOff size={16} color="#4f46e5" />
-              <span>Chế Độ Ẩn Danh: ĐANG BẬT</span>
-            </>
-          ) : (
-            <>
-              <Eye size={16} color="#64748b" />
-              <span>Bật Sàng Lọc Ẩn Danh (Blind)</span>
-            </>
-          )}
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+          {/* Nút Speed Screener (Phím tắt Space) */}
+          <button
+            type="button"
+            onClick={() => setIsSpeedScreenerOpen(true)}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '9px 16px',
+              borderRadius: '12px',
+              fontSize: '12.5px',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              border: 'none',
+              backgroundColor: '#4f46e5',
+              color: '#ffffff',
+              boxShadow: '0 2px 8px rgba(79, 70, 229, 0.25)',
+              transition: 'all 0.2s',
+            }}
+            title="Nhấn phím Space để mở chế độ duyệt thần tốc"
+          >
+            <Zap size={15} />
+            <span>Speed Screener (Phím Space)</span>
+          </button>
+
+          {/* Nút Gửi Email Hàng Loạt */}
+          <button
+            type="button"
+            onClick={() => setIsBatchEmailOpen(true)}
+            disabled={pipeline.length === 0}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '9px 16px',
+              borderRadius: '12px',
+              fontSize: '12.5px',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              border: '1px solid #cbd5e1',
+              backgroundColor: '#ffffff',
+              color: '#334155',
+              transition: 'all 0.2s',
+            }}
+          >
+            <Send size={14} color="#6366f1" />
+            <span>Email Hàng Loạt ({pipeline.length})</span>
+          </button>
+
+          {/* Công Tắc Sàng Lọc Ẩn Danh (Blind Screening Mode) */}
+          <button
+            type="button"
+            onClick={() => {
+              const next = !isBlindScreening;
+              setIsBlindScreening(next);
+              try {
+                localStorage.setItem('profilehub_blind_screening_mode', String(next));
+              } catch {}
+            }}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '9px 16px',
+              borderRadius: '12px',
+              fontSize: '12.5px',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              border: isBlindScreening ? '1.5px solid #6366f1' : '1px solid #cbd5e1',
+              backgroundColor: isBlindScreening ? '#eef2ff' : '#ffffff',
+              color: isBlindScreening ? '#4338ca' : '#475569',
+              boxShadow: isBlindScreening ? '0 2px 8px rgba(99, 102, 241, 0.2)' : '0 1px 3px rgba(0,0,0,0.05)'
+            }}
+          >
+            {isBlindScreening ? (
+              <>
+                <EyeOff size={16} color="#4f46e5" />
+                <span>Chế Độ Ẩn Danh: ĐANG BẬT</span>
+              </>
+            ) : (
+              <>
+                <Eye size={16} color="#64748b" />
+                <span>Bật Sàng Lọc Ẩn Danh (Blind)</span>
+              </>
+            )}
+          </button>
+        </div>
       </div>
 
         {loading ? (
@@ -428,7 +531,7 @@ export default function CandidatePipeline() {
                           </div>
 
                           {item.student?.skills && item.student.skills.length > 0 && (
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginBottom: '10px' }}>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginBottom: '8px' }}>
                               {item.student.skills.slice(0, 3).map((sk: string, idx: number) => (
                                 <span key={idx} style={{ fontSize: '10px', backgroundColor: '#f1f5f9', color: '#475569', padding: '2px 6px', borderRadius: '4px' }}>
                                   {sk}
@@ -436,6 +539,11 @@ export default function CandidatePipeline() {
                               ))}
                             </div>
                           )}
+
+                          {/* AI TL;DR Snapshot Badge */}
+                          <div style={{ marginBottom: '10px' }}>
+                            <CandidateAiTldrBadge tldr={generateCandidateAiTldr(item)} compact />
+                          </div>
 
                           {/* Interview Schedule Box if present */}
                           {(item.stage === 'interview' || item.interview_date) && (
@@ -477,12 +585,22 @@ export default function CandidatePipeline() {
                                   )}
                                 </>
                               ) : (
-                                <button
-                                  onClick={() => handleOpenScheduleModal(item)}
-                                  style={{ background: '#8b5cf6', color: 'white', border: 'none', padding: '4px 8px', borderRadius: '4px', fontSize: '11px', cursor: 'pointer', fontWeight: 'bold', width: '100%', marginTop: '4px' }}
-                                >
-                                  + Hẹn Lịch Phỏng Vấn
-                                </button>
+                                <div style={{ display: 'flex', gap: '6px', marginTop: '4px' }}>
+                                  <button
+                                    onClick={() => handleOpenScheduleModal(item)}
+                                    style={{ flex: 1, background: '#8b5cf6', color: 'white', border: 'none', padding: '5px 8px', borderRadius: '6px', fontSize: '11px', cursor: 'pointer', fontWeight: 'bold' }}
+                                  >
+                                    + Hẹn Lịch
+                                  </button>
+                                  <button
+                                    onClick={() => setSlotPickerCandidate(item)}
+                                    title="Mở 3-5 khung giờ rảnh để sinh viên tự chọn"
+                                    style={{ flex: 1, background: '#6366f1', color: 'white', border: 'none', padding: '5px 8px', borderRadius: '6px', fontSize: '11px', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '3px' }}
+                                  >
+                                    <CalendarPlus size={12} />
+                                    <span>Slot Tự Động</span>
+                                  </button>
+                                </div>
                               )}
                             </div>
                           )}
@@ -869,6 +987,59 @@ export default function CandidatePipeline() {
             onOfferIssued={(newOffer) => {
               // Cập nhật lại danh sách pipeline
               setPipeline(getSharedPipeline());
+            }}
+          />
+        )}
+
+        {/* Speed Screener Modal (Phím tắt Space, J, K, A, T, R, Esc) */}
+        {isSpeedScreenerOpen && (
+          <SpeedScreenerModal
+            isOpen={isSpeedScreenerOpen}
+            onClose={() => setIsSpeedScreenerOpen(false)}
+            candidates={pipeline}
+            onAdvance={(candidate) => {
+              const updated = pipeline.map(p =>
+                p.id === candidate.id ? { ...p, stage: 'interview' as PipelineStage, updated_at: new Date().toISOString() } : p
+              );
+              setPipeline(updated);
+              saveSharedPipeline(updated);
+            }}
+            onChallenge={(candidate) => {
+              setIsSpeedScreenerOpen(false);
+              setChallengeCandidate(candidate);
+            }}
+            onReject={(candidate) => {
+              const updated = pipeline.map(p =>
+                p.id === candidate.id ? { ...p, stage: 'discovered' as PipelineStage, updated_at: new Date().toISOString() } : p
+              );
+              setPipeline(updated);
+              saveSharedPipeline(updated);
+            }}
+          />
+        )}
+
+        {/* Batch Email Outbound Modal */}
+        {isBatchEmailOpen && (
+          <BatchEmailModal
+            isOpen={isBatchEmailOpen}
+            onClose={() => setIsBatchEmailOpen(false)}
+            candidates={pipeline}
+            companyName={(user?.user_metadata?.company_name as string) || 'Doanh nghiệp Công nghệ'}
+          />
+        )}
+
+        {/* Smart Slot Picker Modal */}
+        {slotPickerCandidate && (
+          <SmartSlotPickerModal
+            isOpen={Boolean(slotPickerCandidate)}
+            onClose={() => setSlotPickerCandidate(null)}
+            candidate={slotPickerCandidate}
+            onSaveSlots={(candidateId, slots) => {
+              const updated = pipeline.map(p =>
+                p.id === candidateId ? { ...p, interview_slots: slots, stage: 'interview' as PipelineStage, updated_at: new Date().toISOString() } : p
+              );
+              setPipeline(updated);
+              saveSharedPipeline(updated);
             }}
           />
         )}

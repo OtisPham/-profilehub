@@ -11,7 +11,10 @@ export interface PipelineBroadcastEvent {
     | 'INBOUND_INVITE_RECEIVED'
     | 'CHALLENGE_ISSUED'
     | 'CHALLENGE_SUBMITTED'
-    | 'SCORECARD_RECORDED';
+    | 'SCORECARD_RECORDED'
+    | 'INTERVIEW_SLOT_OFFERED'
+    | 'INTERVIEW_SLOT_CONFIRMED'
+    | 'READ_RECEIPT_PING';
   studentId?: string;
   studentName?: string;
   jobTitle?: string;
@@ -24,6 +27,10 @@ export interface PipelineBroadcastEvent {
   challengeTitle?: string;
   scorecardScore?: number;
   scorecardRecommendation?: string;
+  slotStartTime?: string;
+  slotEndTime?: string;
+  readTargetType?: string;
+  readDurationSeconds?: number;
   timestamp: number;
 }
 

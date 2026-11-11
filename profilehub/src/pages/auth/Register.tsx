@@ -39,11 +39,10 @@ export default function Register() {
     setError(null);
     try {
       localStorage.setItem('profilehub_demo_role', role);
-      const destination = role === 'recruiter' ? '/recruiter/dashboard' : '/dashboard';
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}${destination}`,
+          redirectTo: `${window.location.origin}/auth/callback`,
         },
       });
       if (oauthError) {
@@ -61,11 +60,10 @@ export default function Register() {
     setError(null);
     try {
       localStorage.setItem('profilehub_demo_role', role);
-      const destination = role === 'recruiter' ? '/recruiter/dashboard' : '/dashboard';
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: 'github',
         options: {
-          redirectTo: `${window.location.origin}${destination}`,
+          redirectTo: `${window.location.origin}/auth/callback`,
         },
       });
       if (oauthError) {
