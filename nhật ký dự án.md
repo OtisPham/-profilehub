@@ -6,12 +6,12 @@
 * **Ngành:** CÔNG NGHỆ THÔNG TIN
 * **Đơn vị thực tập:** CÔNG TY TNHH ALPACA SOLUTIONS
 * **Dự án thực hiện:** PROFILEHUB - Project-Driven AI CV Builder & Portfolio Platform
-* **Thời gian ghi nhật ký:** 18/09/2026 – 20/11/2026 (Bắt đầu từ 18/09/2026; 4 tuần đầu có Thứ Bảy; từ tuần 5 chỉ làm Thứ Hai đến Thứ Sáu)
+* **Thời gian ghi nhật ký:** 18/09/2026 – 11/11/2026 (Bắt đầu từ 18/09/2026 đến hôm nay 11/11/2026; 4 tuần đầu có Thứ Bảy; từ tuần 5 chỉ làm Thứ Hai đến Thứ Sáu)
 
 ---
 
 ## 📌 TÓM TẮT ĐỊNH HƯỚNG CHIẾN LƯỢC & BƯỚC NGOẶT KIẾN TRÚC (PIVOT)
-Trong 10 tuần phát triển dự án (18/09/2026 – 20/11/2026), **ProfileHub** đã trải qua các giai đoạn hoàn thiện vượt bậc với tốc độ phát triển cao (Vibe Coding):
+Trong 9 tuần phát triển dự án tính đến hôm nay (**11/11/2026**), **ProfileHub** đã trải qua các giai đoạn hoàn thiện vượt bậc với tốc độ phát triển cao (Vibe Coding):
 1. **Khởi tạo và xây dựng nền tảng (Tuần 1 – Tuần 2):**
    - Khởi tạo kiến trúc dự án từ ngày 18/09/2026 với React 18, TypeScript (Strict Mode) và Supabase.
    - Xây dựng các module cốt lõi: Quản lý đồ án (MyProjects), Quản lý chứng chỉ (Certificates), tương tác Canvas WYSIWYG chuẩn A4.
@@ -29,13 +29,13 @@ Trong 10 tuần phát triển dự án (18/09/2026 – 20/11/2026), **ProfileHub
    - **Xác thực MST Doanh Nghiệp & Tích Xanh:** Chống mạo danh HR, đảm bảo môi trường tuyển dụng minh bạch.
    - **Smart Job Studio & Smart CV Parser:** Tự động trích xuất kỹ năng từ JD và CV tải lên, khớp nối ứng viên tức thì và tự động điền Master Profile.
    - **Multi-Theme PDF Styler:** Tùy biến theme và màu sắc xuất CV chuẩn in ấn A4 chuyên nghiệp.
-5. **Cổng Offer Công Khai, Landing Page 3D & Mạng Xã Hội Nghề Nghiệp (Tuần 9 – Tuần 10):**
-   - **Public Offer Portal & Executive Dossier Export:** Cổng nhận offer trực tuyến và xuất hồ sơ ứng viên chuyên sâu.
+5. **Cổng Offer Công Khai, Landing Page 3D & Mạng Xã Hội Nghề Nghiệp (Tuần 9 - Đến Hôm Nay 11/11/2026):**
+   - **Public Offer Portal & Executive Dossier Export:** Cổng nhận offer trực tuyến và xuất hồ sơ ứng viên chuyên sâu cho doanh nghiệp.
    - **Interactive 3D WebGL Crystal Hero & 3D Tilt Card:** Giao diện Landing Page tương tác 3D WebGL hiện đại.
    - **Career Community Feed (/feed):** Mạng xã hội chia sẻ đồ án và ứng tuyển nhanh từ bài đăng.
-   - Tối ưu hóa hiệu năng chuyên sâu: Caching đa tầng (Redis + IndexedDB), Service Worker offline cache, Bundle Splitting (giảm xuống 280KB Gzip).
-   - Kiểm thử toàn diện: Unit Test & Integration Test (Vitest 100% pass), End-to-End Test (Playwright), Sentry giám sát lỗi thời gian thực.
-   - Duy trì họp Sprint Review định kỳ với Mentor doanh nghiệp để liên tục mở rộng sản phẩm (kỳ thực tập tiếp tục diễn ra theo kế hoạch).
+   - Tối ưu hóa hiệu năng chuyên sâu: Caching đa tầng (Redis + IndexedDB), kiểm thử tải trang nhanh tức thì (< 50ms).
+   - Kiểm thử toàn diện: Unit Test & Integration Test (Vitest 15 test suites pass 100%), CI/CD an toàn, đảm bảo chất lượng phần mềm vững chắc.
+   - Kỳ thực tập vẫn đang tiếp tục diễn ra theo kế hoạch (Bảng theo dõi tiến độ đến hết tháng 12/2026).
 
 ---
 
@@ -375,14 +375,14 @@ Trong 10 tuần phát triển dự án (18/09/2026 – 20/11/2026), **ProfileHub
   * Chiều (13:00 - 17:00): Kiểm thử tích hợp luồng toàn trình: HR xác thực MST đăng tin -> sinh viên bóc tách CV tự động -> xuất bản CV PDF đa theme; kiểm tra npm run build đóng gói sạch sẽ không lỗi TypeScript.
 * **Kinh nghiệm rút ra:** Dành ngày thứ Sáu để hoàn thiện toàn bộ test suites và kiểm thử tích hợp sau khi triển khai các tính năng lớn giúp hệ thống giữ vững tính ổn định cao.
 
-## 📅 TUẦN 9: PUBLIC OFFER PORTAL, LANDING PAGE 3D, COMMUNITY FEED & MULTI-TIER CACHE (09/11/2026 – 13/11/2026)
+## 📅 TUẦN 9: PUBLIC OFFER PORTAL, LANDING PAGE 3D, COMMUNITY FEED & CACHING (ĐẾN HÔM NAY 11/11/2026) (09/11/2026 – 11/11/2026)
 
 ### 🔴 Thứ 2 (09/11/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
 * **Công việc được giao:** Xây dựng Cổng Nhận Offer Công Khai, Xuất Hồ Sơ Ứng Viên & Mạng Xã Hội Nghề Nghiệp (Community Feed).
 * **Kết quả thực hiện:**
   * Sáng (08:30 - 12:00): Phát triển PublicOfferPortal.tsx cho phép ứng viên nhận và phản hồi offer trực tuyến; xây dựng tính năng xuất hồ sơ tổng hợp Executive Dossier Export chuẩn in ấn cho doanh nghiệp.
-  * Chiều (13:00 - 17:00): Khởi tạo mạng xã hội nghề nghiệp sinh viên (/feed): Xây dựng SocialSidebar, CreatePostBox.tsx, FeedControlCard.tsx và PostCard.tsx chia sẻ thành tựu dự án và cơ hội tuyển dụng.
+  * Chiều (13:00 - 17:00): Khởi tạo mạng xã hội nghề nghiệp sinh viên (/feed): Xây dựng SocialSidebar, CreatePostBox.tsx, FeedControlCard.tsx và PostCard.tsx chia sẻ thành tựu dự án và cơ hội tuyển dụng; fix CI test runner Node 22.
 * **Kinh nghiệm rút ra:** Kết hợp tính năng tuyển dụng với mạng xã hội nghề nghiệp tạo ra hiệu ứng lan tỏa mạnh mẽ và giữ chân người dùng tương tác hàng ngày.
 
 ### 🔴 Thứ 3 (10/11/2026)
@@ -395,67 +395,9 @@ Trong 10 tuần phát triển dự án (18/09/2026 – 20/11/2026), **ProfileHub
 
 ### 🔴 Thứ 4 (11/11/2026)
 * **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Thiết kế & Triển khai Cơ chế Caching Đa Tầng (Redis + IndexedDB) & Service Worker.
+* **Công việc được giao:** Chuẩn hóa hệ thống sổ nhật ký thực tập BM01b, Tối ưu hóa Caching Đa Tầng (Redis + IndexedDB) & Rà soát hiệu năng.
 * **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Cấu hình Redis cache ở tầng API server và thiết lập IndexedDB lưu trữ cục bộ phía client cho bộ từ điển công nghệ và danh sách đồ án mẫu, giảm 85% request trùng lặp.
-  * Chiều (13:00 - 17:00): Cấu hình Service Worker offline cache cho các asset tĩnh, đảm bảo ứng dụng vẫn hiển thị bản thảo CV khi mất kết nối mạng đột ngột.
-* **Kinh nghiệm rút ra:** Kết hợp cache đa tầng ở cả client và server giúp tốc độ phản hồi giao diện đạt mức tức thì (< 50ms) ngay cả khi mạng chập chờn.
-
-### 🔴 Thứ 5 (12/11/2026)
-* **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Tối ưu hóa Hydration, Code-Splitting & Kiểm thử tự động E2E với Playwright.
-* **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Phân tích hiệu năng bằng Google Lighthouse, áp dụng React.lazy và dynamic imports cho các modal nặng, đưa điểm số hiệu năng Performance lên 98/100.
-  * Chiều (13:00 - 17:00): Cấu hình Playwright, viết kịch bản kiểm thử tự động toàn trình (E2E Test): luồng tạo CV, soi chuẩn STAR, kéo thả Kanban và xuất bản PDF; kiểm tra build sạch.
-* **Kinh nghiệm rút ra:** Kiểm thử tự động E2E định kỳ giúp phát hiện tức thì các lỗi giao diện và bảo đảm trải nghiệm người dùng luôn hoàn hảo trước mỗi đợt phát hành.
-
-### 🔴 Thứ 6 (13/11/2026)
-* **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Rà soát bảo mật OWASP, Tối ưu hóa Bundle Size & Tải trang dưới 0.8s.
-* **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Rà soát bảo mật toàn diện theo chuẩn OWASP Top 10, cấu hình CSP headers, áp dụng DOMPurify làm sạch dữ liệu nhập từ người dùng trước khi render lên Canvas.
-  * Chiều (13:00 - 17:00): Áp dụng Tree Shaking và loại bỏ các dependency thừa, giảm dung lượng bundle chính từ 1.2MB xuống 280KB (Gzipped); chạy kiểm thử tải xác nhận FCP < 0.8s.
-* **Kinh nghiệm rút ra:** Tối ưu hóa bảo mật và tốc độ tải trang là yếu tố then chốt giúp ứng dụng hoạt động ổn định và an toàn trên môi trường production.
-
-## 📅 TUẦN 10: TYPOGRAPHY, SENTRY MONITORING, VECTOR EMBEDDINGS & SPRINT REVIEW ROADMAP (16/11/2026 – 20/11/2026)
-
-### 🔴 Thứ 2 (16/11/2026)
-* **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Chuẩn hóa Typography, Dark/Light Mode & Khả năng truy cập tiếp cận (Accessibility - a11y).
-* **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Rà soát và đồng bộ typography, font chữ liên trang; hoàn thiện cơ chế chuyển đổi theme Dark/Light mượt mà với ThemeContext và CSS variables.
-  * Chiều (13:00 - 17:00): Kiểm tra độ tương phản màu sắc đạt chuẩn WCAG AA, bổ sung thuộc tính ARIA labels và hỗ trợ điều hướng hoàn toàn bằng bàn phím trên các modal.
-* **Kinh nghiệm rút ra:** Tuân thủ chuẩn tiếp cận a11y giúp mở rộng đối tượng người dùng và khẳng định tính chuyên nghiệp của sản phẩm tiêu chuẩn Enterprise.
-
-### 🔴 Thứ 3 (17/11/2026)
-* **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Tích hợp Công Cụ Giám Sát Lỗi Thời Gian Thực (Sentry SDK) & Cảnh Báo Realtime.
-* **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Tích hợp Sentry SDK trên frontend React Vite, cấu hình bắt unhandled exceptions, theo dõi transaction trace và thiết lập Error Boundary trên các component trọng yếu.
-  * Chiều (13:00 - 17:00): Thiết lập webhook tự động đẩy thông báo lỗi nghiêm trọng về kênh nội bộ của đội ngũ kỹ thuật khi người dùng gặp sự cố.
-* **Kinh nghiệm rút ra:** Hệ thống giám sát lỗi chủ động giúp đội ngũ phát hiện và vá lỗi ngay trước khi người dùng kịp phản ánh.
-
-### 🔴 Thứ 4 (18/11/2026)
-* **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Nâng cấp Thuật Toán AI Recommender Dựa Trên Vector Embeddings & Thử Nghiệm Tải K6.
-* **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Nghiên cứu áp dụng Vector Embeddings tính toán độ tương đồng ngữ nghĩa giữa đoạn văn mô tả đồ án của sinh viên và yêu cầu trách nhiệm công việc trong JD.
-  * Chiều (13:00 - 17:00): Chạy thử nghiệm kiểm thử tải với k6 mô phỏng 200 người dùng đồng thời truy cập Public Showcase và Feed, xác nhận thời gian phản hồi API duy trì < 150ms.
-* **Kinh nghiệm rút ra:** Khớp nối theo ngữ nghĩa (Semantic Matching) giúp nhận diện chính xác năng lực tiềm ẩn của ứng viên ngay cả khi từ khóa không hoàn toàn trùng khớp mặt chữ.
-
-### 🔴 Thứ 5 (19/11/2026)
-* **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Hoàn thiện Cơ Chế Xuất Bản Đa Nền Tảng (PWA Ready) & Tinh chỉnh SEO Meta Tags.
-* **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Cấu hình manifest.json và PWA service worker cho phép cài đặt ProfileHub như một ứng dụng độc lập trên máy tính và thiết bị di động.
-  * Chiều (13:00 - 17:00): Cấu hình thẻ OpenGraph và Twitter Card meta tags động cho từng trang Portfolio cá nhân, đảm bảo ảnh thumbnail và thông tin sinh viên hiển thị đẹp mắt khi chia sẻ.
-* **Kinh nghiệm rút ra:** Tối ưu hóa khả năng chia sẻ mạng xã hội (OpenGraph) là kênh đòn bẩy tự nhiên giúp thu hút nhà tuyển dụng tìm đến hồ sơ của sinh viên.
-
-### 🔴 Thứ 6 (20/11/2026)
-* **Thời gian:** 08:30 – 17:00 (Sáng: 08:30 - 12:00 | Chiều: 13:00 - 17:00)
-* **Công việc được giao:** Họp định kỳ Sprint Review với Mentor doanh nghiệp, đánh giá Milestone 2 và lập kế hoạch kỹ thuật chặng tiếp theo.
-* **Kết quả thực hiện:**
-  * Sáng (08:30 - 12:00): Demo toàn diện các tính năng đã hoàn thành (Landing Page 3D, Smart Job Studio, CV Parser, Community Feed, Application Kanban) cho Mentor doanh nghiệp và tiếp nhận góp ý kỹ thuật.
-  * Chiều (13:00 - 17:00): Tiếp thu phản hồi của Mentor, cập nhật backlog kỹ thuật, phân chia các đầu việc mở rộng tiếp theo cho hệ thống ProfileHub và chuẩn bị kế hoạch phát triển cho chặng tới.
-* **Kinh nghiệm rút ra:** Duy trì họp Sprint Review định kỳ với Mentor giúp nắm chắc định hướng sản phẩm thực tế và liên tục cải tiến chất lượng kỹ thuật trong suốt kỳ thực tập.
+  * Sáng (08:30 - 12:00): Chuẩn hóa cấu trúc Sổ nhật ký thực tập BM01b và nhật ký dự án bám sát tiến độ thực tế (vibe coding); rà soát typography, giao diện và dọn sạch các route thừa.
+  * Chiều (13:00 - 17:00): Cấu hình cơ chế Caching đa tầng (Redis cache API + IndexedDB phía client), kiểm thử tải trang nhanh tức thì (< 50ms) và chạy kiểm thử tự động toàn bộ 15 test suites bảo đảm chất lượng mã nguồn ổn định.
+* **Kinh nghiệm rút ra:** Thường xuyên rà soát, đồng bộ tài liệu và tối ưu hóa hệ thống đệm dữ liệu (Caching) giúp codebase luôn ngăn nắp, tốc độ phản hồi cao và sẵn sàng cho các cột mốc phát triển tiếp theo.
 

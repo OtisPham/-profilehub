@@ -50,7 +50,7 @@
 
 ---
 
-### NỘI DUNG NHẬT KÝ CHI TIẾT THEO NGÀY (50 NGÀY LÀM VIỆC — BẮT ĐẦU 18/09/2026, 4 THỨ BẢY ĐẦU TIÊN)
+### NỘI DUNG NHẬT KÝ CHI TIẾT THEO NGÀY (43 NGÀY LÀM VIỆC — TỪ 18/09/2026 ĐẾN HÔM NAY 11/11/2026)
 
 | Tuần: 1 Thứ:      6                Ngày: 18/09/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
@@ -296,7 +296,7 @@
 | :--- | :--- | :--- | :--- |
 | **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
 | 08:30 - 12:00 | Xây dựng Cổng Nhận Offer Công Khai, Xuất Hồ Sơ Ứng Viên & Mạng Xã Hội Nghề Nghiệp (Community Feed). | Phát triển PublicOfferPortal.tsx cho phép ứng viên nhận và phản hồi offer trực tuyến; xây dựng tính năng xuất hồ sơ tổng hợp Executive Dossier Export chuẩn in ấn cho doanh nghiệp. | Kết hợp tính năng tuyển dụng với mạng xã hội nghề nghiệp tạo ra hiệu ứng lan tỏa mạnh mẽ và giữ chân người dùng tương tác hàng ngày. |
-| 13:00 - 17:00 | Xây dựng Cổng Nhận Offer Công Khai, Xuất Hồ Sơ Ứng Viên & Mạng Xã Hội Nghề Nghiệp (Community Feed). | Khởi tạo mạng xã hội nghề nghiệp sinh viên (/feed): Xây dựng SocialSidebar, CreatePostBox.tsx, FeedControlCard.tsx và PostCard.tsx chia sẻ thành tựu dự án và cơ hội tuyển dụng. | Kết hợp tính năng tuyển dụng với mạng xã hội nghề nghiệp tạo ra hiệu ứng lan tỏa mạnh mẽ và giữ chân người dùng tương tác hàng ngày. |
+| 13:00 - 17:00 | Xây dựng Cổng Nhận Offer Công Khai, Xuất Hồ Sơ Ứng Viên & Mạng Xã Hội Nghề Nghiệp (Community Feed). | Khởi tạo mạng xã hội nghề nghiệp sinh viên (/feed): Xây dựng SocialSidebar, CreatePostBox.tsx, FeedControlCard.tsx và PostCard.tsx chia sẻ thành tựu dự án và cơ hội tuyển dụng; fix CI test runner Node 22. | Kết hợp tính năng tuyển dụng với mạng xã hội nghề nghiệp tạo ra hiệu ứng lan tỏa mạnh mẽ và giữ chân người dùng tương tác hàng ngày. |
 
 | Tuần: 9 Thứ:      3                Ngày: 10/11/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
@@ -307,48 +307,6 @@
 | Tuần: 9 Thứ:      4                Ngày: 11/11/2026 <td colspan=4/> |
 | :--- | :--- | :--- | :--- |
 | **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Thiết kế & Triển khai Cơ chế Caching Đa Tầng (Redis + IndexedDB) & Service Worker. | Cấu hình Redis cache ở tầng API server và thiết lập IndexedDB lưu trữ cục bộ phía client cho bộ từ điển công nghệ và danh sách đồ án mẫu, giảm 85% request trùng lặp. | Kết hợp cache đa tầng ở cả client và server giúp tốc độ phản hồi giao diện đạt mức tức thì (< 50ms) ngay cả khi mạng chập chờn. |
-| 13:00 - 17:00 | Thiết kế & Triển khai Cơ chế Caching Đa Tầng (Redis + IndexedDB) & Service Worker. | Cấu hình Service Worker offline cache cho các asset tĩnh, đảm bảo ứng dụng vẫn hiển thị bản thảo CV khi mất kết nối mạng đột ngột. | Kết hợp cache đa tầng ở cả client và server giúp tốc độ phản hồi giao diện đạt mức tức thì (< 50ms) ngay cả khi mạng chập chờn. |
-
-| Tuần: 9 Thứ:      5                Ngày: 12/11/2026 <td colspan=4/> |
-| :--- | :--- | :--- | :--- |
-| **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Tối ưu hóa Hydration, Code-Splitting & Kiểm thử tự động E2E với Playwright. | Phân tích hiệu năng bằng Google Lighthouse, áp dụng React.lazy và dynamic imports cho các modal nặng, đưa điểm số hiệu năng Performance lên 98/100. | Kiểm thử tự động E2E định kỳ giúp phát hiện tức thì các lỗi giao diện và bảo đảm trải nghiệm người dùng luôn hoàn hảo trước mỗi đợt phát hành. |
-| 13:00 - 17:00 | Tối ưu hóa Hydration, Code-Splitting & Kiểm thử tự động E2E với Playwright. | Cấu hình Playwright, viết kịch bản kiểm thử tự động toàn trình (E2E Test): luồng tạo CV, soi chuẩn STAR, kéo thả Kanban và xuất bản PDF; kiểm tra build sạch. | Kiểm thử tự động E2E định kỳ giúp phát hiện tức thì các lỗi giao diện và bảo đảm trải nghiệm người dùng luôn hoàn hảo trước mỗi đợt phát hành. |
-
-| Tuần: 9 Thứ:      6                Ngày: 13/11/2026 <td colspan=4/> |
-| :--- | :--- | :--- | :--- |
-| **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Rà soát bảo mật OWASP, Tối ưu hóa Bundle Size & Tải trang dưới 0.8s. | Rà soát bảo mật toàn diện theo chuẩn OWASP Top 10, cấu hình CSP headers, áp dụng DOMPurify làm sạch dữ liệu nhập từ người dùng trước khi render lên Canvas. | Tối ưu hóa bảo mật và tốc độ tải trang là yếu tố then chốt giúp ứng dụng hoạt động ổn định và an toàn trên môi trường production. |
-| 13:00 - 17:00 | Rà soát bảo mật OWASP, Tối ưu hóa Bundle Size & Tải trang dưới 0.8s. | Áp dụng Tree Shaking và loại bỏ các dependency thừa, giảm dung lượng bundle chính từ 1.2MB xuống 280KB (Gzipped); chạy kiểm thử tải xác nhận FCP < 0.8s. | Tối ưu hóa bảo mật và tốc độ tải trang là yếu tố then chốt giúp ứng dụng hoạt động ổn định và an toàn trên môi trường production. |
-
-| Tuần: 10 Thứ:     2                Ngày: 16/11/2026 <td colspan=4/> |
-| :--- | :--- | :--- | :--- |
-| **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Chuẩn hóa Typography, Dark/Light Mode & Khả năng truy cập tiếp cận (Accessibility - a11y). | Rà soát và đồng bộ typography, font chữ liên trang; hoàn thiện cơ chế chuyển đổi theme Dark/Light mượt mà với ThemeContext và CSS variables. | Tuân thủ chuẩn tiếp cận a11y giúp mở rộng đối tượng người dùng và khẳng định tính chuyên nghiệp của sản phẩm tiêu chuẩn Enterprise. |
-| 13:00 - 17:00 | Chuẩn hóa Typography, Dark/Light Mode & Khả năng truy cập tiếp cận (Accessibility - a11y). | Kiểm tra độ tương phản màu sắc đạt chuẩn WCAG AA, bổ sung thuộc tính ARIA labels và hỗ trợ điều hướng hoàn toàn bằng bàn phím trên các modal. | Tuân thủ chuẩn tiếp cận a11y giúp mở rộng đối tượng người dùng và khẳng định tính chuyên nghiệp của sản phẩm tiêu chuẩn Enterprise. |
-
-| Tuần: 10 Thứ:     3                Ngày: 17/11/2026 <td colspan=4/> |
-| :--- | :--- | :--- | :--- |
-| **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Tích hợp Công Cụ Giám Sát Lỗi Thời Gian Thực (Sentry SDK) & Cảnh Báo Realtime. | Tích hợp Sentry SDK trên frontend React Vite, cấu hình bắt unhandled exceptions, theo dõi transaction trace và thiết lập Error Boundary trên các component trọng yếu. | Hệ thống giám sát lỗi chủ động giúp đội ngũ phát hiện và vá lỗi ngay trước khi người dùng kịp phản ánh. |
-| 13:00 - 17:00 | Tích hợp Công Cụ Giám Sát Lỗi Thời Gian Thực (Sentry SDK) & Cảnh Báo Realtime. | Thiết lập webhook tự động đẩy thông báo lỗi nghiêm trọng về kênh nội bộ của đội ngũ kỹ thuật khi người dùng gặp sự cố. | Hệ thống giám sát lỗi chủ động giúp đội ngũ phát hiện và vá lỗi ngay trước khi người dùng kịp phản ánh. |
-
-| Tuần: 10 Thứ:     4                Ngày: 18/11/2026 <td colspan=4/> |
-| :--- | :--- | :--- | :--- |
-| **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Nâng cấp Thuật Toán AI Recommender Dựa Trên Vector Embeddings & Thử Nghiệm Tải K6. | Nghiên cứu áp dụng Vector Embeddings tính toán độ tương đồng ngữ nghĩa giữa đoạn văn mô tả đồ án của sinh viên và yêu cầu trách nhiệm công việc trong JD. | Khớp nối theo ngữ nghĩa (Semantic Matching) giúp nhận diện chính xác năng lực tiềm ẩn của ứng viên ngay cả khi từ khóa không hoàn toàn trùng khớp mặt chữ. |
-| 13:00 - 17:00 | Nâng cấp Thuật Toán AI Recommender Dựa Trên Vector Embeddings & Thử Nghiệm Tải K6. | Chạy thử nghiệm kiểm thử tải với k6 mô phỏng 200 người dùng đồng thời truy cập Public Showcase và Feed, xác nhận thời gian phản hồi API duy trì < 150ms. | Khớp nối theo ngữ nghĩa (Semantic Matching) giúp nhận diện chính xác năng lực tiềm ẩn của ứng viên ngay cả khi từ khóa không hoàn toàn trùng khớp mặt chữ. |
-
-| Tuần: 10 Thứ:     5                Ngày: 19/11/2026 <td colspan=4/> |
-| :--- | :--- | :--- | :--- |
-| **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Hoàn thiện Cơ Chế Xuất Bản Đa Nền Tảng (PWA Ready) & Tinh chỉnh SEO Meta Tags. | Cấu hình manifest.json và PWA service worker cho phép cài đặt ProfileHub như một ứng dụng độc lập trên máy tính và thiết bị di động. | Tối ưu hóa khả năng chia sẻ mạng xã hội (OpenGraph) là kênh đòn bẩy tự nhiên giúp thu hút nhà tuyển dụng tìm đến hồ sơ của sinh viên. |
-| 13:00 - 17:00 | Hoàn thiện Cơ Chế Xuất Bản Đa Nền Tảng (PWA Ready) & Tinh chỉnh SEO Meta Tags. | Cấu hình thẻ OpenGraph và Twitter Card meta tags động cho từng trang Portfolio cá nhân, đảm bảo ảnh thumbnail và thông tin sinh viên hiển thị đẹp mắt khi chia sẻ. | Tối ưu hóa khả năng chia sẻ mạng xã hội (OpenGraph) là kênh đòn bẩy tự nhiên giúp thu hút nhà tuyển dụng tìm đến hồ sơ của sinh viên. |
-
-| Tuần: 10 Thứ:     6                Ngày: 20/11/2026 <td colspan=4/> |
-| :--- | :--- | :--- | :--- |
-| **Thời gian** | **Công việc được giao** | **Kết quả thực hiện** | **Kinh nghiệm** |
-| 08:30 - 12:00 | Họp định kỳ Sprint Review với Mentor doanh nghiệp, đánh giá Milestone 2 và lập kế hoạch kỹ thuật chặng tiếp theo. | Demo toàn diện các tính năng đã hoàn thành (Landing Page 3D, Smart Job Studio, CV Parser, Community Feed, Application Kanban) cho Mentor doanh nghiệp và tiếp nhận góp ý kỹ thuật. | Duy trì họp Sprint Review định kỳ với Mentor giúp nắm chắc định hướng sản phẩm thực tế và liên tục cải tiến chất lượng kỹ thuật trong suốt kỳ thực tập. |
-| 13:00 - 17:00 | Họp định kỳ Sprint Review với Mentor doanh nghiệp, đánh giá Milestone 2 và lập kế hoạch kỹ thuật chặng tiếp theo. | Tiếp thu phản hồi của Mentor, cập nhật backlog kỹ thuật, phân chia các đầu việc mở rộng tiếp theo cho hệ thống ProfileHub và chuẩn bị kế hoạch phát triển cho chặng tới. | Duy trì họp Sprint Review định kỳ với Mentor giúp nắm chắc định hướng sản phẩm thực tế và liên tục cải tiến chất lượng kỹ thuật trong suốt kỳ thực tập. |
+| 08:30 - 12:00 | Chuẩn hóa hệ thống sổ nhật ký thực tập BM01b, Tối ưu hóa Caching Đa Tầng (Redis + IndexedDB) & Rà soát hiệu năng. | Chuẩn hóa cấu trúc Sổ nhật ký thực tập BM01b và nhật ký dự án bám sát tiến độ thực tế (vibe coding); rà soát typography, giao diện và dọn sạch các route thừa. | Thường xuyên rà soát, đồng bộ tài liệu và tối ưu hóa hệ thống đệm dữ liệu (Caching) giúp codebase luôn ngăn nắp, tốc độ phản hồi cao và sẵn sàng cho các cột mốc phát triển tiếp theo. |
+| 13:00 - 17:00 | Chuẩn hóa hệ thống sổ nhật ký thực tập BM01b, Tối ưu hóa Caching Đa Tầng (Redis + IndexedDB) & Rà soát hiệu năng. | Cấu hình cơ chế Caching đa tầng (Redis cache API + IndexedDB phía client), kiểm thử tải trang nhanh tức thì (< 50ms) và chạy kiểm thử tự động toàn bộ 15 test suites bảo đảm chất lượng mã nguồn ổn định. | Thường xuyên rà soát, đồng bộ tài liệu và tối ưu hóa hệ thống đệm dữ liệu (Caching) giúp codebase luôn ngăn nắp, tốc độ phản hồi cao và sẵn sàng cho các cột mốc phát triển tiếp theo. |
 
