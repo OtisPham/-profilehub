@@ -56,6 +56,7 @@ export default function MyProfile() {
 
   // =================== PROFILE STATE ===================
   const [profile, setProfile] = useState<StudentProfile | null>(null);
+  const avatarUrl = profile?.avatar_url || user?.user_metadata?.avatar_url || user?.user_metadata?.picture;
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
   const [profileMessage, setProfileMessage] = useState({ type: '', text: '' });
@@ -360,9 +361,21 @@ export default function MyProfile() {
                   fontSize: '36px',
                   fontWeight: '700',
                   color: '#1e3a8a',
-                  background: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)'
+                  background: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)',
+                  overflow: 'hidden'
                 }}>
-                  {profile?.full_name ? profile.full_name.charAt(0).toUpperCase() : <User size={40} color="#2563eb" />}
+                  {avatarUrl ? (
+                    <img 
+                      src={avatarUrl} 
+                      alt={profile?.full_name || 'Ảnh đại diện'} 
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : profile?.full_name ? (
+                    profile.full_name.charAt(0).toUpperCase()
+                  ) : (
+                    <User size={40} color="#2563eb" />
+                  )}
                 </div>
 
                 <div style={{ marginBottom: '4px' }}>

@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   });
   const [loading, setLoading] = useState(true);
 
-  const fetchUserRole = useCallback(async (userId: string, metadataRole?: string) => {
+  const fetchUserRole = useCallback(async (userId: string, metadataRole?: string, currentUser?: User | null) => {
     // Ưu tiên vai trò demo nếu người dùng chủ động chọn thử nghiệm trên giao diện
     const demoRole = typeof window !== 'undefined' ? localStorage.getItem('profilehub_demo_role') : null;
     if (demoRole === 'recruiter' || demoRole === 'student') {
@@ -68,18 +68,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         // Cơ chế tự phục hồi (Self-healing Provisioning) nếu bảng public.users chưa có bản ghi
         const targetRole: UserRole = (metadataRole as UserRole) || 'student';
         setUserRole(targetRole);
-        if (user && !userId.startsWith('demo_')) {
-          provisionOAuthUserProfile(user, targetRole).catch(e => console.warn('[AuthProvider] Auto-provisioning fallback error:', e));
+        const userToProvision = currentUser || user;
+        if (userToProvision && !userId.startsWith('demo_')) {
+          provisionOAuthUserProfile(userToProvision, targetRole).catch(e => console.warn('[AuthProvider] Auto-provisioning fallback error:', e));
         }
       }
     } catch {
       setUserRole((metadataRole as UserRole) || 'student');
     }
-  }, []);
+  }, [user]);
 
   const refreshUserRole = useCallback(async () => {
     if (user?.id) {
-      await fetchUserRole(user.id, user.user_metadata?.role);
+      await fetchUserRole(user.id, user.user_metadata?.role, user);
     }
   }, [user, fetchUserRole]);
 
@@ -96,7 +97,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
       setUser(currentUser);
       if (currentUser) {
-        fetchUserRole(currentUser.id, currentUser.user_metadata?.role).finally(() => setLoading(false));
+        fetchUserRole(currentUser.id, currentUser.user_metadata?.role, currentUser).finally(() => setLoading(false));
       } else {
         setLoading(false);
       }
@@ -114,7 +115,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
       setUser(currentUser);
       if (currentUser) {
-        fetchUserRole(currentUser.id, currentUser.user_metadata?.role).finally(() => setLoading(false));
+        fetchUserRole(currentUser.id, currentUser.user_metadata?.role, currentUser).finally(() => setLoading(false));
       } else {
         setLoading(false);
       }

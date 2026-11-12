@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../../services/supabase';
+import { useAuth } from '../../context/AuthProvider';
 import AuthLayout from '../../components/layout/AuthLayout';
 import { 
   Eye, 
@@ -27,6 +28,15 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  // Tự động điều hướng vào trang bàn làm việc nếu tài khoản đã xác thực thành công
+  useEffect(() => {
+    if (user) {
+      const destination = role === 'recruiter' ? '/recruiter/dashboard' : '/dashboard';
+      navigate(destination, { replace: true });
+    }
+  }, [user, navigate, role]);
 
   const handleRoleChange = (newRole: UserRole) => {
     setRole(newRole);

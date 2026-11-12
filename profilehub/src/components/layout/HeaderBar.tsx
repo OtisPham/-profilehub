@@ -24,6 +24,9 @@ export default function HeaderBar() {
   const { user, userRole } = useAuth();
   const isAuthenticated = Boolean(user);
 
+  const userAvatarUrl = user?.user_metadata?.avatar_url || user?.user_metadata?.picture;
+  const userDisplayName = user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email?.split('@')[0] || (userRole === 'recruiter' ? 'Nhà tuyển dụng' : 'Ứng viên');
+
   const [mobileOpen, setMobileOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
@@ -364,16 +367,27 @@ export default function HeaderBar() {
                     className="flex items-center gap-2 p-1 pl-1.5 pr-2 rounded-xl hover:bg-slate-100/80 dark:hover:bg-slate-800/80 transition cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
                     aria-label="Tài khoản người dùng"
                   >
-                    <div className={`w-7 h-7 rounded-lg text-white font-bold text-xs flex items-center justify-center shadow-xs ${
+                    <div className={`w-7 h-7 rounded-lg text-white font-bold text-xs flex items-center justify-center shadow-xs overflow-hidden shrink-0 ${
                       userRole === 'recruiter'
                         ? 'bg-gradient-to-tr from-blue-700 to-indigo-600'
                         : 'bg-indigo-600'
                     }`}>
-                      {userRole === 'recruiter' ? <Building2 className="w-3.5 h-3.5" /> : (user?.email ? user.email.charAt(0).toUpperCase() : 'U')}
+                      {userAvatarUrl ? (
+                        <img 
+                          src={userAvatarUrl} 
+                          alt={userDisplayName} 
+                          className="w-full h-full object-cover" 
+                          referrerPolicy="no-referrer"
+                        />
+                      ) : userRole === 'recruiter' ? (
+                        <Building2 className="w-3.5 h-3.5" />
+                      ) : (
+                        user?.email ? user.email.charAt(0).toUpperCase() : 'U'
+                      )}
                     </div>
                     <div className="hidden lg:flex flex-col text-left">
                       <span className="text-xs font-bold text-slate-800 dark:text-slate-200 leading-tight">
-                        {user?.user_metadata?.full_name || user?.email?.split('@')[0] || (userRole === 'recruiter' ? 'Nhà tuyển dụng' : 'Ứng viên')}
+                        {userDisplayName}
                       </span>
                       <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 leading-none">
                         {userRole === 'recruiter' ? 'Nhà tuyển dụng' : 'Ứng viên'}
@@ -385,13 +399,29 @@ export default function HeaderBar() {
                   {/* Dropdown Menu Profile */}
                   {profileDropdownOpen && (
                     <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-[#111728] rounded-2xl shadow-xl dark:shadow-[0_12px_40px_rgba(0,0,0,0.7)] border border-slate-200/80 dark:border-slate-700/80 p-2 z-50 animate-in fade-in duration-150">
-                      <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800">
-                        <p className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">
-                          {user?.user_metadata?.full_name || user?.email || (userRole === 'recruiter' ? 'Nhà Tuyển Dụng Alpaca' : 'Tài khoản Ứng viên')}
-                        </p>
-                        <p className="text-[10px] text-slate-500 dark:text-slate-400">
-                          Vai trò: <strong className="text-indigo-600 dark:text-indigo-400">{userRole === 'recruiter' ? '🏢 Nhà Tuyển Dụng' : '🎓 Ứng Viên'}</strong>
-                        </p>
+                      <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800 flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-full overflow-hidden bg-indigo-100 dark:bg-indigo-950 shrink-0 flex items-center justify-center border border-indigo-200/50 dark:border-indigo-800/50">
+                          {userAvatarUrl ? (
+                            <img 
+                              src={userAvatarUrl} 
+                              alt={userDisplayName} 
+                              className="w-full h-full object-cover" 
+                              referrerPolicy="no-referrer"
+                            />
+                          ) : (
+                            <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">
+                              {userDisplayName.charAt(0).toUpperCase()}
+                            </span>
+                          )}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">
+                            {userDisplayName}
+                          </p>
+                          <p className="text-[10px] text-slate-500 dark:text-slate-400">
+                            Vai trò: <strong className="text-indigo-600 dark:text-indigo-400">{userRole === 'recruiter' ? '🏢 Nhà Tuyển Dụng' : '🎓 Ứng Viên'}</strong>
+                          </p>
+                        </div>
                       </div>
 
                       {/* Các lối tắt cá nhân hóa theo vai trò */}
@@ -535,6 +565,23 @@ export default function HeaderBar() {
               </div>
             ) : (
               <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-2">
+                {/* Thông tin người dùng mobile */}
+                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/60 flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-lg overflow-hidden bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shrink-0">
+                    {userAvatarUrl ? (
+                      <img src={userAvatarUrl} alt={userDisplayName} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                    ) : (
+                      userDisplayName.charAt(0).toUpperCase()
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">{userDisplayName}</p>
+                    <p className="text-[10px] text-slate-500 dark:text-slate-400">
+                      {userRole === 'recruiter' ? '🏢 Nhà Tuyển Dụng' : '🎓 Ứng Viên'}
+                    </p>
+                  </div>
+                </div>
+
                 {/* Nút hành động nhanh mobile theo vai trò */}
                 {userRole === 'recruiter' ? (
                   <Link

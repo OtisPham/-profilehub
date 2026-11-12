@@ -315,7 +315,8 @@ export default function Dashboard() {
   const totalProjects = projects.length;
   const verifiedProjects = projects.filter(p => p.is_verified || p.verification_status === 'verified');
   const verifiedCount = verifiedProjects.length;
-  const displayName = profile?.full_name || user?.email?.split('@')[0] || 'Sinh Viên';
+  const displayName = profile?.full_name || user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Sinh Viên';
+  const avatarUrl = profile?.avatar_url || user?.user_metadata?.avatar_url || user?.user_metadata?.picture;
   const targetMajor = profile?.major || 'Kỹ Sư Phần Mềm';
 
   // Xác định rõ: Có ai mời phỏng vấn thực tế từ phía nhà tuyển dụng không
@@ -381,8 +382,17 @@ export default function Dashboard() {
       <div className="border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0c101c] transition-colors">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 sm:py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-indigo-600 via-blue-600 to-sky-600 text-white flex items-center justify-center font-black text-base shadow-sm shrink-0">
-              {displayName.charAt(0).toUpperCase()}
+            <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-indigo-600 via-blue-600 to-sky-600 text-white flex items-center justify-center font-black text-base shadow-sm shrink-0 overflow-hidden">
+              {avatarUrl ? (
+                <img 
+                  src={avatarUrl} 
+                  alt={displayName} 
+                  className="w-full h-full object-cover" 
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                displayName.charAt(0).toUpperCase()
+              )}
             </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap">
