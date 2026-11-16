@@ -937,3 +937,4 @@
 {"id":"evt_1794825975725_n689pt","timestamp":"2026-11-16T10:46:15.725Z","type":"TEST_OUTPUT","payload":{"line":"\u001b[34mℹ todo 0\u001b[39m","streamType":"stdout","timestamp":"2026-11-16T10:46:15.725Z"}}
 {"id":"evt_1794825975725_q0uo7r","timestamp":"2026-11-16T10:46:15.725Z","type":"TEST_OUTPUT","payload":{"line":"\u001b[34mℹ duration_ms 620.3779\u001b[39m","streamType":"stdout","timestamp":"2026-11-16T10:46:15.725Z"}}
 {"id":"evt_1794825975738_ykg8mp","timestamp":"2026-11-16T10:46:15.738Z","type":"TEST_COMPLETED","payload":{"status":"PASSED","exitCode":0,"passCount":3,"failCount":0,"totalTests":3,"durationMs":780,"completedAt":"2026-11-16T10:46:15.738Z","logsCount":11}}
+{"id":"evt_1794829614762_e0rlfx","timestamp":"2026-11-16T11:46:54.762Z","type":"STATE_SNAPSHOT_CREATED","payload":{"snapshotId":"SNAP-1794829611391","createdAt":"2026-11-16T11:46:51.391Z","totalEvents":939,"branch":"state-backup","repo":"-profilehub","sizeBytes":247544,"status":"SUCCESS"}}
